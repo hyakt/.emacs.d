@@ -1,3 +1,19 @@
+;;ロードパス追加設定
+(setq load-path
+      (append
+       (list
+        (expand-file-name "~/.emacs.d/")
+        ;(expand-file-name "~/.emacs.d/elisp/")
+        ;(expand-file-name "~/.emacs.d/elisp/el-get/el-get/")
+
+        ;(expand-file-name "~/.emacs.d/elisp/mode/")
+        )
+       load-path))
+
+;(add-to-list 'custom-theme-load-path
+;             (file-name-as-directory "~/.emacs.d/elisp/themes/"))
+
+;;elpa設定
 (require 'package)
 (setq package-user-dir "~/.emacs.d/elpa/")
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
