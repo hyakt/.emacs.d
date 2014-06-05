@@ -79,7 +79,7 @@
      (:background "dark slate gray"))
     (((class color)
       (background light))
-     (:background  "#BC8F8F"))
+     (:background  "#E1A9AB"))
     (t
      ()))
   "*Face used by hl-line.")
