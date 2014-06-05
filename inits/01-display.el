@@ -76,7 +76,7 @@
 (defface hlline-face
   '((((class color)
       (background dark))
-     (:background "dark slate gray"))
+     (:background "#17184b"))
     (((class color)
       (background light))
      (:background  "#E1A9AB"))
