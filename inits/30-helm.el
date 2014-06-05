@@ -13,6 +13,10 @@
   (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
   (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
 
+  (global-set-key (kbd "C-M-o") 'helm-occur) 
+  (define-key isearch-mode-map (kbd "C-o") 'helm-occur-from-isearch) 
+  (define-key helm-map (kbd "C-c C-a") 'all-from-helm-occur) 
+
   ;; Disable helm in some functions
   (add-to-list 'helm-completing-read-handlers-alist '(find-alternate-file . nil))
 
