@@ -1,55 +1,58 @@
-; ÂĞ±ş¤¹¤ë³ç¸Ì¤ò¸÷¤é¤»¤ë¡£
+;; å¯¾å¿œã™ã‚‹æ‹¬å¼§ã‚’å…‰ã‚‰ã›ã‚‹ã€‚
 (show-paren-mode t)
 
-;; ÁªÂòÉôÊ¬¤Î¥Ï¥¤¥é¥¤¥È
+;; é¸æŠéƒ¨åˆ†ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆ
 (transient-mark-mode t)
 
-;; ¹Ô´Ö
+;; è¡Œé–“
 (setq-default line-spacing 0)
 
-;;; Æ±¤¸¥Ğ¥Ã¥Õ¥¡Ì¾¤Î»ş <2> ¤È¤«¤Ç¤Ï¤Ê¤¯¡¢¥Ç¥£¥ì¥¯¥È¥êÌ¾¤Ç¶èÊÌ
+;;; åŒã˜ãƒãƒƒãƒ•ã‚¡åã®æ™‚ <2> ã¨ã‹ã§ã¯ãªãã€ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªåã§åŒºåˆ¥
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-;; ¥á¥Ë¥å¡¼¥Ğ¡¼¤Ë¥Õ¥¡¥¤¥ë¥Ñ¥¹¤òÉ½¼¨
+;; ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ã«ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’è¡¨ç¤º
 (setq frame-title-format
       (format "%%f - Emacs@%s" (system-name)))
 
-;;¥Õ¥©¥ó¥È¥í¥Ã¥¯¥â¡¼¥É
+;;ãƒ•ã‚©ãƒ³ãƒˆãƒ­ãƒƒã‚¯ãƒ¢ãƒ¼ãƒ‰
 (global-font-lock-mode t)
 
-;;window¤ÎÀßÄê
+;;windowã®è¨­å®š
 (setq default-frame-alist
       (append (list
-               '(width . 175)
-               '(height . 47)
+               '(width . 100)
+               '(height . 45)
                '(top . 0)
                '(left . 0)
-               '(alpha . (100 60)))
+               '(alpha . (90 60)))
               default-frame-alist))
 
-;;²èÌÌºÇÂç²½
-(setq ns-use-native-fullscreen nil) ;; native¤Î¥Õ¥ë¥¹¥¯¥ê¡¼¥ó»È¤ï¤Ê¤¤
+;;ç”»é¢æœ€å¤§åŒ–
+(setq ns-use-native-fullscreen nil) ;; nativeã®ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½¿ã‚ãªã„
 
-;;; tool-bar»È¤ï¤Ê¤¤
+;;; tool-barä½¿ã‚ãªã„
 (tool-bar-mode 0)
 
-;;²èÌÌÃ¼¤Ş¤ÇÍè¤¿¤éÀŞ¤êÊÖ¤¹
+;;ç”»é¢ç«¯ã¾ã§æ¥ãŸã‚‰æŠ˜ã‚Šè¿”ã™
 (setq truncate-lines nil)
 (setq truncate-partial-width-windows nil)
 
-;; ¥¹¥¿¡¼¥È¥¢¥Ã¥×¥á¥Ã¥»¡¼¥¸¤òÈóÉ½¼¨
+;; ã‚¹ã‚¿ãƒ¼ãƒˆã‚¢ãƒƒãƒ—ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’éè¡¨ç¤º
 (setq inhibit-startup-screen t)
 
-;; ¥­¡¼¥¹¥È¥í¡¼¥¯¤ò¥¨¥³¡¼¥¨¥ê¥¢¤ËÁá¤¯É½¼¨¤¹¤ë
+;; ã‚­ãƒ¼ã‚¹ãƒˆãƒ­ãƒ¼ã‚¯ã‚’ã‚¨ã‚³ãƒ¼ã‚¨ãƒªã‚¢ã«æ—©ãè¡¨ç¤ºã™ã‚‹
 (setq echo-keystrokes 0.1)
 
-;; ¹ÔÈÖ¹æ¡¦·åÈÖ¹æ¤òÉ½¼¨
+;; è¡Œç•ªå·ãƒ»æ¡ç•ªå·ã‚’è¡¨ç¤º
 (line-number-mode 1)
 (column-number-mode 1)
 
+;; ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒãƒ¼æ¶ˆã™
+(set-scroll-bar-mode 'nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;Á´³Ñ¶õÇò¡¢¥¿¥Ö¡¢¹ÔËö¤Î¶õÇò¤òÌÜÎ©¤¿¤»¤ë;;;;;
+;;;;;;å…¨è§’ç©ºç™½ã€ã‚¿ãƒ–ã€è¡Œæœ«ã®ç©ºç™½ã‚’ç›®ç«‹ãŸã›ã‚‹;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defface my-face-tab         '((t (:background "Yellow"))) nil :group 'my-faces)
 (defface my-face-zenkaku-spc '((t (:background "LightBlue"))) nil :group 'my-faces)
@@ -61,7 +64,7 @@
   (font-lock-add-keywords
    major-mode
    '(("\t" 0 my-face-tab append)
-     ("¡¡" 0 my-face-zenkaku-spc append)
+     ("Â¡Â¡" 0 my-face-zenkaku-spc append)
      ("[ \t]+$" 0 my-face-spc-at-eol append)
      )))
 (ad-enable-advice 'font-lock-mode 'before 'my-font-lock-mode)
@@ -70,13 +73,14 @@
 (font-lock-mode t)
 (font-lock-fontify-buffer)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ÊÔ½¸¹Ô¤òÌÜÎ©¤¿¤»¤ë¡Ê¸½ºß¹Ô¤ò¥Ï¥¤¥é¥¤¥ÈÉ½¼¨¤¹¤ë¡Ë
+;; ç·¨é›†è¡Œã‚’ç›®ç«‹ãŸã›ã‚‹ï¼ˆç¾åœ¨è¡Œã‚’ãƒã‚¤ãƒ©ã‚¤ãƒˆè¡¨ç¤ºã™ã‚‹ï¼‰
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defface hlline-face
   '((((class color)
       (background dark))
-     (:background "#17184b"))
+     (:background "#3E3D32"))
     (((class color)
       (background light))
      (:background  "#E1A9AB"))
@@ -87,21 +91,18 @@
 (global-hl-line-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; ¥Õ¥©¥ó¥ÈÀßÄê ;;;;;;;
+;;;;; ãƒ•ã‚©ãƒ³ãƒˆè¨­å®š ;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Windows¤Ç±Ñ¿ô¤ÈÆüËÜ¸ì¤ËMeiryo¤ò»ØÄê
-;; Mac¤Ç±Ñ¿ô¤ÈÆüËÜ¸ì¤ËRicty¤ò»ØÄê
+;; Windowsã¨Macã§è¨­å®šã‚’åˆ†ã‘ã‚‹
 (let ((ws window-system))
   (cond ((eq ws 'w32)
          (set-face-attribute 'default nil
-                             :family "Consolas"  ;; ±Ñ¿ô
+                             :family "Consolas"  ;; Â±Ã‘Â¿Ã´
                              :height 100)
-         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Consolas")))  ;; ÆüËÜ¸ì
+         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Consolas")))
         ((eq ws 'ns)
          (set-face-attribute 'default nil
-                             :family "Ricty"  ;; ±Ñ¿ô
+                             :family "Ricty"  ;; Â±Ã‘Â¿Ã´
                              :height 140)
-         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Ricty")))))  ;; ÆüËÜ¸ì
+         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Ricty")))))
 
-;;; ¥¹¥¯¥í¡¼¥ë¥Ğ¡¼¾Ã¤¹
-(set-scroll-bar-mode 'nil)
