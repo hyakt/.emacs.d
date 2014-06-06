@@ -24,4 +24,4 @@
       (split-window-horizontally)))
   (other-window 1))
 
-(global-set-key (kbd "C-m") 'other-window-or-split)
+(global-set-key (kbd "C-0") 'other-window-or-split)
