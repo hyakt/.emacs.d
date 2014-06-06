@@ -62,3 +62,17 @@
 ;;; 最後に改行無い時は挿入
 (setq require-final-newline t)
 (setq mode-require-final-newline t)
+
+;;; 文字コード
+(set-language-environment "Japanese")
+(let ((ws window-system))
+  (cond ((eq ws 'w32)
+         (prefer-coding-system 'utf-8-unix)
+         (set-default-coding-systems 'utf-8-unix)
+         (setq file-name-coding-system 'sjis)
+         (setq locale-coding-system 'utf-8))
+        ((eq ws 'ns)
+         (require 'ucs-normalize)
+         (prefer-coding-system 'utf-8-hfs)
+         (setq file-name-coding-system 'utf-8-hfs)
+         (setq locale-coding-system 'utf-8-hfs))))
