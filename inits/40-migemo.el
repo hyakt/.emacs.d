@@ -1,8 +1,6 @@
 ;;
 ;; C/Migemo
 ;;
-(require 'migemo)
-
 (when (and (executable-find "cmigemo")
            (require 'migemo nil t))
   (setq migemo-command "cmigemo")
