@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ordinary derivative
+# key: dd
+# --
+\frac{d $1}{d $2}

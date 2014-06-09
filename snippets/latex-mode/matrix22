@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: (2,2)-matrix
+# key: matrix22
+# --
+\begin{pmatrix}
+  $1 & $2 \\
+  $3 & $4
+\end{pmatrix}
