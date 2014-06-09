@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: simultanious equation
+# key: simuleq
+# --
+\left\{\begin{matrixR}
+    x & + & y &=& 0 & \\\\
+    x & + & y &=& 0 & 
+\end{matrixR}\right.

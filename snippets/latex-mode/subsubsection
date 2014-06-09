@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: subsubsection
+# key: ssse
+# --
+\subsubsection{${1:subsubsection-name}}

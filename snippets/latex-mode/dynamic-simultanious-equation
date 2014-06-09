@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# name: dynamic version of simultanious equation
+# key: dysimeq
+# type: command
+# --
+(insert "\\setcounter{MaxMatrixCols}{99}\n\\left\\{\\begin{matrix}\n")
+(let ((variable-number (read-number "Number of variables?" 3))
+      (line-number (read-number "Number of equations?" 3))
+      (snippet-text ""))
+  (dotimes (i line-number)
+    (dotimes (j variable-number)
+      (setq snippet-text (format "%s %s ${a_{%d%s%d}} %s %s"
+                                 snippet-text
+                                 (if (= j 0) "" "+ &")
+                                 ;;(+ (1+ (+ (* line-number i) j)) variable-number)
+                                 (1+ i)
+                                 (if (or (>= i 9) (>= j 9)) "," "")
+                                 (1+ j)
+                                 (if (= i 0) (format "${%d:%s}" (1+ j) (if (<= variable-number 4) (nth j '(x y z w)) (format "x_%d" (1+ j))))
+                                     (format "$%d" (1+ j)))
+                                 (if (= j (1- variable-number))
+                                     "& = & ${0} \\\\\\" "&"))))
+    (setq snippet-text (format "%s\n" snippet-text)))
+  (yas/expand-snippet (format "%s\\end{matrix}\\right." snippet-text)))

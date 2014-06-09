@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: index (下付)
+# key: in
+# --
+_{$1}
