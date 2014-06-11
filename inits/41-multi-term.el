@@ -3,7 +3,7 @@
   (setq multi-term-program shell-file-name)
   (setq multi-term-program "/bin/bash")
 
-  (global-set-key (kbd "C-t") '(lambda ()
+  (global-set-key (kbd "C-q") '(lambda ()
                                  (interactive)
                                  (if (get-buffer "*terminal<1>*")
                                      (switch-to-buffer "*terminal<1>*")
@@ -27,6 +27,6 @@
   )
 
 (when (eq system-type 'windows-nt)      ;windows
-  (global-set-key (kbd "C-t") 'eshell))
+  (global-set-key (kbd "C-q") 'eshell))
 
 
