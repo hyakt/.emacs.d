@@ -1,5 +1,4 @@
-;cocoa emacsならmulti-termを使う
-(when (eq system-type 'darwin)       ; もし、システムが Mac のとき
+(when (eq system-type 'darwin)       ;Mac
   (require 'multi-term)
   (setq multi-term-program shell-file-name)
   (setq multi-term-program "/bin/bash")
@@ -9,10 +8,10 @@
                                  (if (get-buffer "*terminal<1>*")
                                      (switch-to-buffer "*terminal<1>*")
                                    (multi-term))))
-  
+
   (global-set-key (kbd "C-c n") 'multi-term-next)
   (global-set-key (kbd "C-c p") 'multi-term-prev)
-  
+
   (add-hook 'term-mode-hook
             (lambda ()
               (define-key term-raw-map (kbd "C-\\") 'other-window)
@@ -25,8 +24,9 @@
               (define-key term-raw-map (kbd "C-v") nil)
               (define-key term-raw-map (kbd "ESC ESC") 'term-send-raw))
             )
-)
-(when (eq system-type 'windows-nt)
+  )
+
+(when (eq system-type 'windows-nt)      ;windows
   (global-set-key (kbd "C-t") 'eshell))
-)
+
 
