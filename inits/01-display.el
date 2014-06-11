@@ -80,7 +80,7 @@
 (defface hlline-face
   '((((class color)
       (background dark))
-     (:background "#3E3D32"))
+     (:background "#00070D"))
     (((class color)
       (background light))
      (:background  "#E1A9AB"))
