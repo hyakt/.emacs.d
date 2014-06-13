@@ -1,5 +1,6 @@
 (require 'helm-man)
 (require 'helm-elisp)
+(require 'helm-pydoc)
 
 (setq helm-for-document-sources
       (list
