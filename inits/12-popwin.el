@@ -29,12 +29,12 @@
 (push '("*Python*" :stick t) popwin:special-display-config)
 (push '("*jedi:doc*" :noselect t) popwin:special-display-config)
 
-(push '("*undo-tree*" :noselect t :width 0.2 :position right) popwin:special-display-config)
+(push '("*undo-tree*" :width 0.2 :position right) popwin:special-display-config)
 (push '("*Google Translate*" :noselect t) popwin:special-display-config)
 
 (push '("*magit-commit*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config)
 (push '("*magit-diff*" :noselect t :height 30 :width 80) popwin:special-display-config)
 (push '("*magit-edit-log*" :noselect t :height 15 :width 80) popwin:special-display-config)
 (push '("*magit-process*" :noselect t :height 15 :width 80) popwin:special-display-config)
-(push '("^\*magit: .+\*$" :noselect t :regexp t :height 0.5) popwin:special-display-config)
+(push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
 

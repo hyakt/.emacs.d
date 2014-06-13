@@ -5,6 +5,11 @@
 (set-face-foreground 'magit-diff-del "red")
 (set-face-foreground 'magit-diff-file-header "blue")
 
+(defun my/magit-quit-session ()
+  (interactive)
+  (kill-buffer)
+  (delete-window))
+
 (define-key magit-status-mode-map (kbd "q") 'my/magit-quit-session)
 
 (require 'gitconfig-mode)
