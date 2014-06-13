@@ -31,3 +31,7 @@
 
 ;; redo
 (global-set-key "\M-/" 'redo)
+
+;; shell
+(global-set-key (kbd "C-q") 'eshell)
+
