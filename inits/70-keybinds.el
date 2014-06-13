@@ -31,6 +31,3 @@
 
 ;; redo
 (global-set-key "\M-/" 'redo)
-
-;;; quickrun
-(global-set-key "\C-cc" 'quickrun-with-arg)
