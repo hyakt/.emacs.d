@@ -7,10 +7,13 @@
 (setq ns-command-modifier (quote meta))
 (setq ns-alternate-modifier (quote super))
 
+(when (eq system-type 'gnu/linux)
+  (setq x-alt-keysym 'meta)
+  (setq x-super-keysym 'meta))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;emacs本体の設定;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; scratchの初期メッセージ消去
 (setq initial-scratch-message "")
 
@@ -73,11 +76,17 @@
 (let ((ws window-system))
   (cond ((eq ws 'w32)
          (prefer-coding-system 'utf-8)
-         (set-default-coding-systems 'utf-8-unix)
          (setq file-name-coding-system 'sjis)
          (setq locale-coding-system 'utf-8))
         ((eq ws 'ns)
          (require 'ucs-normalize)
          (prefer-coding-system 'utf-8)
          (setq file-name-coding-system 'utf-8-hfs)
-         (setq locale-coding-system 'utf-8-hfs))))
+         (setq locale-coding-system 'utf-8-hfs))
+        ((eq ws 'x)
+         (prefer-coding-system 'utf-8)
+         (setq file-name-coding-system 'utf-8)
+         (setq locale-coding-system 'utf-8))
+        )
+  )
+
