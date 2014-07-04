@@ -1,4 +1,5 @@
 (require 'magit)
+(global-set-key (kbd "C-c g") 'magit-status)
 
 (set-face-background 'magit-item-highlight "#202020")
 (set-face-foreground 'magit-diff-add "green")
@@ -14,3 +15,4 @@
 
 (require 'gitconfig-mode)
 (require 'gitignore-mode)
+
