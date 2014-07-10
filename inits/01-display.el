@@ -41,6 +41,10 @@
 ;; スタートアップメッセージを非表示
 (setq inhibit-startup-screen t)
 
+;; init-loaderが失敗した時のみエラーメッセージを表示
+(custom-set-variables
+ '(init-loader-show-log-after-init 'error-only))
+
 ;; キーストロークをエコーエリアに早く表示する
 (setq echo-keystrokes 0.1)
 
