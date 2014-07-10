@@ -8,7 +8,7 @@
             (add-hook 'before-save-hook 'py-autopep8-before-save)
 
             ;; Macならjediを読み込む
-            (when (eq system-type 'darwin)
+            (when (or (eq system-type 'darwin) (eq system-type 'gnu/linux))
               (require 'jedi)
               (add-hook 'python-mode-hook
                         (jedi:setup)
