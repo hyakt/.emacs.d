@@ -8,4 +8,5 @@
 (set-face-attribute 'anzu-mode-line nil :foreground "#fff" :weight 'bold)
 
 (global-set-key (kbd "C-c r") 'anzu-query-replace)
+(global-set-key (kbd "C-c C-r") 'anzu-query-replace-at-cursor)
 (global-set-key (kbd "C-c R") 'anzu-query-replace-regexp)
