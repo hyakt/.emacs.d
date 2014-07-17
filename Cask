@@ -12,6 +12,8 @@
 (depends-on "git-rebase-mode")
 (depends-on "gitconfig-mode")
 (depends-on "gitignore-mode")
+(depends-on "git-gutter")
+(depends-on "projectile")
 
 (depends-on "py-autopep8")
 (depends-on "python-environment")
@@ -24,6 +26,7 @@
 (depends-on "helm-descbinds")
 (depends-on "helm-migemo")
 (depends-on "helm-pydoc")
+(depends-on "helm-projectile")
 
 (depends-on "anzu")
 (depends-on "auto-complete")

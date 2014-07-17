@@ -13,6 +13,8 @@
 
 (define-key magit-status-mode-map (kbd "q") 'my/magit-quit-session)
 
+(require 'git-gutter)
+(global-git-gutter-mode +1)
+
 (require 'gitconfig-mode)
 (require 'gitignore-mode)
-
