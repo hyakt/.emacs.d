@@ -47,6 +47,8 @@
 (depends-on "smartrep")
 (depends-on "undo-tree")
 (depends-on "yasnippet")
+(depends-on "smartparens")
+(depends-on "rainbow-delimiters")
 
 (depends-on "monokai-theme")
 
