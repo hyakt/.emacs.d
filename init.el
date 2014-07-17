@@ -10,8 +10,9 @@
         )
        load-path))
 
-;(add-to-list 'custom-theme-load-path
-;             (file-name-as-directory "~/.emacs.d/elisp/themes/"))
+;;cask設定
+(require 'cask "~/.cask/cask.el")
+(cask-initialize)
 
 ;;elpa設定
 (require 'package)
