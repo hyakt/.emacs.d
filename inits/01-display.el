@@ -52,8 +52,10 @@
 (line-number-mode 1)
 (column-number-mode 1)
 
-;; スクロールバー消す
+;; スクロールバーをyascrollにする
+(require 'yascroll)
 (set-scroll-bar-mode 'nil)
+(global-yascroll-bar-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;全角空白、タブ、行末の空白を目立たせる;;;;;
