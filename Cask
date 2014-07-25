@@ -47,6 +47,7 @@
 (depends-on "helm-pydoc")
 (depends-on "helm-projectile")
 (depends-on "helm-gtags")
+(depends-on "helm-ag")
 
 ;; progmodes
 (depends-on "markdown-mode")
