@@ -11,7 +11,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;; 通常操作 ;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key "\C-h" 'delete-backward-char)
+(keyboard-translate ?\C-h ?\C-?)
+(global-set-key "\C-h" nil)
 (global-set-key "\C-x\C-i" 'indent-region) ; 選択範囲をインデント
 (global-set-key "\C-m" 'newline-and-indent) ; リターンで改行とインデント
 (global-set-key "\C-j" 'newline) ; 改行

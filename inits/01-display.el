@@ -21,11 +21,11 @@
 ;;windowの設定
 (setq default-frame-alist
       (append (list
-               '(width . 100)
-               '(height . 45)
+               '(width . 99)
+               '(height . 47)
                '(top . 0)
                '(left . 0)
-               '(alpha . (90 60)))
+               '(alpha . (90 70)))
               default-frame-alist))
 
 ;;画面最大化
@@ -118,7 +118,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'whitespace)
-(setq whitespace-style '(face           ; faceで可視化
+(setq whitespace-style '(face           ; faceで可化
                          trailing       ; 行末
                          tabs           ; タブ
                          spaces         ; スペース
