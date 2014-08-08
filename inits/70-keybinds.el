@@ -5,8 +5,8 @@
 (key-chord-mode 1)
 (setq key-chord-two-keys-delay 0.05)
 
-(require 'key-combo)
-(key-combo-load-default)
+;; (require 'key-combo)
+;; (key-combo-load-default)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;; 通常操作 ;;;;;;;;;;;;;
