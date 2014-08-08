@@ -77,3 +77,5 @@
 (depends-on "s")
 (depends-on "f")
 (depends-on "pkg-info")
+(depends-on "el-spec")
+(depends-on "el-spy")
