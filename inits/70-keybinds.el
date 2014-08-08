@@ -6,7 +6,7 @@
 (setq key-chord-two-keys-delay 0.05)
 
 (require 'key-combo)
-(key-combo-mode 0)
+(key-combo-load-default)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;; 通常操作 ;;;;;;;;;;;;;
@@ -32,3 +32,7 @@
 
 ;; shell
 (global-set-key (kbd "C-q") 'eshell)
+
+;; goto
+(key-chord-define-global "gl" 'goto-line)
+(key-chord-define-global "gt" 'magit-status)
