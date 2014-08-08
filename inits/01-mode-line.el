@@ -1,15 +1,15 @@
 ;; milkypostman/powerline · GitHub
 (require 'powerline)
 
-(set-face-attribute 'powerline-active1 nil
-                    :foreground "#fff"
-                    :background "#89BA27"
-                    :inherit 'mode-line)
+;; (set-face-attribute 'powerline-active1 nil
+;;                     :foreground "#fff"
+;;                     :background "#89BA27"
+;;                     :inherit 'mode-line)
 
-(set-face-attribute 'powerline-active2 nil
-                    :foreground "#000"
-                    :background "#C2EB6F"
-                    :inherit 'mode-line)
+;; (set-face-attribute 'powerline-active2 nil
+;;                     :foreground "#000"
+;;                     :background "#C2EB6F"
+;;                     :inherit 'mode-line)
 
 (powerline-default-theme)
 
