@@ -30,6 +30,7 @@
 
 ;; file
 (depends-on "recentf-ext")
+(depends-on "ace-jump-buffer")
 
 ;; version control
 (depends-on "magit")
