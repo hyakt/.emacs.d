@@ -35,4 +35,9 @@
 
 ;; goto
 (key-chord-define-global "gl" 'goto-line)
+
+;; magit
 (key-chord-define-global "gt" 'magit-status)
+
+;; ace-jump-buffer
+(key-chord-define-global "bf" 'ace-jump-buffer)
