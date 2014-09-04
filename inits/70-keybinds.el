@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'key-chord)
 (key-chord-mode 1)
-(setq key-chord-two-keys-delay 0.05)
+(setq key-chord-two-keys-delay 0.03)
 
 ;; (require 'key-combo)
 ;; (key-combo-load-default)
