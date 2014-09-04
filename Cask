@@ -54,9 +54,6 @@
 (depends-on "markdown-mode")
 
 ;; python
-(depends-on "py-autopep8")
-(depends-on "python-environment")
-(depends-on "epc")
 (depends-on "jedi")
 
 ;; latex
