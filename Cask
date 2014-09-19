@@ -8,6 +8,7 @@
 (depends-on "powerline")
 (depends-on "smartparens")
 (depends-on "rainbow-delimiters")
+(depends-on "highlight-defined")
 (depends-on "yascroll")
 (depends-on "monokai-theme")
 
@@ -45,7 +46,6 @@
 (depends-on "helm")
 (depends-on "helm-descbinds")
 (depends-on "helm-migemo")
-(depends-on "helm-pydoc")
 (depends-on "helm-projectile")
 (depends-on "helm-gtags")
 (depends-on "helm-ag")
