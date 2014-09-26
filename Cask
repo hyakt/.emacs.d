@@ -27,6 +27,7 @@
 (depends-on "undo-tree")
 (depends-on "smartrep")
 (depends-on "google-translate")
+(depends-on "google-this")
 (depends-on "migemo")
 
 ;; file
