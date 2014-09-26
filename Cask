@@ -33,6 +33,7 @@
 ;; file
 (depends-on "recentf-ext")
 (depends-on "ace-jump-buffer")
+(depends-on "wdired")
 
 ;; version control
 (depends-on "magit")
