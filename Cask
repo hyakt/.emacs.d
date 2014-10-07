@@ -28,6 +28,7 @@
 (depends-on "smartrep")
 (depends-on "google-translate")
 (depends-on "google-this")
+(depends-on "codic")
 (depends-on "migemo")
 
 ;; file
