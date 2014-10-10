@@ -30,6 +30,8 @@
 (depends-on "google-this")
 (depends-on "codic")
 (depends-on "migemo")
+(depends-on "ace-isearch")
+(depends-on "ace-jump-mode")
 
 ;; file
 (depends-on "recentf-ext")
