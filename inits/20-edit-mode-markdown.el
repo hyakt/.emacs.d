@@ -1,8 +1,8 @@
 (require 'markdown-mode)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . gfm-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode))
 
-(add-hook 'markdown-mode-hook '(lambda ()
+(add-hook 'gfm-mode-hook '(lambda ()
   (custom-set-faces
    '(markdown-header-face-1 ((t (:inherit outline-1 markdown-header-face))))
    '(markdown-header-face-2 ((t (:inherit outline-2 markdown-header-face))))
