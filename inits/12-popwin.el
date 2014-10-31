@@ -11,6 +11,7 @@
 (push '("*Completions*" :noselect t) popwin:special-display-config)
 (push '("*compilation*" :noselect t) popwin:special-display-config)
 (push '("*Messages*") popwin:special-display-config)
+(push '("*Backtrace*" :noselect t) popwin:special-display-config)
 
 (push '("helm" :regexp t :height 0.5) popwin:special-display-config)
 (push '("*Kill Ring*" :height 30) popwin:special-display-config)
