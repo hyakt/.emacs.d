@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'key-chord)
 (key-chord-mode 1)
-(setq key-chord-two-keys-delay 0.03)
+(setq key-chord-two-keys-delay 0.08)
 
 ;; (require 'key-combo)
 ;; (key-combo-load-default)
@@ -29,7 +29,7 @@
 
 ;; redo
 (global-set-key "\M-/" 'redo)
-
+;;
 ;; shell
 (global-set-key (kbd "C-q") 'eshell)
 
@@ -40,4 +40,4 @@
 (key-chord-define-global "gt" 'magit-status)
 
 ;; ace-jump-buffer
-(key-chord-define-global "bf" 'ace-jump-buffer)
+(define-key global-map (kbd "C-'") 'ace-jump-buffer)
