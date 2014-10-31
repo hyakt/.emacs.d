@@ -65,6 +65,7 @@
 
 ;; lisp
 (depends-on "slime")
+(depends-on "ac-slime")
 
 ;; latex
 (depends-on "auctex")
