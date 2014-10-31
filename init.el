@@ -1,14 +1,14 @@
 ;;ロードパス追加設定
-(setq load-path
-      (append
-       (list
-        (expand-file-name "~/.emacs.d/")
-        ;(expand-file-name "~/.emacs.d/elisp/")
-        ;(expand-file-name "~/.emacs.d/elisp/el-get/el-get/")
+;; (setq load-path
+;;       (append
+;;        (list
+;;         ;(expand-file-name "~/.emacs.d/lisp")
+;;         ;(expand-file-name "~/.emacs.d/elisp/")
+;;         ;(expand-file-name "~/.emacs.d/elisp/el-get/el-get/")
 
-        ;(expand-file-name "~/.emacs.d/elisp/mode/")
-        )
-       load-path))
+;;         ;(expand-file-name "~/.emacs.d/elisp/mode/")
+;;         )
+;;        load-path))
 
 ;;cask設定
 (require 'cask "~/.cask/cask.el")
