@@ -62,6 +62,9 @@
 ;; python
 (depends-on "jedi")
 
+;; lisp
+(depends-on "slime")
+
 ;; latex
 (depends-on "auctex")
 (depends-on "auctex-latexmk")
