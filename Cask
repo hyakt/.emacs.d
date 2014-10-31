@@ -61,6 +61,7 @@
 
 ;; python
 (depends-on "jedi")
+(depends-on "helm-pydoc")
 
 ;; lisp
 (depends-on "slime")
