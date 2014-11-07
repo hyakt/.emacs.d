@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'key-chord)
 (key-chord-mode 1)
-(setq key-chord-two-keys-delay 0.08)
+(setq key-chord-two-keys-delay 0.06)
 
 ;; (require 'key-combo)
 ;; (key-combo-load-default)
@@ -34,7 +34,7 @@
 (global-set-key (kbd "C-q") 'eshell)
 
 ;; goto
-(key-chord-define-global "gl" 'goto-line)
+;(key-chord-define-global "gl" 'goto-line)
 
 ;; magit
 (key-chord-define-global "gt" 'magit-status)
