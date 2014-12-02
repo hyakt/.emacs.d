@@ -32,6 +32,7 @@
 (depends-on "migemo")
 (depends-on "ace-isearch")
 (depends-on "ace-jump-mode")
+(depends-on "bm")
 
 ;; file
 (depends-on "recentf-ext")
