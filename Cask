@@ -37,6 +37,7 @@
 (depends-on "recentf-ext")
 (depends-on "ace-jump-buffer")
 (depends-on "wdired")
+(depends-on "dired-toggle")
 
 ;; version control
 (depends-on "magit")
