@@ -41,3 +41,6 @@
 
 ;; ace-jump-buffer
 (define-key global-map (kbd "C-'") 'ace-jump-buffer)
+
+;;dired-toggle
+(key-chord-define-global "dr" 'dired-toggle)
