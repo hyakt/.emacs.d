@@ -90,3 +90,4 @@
         )
   )
 
+(setq initial-major-mode 'org-mode)
