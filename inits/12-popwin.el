@@ -48,3 +48,6 @@
 (push '("*magit-edit-log*" :noselect t :height 15 :width 80) popwin:special-display-config)
 (push '("*magit-process*" :noselect t :height 15 :width 80) popwin:special-display-config)
 (push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
+
+(push '("*Remember*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config)
+
