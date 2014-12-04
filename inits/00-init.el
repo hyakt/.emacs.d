@@ -2,10 +2,18 @@
 ;;;;;;;;;;;;;;キーの設定;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (eq system-type 'darwin)       ; もし、システムが Mac のとき
-  (setq mac-pass-control-to-system t)) ; コントロールキーを Mac ではなく Emacs に渡す
+  (setq mac-pass-control-to-system t) ; コントロールキーを Mac ではなく Emacs に渡す
 
-(setq ns-command-modifier (quote meta))
-(setq ns-alternate-modifier (quote super))
+  (setq ns-command-modifier (quote meta))
+  (setq ns-alternate-modifier (quote super))
+  (setq default-input-method "MacOSX")
+
+  ;; emacs 起動時は英数モードから始める
+  (add-hook 'after-init-hook 'mac-change-language-to-us)
+  ;; minibuffer 内は英数モードにする
+  (add-hook 'minibuffer-setup-hook 'mac-change-language-to-us)
+  ;; [migemo]isearch のとき IME を英数モードにする
+  (add-hook 'isearch-mode-hook 'mac-change-language-to-us))
 
 (when (eq system-type 'gnu/linux)
   (setq x-alt-keysym 'meta)
