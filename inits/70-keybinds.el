@@ -44,3 +44,9 @@
 
 ;;dired-toggle
 (key-chord-define-global "dr" 'dired-toggle)
+
+;;rotate-layout
+(key-chord-define-global "rt" 'rotate-layout)
+
+;; Org-Capture
+(define-key global-map (kbd "C-`") 'org-capture)
