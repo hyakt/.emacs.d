@@ -1,5 +1,5 @@
 ;; milkypostman/powerline · GitHub
-(require 'powerline)
+;(require 'powerline)
 
 ;; (set-face-attribute 'powerline-active1 nil
 ;;                     :foreground "#fff"
@@ -11,7 +11,7 @@
 ;;                     :background "#C2EB6F"
 ;;                     :inherit 'mode-line)
 
-(powerline-default-theme)
+;(powerline-default-theme)
 
 (defvar mode-line-cleaner-alist
   '( ;; For minor-mode, first char is 'space'
