@@ -21,8 +21,8 @@
 ;;windowの設定
 (setq default-frame-alist
       (append (list
-               '(width . 99)
-               '(height . 47)
+               '(width . 87)
+               '(height . 50)
                '(top . 0)
                '(left . 0)
                '(alpha . (90 70)))
@@ -108,9 +108,9 @@
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Consolas")))
         ((eq ws 'ns)
          (set-face-attribute 'default nil
-                             :family "Ricty"  ;; ±Ñ¿ô
-                             :height 140)
-         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Ricty")))))
+                             :family "Menlo"  ;; ±Ñ¿ô
+                             :height 130)
+         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Menlo")))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

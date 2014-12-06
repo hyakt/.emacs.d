@@ -11,7 +11,7 @@
 ;;        load-path))
 
 ;;cask設定
-(require 'cask "~/.cask/cask.el")
+(require 'cask)
 (cask-initialize)
 
 ;;elpa設定
