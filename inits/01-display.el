@@ -25,7 +25,7 @@
                '(height . 50)
                '(top . 0)
                '(left . 0)
-               '(alpha . (90 70)))
+               '(alpha . (90 80)))
               default-frame-alist))
 
 ;;画面最大化
@@ -156,3 +156,15 @@
                     :weight 'bold)
 (set-face-attribute 'whitespace-empty nil
                     :background my/bg-color)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; IME系の設定           ;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when (eq system-type 'darwin)
+  ;;エンマークをバックスラッシュに変更
+  (mac-translate-from-yen-to-backslash)
+
+  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `cursor-color "red")
+  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `title "あ")
+  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.Roman" `cursor-color "blue"))
