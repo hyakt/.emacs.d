@@ -15,7 +15,6 @@
 (global-set-key "\C-h" nil)
 (global-set-key "\C-x\C-i" 'indent-region) ; 選択範囲をインデント
 (global-set-key "\C-m" 'newline-and-indent) ; リターンで改行とインデント
-(global-set-key "\C-j" 'newline) ; 改行
 
 ;; 複数行移動
 (global-set-key "\M-n" (kbd "C-u 5 C-n"))
@@ -50,3 +49,6 @@
 
 ;; Org-Capture
 (define-key global-map (kbd "C-`") 'org-capture)
+
+;; helm-projectile
+(define-key global-map (kbd "C-x C-p") 'helm-projectile)
