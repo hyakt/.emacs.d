@@ -61,6 +61,7 @@
 ;; progmodes
 (depends-on "markdown-mode")
 (depends-on "arduino-mode")
+(depends-on "swift-mode")
 
 ;; python
 (depends-on "jedi")
