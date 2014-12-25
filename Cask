@@ -17,6 +17,7 @@
 (depends-on "yasnippet")
 (depends-on "auto-complete")
 (depends-on "flycheck")
+(depends-on "flycheck-pos-tip")
 (depends-on "quickrun")
 
 ;; editing
