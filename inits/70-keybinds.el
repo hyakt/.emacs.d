@@ -52,3 +52,15 @@
 
 ;; helm-projectile
 (define-key global-map (kbd "C-x C-p") 'helm-projectile)
+
+;; kill-this-buffer
+(define-key global-map (kbd "C-x C-k") 'kill-buffer)
+
+(defun close-and-kill-this-pane ()
+      "If there are multiple windows, then close this pane and kill the buffer in it also."
+      (interactive)
+      (kill-this-buffer)
+      (if (not (one-window-p))
+          (delete-window)))
+
+(define-key global-map (kbd "C-x k") 'close-and-kill-this-pane)
