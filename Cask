@@ -25,7 +25,6 @@
 (depends-on "expand-region")
 (depends-on "anzu")
 (depends-on "key-chord")
-(depends-on "key-combo")
 (depends-on "undo-tree")
 (depends-on "smartrep")
 (depends-on "google-translate")
@@ -38,7 +37,6 @@
 
 ;; file
 (depends-on "recentf-ext")
-(depends-on "ace-jump-buffer")
 (depends-on "wdired")
 (depends-on "dired-toggle")
 
@@ -56,7 +54,6 @@
 (depends-on "helm-descbinds")
 (depends-on "helm-migemo")
 (depends-on "helm-projectile")
-(depends-on "helm-gtags")
 (depends-on "helm-ag")
 
 ;; progmodes
@@ -66,7 +63,6 @@
 
 ;; python
 (depends-on "jedi")
-(depends-on "helm-pydoc")
 
 ;; lisp
 (depends-on "slime")
