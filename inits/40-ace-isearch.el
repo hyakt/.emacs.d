@@ -1,1 +1,4 @@
-(global-ace-isearch-mode 1)
+(use-package ace-isearch
+  :config
+  (global-ace-isearch-mode 1)
+  )
