@@ -1,8 +1,7 @@
 ;; C/Migemo
-(when (eq system-type 'darwin)          ;mac
-  (when (and (executable-find "cmigemo")
-             (require 'migemo nil t))
-
+(use-package migemo
+  :if (executable-find "cmigemo")
+  :config
     (setq migemo-command "cmigemo")
     (setq migemo-options '("-q" "--emacs" "-i" "\g"))
     (setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
@@ -31,6 +30,4 @@
                                  (helm-candidates-in-buffer (helm-get-current-source)))))
                        (volatile) (match identity)))
            source)))
-
     )
-  )
