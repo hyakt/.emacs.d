@@ -94,3 +94,4 @@
 (depends-on "el-spec")
 (depends-on "el-spy")
 (depends-on "fuzzy")
+(depends-on "use-package")
