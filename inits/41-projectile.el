@@ -1,4 +1,4 @@
-(require 'projectile)
-(require 'helm-projectile)
-
-(projectile-global-mode)
+(use-package projectile
+  :config
+  (projectile-global-mode)
+  )
