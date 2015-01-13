@@ -106,11 +106,11 @@
                              :family "Consolas"  ;; ±Ñ¿ô
                              :height 100)
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Consolas")))
-        ((eq ws 'ns)
+        ((eq ws 'mac)
          (set-face-attribute 'default nil
-                             :family "Menlo"  ;; ±Ñ¿ô
+                             :family "Source Code Pro"  ;; ±Ñ¿ô
                              :height 130)
-         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Menlo")))))
+         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Code Pro")))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -161,10 +161,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; IME系の設定           ;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (eq system-type 'darwin)
-  ;;エンマークをバックスラッシュに変更
-  (mac-translate-from-yen-to-backslash)
+;; (when (eq system-type 'darwin)
+;;   ;;エンマークをバックスラッシュに変更
+;;   (mac-translate-from-yen-to-backslash)
 
-  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `cursor-color "red")
-  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `title "あ")
-  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.Roman" `cursor-color "blue"))
+;;   (mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `title "あ")
+;;   (mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `cursor-color "red")
+;;   (mac-set-input-method-parameter "com.google.inputmethod.Japanese.Roman" `cursor-color "blue"))
+
+;;
+(when (eq system-type 'darwin)
+  (defun mac-selected-keyboard-input-source-change-hook-func ()
+    ;; 入力モードが英語の時はカーソルの色をfirebrickに、日本語の時はblackにする
+    (set-cursor-color (if
+                          (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source))
+                          "PaleVioletRed1" "powder blue")))
+
+  (add-hook 'mac-selected-keyboard-input-source-change-hook
+            'mac-selected-keyboard-input-source-change-hook-func)
+  )
+
