@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; http://sakito.jp/emacs/emacsshell.html#path
 ;; より下に記述した物が PATH の先頭に追加されます
-(require 'exec-path-from-shell)
-
-(when (memq window-system '(mac ns))
+(use-package exec-path-from-shell
+  :if (eq system-type 'darwin)
+  :config
   (exec-path-from-shell-initialize))
