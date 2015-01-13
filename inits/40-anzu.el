@@ -1,4 +1,8 @@
 (use-package anzu
+  :bind (("C-%" . anzu-query-replace)
+         ("M-%" . anzu-query-replace-regexp)
+         ("C-M-%" . anzu-query-replace-at-cursor))
+
   :config
   (global-anzu-mode t)
   (setq anzu-use-migemo t)
@@ -7,8 +11,4 @@
 
   (set-face-attribute 'anzu-mode-line nil
                       :foreground "yellow" :weight 'bold)
-
-  (global-set-key (kbd "C-%") 'anzu-query-replace)
-  (global-set-key (kbd "M-%") 'anzu-query-replace-regexp)
-  (global-set-key (kbd "C-M-%") 'anzu-query-replace-at-cursor)
   )
