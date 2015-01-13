@@ -1,2 +1,4 @@
-(require 'swift-mode)
-(add-to-list 'flycheck-checkers 'swift)
+(use-package swift-mode
+  :config
+  (add-to-list 'flycheck-checkers 'swift)
+)
