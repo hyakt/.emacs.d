@@ -1,7 +1,6 @@
 ;; latexの設定(auctex)
-(when (require 'tex-site nil t)
-  (require 'tex-site)
-
+(use-package tex-site
+  :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq-default TeX-master nil)

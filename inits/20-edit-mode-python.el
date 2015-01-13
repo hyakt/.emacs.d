@@ -1,13 +1,12 @@
-(require 'python)
+(use-package python
+  :config
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq indent-tabs-mode nil)
+              (setq tab-width 4)
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (setq indent-tabs-mode nil)
-            (setq tab-width 4)
-
-            (require 'jedi)
-            (jedi:ac-setup)
-            (setq jedi:complete-on-dot t)
-            
-            )
-          )
+              (require 'jedi)
+              (jedi:ac-setup)
+              (setq jedi:complete-on-dot t)
+              ))
+  )
