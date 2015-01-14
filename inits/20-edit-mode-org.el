@@ -1,4 +1,4 @@
-(use-package org-mode
+(use-package org
   :mode ("\\.org$" . org-mode)
   :config
   (setq org-startup-truncated nil)
