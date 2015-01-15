@@ -1,4 +1,5 @@
 (require 'eww)
+
 (defvar eww-data)
 (defun eww-current-url ()
   "バージョン間の非互換を吸収する。"
@@ -24,7 +25,7 @@
 
 (defun eww-render--after (&rest _)
   (eww-set-start-at "www.weblio.jp" "^ *Weblio 辞書")
-  ;; 他のサイトの設定も同様に追加できる
+  (eww-set-start-at "eow.alc.co.jp" "^ *検索文字列")
   )
 (advice-add 'eww-render :after 'eww-render--after)
 
@@ -38,11 +39,11 @@
 (defun wikipedia (str)
   (interactive (list
                 (region-or-read-string "Wikipedia: ")))
-  (eww-browse-url (format "http://ja.wikipedia.org/wiki/%s"
+  (eww-Browse-url (format "http://ja.wikipedia.org/wiki/%s"
                       (upcase (url-hexify-string str)))))
-
+;;; alc
 (defun alc (str)
   (interactive (list
                 (region-or-read-string "alc: ")))
   (eww-browse-url (format "http://eow.alc.co.jp/search?q=%s"
-                      (upcase (url-hexify-string str)))))
+                      (url-hexify-string str))))
