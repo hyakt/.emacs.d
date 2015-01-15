@@ -1,8 +1,8 @@
 ; ディスプレイの設定
 
 ;; themeを設定
-;(load-theme 'monokai t)
-(load-theme 'leuven t)  
+(load-theme 'monokai t)
+;(load-theme 'leuven t)  
 
 ;; 対応する括弧を光らせる。
 (show-paren-mode t)
