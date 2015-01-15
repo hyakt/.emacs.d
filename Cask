@@ -11,6 +11,7 @@
 (depends-on "highlight-defined")
 (depends-on "yascroll")
 (depends-on "monokai-theme")
+(depends-on "leuven-theme")
 (depends-on "rotate")
 
 ;; coding
