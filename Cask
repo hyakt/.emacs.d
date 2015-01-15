@@ -56,6 +56,7 @@
 (depends-on "helm-migemo")
 (depends-on "helm-projectile")
 (depends-on "helm-ag")
+(depends-on "helm-bm")
 
 ;; progmodes
 (depends-on "markdown-mode")
