@@ -83,7 +83,7 @@
      (:background "#00070D"))
     (((class color)
       (background light))
-     (:background  "#E1A9AB"))
+     (:background "#F1FCE3"))
     (t
      ()))
   "*Face used by hl-line.")
