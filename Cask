@@ -62,6 +62,7 @@
 (depends-on "markdown-mode")
 (depends-on "arduino-mode")
 (depends-on "swift-mode")
+(depends-on "coffee-mode")
 
 ;; python
 (depends-on "jedi")
