@@ -15,9 +15,6 @@
 (define-key global-map (kbd "C-s-n") 'scroll-down-in-place)
 (define-key global-map (kbd "C-s-p") 'scroll-up-in-place)
 
-;; redo
-(global-set-key "\M-/" 'redo)
-
 ;; shell
 (global-set-key (kbd "C-q") 'eshell)
 
