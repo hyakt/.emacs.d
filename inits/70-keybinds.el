@@ -24,6 +24,16 @@
 ;; kill-this-buffer
 (define-key global-map (kbd "C-x C-k") 'kill-buffer)
 
+;; rotate-window
+(define-key global-map (kbd "C-o") 'rotate-window)
+
+;; reload buffer
+(defun revert-buffer-no-confirm ()
+  "Revert buffer without confirmation."
+  (interactive) (revert-buffer t t))
+
+(global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+
 (defun close-and-kill-this-pane ()
       "If there are multiple windows, then close this pane and kill the buffer in it also."
       (interactive)
