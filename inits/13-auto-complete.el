@@ -19,6 +19,7 @@
 
   ;; modeの追加
   (add-to-list 'ac-modes 'arduino-mode)
+  (add-to-list 'ac-modes 'swift-mode)
 
   (defadvice ac-word-candidates (after remove-word-contain-japanese activate)
     (let ((contain-japanese (lambda (s) (string-match (rx (category japanese)) s))))
