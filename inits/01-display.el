@@ -58,24 +58,6 @@
 (line-number-mode 1)
 (column-number-mode 1)
 
-;; 全角空白、タブ、行末の空白を目立たせる
-(defface my-face-tab         '((t (:background "Yellow"))) nil :group 'my-faces)
-(defface my-face-zenkaku-spc '((t (:background "LightBlue"))) nil :group 'my-faces)
-(defface my-face-spc-at-eol  '((t (:foreground "Red" :underline t))) nil :group 'my-faces)
-(defvar my-face-tab         'my-face-tab)
-(defvar my-face-zenkaku-spc 'my-face-zenkaku-spc)
-(defvar my-face-spc-at-eol  'my-face-spc-at-eol)
-(defadvice font-lock-mode (before my-font-lock-mode ())
-  (font-lock-add-keywords
-   major-mode
-   '(("\t" 0 my-face-tab append)
-     ("¡¡" 0 my-face-zenkaku-spc append)
-     ("[ \t]+$" 0 my-face-spc-at-eol append)
-     )))
-(ad-enable-advice 'font-lock-mode 'before 'my-font-lock-mode)
-(ad-activate 'font-lock-mode)
-(font-lock-fontify-buffer)
-
 ;; 編集行を目立たせる（現在行をハイライト表示する）
 (defface hlline-face
   '((((class color)
@@ -127,24 +109,7 @@
              ;; スペースは全角のみを可視化
              (setq whitespace-space-regexp "\\(\u3000+\\)")
 
-             (global-whitespace-mode 1)
-
-             (defvar my/bg-color "#232323")
-             (set-face-attribute 'whitespace-trailing nil
-                                 :background my/bg-color
-                                 :foreground "DeepPink"
-                                 :underline t)
-             (set-face-attribute 'whitespace-tab nil
-                                 :background my/bg-color
-                                 :foreground "LightSkyBlue"
-                                 :underline t)
-             (set-face-attribute 'whitespace-space nil
-                                 :background my/bg-color
-                                 :foreground "GreenYellow"
-                                 :weight 'bold)
-             (set-face-attribute 'whitespace-empty nil
-                                 :background my/bg-color)
-             )
+             (global-whitespace-mode 1))
 
 ;; スクロールバーをyascrollにする
 (use-package yascroll
