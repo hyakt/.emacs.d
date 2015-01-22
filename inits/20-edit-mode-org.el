@@ -4,6 +4,7 @@
   (setq org-startup-truncated nil)
   (setq org-return-follows-link t)
   (setq org-startup-folded t)
+  (setq org-src-fontify-natively t)
 
   (setq org-directory "~/Dropbox/org/")
   (setq org-default-notes-file (concat org-directory "remember.org"))
