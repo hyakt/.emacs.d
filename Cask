@@ -16,7 +16,8 @@
 
 ;; coding
 (depends-on "yasnippet")
-(depends-on "auto-complete")
+;(depends-on "auto-complete")
+(depends-on "company")
 (depends-on "flycheck")
 (depends-on "flycheck-pos-tip")
 (depends-on "quickrun")
@@ -62,24 +63,28 @@
 (depends-on "markdown-mode")
 (depends-on "arduino-mode")
 (depends-on "swift-mode")
+
+;; javascript
 (depends-on "coffee-mode")
 (depends-on "web-mode")
 (depends-on "js2-mode")
+(depends-on "tern")
+(depends-on "company-tern")
 
 ;; org
 (depends-on "ox-gfm")
 
 ;; python
-(depends-on "jedi")
+;(depends-on "jedi")
 
 ;; lisp
 (depends-on "slime")
-(depends-on "ac-slime")
+;(depends-on "ac-slime")
 
 ;; latex
 (depends-on "auctex")
 (depends-on "auctex-latexmk")
-(depends-on "auto-complete-auctex")
+;(depends-on "auto-complete-auctex")
 
 ;; other
 (depends-on "init-loader")
