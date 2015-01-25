@@ -66,6 +66,8 @@
 (depends-on "web-mode")
 (depends-on "js2-mode")
 
+;; org
+(depends-on "ox-gfm")
 
 ;; python
 (depends-on "jedi")
