@@ -1,19 +1,20 @@
 ; modelineの設定
 
 ;; milkypostman/powerline · GitHub
-;(require 'powerline)
+(use-package powerline
+  :config
+  (powerline-default-theme)
+  
+;; (set-face-attribute 'powerline-active2 nil
+;;                     :foreground "#467BE7"
+;;                     :background "#75715e"
+;;                     :inherit 'mode-line)
 
 ;; (set-face-attribute 'powerline-active1 nil
-;;                     :foreground "#fff"
-;;                     :background "#89BA27"
+;;                     :foreground "#AF2B12"
+;;                     :background "#75715e"
 ;;                     :inherit 'mode-line)
-
-;; (set-face-attribute 'powerline-active2 nil
-;;                     :foreground "#000"
-;;                     :background "#C2EB6F"
-;;                     :inherit 'mode-line)
-
-;; (powerline-default-theme)
+)
 
 (defvar mode-line-cleaner-alist
   '( ;; For minor-mode, first char is 'space'
@@ -27,7 +28,7 @@
     (magit-auto-revert-mode . "")
     (smartparens-mode . "")
     (helm-mode . "")
-    ))
+    (company-mode . "")))
 
 (defun clean-mode-line ()
   (interactive)
