@@ -9,6 +9,10 @@
   (setq org-directory "~/Dropbox/org/")
   (setq org-default-notes-file (concat org-directory "remember.org"))
 
+  ;; Org-Exportの読み込み
+  (use-package ox)
+  (use-package ox-gfm)
+
   ;; Org-Agenda
   (setq org-agenda-files
         '(
