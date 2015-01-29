@@ -13,6 +13,7 @@
 (depends-on "monokai-theme")
 (depends-on "leuven-theme")
 (depends-on "rotate")
+(depends-on "origami")
 
 ;; coding
 (depends-on "yasnippet")
