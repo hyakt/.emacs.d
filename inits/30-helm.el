@@ -1,6 +1,7 @@
 (use-package helm-config
   :bind
-  (("C-x C-r" . helm-recentf)
+  (("C-x C-f" . helm-find-files)
+   ("C-x C-r" . helm-recentf)
    ("M-y"     . helm-show-kill-ring)
    ("C-c i"   . helm-imenu)
    ("C-x b"   . helm-buffers-list)
