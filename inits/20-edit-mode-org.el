@@ -74,3 +74,30 @@
            )
           ))
   )
+
+
+;; Org-Latex
+(use-package ox-latex
+  :config
+  (setq org-latex-default-class "jsarticle")
+  (setq org-latex-pdf-process '("/usr/texbin/latexmk -e '$latex=q/uplatex %S/' -e '$bibtex=q/upbibtex %B/' -e '$biber=q/biber --bblencoding=utf8 -u -U --output_safechars %B/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
+
+  (setq org-file-apps
+        '(("pdf" . "/usr/bin/open -a Preview.app %s")))
+
+  (add-to-list 'org-latex-classes
+               '("jsarticle"
+                 "\\documentclass[uplatex,dvipdfmx,12pt,a4paper,papersize]{jsarticle}
+[NO-DEFAULT-PACKAGES]
+\\usepackage{amsmath}
+\\usepackage{newtxtext,newtxmath}
+\\usepackage{graphicx}
+\\usepackage{hyperref}
+\\usepackage{pxjahyper}
+\\hypersetup{setpagesize=false,colorlinks=true}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+)
