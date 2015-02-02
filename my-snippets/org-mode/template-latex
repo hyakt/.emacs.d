@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: template-latex
+# key: templatex
+# --
+#+TITLE:                ${1: TITLE}
+#+AUTHOR:               $2
+#+EMAIL:                $3
+#+DATE:                 ${4:`(format-time-string "%Y-%m-%d" (current-time))`}
+#+OPTIONS:              ${5:toc:nil}
+#+LATEX_CLASS:          ${6:jsarticle}
+#+LATEX_CLASS_OPTIONS:  ${7:[a4j]}
+#+LATEX_HEADER:         ${8:\usepackage{org}}
+#+INCLUDE:              ${9:"org.sty"}
