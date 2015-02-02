@@ -43,6 +43,10 @@
 
 (define-key global-map (kbd "C-x k") 'close-and-kill-this-pane)
 
+;; company-complete
+(global-unset-key "\C-j") ; newline-and-indent/org-return-indent
+(global-set-key (kbd "C-j") 'company-complete)
+
 (use-package key-chord
   :config
   (key-chord-mode 1)
