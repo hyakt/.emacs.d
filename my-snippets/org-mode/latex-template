@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: latex-template
+# key: template
+# binding: direct-keybinding
+# --
+#+TITLE               : ${1: TITLE}
+#+AUTHOR              : $2
+#+EMAIL               : $3
+#+DATE                : ${4:`(format-time-string "%Y-%m-%d" (current-time))`}
+#+LANGUAGE            : ${5:ja}
+#+OPTIONS             : ${6:toc:nil}
+#+LATEX_CLASS         : ${7:jarticle}
+#+LATEX_CLASS_OPTIONS : ${8:[a4j]}
+#+LATEX_HEADER        : ${9:\usepackage{org}}
+#+INCLUDE             : ${10:"org.sty"}
