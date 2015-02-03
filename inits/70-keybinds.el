@@ -53,7 +53,9 @@
   `(;; company-complete
     (,(kbd "C-j") . company-complete)
     ;; expand-region
-    (,(kbd "C-,") . er/expand-region)))
+    (,(kbd "C-,") . er/expand-region)
+    ;; window-totate
+    (,(kbd "C-t") . other-window-or-split)))
 
 (use-package key-chord
   :config
