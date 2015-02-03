@@ -7,4 +7,5 @@
 
   ;;Addrevの時のdowncaseをやめる
   (setq company-dabbrev-downcase nil)
-  )
+  ;; yasnippetも補完の対象に
+  (add-to-list 'company-backends 'company-yasnippet t))
