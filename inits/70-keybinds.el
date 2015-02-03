@@ -43,9 +43,17 @@
 
 (define-key global-map (kbd "C-x k") 'close-and-kill-this-pane)
 
-;; company-complete
 (global-unset-key "\C-j") ; newline-and-indent/org-return-indent
 (global-set-key (kbd "C-j") 'company-complete)
+
+(define-minor-mode overriding-minor-mode
+  "強制的にキーバインドを割り当てる"          ;説明文字列
+  t                                     ;デフォルトで有効にする
+  ""                                    ;モードラインに表示しない
+  `(;; company-complete
+    (,(kbd "C-j") . company-complete)
+    ;; expand-region
+    (,(kbd "C-,") . er/expand-region)))
 
 (use-package key-chord
   :config
