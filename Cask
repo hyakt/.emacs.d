@@ -1,7 +1,7 @@
 (source gnu)
 (source marmalade)
 (source melpa)
-
+(source org)
 
 ;; appearance
 (depends-on "popwin")
@@ -74,6 +74,7 @@
 
 ;; org
 (depends-on "ox-gfm")
+(depends-on "org-plus-contrib")
 
 ;; python
 ;(depends-on "jedi")

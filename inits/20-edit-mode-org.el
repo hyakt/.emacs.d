@@ -12,6 +12,7 @@
   ;; Org-Exportの読み込み
   (use-package ox)
   (use-package ox-gfm)
+  (use-package ox-bibtex)
 
   ;; Org-Agenda
   (setq org-agenda-files
@@ -80,7 +81,9 @@
 (use-package ox-latex
   :config
   (setq org-latex-default-class "jsarticle")
-  (setq org-latex-pdf-process '("/usr/texbin/latexmk -e '$latex=q/uplatex %S/' -e '$bibtex=q/upbibtex %B/' -e '$biber=q/biber --bblencoding=utf8 -u -U --output_safechars %B/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
+;;  (setq org-latex-to-pdf-process '("latexmk %f"))
+  
+  (setq org-latex-pdf-process '("/usr/texbin/latexmk -e '$latex=q/uplatex %S/' -e '$bibtex=q/upbibtex/' -e '$biber=q/biber --bblencoding=utf8 -u -U --output_safechars %B/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
 
   (setq org-file-apps
         '(("pdf" . "/usr/bin/open -a Preview.app %s")))
@@ -90,7 +93,6 @@
                  "\\documentclass[uplatex,dvipdfmx,12pt,a4paper,papersize]{jsarticle}
 [NO-DEFAULT-PACKAGES]
 \\usepackage{amsmath}
-\\usepackage{newtxtext,newtxmath}
 \\usepackage{graphicx}
 \\usepackage{hyperref}
 \\usepackage{pxjahyper}
@@ -100,4 +102,15 @@
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(setq org-export-latex-packages-alist
+      '(("AUTO" "inputenc"  t)   ; automatically replaced with a coding system
+        ("T1"   "fontenc"   t)
+        ("deluxe,expert,multi"     "otf"   nil)
+        (""     "txfonts"   nil)
+        (""     "graphicx"  t)
+        ("dvipdfmx"     "color"  nil)
+        ("setpagesize=false,dvipdfmx"     "hyperref"  nil)
+        ))
+
 )
