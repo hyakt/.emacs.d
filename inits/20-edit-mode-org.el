@@ -19,7 +19,6 @@
         '(
           "~/Dropbox/org/todo.org"
           "~/Dropbox/org/schedule.org"
-          "~/Dropbox/org/mobile.org"
           "~/Dropbox/org/remember.org"))
 
   ;; Todo状態
@@ -39,12 +38,7 @@
     ;; org-archive-location に refile したいなら以下
     (org-map-entries 'org-archive-subtree "/DONE" 'file))
   (add-hook 'org-todo-statistics-hook 'my:org-archive-done-tasks)
-  (add-hook 'org-todo-after-statistics-hook 'my:org-archive-done-tasks)
-
-  ;; MobileOrg
-  (setq org-mobile-directory "~/Dropbox/アプリ/MobileOrg")
-  (setq org-mobile-inbox-for-pull "~/Dropbox/org/mobile.org")
-  )
+  (add-hook 'org-todo-after-statistics-hook 'my:org-archive-done-tasks))
 
 ;; Org-Capture
 (use-package org-capture
