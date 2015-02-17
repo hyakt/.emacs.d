@@ -29,6 +29,7 @@
 (depends-on "anzu")
 (depends-on "key-chord")
 (depends-on "undo-tree")
+(depends-on "point-undo")
 (depends-on "smartrep")
 (depends-on "google-translate")
 (depends-on "google-this")

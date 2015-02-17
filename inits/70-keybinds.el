@@ -34,6 +34,7 @@
 
 (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
 
+;; clonse-buffer
 (defun close-and-kill-this-pane ()
       "If there are multiple windows, then close this pane and kill the buffer in it also."
       (interactive)
@@ -43,6 +44,7 @@
 
 (define-key global-map (kbd "C-x k") 'close-and-kill-this-pane)
 
+;; company-complete
 (global-unset-key "\C-j") ; newline-and-indent/org-return-indent
 (global-set-key (kbd "C-j") 'company-complete)
 
