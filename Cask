@@ -14,6 +14,7 @@
 (depends-on "leuven-theme")
 (depends-on "rotate")
 (depends-on "origami")
+(depends-on "guide-key")
 
 ;; coding
 (depends-on "yasnippet")
