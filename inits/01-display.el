@@ -125,7 +125,7 @@
     (set-cursor-color (if (or
                           (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source))
                           (string-match "\\.US$" (mac-input-source)))
-                      "PaleVioletRed1" "powder blue")
+                       "powder blue" "PaleVioletRed1")
     ))
 
   (add-hook 'mac-selected-keyboard-input-source-change-hook
