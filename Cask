@@ -15,6 +15,7 @@
 (depends-on "rotate")
 (depends-on "origami")
 (depends-on "guide-key")
+(depends-on "ignoramus")
 
 ;; coding
 (depends-on "yasnippet")
