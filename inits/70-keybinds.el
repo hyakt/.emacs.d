@@ -67,7 +67,7 @@
   ;; magit
   (key-chord-define-global "gt" 'magit-status)
   ;; dired-toggle
-  (key-chord-define-global "dr" 'dired-toggle)
+  ;;  (key-chord-define-global "dr" 'dired-toggle)
   ;; view-mode
   (key-chord-define-global "jk" 'view-mode)
   )
