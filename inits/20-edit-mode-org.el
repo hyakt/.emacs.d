@@ -1,5 +1,5 @@
 (use-package org
-  :mode ("\\.org$" . org-mode)
+  :mode (("\\.org$" . org-mode))
   :config
   (setq org-startup-truncated nil)
   (setq org-return-follows-link t)
@@ -42,7 +42,7 @@
 
 ;; Org-Capture
 (use-package org-capture
-  :bind (((kbd "C-`") . org-capture))
+  :bind (("C-`" . org-capture))
   :config
   (setq org-capture-templates
         `(

@@ -1,6 +1,6 @@
 (use-package bm
-  :bind(((kbd "M-[") . bm-previous)
-        ((kbd "M-]") . bm-next))
+  :bind(("M-[" . bm-previous)
+        ("M-]" . bm-next))
 
   :config
   (add-hook 'find-file-hook 'bm-buffer-restore)
@@ -14,7 +14,7 @@
   )
 
 (use-package helm-bm
-  :bind(((kbd "M-@") . bm-toggle-or-helm))
+  :bind(("M-@" . bm-toggle-or-helm))
   :config
   ;; migemoくらいつけようね
   (push '(migemo) helm-source-bm)
