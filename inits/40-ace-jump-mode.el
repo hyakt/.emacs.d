@@ -1,7 +1,7 @@
 (use-package ace-jump-mode
   :bind
-  (((kbd "C-;") . ace-jump-word-mode)
-   ((kbd "C-:") . ace-jump-line-mode))
+  (("C-;" . ace-jump-word-mode)
+   ("C-:" . ace-jump-line-mode))
 
   :config
   ;; ヒント文字に使う文字を指定する

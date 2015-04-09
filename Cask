@@ -67,6 +67,7 @@
 (depends-on "markdown-mode")
 (depends-on "arduino-mode")
 (depends-on "swift-mode")
+(depends-on "haskell-mode")
 
 ;; javascript
 (depends-on "coffee-mode")
