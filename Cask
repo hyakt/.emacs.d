@@ -16,6 +16,7 @@
 (depends-on "origami")
 (depends-on "guide-key")
 (depends-on "ignoramus")
+(depends-on "shut-up")
 
 ;; coding
 (depends-on "yasnippet")
