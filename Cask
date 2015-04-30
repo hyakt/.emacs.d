@@ -41,6 +41,7 @@
 (depends-on "ace-isearch")
 (depends-on "ace-jump-mode")
 (depends-on "bm")
+(depends-on "langtool")
 
 ;; file
 (depends-on "recentf-ext")
