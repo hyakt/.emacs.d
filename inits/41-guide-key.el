@@ -2,7 +2,7 @@
   :config
 ;;; guilde-keyを発動させるプレフィクスキー
   (setq guide-key/guide-key-sequence
-        '("C-x" "C-c" "C-x 4"                 ;global
+        '("C-x" "C-c" "C-x 4" "C-z"                 ;global
           ;; org-modeではC-c C-xも対象にする
           (org-mode "C-c C-x")))
 

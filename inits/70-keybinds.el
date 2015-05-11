@@ -27,6 +27,11 @@
 ;; rotate-window
 (define-key global-map (kbd "C-o") 'rotate-window)
 
+;; window-split
+(define-key global-map (kbd "C-2") 'split-window-below)
+(define-key global-map (kbd "C-3") 'split-window-right)
+(define-key global-map (kbd "C-0") 'delete-window)
+
 ;; reload buffer
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."

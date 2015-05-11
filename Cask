@@ -17,6 +17,7 @@
 (depends-on "guide-key")
 (depends-on "ignoramus")
 (depends-on "shut-up")
+(depends-on "persp-mode")
 
 ;; coding
 (depends-on "yasnippet")
