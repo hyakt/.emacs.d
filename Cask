@@ -12,7 +12,7 @@
 (depends-on "yascroll")
 (depends-on "monokai-theme")
 (depends-on "leuven-theme")
-(depends-on "rotate")
+(depends-on "swap-buffers")
 (depends-on "origami")
 (depends-on "guide-key")
 (depends-on "ignoramus")
