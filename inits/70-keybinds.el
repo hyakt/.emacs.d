@@ -24,9 +24,6 @@
 ;; kill-this-buffer
 (define-key global-map (kbd "C-x C-k") 'kill-buffer)
 
-;; rotate-window
-(define-key global-map (kbd "C-o") 'rotate-window)
-
 ;; window-split
 (define-key global-map (kbd "C-2") 'split-window-below)
 (define-key global-map (kbd "C-3") 'split-window-right)
