@@ -73,4 +73,3 @@
   ;; view-mode
   (key-chord-define-global "jk" 'view-mode)
   )
-
