@@ -1,10 +1,12 @@
 ; ディスプレイの設定
 
 ;; themeを設定
-(load-theme 'monokai t)
-;(load-theme 'leuven t)  
+;(load-theme 'monokai t)
+;(load-theme 'leuven t)
+(load-theme 'ample t)
 
-;; 対応する括弧を光らせる。
+
+;; 対応する括弧を光らせるy
 (show-paren-mode t)
 
 ;; 選択部分のハイライト
