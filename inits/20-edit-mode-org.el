@@ -42,7 +42,7 @@
 
 ;; Org-Capture
 (use-package org-capture
-  :bind (("C-`" . org-capture))
+;  :bind (("C-`" . org-capture))
   :config
   (setq org-capture-templates
         `(

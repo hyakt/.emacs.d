@@ -1,4 +1,5 @@
 (use-package simplenote2
+  :bind (("C-`" . simplenote2-browse))
   :config
   (require 'netrc)
   (let* ((credentials (netrc-credentials "app.simplenote.com"))
