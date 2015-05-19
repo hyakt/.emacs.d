@@ -99,6 +99,7 @@
 ;; other
 (depends-on "init-loader")
 (depends-on "exec-path-from-shell")
+(depends-on "simplenote2")
 
 ;; misc
 (depends-on "popup")
