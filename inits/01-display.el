@@ -5,7 +5,6 @@
 ;(load-theme 'leuven t)
 (load-theme 'ample t)
 
-
 ;; 対応する括弧を光らせるy
 (show-paren-mode t)
 
@@ -61,18 +60,18 @@
 (column-number-mode 1)
 
 ;; 編集行を目立たせる（現在行をハイライト表示する）
-(defface hlline-face
-  '((((class color)
-      (background dark))
-     (:background "#00070D"))
-    (((class color)
-      (background light))
-     (:background "#F1FCE3"))
-    (t
-     ()))
-  "*Face used by hl-line.")
-(setq hl-line-face 'hlline-face)
-(global-hl-line-mode)
+;; (defface hlline-face
+;;   '((((class color)
+;;       (background dark))
+;;      (:background "#00070D"))
+;;     (((class color)
+;;       (background light))
+;;      (:background "#F1FCE3"))
+;;     (t
+;;      ()))
+;;   "*Face used by hl-line.")
+;; (setq hl-line-face 'hlline-face)
+(global-hl-line-mode)                   
 
 ;; フォント設定
 (let ((ws window-system))
@@ -89,28 +88,28 @@
 
 ;; whitespace-modeの設定
 (use-package whitespace
-             :config
-             (setq whitespace-style '(face           ; faceで可化
-                                      trailing       ; 行末
-                                      tabs           ; タブ
-                                      spaces         ; スペース
-                                      space-mark     ; 表示のマッピング
-                                      tab-mark
-                                      ))
+  :config
+  (setq whitespace-style '(face           ; faceで可化
+                           trailing       ; 行末
+                           tabs           ; タブ
+                           spaces         ; スペース
+                           space-mark     ; 表示のマッピング
+                           tab-mark
+                           ))
 
-             (setq whitespace-display-mappings
-                   '((space-mark ?\u3000 [?\u25a1])
-                     ;; WARNING: the mapping below has a problem.
-                     ;; When a TAB occupies exactly one column, it will display the
-                     ;; character ?\xBB at that column followed by a TAB which goes to
-                     ;; the next TAB column.
-                     ;; If this is a problem for you, please, comment the line below.
-                     (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
+  (setq whitespace-display-mappings
+        '((space-mark ?\u3000 [?\u25a1])
+          ;; WARNING: the mapping below has a problem.
+          ;; When a TAB occupies exactly one column, it will display the
+          ;; character ?\xBB at that column followed by a TAB which goes to
+          ;; the next TAB column.
+          ;; If this is a problem for you, please, comment the line below.
+          (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
 
-             ;; スペースは全角のみを可視化
-             (setq whitespace-space-regexp "\\(\u3000+\\)")
+  ;; スペースは全角のみを可視化
+  (setq whitespace-space-regexp "\\(\u3000+\\)")
 
-             (global-whitespace-mode 1))
+  (global-whitespace-mode 1))
 
 ;; スクロールバーをyascrollにする
 (use-package yascroll
@@ -124,11 +123,10 @@
   (defun mac-selected-keyboard-input-source-change-hook-func ()
     ;; 入力モードが英語の時はカーソルの色をfirebrickに、日本語の時はblackにする
     (set-cursor-color (if (or
-                          (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source))
-                          (string-match "\\.US$" (mac-input-source)))
-                       "powder blue" "PaleVioletRed1")
-    ))
+                           (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source))
+                           (string-match "\\.US$" (mac-input-source)))
+                          "powder blue" "PaleVioletRed1")
+                      ))
 
   (add-hook 'mac-selected-keyboard-input-source-change-hook
-            'mac-selected-keyboard-input-source-change-hook-func)
-  )
+            'mac-selected-keyboard-input-source-change-hook-func))
