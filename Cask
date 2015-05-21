@@ -18,7 +18,10 @@
 (depends-on "guide-key")
 (depends-on "ignoramus")
 (depends-on "shut-up")
-(depends-on "persp-mode")
+;(depends-on "persp-mode")
+(depends-on "elscreen")
+(depends-on "elscreen-persist")
+(depends-on "elscreen-separate-buffer-list")
 
 ;; coding
 (depends-on "yasnippet")
