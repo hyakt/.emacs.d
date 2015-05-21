@@ -9,10 +9,11 @@
   (add-hook 'LaTeX-mode-hook
             (function (lambda ()
                         (require 'auctex-latexmk nil 'noerror)
-                        (auctex-latexmk-setup)
-                        )))
+                        (auctex-latexmk-setup)))
+            (use-package company-auctex
+              :config
+              (company-auctex-init)))
 
   ;; reftexの設定
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (setq reftex-plug-into-AUCTeX t)
-  )
+  (setq reftex-plug-into-AUCTeX t))

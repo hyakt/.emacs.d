@@ -95,6 +95,7 @@
 (depends-on "auctex")
 (depends-on "auctex-latexmk")
 ;(depends-on "auto-complete-auctex")
+(depends-on "company-auctex")
 
 ;; other
 (depends-on "init-loader")
