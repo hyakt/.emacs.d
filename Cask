@@ -100,6 +100,10 @@
 ;(depends-on "auto-complete-auctex")
 (depends-on "company-auctex")
 
+;; csharp
+(depends-on "csharp-mode")
+(depends-on "omnisharp")
+
 ;; other
 (depends-on "init-loader")
 (depends-on "exec-path-from-shell")
