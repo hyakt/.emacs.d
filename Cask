@@ -10,9 +10,6 @@
 (depends-on "rainbow-delimiters")
 (depends-on "highlight-defined")
 (depends-on "yascroll")
-(depends-on "monokai-theme")
-(depends-on "leuven-theme")
-(depends-on "ample-theme")
 (depends-on "swap-buffers")
 (depends-on "origami")
 (depends-on "guide-key")
@@ -22,6 +19,12 @@
 (depends-on "elscreen")
 (depends-on "elscreen-persist")
 (depends-on "elscreen-separate-buffer-list")
+
+;; theme
+; (depends-on "monokai-theme")
+; (depends-on "leuven-theme")
+; (depends-on "ample-theme")
+(depends-on "material-theme")
 
 ;; coding
 (depends-on "yasnippet")
