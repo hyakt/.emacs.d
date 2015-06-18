@@ -18,17 +18,32 @@
 
 (defvar mode-line-cleaner-alist
   '( ;; For minor-mode, first char is 'space'
-    (undo-tree-mode . "")
+    (undo-tree-mode . "/Ut")
     (git-gutter-mode . "")
     (anzu-mode . "")
-    (yas-minor-mode . "")
+    (yas-minor-mode . "/Ys")
     (guide-key-mode . "")
-    (auto-complete-mode . "")
+    (auto-complete-mode . "/Ac")
     (global-whitespace-mode . "")
     (magit-auto-revert-mode . "")
     (smartparens-mode . "")
     (helm-mode . "")
-    (company-mode . "")))
+    (company-mode . "/Co")
+    (flyspell-mode . "/Fs")
+    (projectile-mode . "")
+    (tern-mode . "/Tn")
+    (omnisharp-mode ."/Om")
+    (addrev-mode. "")
+    ;; Mafor modes
+    (emacs-lisp-mode . "El")
+    (python-mode . "Py")
+    (csharp-mode . "C#")
+    (js2-mode . "Js2")
+    (shell-mode . "Sh")
+    (swift-mode . "Sw")
+    (markdown-mode . "Md")
+    (fundamental-mode . "Fn")
+    ))
 
 (defun clean-mode-line ()
   (interactive)
@@ -37,6 +52,8 @@
         (let ((old-mode-str (cdr (assq mode minor-mode-alist))))
           (when old-mode-str
             (setcar old-mode-str mode-str))
-          )))
+          (when (eq mode major-mode)
+            (setq mode-name mode-str)))
+        ))
 
 (add-hook 'after-change-major-mode-hook 'clean-mode-line)
