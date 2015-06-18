@@ -47,6 +47,7 @@
 (depends-on "ace-jump-mode")
 (depends-on "bm")
 (depends-on "langtool")
+(depends-on "dash-at-point")
 
 ;; file
 (depends-on "recentf-ext")
