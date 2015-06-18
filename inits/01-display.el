@@ -3,7 +3,8 @@
 ;; themeを設定
 ;(load-theme 'monokai t)
 ;(load-theme 'leuven t)
-(load-theme 'ample t)
+;(load-theme 'ample t)
+(load-theme 'material t)
 
 ;; 対応する括弧を光らせるy
 (show-paren-mode t)
