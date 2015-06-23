@@ -42,14 +42,11 @@
 (depends-on "undo-tree")
 (depends-on "point-undo")
 (depends-on "smartrep")
-(depends-on "google-translate")
 (depends-on "google-this")
-(depends-on "codic")
 (depends-on "migemo")
 (depends-on "ace-isearch")
 (depends-on "ace-jump-mode")
 (depends-on "bm")
-(depends-on "langtool")
 (depends-on "dash-at-point")
 
 ;; file
@@ -107,6 +104,12 @@
 ;; csharp
 (depends-on "csharp-mode")
 (depends-on "omnisharp")
+
+;; languages
+(depends-on "langtool")
+(depends-on "codic")
+(depends-on "google-translate")
+(depends-on "grammar" :svn "http://bcui-emacs.googlecode.com/svn/trunk/grammar")
 
 ;; other
 (depends-on "init-loader")

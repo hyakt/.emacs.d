@@ -32,8 +32,9 @@
     (flyspell-mode . "/Fs")
     (projectile-mode . "")
     (tern-mode . "/Tn")
-    (omnisharp-mode ."/Om")
-    (addrev-mode. "")
+    (omnisharp-mode . "/Om")
+    (abbrev-mode . "")
+    (grammar-mode . "/Gm")
     ;; Mafor modes
     (emacs-lisp-mode . "El")
     (python-mode . "Py")
