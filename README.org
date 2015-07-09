@@ -1,0 +1,3 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Hayato Kajiyama
+#+EMAIL: kaji1216@gmail.com
