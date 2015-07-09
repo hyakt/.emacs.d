@@ -1,0 +1,17 @@
+.backup/
+.cask/
+.mc-lists.el
+.org-id-locations
+.python-environments/
+ac-comphist.dat
+auto-save-list/
+bookmarks
+elisp/
+elpa/
+elscreen
+eshell/
+grammar
+persp-confs/
+projectile-bookmarks.eld
+recentf
+url/
