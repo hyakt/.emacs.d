@@ -56,8 +56,6 @@
 
 ;; version control
 (depends-on "magit")
-(depends-on "git-commit-mode")
-(depends-on "git-rebase-mode")
 (depends-on "gitconfig-mode")
 (depends-on "gitignore-mode")
 (depends-on "git-gutter")

@@ -1,11 +1,6 @@
 (use-package magit
   :config
-  (global-set-key (kbd "C-c g") 'magit-status)
-
-  (set-face-background 'magit-item-highlight "#202020")
-  (set-face-foreground 'magit-diff-add "green")
-  (set-face-foreground 'magit-diff-del "red")
-  (set-face-foreground 'magit-diff-file-header "blue")
+  (global-set-key (kbd "C-x g") 'magit-status)
 
   (defun my/magit-quit-session ()
     (interactive)
