@@ -12,7 +12,7 @@
 (depends-on "yascroll")
 (depends-on "swap-buffers")
 (depends-on "origami")
-(depends-on "guide-key")
+(depends-on "which-key")
 (depends-on "ignoramus")
 (depends-on "shut-up")
 ;(depends-on "persp-mode")
