@@ -24,7 +24,8 @@
 ; (depends-on "monokai-theme")
 ; (depends-on "leuven-theme")
 ; (depends-on "ample-theme")
-(depends-on "material-theme")
+; (depends-on "material-theme")
+(depends-on "zerodark-theme")
 
 ;; coding
 (depends-on "yasnippet")
@@ -87,7 +88,8 @@
 (depends-on "org-plus-contrib")
 
 ;; python
-;(depends-on "jedi")
+(depends-on "anaconda-mode")
+(depends-on "company-anaconda")
 
 ;; lisp
 (depends-on "slime")
