@@ -83,6 +83,7 @@
         '(("pdf" . "/usr/bin/open -a Preview.app %s")))
 
   (setq org-latex-with-hyperref nil)
+  (setq org-latex-hyperref-template nil)
 
   (add-to-list 'org-latex-classes
                '("jsarticle"
@@ -104,5 +105,4 @@
         (""     "graphicx"  t)
         ("dvipdfmx"     "color"  nil)
         ("setpagesize=false,dvipdfmx"     "hyperref"  nil)
-        ))
-)
+        )))
