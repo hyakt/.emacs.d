@@ -45,8 +45,7 @@
 (depends-on "smartrep")
 (depends-on "google-this")
 (depends-on "migemo")
-(depends-on "ace-isearch")
-(depends-on "ace-jump-mode")
+(depends-on "avy")
 (depends-on "bm")
 (depends-on "dash-at-point")
 
