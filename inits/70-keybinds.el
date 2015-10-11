@@ -59,7 +59,10 @@
     ;; expand-region
     (,(kbd "C-,") . er/expand-region)
     ;; window-totate
-    (,(kbd "C-t") . other-window-or-split)))
+    (,(kbd "C-t") . other-window-or-split)
+    ;; avy
+    (,(kbd "C-;") . avy-goto-char)
+    (,(kbd "C-:") . avy-goto-line)))
 
 (use-package key-chord
   :config
