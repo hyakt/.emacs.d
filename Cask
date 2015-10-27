@@ -128,3 +128,4 @@
 (depends-on "el-spy")
 (depends-on "fuzzy")
 (depends-on "use-package")
+(depends-on "bind-key")
