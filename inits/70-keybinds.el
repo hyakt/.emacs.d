@@ -2,39 +2,46 @@
 
 ;; 通常操作
 (keyboard-translate ?\C-h ?\C-?)
-(global-set-key "\C-h" nil)
-(global-set-key "\C-x\C-i" 'indent-region) ; 選択範囲をインデント
-(global-set-key "\C-m" 'newline-and-indent) ; リターンで改行とインデント
-(global-set-key (kbd "C-x ?") 'help-command)
+
+(bind-key (kbd "C-h") nil)
+(bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
 
 ;; 複数行移動
-(global-set-key "\M-n" (kbd "C-u 5 C-n"))
-(global-set-key "\M-p" (kbd "C-u 5 C-p"))
-
-;;; 少しずつスクロール
-(define-key global-map (kbd "C-s-n") 'scroll-down-in-place)
-(define-key global-map (kbd "C-s-p") 'scroll-up-in-place)
-
-;; shell
-(global-set-key (kbd "C-q") 'eshell)
+(bind-key (kbd "M-n") (kbd "C-u 5 C-n"))
+(bind-key (kbd "M-p") (kbd "C-u 5 C-p"))
 
 ;; helm-projectile
-(define-key global-map (kbd "C-x C-p") 'helm-projectile)
+(bind-key (kbd "C-x C-p") 'helm-projectile)
 
 ;; kill-this-buffer
-(define-key global-map (kbd "C-x C-k") 'kill-buffer)
+(bind-key (kbd "C-x C-k") 'kill-buffer)
 
 ;; window-split
-(define-key global-map (kbd "C-2") 'split-window-below)
-(define-key global-map (kbd "C-3") 'split-window-right)
-(define-key global-map (kbd "C-0") 'delete-window)
+(bind-key (kbd "C-0") 'delete-window)
+(bind-key (kbd "C-1") 'delete-other-windows)
+(bind-key (kbd "C-2") 'split-window-below)
+(bind-key (kbd "C-3") 'split-window-right)
+
+;; expand-region
+(bind-key* (kbd "C-,") 'er/expand-region)
+
+;; other-window-or-split
+(bind-key* (kbd "C-t") 'other-window-or-split)
+
+;; avy
+(bind-key* (kbd "C-;") 'avy-goto-char)
+(bind-key* (kbd "C-:") 'avy-goto-line)
+
+;; company-complete
+(global-unset-key (kbd "C-j"))
+(global-set-key (kbd "C-j") 'company-complete)
 
 ;; reload buffer
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
 
-(global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+(bind-key (kbd "<f5>") 'revert-buffer-no-confirm)
 
 ;; clonse-buffer
 (defun close-and-kill-this-pane ()
@@ -44,25 +51,7 @@
       (if (not (one-window-p))
           (delete-window)))
 
-(define-key global-map (kbd "C-x k") 'close-and-kill-this-pane)
-
-;; company-complete
-(global-unset-key "\C-j") ; newline-and-indent/org-return-indent
-(global-set-key (kbd "C-j") 'company-complete)
-
-(define-minor-mode overriding-minor-mode
-  "強制的にキーバインドを割り当てる"          ;説明文字列
-  t                                     ;デフォルトで有効にする
-  ""                                    ;モードラインに表示しない
-  `(;; company-complete
-    (,(kbd "C-j") . company-complete)
-    ;; expand-region
-    (,(kbd "C-,") . er/expand-region)
-    ;; window-totate
-    (,(kbd "C-t") . other-window-or-split)
-    ;; avy
-    (,(kbd "C-;") . avy-goto-char)
-    (,(kbd "C-:") . avy-goto-line)))
+(bind-key (kbd "C-x k") 'close-and-kill-this-pane)
 
 (use-package key-chord
   :config
@@ -74,5 +63,4 @@
   ;; dired-toggle
   ;;  (key-chord-define-global "dr" 'dired-toggle)
   ;; view-mode
-  (key-chord-define-global "jk" 'view-mode)
-  )
+  (key-chord-define-global "jk" 'view-mode))
