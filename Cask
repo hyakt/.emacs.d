@@ -64,7 +64,6 @@
 ;; helm
 (depends-on "helm")
 (depends-on "helm-descbinds")
-(depends-on "helm-migemo")
 (depends-on "helm-projectile")
 (depends-on "helm-ag")
 (depends-on "helm-bm")
