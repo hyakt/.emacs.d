@@ -14,6 +14,4 @@
   (setq migemo-pattern-alist-length 1000)
 
   (load-library "migemo")
-  (migemo-init)
-  
-  (helm-migemo-mode +1))
+  (migemo-init))
