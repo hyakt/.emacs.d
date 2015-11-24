@@ -51,4 +51,5 @@
   (require 'helm-descbinds)
   (helm-descbinds-mode 1)
 
-  )
+  ;; helm-migemoをon
+  (helm-migemo-mode +1))
