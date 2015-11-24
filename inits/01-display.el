@@ -80,9 +80,9 @@
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Consolas")))
         ((eq ws 'mac)
          (set-face-attribute 'default nil
-                             :family "Source Code Pro"
+                             :family "Source Han Code JP"
                              :height 130)
-         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Code Pro")))))
+         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
 
 ;; whitespace-modeの設定
 (use-package whitespace
@@ -113,18 +113,16 @@
 (use-package yascroll
   :config
   (set-scroll-bar-mode 'nil)
-  (global-yascroll-bar-mode 1)
-  )
+  (global-yascroll-bar-mode 1))
 
 ;; IMEのディスプレイの設定
 (when (eq system-type 'darwin)
   (defun mac-selected-keyboard-input-source-change-hook-func ()
     ;; 入力モードが英語の時はカーソルの色をfirebrickに、日本語の時はblackにする
     (set-cursor-color (if (or
-                           (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source))
-                           (string-match "\\.US$" (mac-input-source)))
-                          "powder blue" "PaleVioletRed1")
-                      ))
+                           (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
+                           (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
+                           "PaleVioletRed1" "Powder blue")))
 
   (add-hook 'mac-selected-keyboard-input-source-change-hook
             'mac-selected-keyboard-input-source-change-hook-func))
