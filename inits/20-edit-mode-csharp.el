@@ -10,4 +10,4 @@
   
   (use-package omnisharp
     :config
-    (setq omnisharp-server-executable-path (expand-file-name "/Users/hayato/Documents/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe"))))
+    (setq omnisharp-server-executable-path (expand-file-name "~/.emacs.d/omnisharp-server/OmniSharp/bin/Debug/OmniSharp.exe"))))
