@@ -75,9 +75,9 @@
 (use-package ox-latex
   :config
   (setq org-latex-default-class "jsarticle")
-  ;;  (setq org-latex-to-pdf-process '("latexmk %f"))
+  ;; (setq org-latex-to-pdf-process '("latexmk %f"))
 
-  (setq org-latex-pdf-process '("/usr/texbin/latexmk -e '$latex=q/uplatex %S/' -e '$bibtex=q/upbibtex/' -e '$biber=q/biber --bblencoding=utf8 -u -U --output_safechars %B/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
+  (setq org-latex-pdf-process '("/usr/texbin/latexmk -e '$latex=q/platex %S/' -e '$bibtex=q/pbibtex/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
 
   (setq org-file-apps
         '(("pdf" . "/usr/bin/open -a Preview.app %s")))
@@ -90,6 +90,30 @@
                  "\\documentclass[uplatex,dvipdfmx,12pt,a4paper,papersize]{jsarticle}
                   [NO-DEFAULT-PACKAGES]
                   \\usepackage{amsmath}
+                  \\usepackage[dvipdfmx]{graphicx}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("thesis"
+                 "\\documentclass[a4j, 11pt]{ujreport}
+                  [NO-DEFAULT-PACKAGES]
+                  \\usepackage{amsmath}
+                  \\usepackage[dvipdfmx]{graphicx}"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("ipsj"
+                 "\\documentclass[submit]{ipsj}
+                  [NO-DEFAULT-PACKAGES]
                   \\usepackage[dvipdfmx]{graphicx}"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
