@@ -75,9 +75,7 @@
 (use-package ox-latex
   :config
   (setq org-latex-default-class "jsarticle")
-  ;; (setq org-latex-to-pdf-process '("latexmk %f"))
-
-  (setq org-latex-pdf-process '("/usr/texbin/latexmk -e '$latex=q/platex %S/' -e '$bibtex=q/pbibtex/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
+  (setq org-latex-pdf-process '("latexmk -e '$latex=q/platex %S/' -e '$bibtex=q/pbibtex/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
 
   (setq org-file-apps
         '(("pdf" . "/usr/bin/open -a Preview.app %s")))
@@ -87,7 +85,7 @@
 
   (add-to-list 'org-latex-classes
                '("jsarticle"
-                 "\\documentclass[uplatex,dvipdfmx,12pt,a4paper,papersize]{jsarticle}
+                 "\\documentclass[dvipdfmx,12pt,a4paper]{jsarticle}
                   [NO-DEFAULT-PACKAGES]
                   \\usepackage{amsmath}
                   \\usepackage[dvipdfmx]{graphicx}"
@@ -113,8 +111,7 @@
   (add-to-list 'org-latex-classes
                '("ipsj"
                  "\\documentclass[submit]{ipsj}
-                  [NO-DEFAULT-PACKAGES]
-                  \\usepackage[dvipdfmx]{graphicx}"
+                  [NO-DEFAULT-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
