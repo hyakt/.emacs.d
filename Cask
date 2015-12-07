@@ -53,6 +53,7 @@
 (depends-on "recentf-ext")
 (depends-on "wdired")
 (depends-on "dired-toggle")
+(depends-on "pdf-tools")
 
 ;; version control
 (depends-on "magit")
