@@ -1,7 +1,8 @@
 ; ディスプレイの設定
 
 ;; themeを設定
-(load-theme 'zerodark t)
+;; (load-theme 'zerodark t)
+(load-theme 'darktooth t)
 
 ;; 対応する括弧を光らせるy
 (show-paren-mode t)
@@ -30,7 +31,7 @@
                '(height . 50)
                '(top . 0)
                '(left . 0)
-               '(alpha . (90 80)))
+               '(alpha . (99 99)))
               default-frame-alist))
 
 ;; tool-bar使わない

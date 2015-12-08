@@ -5,7 +5,7 @@
 
 ;; appearance
 (depends-on "popwin")
-(depends-on "powerline")
+; (depends-on "powerline")
 (depends-on "smartparens")
 (depends-on "rainbow-delimiters")
 (depends-on "highlight-defined")
@@ -25,7 +25,8 @@
 ; (depends-on "leuven-theme")
 ; (depends-on "ample-theme")
 ; (depends-on "material-theme")
-(depends-on "zerodark-theme")
+; (depends-on "zerodark-theme")
+(depends-on "darktooth-theme")
 
 ;; coding
 (depends-on "yasnippet")
