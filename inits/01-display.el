@@ -1,8 +1,7 @@
 ; ディスプレイの設定
 
 ;; themeを設定
-;; (load-theme 'zerodark t)
-(load-theme 'darktooth t)
+(load-theme 'zerodark t)
 
 ;; 対応する括弧を光らせるy
 (show-paren-mode t)

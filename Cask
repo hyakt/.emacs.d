@@ -25,8 +25,8 @@
 ; (depends-on "leuven-theme")
 ; (depends-on "ample-theme")
 ; (depends-on "material-theme")
-; (depends-on "zerodark-theme")
-(depends-on "darktooth-theme")
+(depends-on "zerodark-theme")
+; (depends-on "darktooth-theme")
 
 ;; coding
 (depends-on "yasnippet")
