@@ -33,7 +33,7 @@
            (propertize " RO " 'face 'mode-line-read-only-face))
           ((buffer-modified-p)
            (propertize " ** " 'face 'mode-line-modified-face))
-          (t "      ")))
+          (t "    ")))
    "    "
    ;; directory and buffer/file name
    (:propertize (:eval (shorten-directory default-directory 30))
@@ -82,35 +82,32 @@
 (make-face 'mode-line-80col-face)
 
 (set-face-attribute 'mode-line nil
-                    :foreground "gray60"
-                    :background "gray20"
+                    :background "#38394c"
                     :inverse-video nil
-                    :box '(:line-width 6 :color "gray20" :style nil))
+                    :box '(:line-width 5 :color "#38394c"  :style nil))
 (set-face-attribute 'mode-line-inactive nil
-                    :foreground "gray80" :background "gray30"
+                    :background "#21252b"
                     :inverse-video nil
-                    :box '(:line-width 6 :color "gray30" :style nil))
+                    :box '(:line-width 5 :color "#21252b" :style nil))
 (set-face-attribute 'mode-line-read-only-face nil
                     :inherit 'mode-line-face
-                    :foreground "#83A598"
-                    :box '(:line-width 2 :color "#83A598"))
+                    :foreground "#61afef"
+                    :box '(:line-width 2 :color "#61afef"))
 (set-face-attribute 'mode-line-modified-face nil
                     :inherit 'mode-line-face
-                    :foreground "#FB4933"
-                    :box '(:line-width 2 :color "#FB4933"))
+                    :foreground "#c678dd"
+                    :box '(:line-width 2 :color "#c678dd"))
 (set-face-attribute 'mode-line-folder-face nil
                     :inherit 'mode-line-face
                     :foreground "gray60")
 (set-face-attribute 'mode-line-filename-face nil
                     :inherit 'mode-line-face
-                    :foreground "#eab700"
                     :weight 'bold)
 (set-face-attribute 'mode-line-encoding-face nil
-                    :foreground "#83A598"
                     :inherit 'mode-line-face)
 (set-face-attribute 'mode-line-position-face nil
                     :inherit 'mode-line-face
-                    :family "Menlo" :height 100)
+                    :height 100)
 (set-face-attribute 'mode-line-mode-face nil
                     :inherit 'mode-line-face
                     :foreground "gray80")
