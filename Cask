@@ -8,7 +8,7 @@
 ; (depends-on "powerline")
 (depends-on "smartparens")
 (depends-on "rainbow-delimiters")
-(depends-on "rainbow-identifiers")
+; (depends-on "rainbow-identifiers")
 (depends-on "highlight-defined")
 (depends-on "yascroll")
 (depends-on "swap-buffers")

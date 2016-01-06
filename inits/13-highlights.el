@@ -4,9 +4,9 @@
   (smartparens-global-mode t))
 
 ;; シンボルの色付け
-(use-package rainbow-identifers
-  :init
-  (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
+;; (use-package rainbow-identifers
+;;   :init
+;;   (add-hook 'prog-mode-hook 'rainbow-identifiers-mode))
 
 ;; 括弧の色付け
 (use-package rainbow-delimiters
