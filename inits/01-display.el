@@ -16,10 +16,6 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-;; メニューバーにファイルパスを表示
-(setq frame-title-format
-      (format "%%f - Emacs@%s" (system-name)))
-
 ;; フォントロックモード
 (global-font-lock-mode t)
 
@@ -100,7 +96,7 @@
           ;; WARNING: the mapping below has a problem.
           ;; When a TAB occupies exactly one column, it will display the
           ;; character ?\xBB at that column followed by a TAB which goes to
-          ;; the next TAB column.
+          ;; The next TAB column.
           ;; If this is a problem for you, please, comment the line below.
           (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
 
