@@ -1,3 +1,4 @@
+(use-package cl)
 (use-package csharp-mode
   :config
   (add-hook 'csharp-mode-hook
