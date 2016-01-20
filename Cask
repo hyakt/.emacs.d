@@ -66,6 +66,7 @@
 
 ;; helm
 (depends-on "helm")
+(depends-on "helm-swoop")
 (depends-on "helm-descbinds")
 (depends-on "helm-projectile")
 (depends-on "helm-ag")
