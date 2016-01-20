@@ -22,6 +22,9 @@
 (bind-key (kbd "C-2") 'split-window-below)
 (bind-key (kbd "C-3") 'split-window-right)
 
+;; helm-find-files-other-window
+(bind-key (kbd "C-x C-a") 'find-file-other-window)
+
 ;; expand-region
 (bind-key* (kbd "C-,") 'er/expand-region)
 
