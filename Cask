@@ -5,33 +5,23 @@
 
 ;; appearance
 (depends-on "popwin")
-; (depends-on "powerline")
 (depends-on "smartparens")
 (depends-on "rainbow-delimiters")
-; (depends-on "rainbow-identifiers")
 (depends-on "highlight-defined")
 (depends-on "yascroll")
 (depends-on "swap-buffers")
 (depends-on "origami")
 (depends-on "which-key")
-(depends-on "ignoramus")
 (depends-on "shut-up")
-;(depends-on "persp-mode")
 (depends-on "elscreen")
 (depends-on "elscreen-persist")
 (depends-on "elscreen-separate-buffer-list")
 
 ;; theme
-; (depends-on "monokai-theme")
-; (depends-on "leuven-theme")
-; (depends-on "ample-theme")
-; (depends-on "material-theme")
 (depends-on "zerodark-theme")
-; (depends-on "darktooth-theme")
 
 ;; coding
 (depends-on "yasnippet")
-;(depends-on "auto-complete")
 (depends-on "company")
 (depends-on "flycheck")
 (depends-on "flycheck-pos-tip")
@@ -43,18 +33,12 @@
 (depends-on "anzu")
 (depends-on "key-chord")
 (depends-on "undo-tree")
-(depends-on "point-undo")
-(depends-on "smartrep")
 (depends-on "google-this")
 (depends-on "migemo")
 (depends-on "avy")
-(depends-on "bm")
-(depends-on "dash-at-point")
 
 ;; file
-(depends-on "recentf-ext")
 (depends-on "wdired")
-(depends-on "dired-toggle")
 (depends-on "pdf-tools")
 
 ;; version control
@@ -69,7 +53,6 @@
 (depends-on "helm-descbinds")
 (depends-on "helm-projectile")
 (depends-on "helm-ag")
-(depends-on "helm-bm")
 
 ;; progmodes
 (depends-on "markdown-mode")
@@ -94,12 +77,10 @@
 
 ;; lisp
 (depends-on "slime")
-;(depends-on "ac-slime")
 
 ;; latex
 (depends-on "auctex")
 (depends-on "auctex-latexmk")
-;(depends-on "auto-complete-auctex")
 (depends-on "company-auctex")
 
 ;; csharp
@@ -107,10 +88,8 @@
 (depends-on "omnisharp")
 
 ;; languages
-(depends-on "langtool")
 (depends-on "codic")
 (depends-on "google-translate")
-(depends-on "grammar" :svn "http://bcui-emacs.googlecode.com/svn/trunk/grammar")
 
 ;; other
 (depends-on "init-loader")
