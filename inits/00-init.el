@@ -3,7 +3,6 @@
 (require 'use-package)
 
 (when (eq system-type 'darwin)
-  (mac-auto-ascii-mode 1)
 
   ;; 文字コードの設定
   (require 'ucs-normalize)
@@ -15,8 +14,7 @@
   ;; (setq mac-pass-control-to-system )
 
   ;; (setq ns-command-modifier (quote meta))
-  ;; (setq ns-alternate-modifier (quote super))
-  ;; (setq default-input-method "MacOSX")
+  ;; (setq ns-alternate-modifier (quote super))  ;; (setq default-input-method "MacOSX")
 
   ;; emacs 起動時は英数モードから始める
   ;; (add-hook 'after-init-hook 'mac-change-language-to-us)

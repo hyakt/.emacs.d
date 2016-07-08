@@ -96,7 +96,6 @@
 (depends-on "init-loader")
 (depends-on "exec-path-from-shell")
 (depends-on "simplenote2")
-(depends-on "vagrant-tramp" :git "git@github.com:kj1216/vagrant-tramp.git" :files ("*.el" "bin"))
 
 ;; misc
 (depends-on "popup")

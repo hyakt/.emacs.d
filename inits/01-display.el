@@ -76,9 +76,9 @@
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Consolas")))
         ((eq ws 'mac)
          (set-face-attribute 'default nil
-                             :family "Source Han Code JP"
+                             :family "Menlo"
                              :height 130)
-         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
+         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Menlo")))))
 
 ;; whitespace-modeの設定
 (use-package whitespace
