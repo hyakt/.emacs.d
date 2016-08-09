@@ -3,7 +3,8 @@
 (require 'use-package)
 
 (when (eq system-type 'darwin)
-
+  (mac-auto-ascii-mode 1)
+  
   ;; 文字コードの設定
   (require 'ucs-normalize)
   (prefer-coding-system 'utf-8)
