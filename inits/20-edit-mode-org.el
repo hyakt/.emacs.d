@@ -1,5 +1,6 @@
 (use-package org
-  :mode (("\\.org$" . org-mode))
+  :mode (("\\.org$" . org-mode)
+	 ("\\.txt$" . org-mode))
   :config
   (setq org-startup-truncated nil)
   (setq org-return-follows-link t)
