@@ -69,7 +69,6 @@
 
 ;; org
 (depends-on "ox-gfm")
-(depends-on "org-plus-contrib")
 
 ;; python
 (depends-on "anaconda-mode")
