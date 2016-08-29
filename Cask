@@ -60,12 +60,13 @@
 (depends-on "swift-mode")
 (depends-on "haskell-mode")
 
-;; javascript
+;; html/javascript
 (depends-on "coffee-mode")
 (depends-on "web-mode")
 (depends-on "js2-mode")
 (depends-on "tern")
 (depends-on "company-tern")
+(depends-on "yaml-mode")
 
 ;; org
 (depends-on "ox-gfm")
@@ -94,6 +95,7 @@
 (depends-on "init-loader")
 (depends-on "exec-path-from-shell")
 (depends-on "simplenote2")
+(depends-on "ansible")
 
 ;; misc
 (depends-on "popup")
