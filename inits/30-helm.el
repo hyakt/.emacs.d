@@ -8,7 +8,8 @@
    ("C-x C-b" . helm-buffers-list)
    ("C-c e"   . helm-do-ag)
    ("M-x"     . helm-M-x)
-   ("C-o" . helm-swoop))
+   ("C-o" . helm-swoop)
+   ("C-z b" . helm-elscreen))
 
   :config
   (helm-mode 1)
