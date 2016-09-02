@@ -39,6 +39,7 @@
 ;; file
 (depends-on "wdired")
 (depends-on "pdf-tools")
+(depends-on "ag")
 
 ;; version control
 (depends-on "magit")
