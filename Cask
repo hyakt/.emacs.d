@@ -70,7 +70,7 @@
 (depends-on "yaml-mode")
 
 ;; org
-(depends-on "ox-gfm")
+(depends-on "ox-pandoc")
 
 ;; python
 (depends-on "anaconda-mode")

@@ -12,8 +12,8 @@
 
   ;; Org-Exportの読み込み
   (use-package ox)
-  (use-package ox-gfm)
   (use-package ox-bibtex)
+  (use-package ox-pandoc)
 
   ;; Org-Agenda
   (setq org-agenda-files
