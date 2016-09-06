@@ -40,6 +40,7 @@
 (depends-on "wdired")
 (depends-on "pdf-tools")
 (depends-on "ag")
+(depends-on "neotree")
 
 ;; version control
 (depends-on "magit")
