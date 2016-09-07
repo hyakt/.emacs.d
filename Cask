@@ -89,6 +89,9 @@
 (depends-on "csharp-mode")
 (depends-on "omnisharp")
 
+;; java
+(depends-on "jdee")
+
 ;; languages
 (depends-on "codic")
 (depends-on "google-translate")

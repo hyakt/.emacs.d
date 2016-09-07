@@ -1,3 +1,7 @@
 [submodule "yasnippet-snippets"]
 	path = yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
+[submodule "jdee-server"]
+	path = jdee-server
+	url = https://github.com/jdee-emacs/jdee-server.git
+	ignore = dirty
