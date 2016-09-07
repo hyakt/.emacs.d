@@ -62,6 +62,7 @@
 (depends-on "arduino-mode")
 (depends-on "swift-mode")
 (depends-on "haskell-mode")
+(depends-on "ansible")
 
 ;; html/javascript
 (depends-on "coffee-mode")
@@ -101,7 +102,6 @@
 (depends-on "init-loader")
 (depends-on "exec-path-from-shell")
 (depends-on "simplenote2")
-(depends-on "ansible")
 
 ;; misc
 (depends-on "popup")
