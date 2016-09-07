@@ -13,6 +13,7 @@
     (magit-auto-revert-mode . "")
     (smartparens-mode . "")
     (helm-mode . "")
+    (helm-gtags-mode . "/Gt")
     (company-mode . "/Co")
     (flyspell-mode . "/Fs")
     (projectile-mode . "")
@@ -28,8 +29,7 @@
     (shell-mode . "Sh")
     (swift-mode . "Sw")
     (markdown-mode . "Md")
-    (fundamental-mode . "Fn")
-    ))
+    (fundamental-mode . "Fn")))
 
 (defun clean-mode-line ()
   (interactive)
