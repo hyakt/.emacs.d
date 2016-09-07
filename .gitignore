@@ -3,7 +3,9 @@
 .mc-lists.el
 .org-id-locations
 .python-environments/
+abbrev_defs
 ac-comphist.dat
+anaconda-mode/
 auto-save-list/
 bookmarks
 elisp/
@@ -11,10 +13,10 @@ elpa/
 elscreen
 eshell/
 grammar
+omnisharp-server/
 persp-confs/
 projectile-bookmarks.eld
 recentf
-url/
-anaconda-mode/
 request/
-omnisharp-server/
+semanticdb/
+url/
