@@ -15,6 +15,7 @@
 (depends-on "elscreen")
 (depends-on "elscreen-persist")
 (depends-on "elscreen-separate-buffer-list")
+(depends-on "golden-ratio")
 
 ;; theme
 (depends-on "zerodark-theme")
