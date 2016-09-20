@@ -28,4 +28,4 @@
 (defun char-unicode (char) (encode-char char 'ucs))
 (defun unicode-char (code) (decode-char 'ucs code))
 
-(provide unicode-escape)
+(provide 'unicode-escape)
