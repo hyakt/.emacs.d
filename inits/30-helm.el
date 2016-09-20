@@ -1,5 +1,4 @@
 (use-package helm-config
-  :init (helm-autoresize-mode 1)
   :bind
   (("C-x C-f" . helm-find-files)
    ("C-x C-r" . helm-recentf)
