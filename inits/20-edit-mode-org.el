@@ -1,76 +1,44 @@
 (use-package org
   :mode (("\\.org$" . org-mode)
-	 ("\\.txt$" . org-mode))
+         ("\\.txt$" . org-mode))
+  :bind (("C-\\" . org-agenda))
   :config
-  (setq org-startup-truncated nil)
-  (setq org-return-follows-link t)
-  (setq org-startup-folded t)
-  (setq org-src-fontify-natively t)
-
-  (setq org-directory "~/Dropbox/org/")
-  (setq org-default-notes-file (concat org-directory "remember.org"))
-
   ;; Org-Exportの読み込み
   (use-package ox)
   (use-package ox-bibtex)
   (use-package ox-pandoc)
 
+  (setq org-startup-truncated nil)
+  (setq org-src-fontify-natively t)
+
+  (setq org-directory "~/org/")
+  (setq org-default-notes-file (concat org-directory "note.txt"))
+
   ;; Org-Agenda
-  (setq org-agenda-files
-        '(
-          "~/Dropbox/org/todo.org"
-          "~/Dropbox/org/schedule.org"
-          "~/Dropbox/org/remember.org"))
+  (setq org-agenda-files '("~/org/plan.txt"
+                           "~/org/chore.txt"
+                           "~/org/note.txt"))
 
   ;; Todo状態
   (setq org-todo-keywords
         '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SOMEDAY(s)")))
 
   ;; DONEの時刻を記録
-  (setq org-log-done 'time)
-
-  ;; ToDoをDoneにした時の挙動
-  (require 'org-archive nil 'noerror)
-  (setq org-archive-location "archive.org::")
-  (defun my:org-archive-done-tasks ()
-    (interactive)
-    ;; ARCHIVE タグを付けるだけなら以下
-    ;;   (org-map-entries 'org-archive-set-tag "/DONE" 'file))
-    ;; org-archive-location に refile したいなら以下
-    (org-map-entries 'org-archive-subtree "/DONE" 'file))
-  (add-hook 'org-todo-statistics-hook 'my:org-archive-done-tasks)
-  (add-hook 'org-todo-after-statistics-hook 'my:org-archive-done-tasks))
+  (setq org-log-done 'time))
 
 ;; Org-Capture
 (use-package org-capture
-;  :bind (("C-`" . org-capture))
+  :bind (("C-`" . org-capture))
   :config
   (setq org-capture-templates
-        `(
-          ("t" "Todo" entry
-           (file (concat org-directory "todo.org"))
-           "* TODO <%<%Y-%m-%d>> %?\n  %i\n  %a\n"
-           :prepend nil
-           :unnarrowed nil
-           :kill-buffer t
-           )
-          ("s" "Schedule" entry
-           (file (concat org-directory "schedule.org"))
-           "* <%<%Y-%m-%d>> %?\n  %i\n  %a\n"
-           :prepend nil
-           :unnarrowed nil
-           :kill-buffer t
-           )
-          ("r" "Remember" entry
-           (file (concat org-directory "remember.org"))
-           "* %?\n %U\n %i"
-           :prepend
-           :unnarrowed nil
-           :kill-buffer t
-           )
-          ))
-  )
-
+        `(("c" "Chore" entry (file+headline "~/org/chore.txt" "Chore")
+           "* TODO %^{content}\n DEADLINE: %^{Deadline}t\n%?"
+           :prepend t
+           :kill-buffer t)
+          ("n" "Note" entry (file+headline "~/org/note.txt" "Notes")
+           "* %? %U %i"
+           :prepend t
+           :kill-buffer t ))))
 
 ;; Org-Latex
 (use-package ox-latex
@@ -119,12 +87,11 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-(setq org-export-latex-packages-alist
-      '(("AUTO" "inputenc"  t)   ; automatically replaced with a coding system
-        ("T1"   "fontenc"   t)
-        ("deluxe,expert,multi"     "otf"   nil)
-        (""     "txfonts"   nil)
-        (""     "graphicx"  t)
-        ("dvipdfmx"     "color"  nil)
-        ("setpagesize=false,dvipdfmx"     "hyperref"  nil)
-        )))
+  (setq org-export-latex-packages-alist
+        '(("AUTO" "inputenc"  t)   ; automatically replaced with a coding system
+          ("T1"   "fontenc"   t)
+          ("deluxe,expert,multi"     "otf"   nil)
+          (""     "txfonts"   nil)
+          (""     "graphicx"  t)
+          ("dvipdfmx"     "color"  nil)
+          ("setpagesize=false,dvipdfmx"     "hyperref"  nil))))

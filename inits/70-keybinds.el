@@ -66,4 +66,6 @@
   ;; dired-toggle
   ;;  (key-chord-define-global "dr" 'dired-toggle)
   ;; view-mode
-  (key-chord-define-global "jk" 'view-mode))
+  (key-chord-define-global "jk" 'view-mode)
+  (key-chord-define-global "zx" 'org-capture)
+  (key-chord-define-global "qw" 'org-agenda))
