@@ -12,30 +12,37 @@
   (setq org-src-fontify-natively t)
 
   (setq org-directory "~/org/")
-  (setq org-default-notes-file (concat org-directory "note.txt"))
-
-  ;; Org-Agenda
-  (setq org-agenda-files '("~/org/plan.txt"
-                           "~/org/chore.txt"
-                           "~/org/note.txt"))
+  (setq org-default-notes-file (concat org-directory "note.org"))
 
   ;; Todo状態
+;; TODO状態
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SOMEDAY(s)")))
+        '((sequence "TODO(t)" "DOING(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)" "SOMEDAY(s)")))
 
   ;; DONEの時刻を記録
-  (setq org-log-done 'time))
+  (setq org-log-done 'time)
+
+  ;; -- Org-Agenda -- 
+  (setq org-agenda-files (list org-directory))
+
+  (setq org-agenda-custom-commands 
+        '(("d" "Daily Report"
+           ((agenda "" ((org-agenda-ndays 1)
+                        (org-agenda-sorting-strategy
+                         (quote ((agenda time-up priority-down tag-up))))
+                        (org-deadline-warning-days 0)
+                        (org-agenda-clockreport-mode t))))))))
 
 ;; Org-Capture
 (use-package org-capture
   :bind (("C-`" . org-capture))
   :config
   (setq org-capture-templates
-        `(("c" "Chore" entry (file+headline "~/org/chore.txt" "Chore")
+        `(("c" "Chore" entry (file+headline "~/org/chore.org" "Chore")
            "* TODO %^{content}\n DEADLINE: %^{Deadline}t\n%?"
            :prepend t
            :kill-buffer t)
-          ("n" "Note" entry (file+headline "~/org/note.txt" "Notes")
+          ("n" "Note" entry (file+headline "~/org/note.org" "Notes")
            "* %? %U %i"
            :prepend t
            :kill-buffer t ))))
