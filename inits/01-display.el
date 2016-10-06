@@ -78,7 +78,14 @@
          (set-face-attribute 'default nil
                              :family "Source Han Code JP"
                              :height 130)
-         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
+         (set-face-attribute 'variable-pitch nil  
+                             :family "Ricty Diminished"
+                             :height 136)
+         (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
+         ;; org-modeのみ英語と日本語が1:2の比率のものを利用する
+         (add-hook 'org-mode-hook
+          '(lambda()
+             (buffer-face-set 'variable-pitch))))))
 
 ;; whitespace-modeの設定
 (use-package whitespace
