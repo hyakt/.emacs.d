@@ -38,13 +38,19 @@
   :bind (("C-`" . org-capture))
   :config
   (setq org-capture-templates
-        `(("c" "Chore" entry (file+headline "~/org/chore.org" "Chore")
+        `(("p" "Project" entry (file+headline "~/org/project.org" "Project")
+           "* TODO %^{content}\n DEADLINE: %^{Deadline}t\n%?"
+           :unnarrowed t
+           :empty-lines 1 )
+          ("c" "Chore" entry (file+headline "~/org/chore.org" "Chore")
            "* TODO %^{content}\n DEADLINE: %^{Deadline}t\n%?"
            :prepend t
+           :empty-lines t
            :kill-buffer t)
-          ("n" "Note" entry (file+headline "~/org/note.org" "Notes")
+          ("n" "Note" entry (file+headline "~/org/note.org" "Note")
            "* %? %U %i"
            :prepend t
+           :empty-lines 1
            :kill-buffer t ))))
 
 ;; Org-Latex
