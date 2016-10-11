@@ -21,6 +21,9 @@
     (omnisharp-mode . "/Om")
     (abbrev-mode . "")
     (grammar-mode . "/Gm")
+    (golden-ratio-mode . "")
+    (rainbow-mode . "/Rm")
+
     ;; Mafor modes
     (emacs-lisp-mode . "El")
     (python-mode . "Py")
