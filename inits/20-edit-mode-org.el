@@ -45,7 +45,7 @@
           ("c" "Chore" entry (file+headline "~/org/chore.org" "Chore")
            "* TODO %^{content}\n DEADLINE: %^{Deadline}t\n%?"
            :prepend t
-           :empty-lines t
+           :empty-lines 1
            :kill-buffer t)
           ("n" "Note" entry (file+headline "~/org/note.org" "Note")
            "* %? %U %i"
