@@ -17,7 +17,7 @@
   ;; Todo状態
 ;; TODO状態
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "DOING(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)" "SOMEDAY(s)")))
+        '((sequence "TODO(t)" "DOIN(i)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)" "SMDY(s)")))
 
   ;; DONEの時刻を記録
   (setq org-log-done 'time)
