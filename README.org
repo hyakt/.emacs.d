@@ -4,18 +4,20 @@
 
 ** Require
 
-| name               | package    | inits                 | install       |
-|--------------------+------------+-----------------------+---------------|
-| Cask               | cask       | -                     | Homebrew      |
-| Pandoc             | ox-pandoc  | -                     | Homebrew      |
-| aspell             | aspell     | 11-aspell.el          | Homebrew      |
-| Git                | magit..    | 20-edit-mode-git.el   | Homebrew      |
-| Java               | jdee       | 20-edit-mode-java.el  | Homebrew Cask |
-| Tern               | tern       | 20-edit-mode-js.el    | npm           |
-| Swift              | swift-mode | 20-edit-mode-swift.el | Xcode         |
-| Latex              | auctex     | 20-edit-mode-tex.el   | Homebrew Cask |
-| The Silver Sercher | ag         | 30-helm.el            | Homebrew      |
-| global(gtags)      | helm-gtags | 31-helm-gtags.el      | Homebrew      |
+| name                     | package    | inits                 | install       |
+|--------------------------+------------+-----------------------+---------------|
+| Cask                     | cask       | -                     | Homebrew      |
+| Pandoc                   | ox-pandoc  | -                     | Homebrew      |
+| aspell                   | aspell     | 11-aspell.el          | Homebrew      |
+| Git                      | magit..    | 20-edit-mode-git.el   | Homebrew      |
+| Java                     | jdee       | 20-edit-mode-java.el  | Homebrew Cask |
+| Tern                     | tern       | 20-edit-mode-js.el    | npm           |
+| Swift                    | swift-mode | 20-edit-mode-swift.el | Xcode         |
+| Latex                    | auctex     | 20-edit-mode-tex.el   | Homebrew Cask |
+| The Silver Sercher       | ag         | 30-helm.el            | Homebrew      |
+| global(gtags)            | helm-gtags | 31-helm-gtags.el      | Homebrew      |
+| Font(Source Han Code JP) | -          | 01-display.el         | Homebrew Cask |
+| Font(Ricty Diminished)   | -          | 01-display.el         | Homebrew Cask |
 
 
 
