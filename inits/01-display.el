@@ -32,6 +32,9 @@
 ;; tool-bar使わない
 (tool-bar-mode 0)
 
+;; scroll-barを使わない
+(set-scroll-bar-mode 'nil)
+
 ;; 画面端まで来たら折り返す
 (setq truncate-lines nil)
 (setq truncate-partial-width-windows nil)
@@ -111,12 +114,6 @@
   (setq whitespace-space-regexp "\\(\u3000+\\)")
 
   (global-whitespace-mode 1))
-
-;; スクロールバーをyascrollにする
-(use-package yascroll
-  :config
-  (set-scroll-bar-mode 'nil)
-  (global-yascroll-bar-mode 1))
 
 ;; IMEのディスプレイの設定
 (when (eq system-type 'darwin)
