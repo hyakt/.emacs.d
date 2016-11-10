@@ -9,4 +9,5 @@
   (setq company-dabbrev-downcase nil)
 
   (add-to-list 'company-backends 'company-anaconda)
-  (add-to-list 'company-backends 'company-omnisharp))
+  (add-to-list 'company-backends 'company-omnisharp)
+  (add-to-list 'company-backends 'company-edbi))

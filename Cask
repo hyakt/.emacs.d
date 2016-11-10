@@ -103,6 +103,8 @@
 (depends-on "init-loader")
 (depends-on "exec-path-from-shell")
 (depends-on "simplenote2")
+(depends-on "edbi")
+(depends-on "company-edbi")
 
 ;; misc
 (depends-on "popup")
