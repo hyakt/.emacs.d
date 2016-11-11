@@ -15,17 +15,16 @@
   (setq org-default-notes-file (concat org-directory "note.org"))
 
   ;; Todo状態
-;; TODO状態
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DOIN(i)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)" "SMDY(s)")))
 
   ;; DONEの時刻を記録
   (setq org-log-done 'time)
 
-  ;; -- Org-Agenda -- 
+  ;; -- Org-Agenda --
   (setq org-agenda-files (list org-directory))
 
-  (setq org-agenda-custom-commands 
+  (setq org-agenda-custom-commands
         '(("d" "Daily Report"
            ((agenda "" ((org-agenda-ndays 1)
                         (org-agenda-sorting-strategy
@@ -39,11 +38,11 @@
   :config
   (setq org-capture-templates
         `(("p" "Project" entry (file+headline "~/org/project.org" "Project")
-           "* TODO %^{content}\n DEADLINE: %^{Deadline}t\n%?"
+           "* TODO %^{content}\n %i SCHEDULED: %^{Scheduled}t DEADLINE: %^{Deadline}t\n %i %?"
            :unnarrowed t
            :empty-lines 1 )
           ("c" "Chore" entry (file+headline "~/org/chore.org" "Chore")
-           "* TODO %^{content}\n DEADLINE: %^{Deadline}t\n%?"
+           "* TODO %^{content} %u\n %i SCHEDULED: %^{Scheduled}t DEADLINE: %^{Deadline}t\n %i %?"
            :prepend t
            :empty-lines 1
            :kill-buffer t)
