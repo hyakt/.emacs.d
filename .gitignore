@@ -3,6 +3,7 @@
 .mc-lists.el
 .org-id-locations
 .python-environments/
+.edbi-ds-history
 abbrev_defs
 ac-comphist.dat
 anaconda-mode/
