@@ -95,6 +95,7 @@
 
 ;; java
 (depends-on "jdee")
+(depends-on "eclim")
 
 ;; languages
 (depends-on "codic")
