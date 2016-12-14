@@ -1,6 +1,15 @@
-(use-package jdee
-  :init (add-hook 'jdee-mode-hook
-          '(lambda ()
-             (define-key jdee-mode-map "\C-j" 'jdee-complete-minibuf)))
+(use-package eclim
   :config
-  (setq jdee-server-dir "~/.emacs.d/jdee-server/target/"))
+  (global-eclim-mode)
+
+  (use-package company
+    :config
+    (require 'company-emacs-eclim)
+    (company-emacs-eclim-setup)))
+
+;; (use-package jdee
+;;   :init (add-hook 'jdee-mode-hook
+;;           '(lambda ()
+;;              (define-key jdee-mode-map "\C-j" 'jdee-complete-minibuf)))
+;;   :config
+;;   (setq jdee-server-dir "~/.emacs.d/jdee-server/target/"))
