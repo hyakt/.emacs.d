@@ -7,6 +7,7 @@
 (depends-on "smartparens")
 (depends-on "rainbow-delimiters")
 (depends-on "highlight-defined")
+(depends-on "highlight-symbol")
 (depends-on "swap-buffers")
 (depends-on "origami")
 (depends-on "which-key")
