@@ -94,7 +94,7 @@
 (depends-on "omnisharp")
 
 ;; java
-(depends-on "jdee")
+; (depends-on "jdee")
 (depends-on "eclim")
 
 ;; languages
