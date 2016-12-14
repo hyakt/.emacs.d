@@ -14,3 +14,7 @@
   (add-hook 'scss-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
   (add-hook 'web-mode-hook 'rainbow-mode))
+
+;; 変数などの色付け
+(use-package highlight-symbol
+  :bind (("C-x C-l" . highlight-symbol-at-point)))
