@@ -94,7 +94,8 @@
 
 ;; java
 ; (depends-on "jdee")
-(depends-on "eclim")
+; (depends-on "eclim")
+(depends-on "meghanada")
 
 ;; languages
 (depends-on "codic")
