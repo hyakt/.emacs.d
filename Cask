@@ -34,7 +34,6 @@
 (depends-on "anzu")
 (depends-on "key-chord")
 (depends-on "undo-tree")
-(depends-on "google-this")
 (depends-on "migemo")
 (depends-on "avy")
 
