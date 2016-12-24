@@ -57,6 +57,7 @@
 (depends-on "helm-projectile")
 (depends-on "helm-ag")
 (depends-on "helm-gtags")
+(depends-on "helm-dash")
 
 ;; progmodes
 (depends-on "markdown-mode")
