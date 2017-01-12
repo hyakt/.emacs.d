@@ -27,6 +27,7 @@
 (depends-on "flycheck")
 (depends-on "flycheck-pos-tip")
 (depends-on "quickrun")
+(depends-on "dumb-jump")
 
 ;; editing
 (depends-on "multiple-cursors")
