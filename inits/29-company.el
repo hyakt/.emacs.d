@@ -10,4 +10,5 @@
 
   (add-to-list 'company-backends 'company-anaconda)
   (add-to-list 'company-backends 'company-omnisharp)
-  (add-to-list 'company-backends 'company-edbi))
+  (add-to-list 'company-backends 'company-edbi)
+  (add-to-list 'company-backends 'company-shell))

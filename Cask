@@ -108,6 +108,7 @@
 (depends-on "simplenote2")
 (depends-on "edbi")
 (depends-on "company-edbi")
+(depends-on "company-shell")
 
 ;; misc
 (depends-on "popup")
