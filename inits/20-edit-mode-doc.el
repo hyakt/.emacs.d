@@ -1,3 +1,8 @@
+;;; 20-edit-mode-doc.el --- 文章編集用メジャーモード設定
+;;; Commentary:
+
+;;; Code:
+;; Org
 (use-package org
   :mode (("\\.org$" . org-mode)
          ("\\.txt$" . org-mode))
@@ -32,7 +37,6 @@
                         (org-deadline-warning-days 0)
                         (org-agenda-clockreport-mode t))))))))
 
-;; Org-Capture
 (use-package org-capture
   :bind (("C-`" . org-capture))
   :config
@@ -52,14 +56,13 @@
            :empty-lines 1
            :kill-buffer t ))))
 
-;; Org-Latex
 (use-package ox-latex
   :config
   (setq org-latex-default-class "jsarticle")
   (setq org-latex-pdf-process '("latexmk -e '$latex=q/platex %S/' -e '$bibtex=q/pbibtex/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
 
   (setq org-file-apps
-        '(("pdf" . "/usr/bin/open -a Preview.app %s")))
+           '(("pdf" . "/usr/bin/open -a Preview.app %s")))
 
   (setq org-latex-with-hyperref nil)
   (setq org-latex-hyperref-template nil)
@@ -107,3 +110,66 @@
           (""     "graphicx"  t)
           ("dvipdfmx"     "color"  nil)
           ("setpagesize=false,dvipdfmx"     "hyperref"  nil))))
+
+
+;; Latex
+(use-package tex-site
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+
+  ;; auctex用のlatexmkを追加
+  (add-hook 'LaTeX-mode-hook
+            (function (lambda ()
+                        (require 'auctex-latexmk nil 'noerror)
+                        (auctex-latexmk-setup)))
+            (use-package company-auctex
+              :config
+              (company-auctex-init)))
+
+  ;; reftexの設定
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t))
+
+
+;; Markdown
+(use-package markdown-mode
+  :mode (("\\.markdown\\'" . gfm-mode)
+         ("\\.md\\'" . gfm-mode)
+         ("\\.mdown\\'" . gfm-mode))
+  :config
+  (add-hook 'gfm-mode-hook '(lambda ()
+                              (custom-set-faces
+                               '(markdown-header-face-1 ((t (:inherit outline-1 markdown-header-face))))
+                               '(markdown-header-face-2 ((t (:inherit outline-2 markdown-header-face))))
+                               '(markdown-header-face-3 ((t (:inherit outline-3 markdown-header-face))))
+                               '(markdown-header-face-4 ((t (:inherit outline-4 markdown-header-face))))
+                               '(markdown-header-face-5 ((t (:inherit outline-5 markdown-header-face))))
+                               '(markdown-header-face-6 ((t (:inherit outline-6 markdown-header-face)))))
+
+                              (add-to-list 'markdown-mode-font-lock-keywords-basic
+                                           (cons markdown-regex-header-1-atx '((1 markdown-header-face-1)
+                                                                               (2 markdown-header-face-1)
+                                                                               (3 markdown-header-face-1))))
+                              (add-to-list 'markdown-mode-font-lock-keywords-basic
+                                           (cons markdown-regex-header-2-atx '((1 markdown-header-face-2)
+                                                                               (2 markdown-header-face-2)
+                                                                               (3 markdown-header-face-2))))
+                              (add-to-list 'markdown-mode-font-lock-keywords-basic
+                                           (cons markdown-regex-header-3-atx '((1 markdown-header-face-3)
+                                                                               (2 markdown-header-face-3)
+                                                                               (3 markdown-header-face-3))))
+                              (add-to-list 'markdown-mode-font-lock-keywords-basic
+                                           (cons markdown-regex-header-4-atx '((1 markdown-header-face-4)
+                                                                               (2 markdown-header-face-4)
+                                                                               (3 markdown-header-face-4))))
+                              (add-to-list 'markdown-mode-font-lock-keywords-basic
+                                           (cons markdown-regex-header-5-atx '((1 markdown-header-face-5)
+                                                                               (2 markdown-header-face-5)
+                                                                               (3 markdown-header-face-5))))
+                              (add-to-list 'markdown-mode-font-lock-keywords-basic
+                                           (cons markdown-regex-header-6-atx '((1 markdown-header-face-6)
+                                                                               (2 markdown-header-face-6)
+                                                                               (3 markdown-header-face-6)))))))
+
