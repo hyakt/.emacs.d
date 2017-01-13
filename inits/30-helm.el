@@ -17,3 +17,8 @@
 (use-package helm-descbinds
   :config
   (helm-descbinds-mode 1))
+
+(use-package helm-ag
+  :config
+  (custom-set-variables
+   '(helm-ag-base-command "rg --vimgrep --no-heading")))
