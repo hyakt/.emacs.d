@@ -1,5 +1,7 @@
-; キーバインドの設定
+;;; 70-keybinds.el ---  キーバインドの設定
+;;; Commentary:
 
+;; Code:
 ;; 通常操作
 (keyboard-translate ?\C-h ?\C-?)
 

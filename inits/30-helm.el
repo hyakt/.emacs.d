@@ -13,10 +13,13 @@
    ("C-c e"   . helm-do-ag)
    ("M-x"     . helm-M-x)
    ("C-o" . helm-swoop)
-   ("C-z b" . helm-elscreen))
+   ("C-z b" . helm-perspeen)
+   ("C-z C-b" . helm-perspeen))
   :config
   (helm-mode 1)
   (helm-migemo-mode +1))
+
+(use-package helm-perspeen :ensure t)
 
 (use-package helm-descbinds
   :config
