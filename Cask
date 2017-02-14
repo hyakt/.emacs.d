@@ -12,11 +12,9 @@
 (depends-on "origami")
 (depends-on "which-key")
 (depends-on "shut-up")
-(depends-on "elscreen")
-(depends-on "elscreen-persist")
-(depends-on "elscreen-separate-buffer-list")
 (depends-on "golden-ratio")
 (depends-on "rainbow-mode")
+(depends-on "perspeen")
 
 ;; theme
 (depends-on "zerodark-theme")
@@ -58,6 +56,7 @@
 (depends-on "helm-ag")
 (depends-on "helm-gtags")
 (depends-on "helm-dash")
+(depends-on "helm-perspeen")
 
 ;; progmodes
 (depends-on "markdown-mode")
