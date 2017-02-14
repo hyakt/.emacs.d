@@ -15,8 +15,9 @@
 (depends-on "golden-ratio")
 (depends-on "rainbow-mode")
 (depends-on "perspeen")
+(depends-on "all-the-icons")
 
-;; theme
+;; theme    
 (depends-on "zerodark-theme")
 
 ;; coding
