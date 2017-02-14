@@ -1,5 +1,13 @@
+;;; 01-mode-line.el --- modelineの設定
+;;; Commentary:
+
+;;; Code:
 ;; custom-modeline
-(use-package amitp-mode-line)
+;; (use-package amitp-mode-line)
+
+(use-package all-the-icons
+  :config
+  (zerodark-setup-modeline-format))
 
 (defvar mode-line-cleaner-alist
   '( ;; For minor-mode, first char is 'space'
