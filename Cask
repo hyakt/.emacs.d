@@ -17,7 +17,7 @@
 (depends-on "perspeen")
 (depends-on "all-the-icons")
 
-;; theme    
+;; theme
 (depends-on "zerodark-theme")
 
 ;; coding
@@ -49,15 +49,10 @@
 (depends-on "git-gutter")
 (depends-on "projectile")
 
-;; helm
-(depends-on "helm")
-(depends-on "helm-swoop")
-(depends-on "helm-descbinds")
-(depends-on "helm-projectile")
-(depends-on "helm-ag")
-(depends-on "helm-gtags")
-(depends-on "helm-dash")
-(depends-on "helm-perspeen")
+;; completion interface
+(depends-on "counsel")
+(depends-on "ivy")
+(depends-on "swiper")
 
 ;; progmodes
 (depends-on "markdown-mode")
@@ -75,7 +70,7 @@
 (depends-on "yaml-mode")
 
 ;; org
-(depends-on "ox-pandoc")
+;(depends-on "ox-pandoc")
 
 ;; python
 (depends-on "anaconda-mode")

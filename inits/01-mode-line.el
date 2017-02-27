@@ -21,6 +21,7 @@
     (magit-auto-revert-mode . "")
     (smartparens-mode . "")
     (helm-mode . "")
+    (ivy-mode . "")
     (helm-gtags-mode . "/Gt")
     (company-mode . "/Co")
     (flyspell-mode . "/Fs")

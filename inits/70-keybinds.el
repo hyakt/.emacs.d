@@ -12,9 +12,6 @@
 (bind-key (kbd "M-n") (kbd "C-u 5 C-n"))
 (bind-key (kbd "M-p") (kbd "C-u 5 C-p"))
 
-;; helm-projectile
-(bind-key (kbd "C-x C-p") 'helm-projectile)
-
 ;; kill-this-buffer
 (bind-key (kbd "C-x C-k") 'kill-buffer)
 
@@ -23,9 +20,6 @@
 (bind-key (kbd "C-1") 'delete-other-windows)
 (bind-key (kbd "C-2") 'split-window-below)
 (bind-key (kbd "C-3") 'split-window-right)
-
-;; helm-find-files-other-window
-(bind-key (kbd "C-x C-a") 'find-file-other-window)
 
 ;; expand-region
 (bind-key* (kbd "C-,") 'er/expand-region)
