@@ -1,5 +1,7 @@
-; popwin-conf.el
+;;; 12-popwin-conf.el --- popup display
+;;; Commentary:
 
+;;; Code:
 (use-package popwin
   :commands (popwin-mode)
   :config
@@ -15,8 +17,6 @@
   (push '("*Kill Ring*" :height 30) popwin:special-display-config)
   (push '("*Compile-Log" :height 20 :stick t) popwin:special-display-config)
 
-  (push '("helm" :regexp t :height 0.5) popwin:special-display-config)
-  
   (push '("*quickrun*" :height 10 :stick t) popwin:special-display-config)
 
   (push '("\*grep\*" :regexp t :height 0.5 :stick t) popwin:special-display-config)
@@ -49,6 +49,4 @@
   (push '("*magit-process*" :noselect t :height 15 :width 80) popwin:special-display-config)
   (push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
 
-  (push '("*Remember*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config)
-  )
-
+  (push '("*Remember*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config))
