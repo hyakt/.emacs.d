@@ -4,7 +4,6 @@
 
 ;;; Code:
 (use-package perspeen
-  :ensure t
   :config
   (perspeen-mode +1)
   (global-unset-key (kbd "C-z"))
