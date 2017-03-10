@@ -1,4 +1,4 @@
-;;; 01-screen.el --- screenの設定
+;;; 02-screen.el --- screenの設定
 ;;; Commentary:
 ;;; https://github.com/seudut/perspeen
 
