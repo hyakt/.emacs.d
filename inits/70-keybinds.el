@@ -51,17 +51,3 @@
           (delete-window)))
 
 (bind-key (kbd "C-x k") 'close-and-kill-this-pane)
-
-(use-package key-chord
-  :config
-  (key-chord-mode 1)
-  (setq key-chord-two-keys-delay 0.06)
-
-  ;; magit
-  (key-chord-define-global "gt" 'magit-status)
-  ;; dired-toggle
-  ;;  (key-chord-define-global "dr" 'dired-toggle)
-  ;; view-mode
-  (key-chord-define-global "jk" 'view-mode)
-  (key-chord-define-global "zx" 'org-capture)
-  (key-chord-define-global "qw" 'org-agenda))

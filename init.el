@@ -1,18 +1,26 @@
+;;; init.el --- 最初の設定
+;;; Commentary:
+;;; init-loaderにより、分割した設定ファイルが./initsより読み込まれる
+
+;;; Code:
 ;;ロードパス追加設定
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
-;;cask設定
-(require 'cask)
-(cask-initialize)
-
-;;elpa設定
+;; elpa設定
 (require 'package)
 (setq package-user-dir "~/.emacs.d/elpa/")
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
 
-;;init-loaderの設定
-;;設定ファイルはinits下で管理
+;; quelpa
+(unless (require 'quelpa nil t)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
+    (eval-buffer)))
+
+;; init-loaderの設定
+;; 設定ファイルはinits下で管理
 (require 'init-loader)
 (setq init-loader-show-log-after-init nil)
 (init-loader-load "~/.emacs.d/inits")
