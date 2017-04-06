@@ -1,3 +1,5 @@
+;;; 要:quelpa (https://github.com/quelpa/quelpa)
+
 ;; appearance
 (quelpa 'popwin)
 (quelpa 'smartparens)
@@ -64,7 +66,6 @@
 (quelpa 'company-anaconda)
 (quelpa 'slime)
 (quelpa 'csharp-mode)
-(quelpa 'meghanada)
 (quelpa 'company-shell)
 
 ;; doc modes

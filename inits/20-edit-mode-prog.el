@@ -10,15 +10,6 @@
   :mode (("\\.hs$" . haskell-mode)
          ("\\.lhs$" . literate-haskell-mode)))
 
-;; Java
-(use-package meghanada
-  :config
-  (add-hook 'java-mode-hook
-            (lambda ()
-              ;; meghanada-mode on
-              (meghanada-mode t)
-              (add-hook 'before-save-hook 'delete-trailing-whitespace))))
-
 ;; javascript
 (use-package js2-mode
   :mode (("\.js$" . js2-mode))
