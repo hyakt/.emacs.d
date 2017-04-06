@@ -11,6 +11,10 @@
 (setq inhibit-startup-screen 1)                  ;; scratchの初期メッセージ消去
 (setq initial-scratch-message "")
 (setq echo-keystrokes 0.1)                       ;; キーストロークをエコーエリアに早く表示する
+(setq scroll-conservatively 35
+      scroll-margin 0
+      scroll-step 1)                             ;; スクロールの設定
+
 (use-package uniquify :config                    ;; 同じバッファ名の時 <2> とかではなく、ディレクトリ名で区別
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
