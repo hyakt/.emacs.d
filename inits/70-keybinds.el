@@ -15,6 +15,9 @@
 ;; kill-this-buffer
 (bind-key (kbd "C-x C-k") 'kill-buffer)
 
+;; find-file-other-window
+(bind-key (kbd "C-x f") 'find-file-other-window)
+
 ;; window-split
 (bind-key (kbd "C-0") 'delete-window)
 (bind-key (kbd "C-1") 'delete-other-windows)

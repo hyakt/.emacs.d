@@ -66,7 +66,6 @@
 (quelpa 'company-anaconda)
 (quelpa 'slime)
 (quelpa 'csharp-mode)
-(quelpa 'company-shell)
 
 ;; doc modes
 (quelpa 'auctex)

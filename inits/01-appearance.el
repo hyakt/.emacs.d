@@ -32,11 +32,11 @@
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
       (append (list
-               '(width . 87)
-               '(height . 50)
+               '(width . 150)
+               '(height . 40)
                '(top . 0)
                '(left . 0)
-               '(alpha . (99 99)))
+               '(alpha . (97 97)))
               default-frame-alist))
 
 ;; フォント設定
@@ -49,10 +49,10 @@
         ((eq ws 'mac)
          (set-face-attribute 'default nil
                              :family "Source Han Code JP"
-                             :height 130)
+                             :height 120)
          (set-face-attribute 'variable-pitch nil
                              :family "Ricty Diminished"
-                             :height 136)
+                             :height 120)
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
          ;; org-modeのみ英語と日本語が1:2の比率のものを利用する
          (add-hook 'org-mode-hook
