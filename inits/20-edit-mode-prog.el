@@ -39,7 +39,8 @@
               (setq tab-width 4)))
   (use-package anaconda-mode
     :config
-    (add-hook 'python-mode-hook 'anaconda-mode)))
+    (add-hook 'python-mode-hook 'anaconda-mode)
+    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)))
 
 ;; Swift
 (use-package swift-mode :config (add-to-list 'flycheck-checkers 'swift))
