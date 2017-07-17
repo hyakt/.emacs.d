@@ -52,7 +52,6 @@
 (quelpa 'swiper)
 
 ;; prog modes
-(quelpa 'markdown-mode)
 (quelpa 'swift-mode)
 (quelpa 'haskell-mode)
 (quelpa 'ansible)
@@ -68,11 +67,8 @@
 (quelpa 'csharp-mode)
 
 ;; doc modes
-(quelpa 'auctex)
-(quelpa 'auctex-latexmk)
-(quelpa 'company-auctex)
-(quelpa 'org)
-(quelpa 'ox-pandoc)
+(quelpa 'ox-textile)
+(quelpa 'markdown-mode)
 
 ;; other modes
 (quelpa 'edbi)

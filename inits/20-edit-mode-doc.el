@@ -11,7 +11,7 @@
   ;; Org-Exportの読み込み
   (use-package ox)
   (use-package ox-bibtex)
-  (use-package ox-pandoc)
+  (use-package ox-textile)
 
   (setq org-startup-truncated nil)
   (setq org-src-fontify-natively t)
