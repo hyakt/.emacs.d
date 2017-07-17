@@ -14,9 +14,10 @@
 (quelpa 'rainbow-mode)
 (quelpa 'perspeen)
 (quelpa 'all-the-icons)
+(quelpa 'telephone-line)
 
 ;; theme
-(quelpa 'zerodark-theme)
+(quelpa 'kaolin-theme)
 
 ;; coding
 (quelpa 'yasnippet)
