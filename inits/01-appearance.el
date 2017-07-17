@@ -3,7 +3,8 @@
 
 ;;; Code:
 ;; 全般
-(load-theme 'zerodark 1)                         ;; themeを設定
+(use-package all-the-icons)
+(load-theme 'kaolin t)                         ;; themeを設定
 
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
@@ -32,10 +33,10 @@
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
       (append (list
-               '(width . 150)
-               '(height . 40)
+               '(width . 220)
+               '(height . 55)
                '(top . 0)
-               '(left . 0)
+               '(left . 50)
                '(alpha . (97 97)))
               default-frame-alist))
 
@@ -86,12 +87,69 @@
   (add-hook 'mac-selected-keyboard-input-source-change-hook
             'mac-selected-keyboard-input-source-change-hook-func))
 
-
-
 ;; モードラインの設定
-(use-package all-the-icons
+(use-package telephone-line
   :config
-  (zerodark-setup-modeline-format))
+  (use-package telephone-line-utils)
+  (setq telephone-line-height 20)
+  (setq telephone-line-primary-left-separator 'telephone-line-identity-left)
+  (setq telephone-line-primary-right-separator 'telephone-line-identity-right)
+  (setq telephone-line-secondary-left-separator 'telephone-line-identity-hollow-left)
+  (setq telephone-line-secondary-right-separator 'telephone-line-identity-hollow-right)
+
+  ;; Display buffer name
+  (telephone-line-defsegment my-buffer-segment ()
+    `(""
+      ,(telephone-line-raw mode-line-buffer-identification t)))
+
+  ;; Display current position in a buffer
+  (telephone-line-defsegment* my-position-segment ()
+    (if (telephone-line-selected-window-active)
+        (if (eq major-mode 'paradox-menu-mode)
+            (telephone-line-trim (format-mode-line mode-line-front-space))
+          '(" %3l,%2c "))))
+
+  ;; Display modified status
+  (telephone-line-defsegment my-modified-status-segment ()
+    (when (and (buffer-modified-p) (not (member mode-name modeline-ignored-modes)))
+        (propertize "+" 'face `(:foreground "#85b654"))))
+
+  ;; Display encoding system
+  (telephone-line-defsegment my-coding-segment ()
+    (let* ((code (symbol-name buffer-file-coding-system))
+           (eol-type (coding-system-eol-type buffer-file-coding-system))
+           (eol (cond
+                 ((eq 0 eol-type) "unix")
+                 ((eq 1 eol-type) "dos")
+                 ((eq 2 eol-type) "mac")
+                 (t ""))))
+      (concat eol " ")))
+
+  ;; Display current branch
+  (telephone-line-defsegment my-vc-segment ()
+    (let ((fg-color "#6fb593"))
+      (telephone-line-raw
+        (format "%s %s"
+          (propertize (all-the-icons-octicon "git-branch")
+                      'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :foreground ,fg-color)
+                      'display '(raise 0.0))
+          (propertize
+            (substring vc-mode (+ (if (eq (vc-backend buffer-file-name) 'Hg) 2 3) 2))
+            'face `(:foreground ,fg-color)))t)))
+
+  ;; Left edge
+  (setq telephone-line-lhs
+        '((nil    . (my-buffer-segment))
+          (nil    . (my-modified-status-segment))))
+
+  ;; Right edge
+  (setq telephone-line-rhs
+        '((nil     . ((my-vc-segment :active)))
+          (accent  . (my-position-segment))
+          (nil     . (telephone-line-simple-major-mode-segment))
+          (accent  . ((my-coding-segment :active)))))
+
+  (telephone-line-mode 1))
 
 (defvar mode-line-cleaner-alist
   '( ;; For minor-mode, first char is 'space'
