@@ -5,7 +5,6 @@
 ;; 全般
 (use-package all-the-icons)
 (load-theme 'kaolin t)                         ;; themeを設定
-
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示
@@ -92,10 +91,10 @@
   :config
   (use-package telephone-line-utils)
   (setq telephone-line-height 20)
-  (setq telephone-line-primary-left-separator 'telephone-line-identity-left)
-  (setq telephone-line-primary-right-separator 'telephone-line-identity-right)
-  (setq telephone-line-secondary-left-separator 'telephone-line-identity-hollow-left)
-  (setq telephone-line-secondary-right-separator 'telephone-line-identity-hollow-right)
+  (setq telephone-line-primary-left-separator 'telephone-line-tan-left)
+  (setq telephone-line-primary-right-separator 'telephone-line-tan-right)
+  (setq telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left)
+  (setq telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
 
   ;; Display buffer name
   (telephone-line-defsegment my-buffer-segment ()
@@ -109,10 +108,12 @@
             (telephone-line-trim (format-mode-line mode-line-front-space))
           '(" %3l,%2c "))))
 
+
   ;; Display modified status
   (telephone-line-defsegment my-modified-status-segment ()
-    (when (and (buffer-modified-p) (not (member mode-name modeline-ignored-modes)))
-        (propertize "+" 'face `(:foreground "#85b654"))))
+    (if (buffer-modified-p)
+        (propertize "+" 'face `(:foreground "#85b654"))
+      (propertize "-")))
 
   ;; Display encoding system
   (telephone-line-defsegment my-coding-segment ()
@@ -139,8 +140,8 @@
 
   ;; Left edge
   (setq telephone-line-lhs
-        '((nil    . (my-buffer-segment))
-          (nil    . (my-modified-status-segment))))
+        '((accent    . (my-modified-status-segment))
+          (nil    . (my-buffer-segment))))
 
   ;; Right edge
   (setq telephone-line-rhs
