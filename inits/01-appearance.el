@@ -96,6 +96,20 @@
   (setq telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left)
   (setq telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
 
+    ;; Exclude some buffers in modeline
+  (defvar modeline-ignored-modes nil
+    "List of major modes to ignore in modeline")
+
+  (setq modeline-ignored-modes '("Dashboard"
+                                 "Warnings"
+                                 "Compilation"
+                                 "EShell"
+                                 "Debugger"
+                                 "Quickrun"
+                                 "REPL"
+                                 "IELM"
+                                 "Messages"))
+
   ;; Display buffer name
   (telephone-line-defsegment my-buffer-segment ()
     `(""
@@ -108,12 +122,11 @@
             (telephone-line-trim (format-mode-line mode-line-front-space))
           '(" %3l,%2c "))))
 
-
   ;; Display modified status
   (telephone-line-defsegment my-modified-status-segment ()
-    (if (buffer-modified-p)
-        (propertize "+" 'face `(:foreground "#85b654"))
-      (propertize "-")))
+    (if (and (buffer-modified-p) (not (member mode-name modeline-ignored-modes)))
+        (propertize "+" 'face `(:foreground "#85b654")))
+    (propertize "-"))
 
   ;; Display encoding system
   (telephone-line-defsegment my-coding-segment ()
@@ -126,17 +139,26 @@
                  (t ""))))
       (concat eol " ")))
 
-  ;; Display current branch
+  ;; Hide vc backend in modeline
+  (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((my-vc (replace-regexp-in-string "^ Git." "" vc-mode)))
+          (setq vc-mode my-vc))))
+
+    ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
+    ;; #6fb593 #4a858c
     (let ((fg-color "#6fb593"))
-      (telephone-line-raw
-        (format "%s %s"
-          (propertize (all-the-icons-octicon "git-branch")
-                      'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :foreground ,fg-color)
-                      'display '(raise 0.0))
-          (propertize
-            (substring vc-mode (+ (if (eq (vc-backend buffer-file-name) 'Hg) 2 3) 2))
-            'face `(:foreground ,fg-color)))t)))
+      (when vc-mode
+        ;; double format to prevent warnings in '*Messages*' buffer
+          (format "%s %s"
+                  (propertize (all-the-icons-octicon "git-branch")
+                              'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :foreground ,fg-color)
+                              'display '(raise 0.0))
+                  (propertize
+                    (format "%s"
+                      (telephone-line-raw vc-mode t))
+                    'face `(:foreground ,fg-color))))))
 
   ;; Left edge
   (setq telephone-line-lhs
