@@ -64,11 +64,9 @@
 (quelpa 'yaml-mode)
 (quelpa 'anaconda-mode)
 (quelpa 'company-anaconda)
-(quelpa 'slime)
 (quelpa 'csharp-mode)
 
 ;; doc modes
-(quelpa 'ox-textile)
 (quelpa 'markdown-mode)
 
 ;; other modes
@@ -80,18 +78,6 @@
 (quelpa 'google-translate)
 
 ;; misc
-(quelpa 'popup)
-(quelpa 'concurrent)
-(quelpa 'ctable)
-(quelpa 'dash)
-(quelpa 'deferred)
-(quelpa 'epl)
-(quelpa 's)
-(quelpa 'f)
-(quelpa 'pkg-info)
-(quelpa 'el-spec)
-(quelpa 'el-spy)
-(quelpa 'fuzzy)
 (quelpa 'use-package)
 (quelpa 'bind-key)
 (quelpa 'init-loader)
