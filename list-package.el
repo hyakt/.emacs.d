@@ -17,7 +17,7 @@
 (quelpa 'telephone-line)
 
 ;; theme
-(quelpa 'kaolin-theme)
+(quelpa 'kaolin-themes)
 
 ;; coding
 (quelpa 'yasnippet)
