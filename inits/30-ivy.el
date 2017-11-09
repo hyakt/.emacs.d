@@ -19,7 +19,9 @@
         ( "C-c e" . counsel-rg))
   :config
   (ivy-mode 1)
+  (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
 (use-package swiper :bind ((( "\C-s" . swiper))))
