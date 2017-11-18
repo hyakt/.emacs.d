@@ -43,6 +43,7 @@
 (quelpa 'gitconfig-mode)
 (quelpa 'gitignore-mode)
 (quelpa 'git-gutter)
+(quelpa 'git-timemachine)
 (quelpa 'projectile)
 
 ;; completion interface
