@@ -219,9 +219,3 @@
             (setq mode-name mode-str)))))
 
 (add-hook 'after-change-major-mode-hook 'clean-mode-line)
-
-;; 余計な情報をメッセージエリアに表示させてない
-(use-package shut-up
-  :config
-  (when noninteractive
-    (shut-up-silence-emacs)))

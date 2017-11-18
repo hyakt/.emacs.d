@@ -9,7 +9,6 @@
 (quelpa 'swap-buffers)
 (quelpa 'origami)
 (quelpa 'which-key)
-(quelpa 'shut-up)
 (quelpa 'golden-ratio)
 (quelpa 'rainbow-mode)
 (quelpa 'perspeen)
@@ -37,7 +36,6 @@
 
 ;; file
 (quelpa 'wdired)
-(quelpa 'pdf-tools)
 (quelpa 'neotree)
 
 ;; version control
@@ -56,7 +54,6 @@
 (quelpa 'swift-mode)
 (quelpa 'haskell-mode)
 (quelpa 'ansible)
-(quelpa 'coffee-mode)
 (quelpa 'web-mode)
 (quelpa 'js2-mode)
 (quelpa 'tern)
@@ -75,7 +72,6 @@
 
 ;; languages
 (quelpa 'codic)
-(quelpa 'google-translate)
 
 ;; misc
 (quelpa 'use-package)
