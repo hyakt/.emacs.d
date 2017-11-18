@@ -2,8 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-;; coffee-script
-(use-package coffee-mode :config (custom-set-variables '(coffee-tab-width 2)))
 
 ;; Haskell
 (use-package haskell-mode
