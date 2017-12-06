@@ -1,7 +1,7 @@
 ;;; 70-keybinds.el ---  キーバインドの設定
 ;;; Commentary:
 
-;; Code:
+;;; Code:
 ;; 通常操作
 (keyboard-translate ?\C-h ?\C-?)
 
@@ -55,3 +55,19 @@
           (delete-window)))
 
 (bind-key (kbd "C-x k") 'close-and-kill-this-pane)
+
+;; kill-other-buffers
+(defun kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (loop for buf in (buffer-list)
+        unless (or
+                (get-buffer-window buf)
+                (string= (substring (buffer-name buf) 0 1) " ")
+                (get-buffer-process buf)
+                (member (buffer-name buf) ;; 消さないバッファ名を指定
+                        '("*Messages*" "*Compile-Log*" "*Help*"
+                          "*scratch*" "*init log*")))
+        do (kill-buffer buf)))
+
+(bind-key (kbd "C-x C-x") 'kill-other-buffers)
