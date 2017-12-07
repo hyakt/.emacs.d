@@ -4,7 +4,7 @@
 ;;; Code:
 ;; 全般
 (use-package all-the-icons)
-(load-theme 'kaolin-ocean t)                         ;; themeを設定
+(load-theme 'doom-tomorrow-night t)              ;; themeを設定
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示

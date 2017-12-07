@@ -16,7 +16,7 @@
 (quelpa 'telephone-line)
 
 ;; theme
-(quelpa 'kaolin-themes)
+(quelpa 'doom-themes)
 
 ;; coding
 (quelpa 'yasnippet)
