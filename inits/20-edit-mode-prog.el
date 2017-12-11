@@ -23,11 +23,6 @@
   (tern-mode t)
   (add-to-list 'company-backends 'company-tern))
 
-;; Lisp
-(use-package slime-autoloads
-  :config
-  (slime-setup '(slime-repl slime-fancy slime-banner)))
-
 ;; Python
 (use-package python
   :config

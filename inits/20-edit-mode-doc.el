@@ -10,7 +10,6 @@
   :config
   ;; Org-Exportの読み込み
   (use-package ox)
-  (use-package ox-bibtex)
 
   (setq org-startup-truncated nil)
   (setq org-src-fontify-natively t)
@@ -109,28 +108,6 @@
           (""     "graphicx"  t)
           ("dvipdfmx"     "color"  nil)
           ("setpagesize=false,dvipdfmx"     "hyperref"  nil))))
-
-
-;; Latex
-(use-package tex-site
-  :config
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq-default TeX-master nil)
-
-  ;; auctex用のlatexmkを追加
-  (add-hook 'LaTeX-mode-hook
-            (function (lambda ()
-                        (require 'auctex-latexmk nil 'noerror)
-                        (auctex-latexmk-setup)))
-            (use-package company-auctex
-              :config
-              (company-auctex-init)))
-
-  ;; reftexの設定
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (setq reftex-plug-into-AUCTeX t))
-
 
 ;; Markdown
 (use-package markdown-mode
