@@ -29,3 +29,38 @@
 (use-package quickrun
   :bind (("C-x q" . quickrun)
          ("C-x a" . quickrun-with-arg)))
+
+(use-package flycheck
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (flycheck-pos-tip-mode))
+
+(use-package flyspell
+  :init
+  (mapc                                   ;; flyspell-mode
+   (lambda (hook)
+     (add-hook hook 'flyspell-prog-mode))
+   '(emacs-lisp-mode-hook
+     python-mode-hook))
+
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook 'flyspell-mode)
+
+  :config
+  (setq-default ispell-program-name "aspell")
+  (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")))
+
+(use-package ispell
+  :config
+  (setq-default ispell-program-name "aspell")
+  (eval-after-load "ispell"
+    '(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))))
+
+;; 括弧の色付け
+(use-package rainbow-delimiters
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+;; 変数などの色付け
+(use-package highlight-symbol
+  :bind (("C-x C-l" . highlight-symbol-at-point)))
