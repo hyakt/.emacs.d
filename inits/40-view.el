@@ -1,3 +1,26 @@
+;;; 40-view.el --- 表示機能についての設定
+;;; Commentary:
+
+;;; Code:
+(use-package golden-ratio
+  :config
+  (golden-ratio-mode 1))
+
+(use-package neotree
+  :bind (("<f8>" . neotree-toggle))
+  :config
+  (setq golden-ratio-exclude-modes '(neotree-mode)))
+
+(use-package swap-buffers
+  :bind (("C-x C-o" . swap-buffers)))
+
+(use-package other-window-or-split
+  :bind* (("C-t"   . other-window-or-split)
+         ("C-S-t" . previous-other-window-or-split)
+         ("M-t"   . split-window-dwim)
+         ("C-c j" . adjust-windows-size)))
+
+;; read onlyの設定
 (setq view-read-only t)
 (defvar pager-keybind
       `( ;; vi-like
@@ -16,8 +39,7 @@
         ("]" . bm-next)
         ;; langhelp-like
         ("c" . scroll-other-window-down)
-        ("v" . scroll-other-window)
-        ))
+        ("v" . scroll-other-window)))
 
 (defun define-many-keys (keymap key-table &optional includes)
   (let (key cmd)
@@ -55,3 +77,20 @@
 (do-not-exit-view-mode-unless-writable-advice view-mode-exit)
 (do-not-exit-view-mode-unless-writable-advice view-mode-disable)
 
+(use-package origami
+  :config
+  ;; (makunbound 'origami-view-mode-map)
+  (define-minor-mode origami-view-mode
+    "TABにorigamiの折畳みを割り当てる"
+    nil "折紙"
+    '(("\C-i" . origami-cycle))
+    (or origami-mode (origami-mode 1)))
+  (defun origami-cycle (recursive)
+    "origamiの機能をorg風にまとめる"
+    (interactive "P")
+    (call-interactively
+     (if recursive 'origami-toggle-all-nodes 'origami-toggle-node)))
+  (defun view-mode-hook--origami ()
+    (when (memq major-mode (mapcar 'car origami-parser-alist))
+      (origami-view-mode (if view-mode 1 -1))))
+  (add-hook 'view-mode-hook 'view-mode-hook--origami))
