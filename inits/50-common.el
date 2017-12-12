@@ -1,5 +1,10 @@
-(require 'eww)
+;;; 50-common.el --- 自作elispの設定
+;;; Commentary:
 
+;;; Code:
+(use-package unicode-escape)
+
+(use-package eww)
 (defvar eww-data)
 (defun eww-current-url ()
   "バージョン間の非互換を吸収する。"

@@ -25,3 +25,7 @@
   (add-to-list 'company-backends 'company-edbi)
   (add-to-list 'company-backends 'company-shell)
   (global-company-mode 1))
+
+(use-package quickrun
+  :bind (("C-x q" . quickrun)
+         ("C-x a" . quickrun-with-arg)))
