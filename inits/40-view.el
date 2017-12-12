@@ -20,6 +20,13 @@
          ("M-t"   . split-window-dwim)
          ("C-c j" . adjust-windows-size)))
 
+;; screen
+(use-package perspeen
+  :config
+  (perspeen-mode +1)
+  (global-unset-key (kbd "C-z"))
+  (setq perspeen-keymap-prefix (kbd "C-z")))
+
 (use-package popwin
   :commands (popwin-mode)
   :config

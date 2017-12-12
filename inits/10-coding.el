@@ -1,4 +1,4 @@
-;;; 21-coding-support.el --- コーディングのサポート設定
+;;; 10-coding.el --- コーディングのサポート設定
 ;;; Commentary:
 
 ;;; Code:
