@@ -33,6 +33,7 @@
 (quelpa 'undo-tree)
 (quelpa 'migemo)
 (quelpa 'avy)
+(quelpa 'avy-migemo)
 (quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-split"))
 
 ;; file
