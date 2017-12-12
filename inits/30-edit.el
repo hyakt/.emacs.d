@@ -23,27 +23,28 @@
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
-
 (use-package swiper :bind ((( "\C-s" . swiper))))
+
+(use-package avy
+  :bind (("C-:" . avy-goto-char))
+  :config (avy-setup-default))
+
+(use-package avy-migemo
+  :config (avy-migemo-mode 1)
+  (use-package avy-migemo-e.g.ivy)
+  (use-package avy-migemo-e.g.swiper)
+  (use-package avy-migemo-e.g.counsel))
 
 (use-package anzu
   :bind (("C-%" . anzu-query-replace)
          ("M-%" . anzu-query-replace-regexp)
          ("C-M-%" . anzu-query-replace-at-cursor))
-
   :config
   (global-anzu-mode t)
   (setq anzu-use-migemo t)
   (setq anzu-search-threshold 1000)
   (setq anzu-minimum-input-length 3)
-
-  (set-face-attribute 'anzu-mode-line nil
-                      :foreground "yellow" :weight 'bold))
-
-(use-package avy
-  :bind (("C-:" . avy-goto-char))
-  :config
-  (avy-setup-default))
+  (set-face-attribute 'anzu-mode-line nil :foreground "yellow" :weight 'bold))
 
 (use-package multiple-cursors
   :bind
