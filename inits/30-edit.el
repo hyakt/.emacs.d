@@ -46,6 +46,8 @@
   (setq anzu-minimum-input-length 3)
   (set-face-attribute 'anzu-mode-line nil :foreground "yellow" :weight 'bold))
 
+(use-package pcre2el :config (setq rxt-global-mode t))
+
 (use-package multiple-cursors
   :bind
   (("C->" . mc/mark-next-like-this)
