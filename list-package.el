@@ -66,6 +66,7 @@
 (quelpa 'anaconda-mode)
 (quelpa 'company-anaconda)
 (quelpa 'csharp-mode)
+(quelpa 'stylus-mode)
 
 ;; doc modes
 (quelpa 'markdown-mode)
