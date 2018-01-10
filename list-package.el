@@ -34,6 +34,7 @@
 (quelpa 'migemo)
 (quelpa 'avy)
 (quelpa 'avy-migemo)
+(quelpa 'pcre2el)
 (quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-split"))
 
 ;; file
