@@ -70,6 +70,7 @@
 
 ;; doc modes
 (quelpa 'markdown-mode)
+(quelpa 'ox-hugo)
 
 ;; other modes
 (quelpa 'edbi)
