@@ -32,11 +32,11 @@
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
       (append (list
-               '(width . 220)
+               '(width . 100)
                '(height . 55)
                '(top . 0)
-               '(left . 50)
-               '(alpha . (97 97)))
+               '(left . 200)
+               '(alpha . (95 95)))
               default-frame-alist))
 
 ;; フォント設定
