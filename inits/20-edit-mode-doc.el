@@ -54,6 +54,7 @@
            :empty-lines 1
            :kill-buffer t ))))
 
+(use-package ox-hugo :after ox)
 (use-package ox-latex
   :config
   (setq org-latex-default-class "jsarticle")
