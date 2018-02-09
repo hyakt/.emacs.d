@@ -31,9 +31,10 @@
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
-  '((width . (text-pixels . 1280))
-    (height . (text-pixels . 800))
-    (alpha . (95 95))))
+      '((left . 100)
+        (width . (text-pixels . 1280))
+        (height . (text-pixels . 800))
+        (alpha . (95 95))))
 
 ;; フォント設定
 (let ((ws window-system))
