@@ -70,6 +70,10 @@
           (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
   ;; スペースは全角のみを可視化
   (setq whitespace-space-regexp "\\(\u3000+\\)")
+
+  ;; 保存前に自動でクリーンアップ
+  (setq whitespace-action '(auto-cleanup))
+
   (global-whitespace-mode 1))
 
 ;; カーソルの色設定
