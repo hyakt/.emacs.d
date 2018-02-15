@@ -60,6 +60,7 @@
 (quelpa 'ansible)
 (quelpa 'web-mode)
 (quelpa 'js2-mode)
+(quelpa 'web-beautify)
 (quelpa 'tern)
 (quelpa 'company-tern)
 (quelpa 'yaml-mode)
