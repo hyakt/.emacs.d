@@ -25,6 +25,7 @@
 (quelpa 'flycheck-pos-tip)
 (quelpa 'quickrun)
 (quelpa 'dumb-jump)
+(quelpa 'wgrep)
 
 ;; editing
 (quelpa 'multiple-cursors)
