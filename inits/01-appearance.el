@@ -4,7 +4,7 @@
 ;;; Code:
 ;; 全般
 (use-package all-the-icons)
-(load-theme 'doom-tomorrow-night t)              ;; themeを設定
+(load-theme 'doom-molokai t)              ;; themeを設定
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示
@@ -31,7 +31,8 @@
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
-      '((left . 100)
+      '((top . 0)
+        (left . 100)
         (width . (text-pixels . 1280))
         (height . (text-pixels . 800))
         (alpha . (95 95))))
@@ -91,7 +92,7 @@
 (use-package telephone-line
   :config
   (use-package telephone-line-utils)
-  (setq telephone-line-height 20)
+  (setq telephone-line-height 28)
   (setq telephone-line-primary-left-separator 'telephone-line-tan-left)
   (setq telephone-line-primary-right-separator 'telephone-line-tan-right)
   (setq telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left)
@@ -149,7 +150,7 @@
     ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
     ;; #6fb593 #4a858c
-    (let ((fg-color "#6fb593"))
+    (let ((fg-color "#268bd2"))
       (when vc-mode
         ;; double format to prevent warnings in '*Messages*' buffer
           (format "%s %s"
