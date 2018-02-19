@@ -4,7 +4,7 @@
 ;;; Code:
 ;; 全般
 (use-package all-the-icons)
-(load-theme 'doom-molokai t)              ;; themeを設定
+(load-theme 'nord t)              ;; themeを設定
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示
@@ -35,7 +35,7 @@
         (left . 100)
         (width . (text-pixels . 1280))
         (height . (text-pixels . 800))
-        (alpha . (95 95))))
+        (alpha . (98 98))))
 
 ;; フォント設定
 (let ((ws window-system))
@@ -97,6 +97,11 @@
   (setq telephone-line-primary-right-separator 'telephone-line-tan-right)
   (setq telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left)
   (setq telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
+  (set-face-attribute 'telephone-line-accent-inactive nil
+                      :background "#3B4252")
+  (set-face-attribute 'telephone-line-accent-active nil
+                      :background "#5E81AC"
+                      :foreground "white")
 
     ;; Exclude some buffers in modeline
   (defvar modeline-ignored-modes nil
@@ -112,35 +117,6 @@
                                  "IELM"
                                  "Messages"))
 
-  ;; Display buffer name
-  (telephone-line-defsegment my-buffer-segment ()
-    `(""
-      ,(telephone-line-raw mode-line-buffer-identification t)))
-
-  ;; Display current position in a buffer
-  (telephone-line-defsegment* my-position-segment ()
-    (if (telephone-line-selected-window-active)
-        (if (eq major-mode 'paradox-menu-mode)
-            (telephone-line-trim (format-mode-line mode-line-front-space))
-          '(" %3l,%2c "))))
-
-  ;; Display modified status
-  (telephone-line-defsegment my-modified-status-segment ()
-    (if (and (buffer-modified-p) (not (member mode-name modeline-ignored-modes)))
-        (propertize "+" 'face `(:foreground "#85b654")))
-    (propertize "-"))
-
-  ;; Display encoding system
-  (telephone-line-defsegment my-coding-segment ()
-    (let* ((code (symbol-name buffer-file-coding-system))
-           (eol-type (coding-system-eol-type buffer-file-coding-system))
-           (eol (cond
-                 ((eq 0 eol-type) "unix")
-                 ((eq 1 eol-type) "dos")
-                 ((eq 2 eol-type) "mac")
-                 (t ""))))
-      (concat eol " ")))
-
   ;; Hide vc backend in modeline
   (defadvice vc-mode-line (after strip-backend () activate)
       (when (stringp vc-mode)
@@ -149,8 +125,7 @@
 
     ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
-    ;; #6fb593 #4a858c
-    (let ((fg-color "#268bd2"))
+    (let ((fg-color "#EBCB8B"))
       (when vc-mode
         ;; double format to prevent warnings in '*Messages*' buffer
           (format "%s %s"
@@ -164,14 +139,12 @@
 
   ;; Left edge
   (setq telephone-line-lhs
-        '((accent    . (my-modified-status-segment))
-          (nil    . (my-buffer-segment))))
+        '((nil  . (telephone-line-buffer-segment))))
 
   ;; Right edge
   (setq telephone-line-rhs
-        '((nil     . ((my-vc-segment :active)))
-          (accent  . (my-position-segment))
-          (nil     . (telephone-line-simple-major-mode-segment))
-          (accent  . ((my-coding-segment :active)))))
+        '((nil  . ((my-vc-segment :active)))
+          (nil  . (telephone-line-airline-position-segment))
+          (accent  . (telephone-line-major-mode-segment))))
 
   (telephone-line-mode 1))

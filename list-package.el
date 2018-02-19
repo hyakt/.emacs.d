@@ -1,3 +1,4 @@
+
 ;;; 要:quelpa (https://github.com/quelpa/quelpa)
 
 ;; appearance
@@ -16,7 +17,7 @@
 (quelpa 'telephone-line)
 
 ;; theme
-(quelpa 'doom-themes)
+(quelpa 'nord-theme)
 
 ;; coding
 (quelpa 'yasnippet)
