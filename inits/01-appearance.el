@@ -100,8 +100,8 @@
   (set-face-attribute 'telephone-line-accent-inactive nil
                       :background "#3B4252")
   (set-face-attribute 'telephone-line-accent-active nil
-                      :background "#5E81AC"
-                      :foreground "white")
+                      :background "#434c5e"
+                      :foreground "#eceff4")
 
     ;; Exclude some buffers in modeline
   (defvar modeline-ignored-modes nil
