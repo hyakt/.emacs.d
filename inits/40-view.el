@@ -22,6 +22,7 @@
 
 ;; screen
 (use-package perspeen
+  :init (custom-set-variables '(perspeen-modestring-dividers '("" "" "|")))
   :config
   (perspeen-mode +1)
   (global-unset-key (kbd "C-z"))
