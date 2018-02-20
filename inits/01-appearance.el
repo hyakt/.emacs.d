@@ -145,6 +145,7 @@
   (setq telephone-line-rhs
         '((nil  . ((my-vc-segment :active)))
           (nil  . (telephone-line-airline-position-segment))
+          (nil  . (telephone-line-misc-info-segment))
           (accent  . (telephone-line-major-mode-segment))))
 
   (telephone-line-mode 1))
