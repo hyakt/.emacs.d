@@ -10,6 +10,9 @@
   (yas-global-mode 1))
 
 (use-package dumb-jump
+  :bind (("M-." . dumb-jump-quick-look)
+         ("M-n" . dumb-jump-go)
+         ("M-p" . dumb-jump-back))
   :config (dumb-jump-mode))
 
 (use-package company
