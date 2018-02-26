@@ -8,10 +8,6 @@
 (bind-key (kbd "C-h") nil)
 (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
 
-;; 複数行移動
-(bind-key (kbd "M-n") (kbd "C-u 5 C-n"))
-(bind-key (kbd "M-p") (kbd "C-u 5 C-p"))
-
 ;; kill-this-buffer
 (bind-key (kbd "C-x C-k") 'kill-buffer)
 
