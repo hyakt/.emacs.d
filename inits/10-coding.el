@@ -62,5 +62,8 @@
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 ;; 変数などの色付け
-(use-package highlight-symbol
-  :bind (("C-x C-l" . highlight-symbol-at-point)))
+(use-package symbol-overlay
+  :bind ("M-i" . symbol-overlay-put)
+  :config
+  (add-hook 'prog-mode-hook #'symbol-overlay-mode)
+  (add-hook 'markdown-mode-hook #'symbol-overlay-mode))
