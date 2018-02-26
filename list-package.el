@@ -6,7 +6,7 @@
 (quelpa 'smartparens)
 (quelpa 'rainbow-delimiters)
 (quelpa 'highlight-defined)
-(quelpa 'highlight-symbol)
+(quelpa 'symbol-overlay)
 (quelpa 'swap-buffers)
 (quelpa 'origami)
 (quelpa 'which-key)
