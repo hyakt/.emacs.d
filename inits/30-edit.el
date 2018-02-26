@@ -14,7 +14,7 @@
         ( "<f1> l" . counsel-find-library)
         ( "<f2> i" . counsel-info-lookup-symbol)
         ( "<f2> u" . counsel-unicode-char)
-        ( "C-c g" . counsel-git)
+        ( "C-x C-g" . counsel-git)
         ( "C-c j" . counsel-git-grep)
         ( "C-c e" . counsel-rg))
   :config
@@ -22,6 +22,8 @@
   (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
+  (setq ivy-count-format "")
+  (setq ivy-initial-inputs-alist nil)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 (use-package swiper :bind ((( "\C-s" . swiper))))
 
