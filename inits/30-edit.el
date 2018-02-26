@@ -24,7 +24,11 @@
   (setq enable-recursive-minibuffers t)
   (setq ivy-count-format "")
   (setq ivy-initial-inputs-alist nil)
+  (setq ivy-extra-directories nil)
+  (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
+  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
+
 (use-package swiper :bind ((( "\C-s" . swiper))))
 
 (use-package avy
