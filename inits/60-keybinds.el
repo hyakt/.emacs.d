@@ -33,7 +33,6 @@
 ;; company-complete
 (global-unset-key (kbd "C-j"))
 (global-set-key (kbd "C-j") 'company-complete)
-(global-set-key (kbd "C-<return>") 'company-yasnippet)
 
 ;; reload buffer
 (defun revert-buffer-no-confirm ()
