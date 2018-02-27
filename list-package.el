@@ -1,4 +1,3 @@
-
 ;;; 要:quelpa (https://github.com/quelpa/quelpa)
 
 ;; appearance
@@ -15,6 +14,7 @@
 (quelpa 'perspeen)
 (quelpa 'all-the-icons)
 (quelpa 'telephone-line)
+(quelpa 'dashboard)
 
 ;; theme
 (quelpa 'nord-theme)

@@ -29,6 +29,12 @@
 (custom-set-variables
  '(init-loader-show-log-after-init 'error-only)) ;; init-loaderが失敗した時のみエラーメッセージを表示
 
+(use-package dashboard :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-items '((recents  . 10)
+                          (projects . 10))))
+
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
       '((top . 0)
