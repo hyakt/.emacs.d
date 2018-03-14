@@ -6,7 +6,7 @@
   :config
   (setq yas-snippet-dirs
         '("~/.emacs.d/my-snippets"
-          "~/.emacs.d/yasnippet-snippets"))
+          "~/.emacs.d/yasnippet-snippets/snippets"))
   (yas-global-mode 1))
 
 (use-package dumb-jump
