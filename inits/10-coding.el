@@ -13,7 +13,11 @@
   :bind (("M-." . dumb-jump-quick-look)
          ("M-n" . dumb-jump-go)
          ("M-p" . dumb-jump-back))
-  :config (dumb-jump-mode))
+  :config (dumb-jump-mode)
+  (setq dumb-jump-default-project "")
+  (setq dumb-jump-max-find-time 10)
+  (setq dumb-jump-selector 'ivy))
+
 
 (use-package company
   :config
