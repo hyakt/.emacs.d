@@ -3,22 +3,22 @@
 #+EMAIL: kaji1216@gmail.com
 
 ** Require
+| name                                     | package      | install |
+|------------------------------------------+--------------+---------|
+| aspell                                   | flycheck     | system  |
+| git                                      | magit        | system  |
+| python                                   | python       | system  |
+| node                                     | node         | system  |
+| tern                                     | tern         | npm     |
+| js-beautify                              | web-beautify | npm     |
+| swift                                    | swift-mode   | Xcode   |
+| Latex                                    | auctex       | system  |
+| ripgrep                                  | rg           | system  |
+| migemo                                   | migemo       | system  |
+| RPC::EPC::Service DBI (perl/cpan module) | edbi         | cpan    |
+| Font:Source Han Code JP                  | -            | system  |
+| Font:Ricty Diminished                    | -            | system  |
 
-| name                                     | package    | inits                 | install       |
-|------------------------------------------+------------+-----------------------+---------------|
-| Cask                                     | cask       | -                     | Homebrew      |
-| Pandoc                                   | ox-pandoc  | -                     | Homebrew      |
-| aspell                                   | aspell     | 11-aspell.el          | Homebrew      |
-| Git                                      | magit..    | 20-edit-mode-git.el   | Homebrew      |
-| Java                                     | jdee       | 20-edit-mode-java.el  | Homebrew Cask |
-| Tern                                     | tern       | 20-edit-mode-js.el    | npm           |
-| Swift                                    | swift-mode | 20-edit-mode-swift.el | Xcode         |
-| Latex                                    | auctex     | 20-edit-mode-tex.el   | Homebrew Cask |
-| The Silver Sercher                       | ag         | 30-helm.el            | Homebrew      |
-| global(gtags)                            | helm-gtags | 31-helm-gtags.el      | Homebrew      |
-| RPC::EPC::Service DBI (perl/cpan module) | edbi       | -                     | cpan          |
-| Font(Source Han Code JP)                 | -          | 01-display.el         | Homebrew Cask |
-| Font(Ricty Diminished)                   | -          | 01-display.el         | Homebrew Cask |
 
 
 
