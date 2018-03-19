@@ -42,6 +42,7 @@
 ;; file
 (quelpa 'wdired)
 (quelpa 'neotree)
+(quelpa 'open-junk-file)
 
 ;; version control
 (quelpa 'magit)

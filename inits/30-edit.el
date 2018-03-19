@@ -118,3 +118,5 @@
 (use-package smartparens-config
   :config
   (smartparens-global-mode t))
+
+(use-package open-junk-file :bind (("M-`" . open-junk-file)))
