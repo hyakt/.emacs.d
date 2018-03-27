@@ -65,6 +65,7 @@
 (quelpa 'js2-mode)
 (quelpa 'web-beautify)
 (quelpa 'tern)
+(quelpa 'add-node-modules-path)
 (quelpa 'company-tern)
 (quelpa 'yaml-mode)
 (quelpa 'anaconda-mode)
