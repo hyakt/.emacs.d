@@ -2,10 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-(use-package golden-ratio
-  :config
-  (golden-ratio-mode 1))
-
 (use-package neotree
   :bind (("<f8>" . neotree-toggle))
   :config

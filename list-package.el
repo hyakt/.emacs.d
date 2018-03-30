@@ -9,7 +9,6 @@
 (quelpa 'swap-buffers)
 (quelpa 'origami)
 (quelpa 'which-key)
-(quelpa 'golden-ratio)
 (quelpa 'rainbow-mode)
 (quelpa 'perspeen)
 (quelpa 'all-the-icons)
