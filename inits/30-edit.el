@@ -119,4 +119,7 @@
   :config
   (smartparens-global-mode t))
 
+(use-package multi-term
+  :bind (("M-\\" . multi-term-dedicated-toggle)))
+
 (use-package open-junk-file :bind (("M-`" . open-junk-file)))

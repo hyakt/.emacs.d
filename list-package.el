@@ -79,6 +79,7 @@
 ;; other modes
 (quelpa 'edbi)
 (quelpa 'company-edbi)
+(quelpa 'multi-term)
 
 ;; languages
 (quelpa 'codic)
