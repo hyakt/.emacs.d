@@ -2,10 +2,28 @@
 ;;; Commentary:
 
 ;;; Code:
-(use-package neotree
-  :bind (("<f8>" . neotree-toggle))
+(use-package neotree :defer t
+  :bind (("M-=" . neotree-toggle))
   :config
-  (setq golden-ratio-exclude-modes '(neotree-mode)))
+  (defun my/neotree-kill-filename-at-point ()
+    "Kill full path of note at point."
+    (interactive)
+    (message "Copy %s"
+             (kill-new (neo-buffer--get-filename-current-line))))
+  (bind-key "M-w" 'my/neotree-kill-filename-at-point neotree-mode-map)
+
+  (setq neo-show-hidden-files t)
+  (setq neo-create-file-auto-open t)
+  (setq neo-persist-show t)
+  (setq neo-keymap-style 'concise)
+  (setq neo-smart-open t)
+  (setq neo-vc-integration '(face char))
+  (when neo-persist-show
+    (add-hook 'popwin:before-popup-hook
+              (lambda () (setq neo-persist-show nil)))
+    (add-hook 'popwin:after-popup-hook
+              (lambda () (setq neo-persist-show t))))
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 (use-package swap-buffers
   :bind (("C-x C-o" . swap-buffers)))
