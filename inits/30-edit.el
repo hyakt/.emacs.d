@@ -15,6 +15,7 @@
         ( "<f2> i" . counsel-info-lookup-symbol)
         ( "<f2> u" . counsel-unicode-char)
         ( "C-x C-g" . counsel-git)
+        ( "C-x C-d" . counsel-fzf)
         ( "C-c j" . counsel-git-grep)
         ( "C-c e" . counsel-rg))
   :config
