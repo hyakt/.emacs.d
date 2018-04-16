@@ -124,8 +124,6 @@
   :bind (("M-\\" . multi-term-dedicated-toggle))
   :config
   (add-to-list 'term-unbind-key-list "C-f")
-  (add-to-list 'term-unbind-key-list "C-a")
-  (add-to-list 'term-unbind-key-list "C-e")
   (add-to-list 'term-unbind-key-list "C-v"))
 
 (use-package open-junk-file :bind (("M-`" . open-junk-file)))
