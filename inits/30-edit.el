@@ -88,10 +88,6 @@
   (define-key dired-mode-map (kbd "(") 'dired-hide-details-mode)
   (define-key dired-mode-map (kbd ")") 'dired-hide-details-mode))
 
-(use-package projectile
-  :config
-  (projectile-global-mode))
-
 (use-package recentf
   :config
   (setq recentf-max-saved-items 500)
