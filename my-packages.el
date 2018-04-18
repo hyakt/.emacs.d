@@ -1,4 +1,14 @@
-;;; 要:quelpa (https://github.com/quelpa/quelpa)
+;;; my-packages.el --- packageのリスト
+;;; Commentary:
+
+(require 'quelpa)
+
+;;; Code:
+;; misc
+(quelpa 'use-package)
+(quelpa 'bind-key)
+(quelpa 'init-loader)
+(quelpa 'exec-path-from-shell)
 
 ;; appearance
 (quelpa 'popwin)
@@ -84,8 +94,4 @@
 ;; languages
 (quelpa 'codic)
 
-;; misc
-(quelpa 'use-package)
-(quelpa 'bind-key)
-(quelpa 'init-loader)
-(Quelpa 'exec-path-from-shell)
+;;; my-packages.el ends here

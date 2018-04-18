@@ -19,8 +19,17 @@
     (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
     (eval-buffer)))
 
+(defun my/quelpa-setup ()
+  "Setup Quelpa packages."
+  (interactive)
+  (load (locate-user-emacs-file "my-packages")))
+
+(setq custom-file (locate-user-emacs-file "custom.el"))
+
 ;; init-loaderの設定
 ;; 設定ファイルはinits下で管理
 (require 'init-loader)
 (setq init-loader-show-log-after-init nil)
 (init-loader-load "~/.emacs.d/inits")
+
+;;; init.el ends here
