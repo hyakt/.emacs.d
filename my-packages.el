@@ -47,6 +47,7 @@
 (quelpa 'avy)
 (quelpa 'avy-migemo)
 (quelpa 'pcre2el)
+(quelpa 'multi-term)
 (quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-split"))
 
 ;; file
@@ -90,7 +91,7 @@
 ;; other modes
 (quelpa 'edbi)
 (quelpa 'company-edbi)
-(quelpa 'multi-term)
+(quelpa 'ssh-config-mode)
 
 ;; languages
 (quelpa 'codic)
