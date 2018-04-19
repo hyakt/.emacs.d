@@ -151,7 +151,9 @@
                                       (if (or .error .warning)
                                           (propertize (format "%s/%s"
                                                               (or .error 0) (or .warning 0))
-                                                      'face '(:foreground "#D08770")) "")) ":)"))
+                                                      'face '(:foreground "#D08770"))
+                                        ""))
+                                  (propertize ":)" 'face '(:foreground "#A3BE8C"))))
                      ('running     "*")
                      ('no-checker  "-")
                      ('not-checked "=")
