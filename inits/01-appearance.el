@@ -143,6 +143,35 @@
                       (telephone-line-raw vc-mode t))
                     'face `(:foreground ,fg-color))))))
 
+  (telephone-line-defsegment my-flycheck-segment ()
+    (when (bound-and-true-p flycheck-mode)
+      (let* ((text (pcase flycheck-last-status-change
+                     ('finished (if flycheck-current-errors
+                                    (let-alist (flycheck-count-errors flycheck-current-errors)
+                                      (if (or .error .warning)
+                                          (propertize (format "%s/%s"
+                                                              (or .error 0) (or .warning 0))
+                                                      'face '(:foreground "#D08770")) "")) ":)"))
+                     ('running     "*")
+                     ('no-checker  "-")
+                     ('not-checked "=")
+                     ('errored     (propertize "!" 'face '(:foreground "#D08770")))
+                     ('interrupted (propertize "." 'face '(:foreground "#D08770")))
+                     ('suspicious  "?"))))
+        (propertize text
+                    'help-echo (pcase flycheck-last-status-change
+                                 ('finished "Display errors found by Flycheck")
+                                 ('running "Running...")
+                                 ('no-checker "No Checker")
+                                 ('not-checked "Not Checked")
+                                 ('errored "Error!")
+                                 ('interrupted "Interrupted")
+                                 ('suspicious "Suspicious?"))
+                    'display '(raise 0.0)
+                    'mouse-face '(:box 1)
+                    'local-map (make-mode-line-mouse-map
+                                'mouse-1 #'flycheck-list-errors)))))
+
   ;; Left edge
   (setq telephone-line-lhs
         '((nil  . (telephone-line-buffer-segment))))
@@ -150,8 +179,11 @@
   ;; Right edge
   (setq telephone-line-rhs
         '((nil  . ((my-vc-segment :active)))
-          (nil  . (telephone-line-airline-position-segment))
+          (nil  . ((my-flycheck-segment :active)))
           (nil  . (telephone-line-misc-info-segment))
+          (nil  . (telephone-line-airline-position-segment))
           (accent  . (telephone-line-major-mode-segment))))
 
   (telephone-line-mode 1))
+
+;;; 01-appearance ends here
