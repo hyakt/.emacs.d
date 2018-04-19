@@ -30,6 +30,7 @@
 
 ;; coding
 (quelpa 'yasnippet)
+(quelpa 'yasnippet-snippets)
 (quelpa 'company)
 (quelpa 'flycheck)
 (quelpa 'flycheck-pos-tip)

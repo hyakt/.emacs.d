@@ -6,7 +6,7 @@
   :config
   (setq yas-snippet-dirs
         '("~/.emacs.d/my-snippets"
-          "~/.emacs.d/yasnippet-snippets/snippets"))
+          "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
   (yas-global-mode 1))
 
 (use-package dumb-jump
@@ -17,7 +17,6 @@
   (setq dumb-jump-default-project "")
   (setq dumb-jump-max-find-time 10)
   (setq dumb-jump-selector 'ivy))
-
 
 (use-package company
   :config
@@ -85,3 +84,5 @@
   :config
   (add-hook 'prog-mode-hook #'symbol-overlay-mode)
   (add-hook 'markdown-mode-hook #'symbol-overlay-mode))
+
+;;; 10-coding ends here
