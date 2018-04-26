@@ -29,10 +29,10 @@
   :bind (("C-x C-o" . swap-buffers)))
 
 (use-package other-window-or-split
-  :bind* (("C-t"   . other-window-or-split)
-         ("C-S-t" . previous-other-window-or-split)
-         ("M-t"   . split-window-dwim)
-         ("C-c j" . adjust-windows-size)))
+  :bind* (("C-t"  . ws-other-window-or-split)
+         ("C-S-t" . ws-previous-other-window-or-split)
+         ("M-t"   . ws-split-window-dwim)
+         ("C-c j" . ws-adjust-windows-size)))
 
 ;; screen
 (use-package perspeen
