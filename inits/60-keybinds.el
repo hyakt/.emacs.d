@@ -23,9 +23,6 @@
 ;; expand-region
 (bind-key* (kbd "C-,") 'er/expand-region)
 
-;; other-window-or-split
-(bind-key* (kbd "C-t") 'other-window-or-split)
-
 ;; avy
 (bind-key* (kbd "C-;") 'avy-goto-char)
 (bind-key* (kbd "C-:") 'avy-goto-line)
@@ -66,3 +63,5 @@
         do (kill-buffer buf)))
 
 (bind-key (kbd "C-x C-x") 'kill-other-buffers)
+
+;;; 60-keybinds.el ends here

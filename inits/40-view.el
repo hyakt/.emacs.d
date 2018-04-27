@@ -29,7 +29,7 @@
   :bind (("C-x C-o" . swap-buffers)))
 
 (use-package other-window-or-split
-  :bind* (("C-t"  . ws-other-window-or-split)
+  :bind (("C-t"  . ws-other-window-or-split)
          ("C-S-t" . ws-previous-other-window-or-split)
          ("M-t"   . ws-split-window-dwim)
          ("C-c j" . ws-adjust-windows-size)))
@@ -167,3 +167,5 @@
     (when (memq major-mode (mapcar 'car origami-parser-alist))
       (origami-view-mode (if view-mode 1 -1))))
   (add-hook 'view-mode-hook 'view-mode-hook--origami))
+
+;;; 40-view.el ends here
