@@ -24,6 +24,7 @@
 (quelpa 'all-the-icons)
 (quelpa 'telephone-line)
 (quelpa 'dashboard)
+(quelpa 'fringe-current-line)
 
 ;; theme
 (quelpa 'nord-theme)
