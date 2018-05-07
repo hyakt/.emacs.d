@@ -14,6 +14,7 @@
 (setq scroll-conservatively 35
       scroll-margin 0
       scroll-step 1)                             ;; スクロールの設定
+(setq-default indicate-buffer-boundaries 'left)
 
 (use-package uniquify :config                    ;; 同じバッファ名の時 <2> とかではなく、ディレクトリ名で区別
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
@@ -25,9 +26,13 @@
 (set-scroll-bar-mode 'nil)                       ;; スクロールバーを使わない
 (line-number-mode 1)                             ;; 行番号を表示
 (column-number-mode 1)                           ;; 列番号を表示
-(global-hl-line-mode 1)                          ;; 現在行をハイライト
 (custom-set-variables
  '(init-loader-show-log-after-init 'error-only)) ;; init-loaderが失敗した時のみエラーメッセージを表示
+
+(use-package fringe-current-line
+  :config
+  (setq fcl-fringe-bitmap 'right-triangle)
+  (global-fringe-current-line-mode 1))
 
 (use-package dashboard :config
   (dashboard-setup-startup-hook)
