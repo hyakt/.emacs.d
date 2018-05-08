@@ -45,6 +45,7 @@
 (quelpa 'expand-region)
 (quelpa 'anzu)
 (quelpa 'undo-tree)
+(quelpa 'undohist)
 (quelpa 'migemo)
 (quelpa 'avy)
 (quelpa 'avy-migemo)

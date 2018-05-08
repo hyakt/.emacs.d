@@ -106,6 +106,8 @@
   :config
   (global-undo-tree-mode t))
 
+(use-package undohist :config (undohist-initialize))
+
 (use-package tramp
   :if (eq system-type 'darwin)
   :config
