@@ -14,7 +14,7 @@
 (setq scroll-conservatively 35
       scroll-margin 0
       scroll-step 1)                             ;; スクロールの設定
-(setq-default indicate-buffer-boundaries 'left)
+(setq mouse-highlight nil)
 
 (use-package uniquify :config                    ;; 同じバッファ名の時 <2> とかではなく、ディレクトリ名で区別
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
@@ -29,16 +29,21 @@
 (custom-set-variables
  '(init-loader-show-log-after-init 'error-only)) ;; init-loaderが失敗した時のみエラーメッセージを表示
 
-(use-package fringe-current-line
-  :config
-  (setq fcl-fringe-bitmap 'right-triangle)
-  (global-fringe-current-line-mode 1))
-
 (use-package dashboard :config
   (dashboard-setup-startup-hook)
   (setq dashboard-startup-banner 'logo)
   (setq dashboard-items '((recents  . 10)
                           (projects . 10))))
+
+;; 移動した行にハイライト
+(use-package beacon :config (beacon-mode 1))
+
+;; 編集した行にハイライト
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t)
+  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+  (vhl/install-extension 'undo-tree))
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist

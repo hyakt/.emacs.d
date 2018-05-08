@@ -24,7 +24,8 @@
 (quelpa 'all-the-icons)
 (quelpa 'telephone-line)
 (quelpa 'dashboard)
-(quelpa 'fringe-current-line)
+(quelpa 'volatile-highlights)
+(quelpa 'beacon)
 
 ;; theme
 (quelpa 'nord-theme)
