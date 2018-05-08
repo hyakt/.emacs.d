@@ -27,6 +27,9 @@
 (bind-key* (kbd "C-;") 'avy-goto-char)
 (bind-key* (kbd "C-:") 'avy-goto-line)
 
+;; other-window
+(bind-key* (kbd "C-t") 'ws-other-window-or-split)
+
 ;; company-complete
 (global-unset-key (kbd "C-j"))
 (global-set-key (kbd "C-j") 'company-complete)
