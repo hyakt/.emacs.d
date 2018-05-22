@@ -90,6 +90,7 @@
 ;; doc modes
 (quelpa 'markdown-mode)
 (quelpa 'ox-hugo)
+(quelpa 'org-bullets)
 
 ;; other modes
 (quelpa 'edbi)
