@@ -17,6 +17,13 @@
   (setq org-directory "~/org/")
   (setq org-default-notes-file (concat org-directory "note.org"))
 
+  (use-package org-bullets
+    :ensure t
+    :init
+    (setq org-bullets-bullet-list '("■" "◎" "○" "●" "►" "◇"))
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
   ;; Todo状態
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DOIN(i)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)" "SMDY(s)")))
@@ -59,10 +66,8 @@
   :config
   (setq org-latex-default-class "jsarticle")
   (setq org-latex-pdf-process '("latexmk -e '$latex=q/platex %S/' -e '$bibtex=q/pbibtex/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
-
   (setq org-file-apps
            '(("pdf" . "/usr/bin/open -a Preview.app %s")))
-
   (setq org-latex-with-hyperref nil)
   (setq org-latex-hyperref-template nil)
 
