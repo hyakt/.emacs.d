@@ -18,7 +18,6 @@
 | migemo                                   | migemo       | system  |
 | RPC::EPC::Service DBI (perl/cpan module) | edbi         | cpan    |
 | Font:Source Han Code JP                  | -            | system  |
-| Font:Ricty Diminished                    | -            | system  |
 | Font:all-the-icons                       | -            | system  |
 
 
