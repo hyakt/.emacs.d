@@ -9,6 +9,7 @@
 (quelpa 'bind-key)
 (quelpa 'init-loader)
 (quelpa 'exec-path-from-shell)
+(quelpa 'ov)
 
 ;; appearance
 (quelpa 'popwin)
