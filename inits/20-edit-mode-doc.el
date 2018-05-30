@@ -6,7 +6,8 @@
 (use-package org
   :mode (("\\.org$" . org-mode)
          ("\\.txt$" . org-mode))
-  :bind (("C-\\" . org-agenda))
+  :bind (("C-\\" . org-agenda)
+         ("C-M-]" . org-cycle-list-bullet))
   :config
   ;; Org-Exportの読み込み
   (use-package ox)
