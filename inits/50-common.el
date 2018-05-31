@@ -2,7 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-(use-package encode)
-(use-package buffer)
+(use-package my-functions)
 
 ;;; 50-common.el ends here
