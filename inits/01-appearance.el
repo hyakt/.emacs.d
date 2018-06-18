@@ -82,7 +82,7 @@
   (setq whitespace-space-regexp "\\(\u3000+\\)")
 
   ;; 保存前に自動でクリーンアップ
-  (setq whitespace-action '(auto-cleanup))
+  ;; (setq whitespace-action '(auto-cleanup))
 
   (global-whitespace-mode 1))
 
