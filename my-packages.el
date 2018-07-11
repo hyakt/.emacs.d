@@ -87,6 +87,7 @@
 (quelpa 'company-anaconda)
 (quelpa 'csharp-mode)
 (quelpa 'stylus-mode)
+(quelpa 'dockerfile-mode)
 
 ;; doc modes
 (quelpa 'markdown-mode)
