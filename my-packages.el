@@ -88,6 +88,7 @@
 (quelpa 'csharp-mode)
 (quelpa 'stylus-mode)
 (quelpa 'dockerfile-mode)
+(quelpa 'docker-compose-mode)
 
 ;; doc modes
 (quelpa 'markdown-mode)
