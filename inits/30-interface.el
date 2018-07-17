@@ -138,9 +138,6 @@
     (kill-buffer)
     (delete-window))
 
-  (define-key magit-status-mode-map (kbd "q") 'my/magit-quit-session)
-
-  ;; 読んだ
-  (setq magit-last-seen-setup-instructions "1.4.0"))
+  (define-key magit-status-mode-map (kbd "q") 'my/magit-quit-session))
 
 ;;; 30-interface ends here
