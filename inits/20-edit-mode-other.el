@@ -2,9 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-;; EDBI
-(use-package edbi)
-
 ;; docker
 (use-package docker
   :bind(( "C-x c" . docker))
