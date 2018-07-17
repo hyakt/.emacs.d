@@ -5,6 +5,11 @@
 ;; EDBI
 (use-package edbi)
 
+;; docker
+(use-package docker
+  :bind(( "C-x c" . docker))
+  :ensure t)
+
 ;; Git
 (use-package magit
   :config

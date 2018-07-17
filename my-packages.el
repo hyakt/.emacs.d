@@ -99,6 +99,7 @@
 (quelpa 'edbi)
 (quelpa 'company-edbi)
 (quelpa 'ssh-config-mode)
+(quelpa 'docker)
 
 ;; languages
 (quelpa 'codic)
