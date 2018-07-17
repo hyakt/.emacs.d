@@ -16,7 +16,6 @@
 | ripgrep                                  | rg           | system  |
 | fzf                                      | fzf          | system  |
 | migemo                                   | migemo       | system  |
-| RPC::EPC::Service DBI (perl/cpan module) | edbi         | cpan    |
 | Font:Source Han Code JP                  | -            | system  |
 | Font:all-the-icons                       | -            | system  |
 

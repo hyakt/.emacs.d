@@ -38,8 +38,6 @@
   (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
   (add-to-list 'company-backends 'company-anaconda)
-  (add-to-list 'company-backends 'company-omnisharp)
-  (add-to-list 'company-backends 'company-edbi)
   (add-to-list 'company-backends 'company-shell)
   (global-company-mode 1))
 
