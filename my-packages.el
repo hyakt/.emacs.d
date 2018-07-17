@@ -1,9 +1,9 @@
 ;;; my-packages.el --- packageのリスト
 ;;; Commentary:
 
+;;; Code:
 (require 'quelpa)
 
-;;; Code:
 ;; misc
 (quelpa 'use-package)
 (quelpa 'bind-key)
@@ -11,69 +11,36 @@
 (quelpa 'exec-path-from-shell)
 (quelpa 'ov)
 
-;; appearance
-(quelpa 'popwin)
-(quelpa 'smartparens)
-(quelpa 'rainbow-delimiters)
-(quelpa 'highlight-defined)
-(quelpa 'symbol-overlay)
-(quelpa 'swap-buffers)
-(quelpa 'origami)
-(quelpa 'which-key)
+;; 01-appearance
 (quelpa 'rainbow-mode)
-(quelpa 'perspeen)
 (quelpa 'all-the-icons)
 (quelpa 'telephone-line)
 (quelpa 'dashboard)
 (quelpa 'volatile-highlights)
+(quelpa 'highlight-defined)
 (quelpa 'beacon)
 (quelpa 'dimmer)
-
-;; theme
+;;; theme
 (quelpa 'nord-theme)
 
-;; coding
+;; 10-coding
 (quelpa 'yasnippet)
 (quelpa 'yasnippet-snippets)
-(quelpa 'company)
 (quelpa 'flycheck)
 (quelpa 'flycheck-pos-tip)
-(quelpa 'quickrun)
-(quelpa 'dumb-jump)
+(quelpa 'symbol-overlay)
 (quelpa 'wgrep)
-
-;; editing
-(quelpa 'multiple-cursors)
-(quelpa 'expand-region)
-(quelpa 'anzu)
-(quelpa 'undo-tree)
 (quelpa 'undohist)
 (quelpa 'migemo)
 (quelpa 'avy)
 (quelpa 'avy-migemo)
 (quelpa 'pcre2el)
-(quelpa 'multi-term)
-(quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-split"))
-
-;; file
-(quelpa 'wdired)
-(quelpa 'neotree)
-(quelpa 'open-junk-file)
-
-;; version control
-(quelpa 'magit)
-(quelpa 'gitconfig-mode)
-(quelpa 'gitignore-mode)
+(quelpa 'rainbow-delimiters)
+(quelpa 'which-key)
+(quelpa 'smartparens)
 (quelpa 'git-gutter)
-(quelpa 'git-timemachine)
-(quelpa 'projectile)
 
-;; completion interface
-(quelpa 'counsel)
-(quelpa 'ivy)
-(quelpa 'swiper)
-
-;; prog modes
+;; 20-edit-mode-prog
 (quelpa 'swift-mode)
 (quelpa 'haskell-mode)
 (quelpa 'ansible)
@@ -82,25 +49,51 @@
 (quelpa 'web-beautify)
 (quelpa 'tern)
 (quelpa 'add-node-modules-path)
-(quelpa 'company-tern)
 (quelpa 'yaml-mode)
 (quelpa 'anaconda-mode)
-(quelpa 'company-anaconda)
 (quelpa 'csharp-mode)
 (quelpa 'stylus-mode)
 (quelpa 'dockerfile-mode)
 (quelpa 'docker-compose-mode)
+(quelpa 'ssh-config-mode)
+(quelpa 'gitconfig-mode)
+(quelpa 'gitignore-mode)
 
-;; doc modes
+;; 20-edit-mode-doc
 (quelpa 'markdown-mode)
 (quelpa 'ox-hugo)
 (quelpa 'org-bullets)
 
-;; other modes
-(quelpa 'ssh-config-mode)
+;; 30-interface
+(quelpa 'counsel)
+(quelpa 'ivy)
+(quelpa 'swiper)
+(quelpa 'avy)
+(quelpa 'avy-migemo)
+(quelpa 'company)
+(quelpa 'company-tern)
+(quelpa 'company-anaconda)
+(quelpa 'quickrun)
+(quelpa 'dumb-jump)
+(quelpa 'undo-tree)
+(quelpa 'anzu)
+(quelpa 'multiple-cursors)
+(quelpa 'expand-region)
+(quelpa 'wdired)
+(quelpa 'open-junk-file)
+(quelpa 'multi-term)
+(quelpa 'git-timemachine)
+(quelpa 'projectile)
+(quelpa 'magit)
 (quelpa 'docker)
 
-;; languages
+;; 40-view
 (quelpa 'codic)
+(quelpa 'neotree)
+(quelpa 'swap-buffers)
+(quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-split"))
+(quelpa 'perspeen)
+(quelpa 'popwin)
+(quelpa 'origami)
 
 ;;; my-packages.el ends here
