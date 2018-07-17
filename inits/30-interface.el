@@ -1,4 +1,4 @@
-;;; 30-edit.el --- 編集機能の設定
+;;; 30-interface.el --- インターフェースについての設定
 ;;; Commentary:
 
 ;;; Code:
@@ -42,6 +42,42 @@
   (use-package avy-migemo-e.g.swiper)
   (use-package avy-migemo-e.g.counsel))
 
+(use-package company
+  :config
+  (define-key company-active-map (kbd "\C-n") 'company-select-next)
+  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (setq company-dabbrev-downcase nil)
+  (setq company-transformers '(company-sort-by-backend-importance))
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3)
+  (setq company-selection-wrap-around t)
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+  (add-to-list 'company-backends 'company-anaconda)
+  (add-to-list 'company-backends 'company-shell)
+  (global-company-mode 1))
+
+(use-package quickrun
+  :bind (("C-x q" . quickrun)
+         ("C-x a" . quickrun-with-arg)))
+
+(use-package dumb-jump
+  :bind (("M-." . dumb-jump-quick-look)
+         ("M-n" . dumb-jump-go)
+         ("M-p" . dumb-jump-back))
+  :config (dumb-jump-mode)
+  (setq dumb-jump-default-project "")
+  (setq dumb-jump-max-find-time 10)
+  (setq dumb-jump-selector 'ivy))
+
 (use-package anzu
   :bind (("C-%" . anzu-query-replace)
          ("M-%" . anzu-query-replace-regexp)
@@ -53,34 +89,21 @@
   (setq anzu-minimum-input-length 3)
   (set-face-attribute 'anzu-mode-line nil :foreground "yellow" :weight 'bold))
 
-(use-package pcre2el :config (setq rxt-global-mode t))
-
 (use-package multiple-cursors
   :bind
   (("C->" . mc/mark-next-like-this)
    ("C-<" . mc/mark-previous-like-this)
    ("<C-M-return>" . mc/mark-all-dwim)))
 
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-redo)
+         ("C-x u" . undo-tree-visualize))
+  :config
+  (global-undo-tree-mode t))
+
 (use-package expand-region
   :bind (("C-," . er/expand-region)
          ("C-M-," . er/contract-region)))
-
-(use-package migemo
-  :if (executable-find "cmigemo")
-  :config
-  (setq migemo-command "cmigemo")
-  (setq migemo-options '("-q" "--emacs" "-i" "\g"))
-  (setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
-  (setq migemo-user-dictionary nil)
-  (setq migemo-regex-dictionary nil)
-  (setq migemo-coding-system 'utf-8-unix)
-
-  (setq migemo-use-pattern-alist t)
-  (setq migemo-use-frequent-pattern-alist t)
-  (setq migemo-pattern-alist-length 1000)
-
-  (load-library "migemo")
-  (migemo-init))
 
 (use-package wdired
   :config
@@ -88,35 +111,11 @@
   (define-key dired-mode-map (kbd "(") 'dired-hide-details-mode)
   (define-key dired-mode-map (kbd ")") 'dired-hide-details-mode))
 
-(use-package recentf
-  :config
-  (setq recentf-max-saved-items 500)
-  (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-  (setq recentf-auto-cleanup 'never)
-  (recentf-mode 1))
-
-(use-package which-key
-  :config
-  (which-key-mode))
-
-;; undo-treeモードの設定
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-redo)
-         ("C-x u" . undo-tree-visualize))
-  :config
-  (global-undo-tree-mode t))
-
-(use-package undohist :config (undohist-initialize))
-
 (use-package tramp
   :if (eq system-type 'darwin)
   :config
   ;; http://qiita.com/l3msh0/items/6b84082541cbbf7d00f8
   (setenv "TMPDIR" "/tmp"))
-
-(use-package smartparens-config
-  :config
-  (smartparens-global-mode t))
 
 (use-package multi-term
   :bind (("M-\\" . multi-term-dedicated-toggle))
@@ -125,3 +124,23 @@
   (add-to-list 'term-unbind-key-list "C-v"))
 
 (use-package open-junk-file :bind (("M-`" . open-junk-file)))
+
+(use-package docker
+  :bind(( "C-x c" . docker))
+  :ensure t)
+
+(use-package magit
+  :config
+  (global-set-key (kbd "C-x g") 'magit-status)
+
+  (defun my/magit-quit-session ()
+    (interactive)
+    (kill-buffer)
+    (delete-window))
+
+  (define-key magit-status-mode-map (kbd "q") 'my/magit-quit-session)
+
+  ;; 読んだ
+  (setq magit-last-seen-setup-instructions "1.4.0"))
+
+;;; 30-interface ends here

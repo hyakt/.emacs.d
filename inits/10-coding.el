@@ -9,42 +9,6 @@
           "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
   (yas-global-mode 1))
 
-(use-package dumb-jump
-  :bind (("M-." . dumb-jump-quick-look)
-         ("M-n" . dumb-jump-go)
-         ("M-p" . dumb-jump-back))
-  :config (dumb-jump-mode)
-  (setq dumb-jump-default-project "")
-  (setq dumb-jump-max-find-time 10)
-  (setq dumb-jump-selector 'ivy))
-
-(use-package company
-  :config
-  (define-key company-active-map (kbd "\C-n") 'company-select-next)
-  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
-  (setq company-dabbrev-downcase nil)
-  (setq company-transformers '(company-sort-by-backend-importance))
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3)
-  (setq company-selection-wrap-around t)
-  (defvar company-mode/enable-yas t
-    "Enable yasnippet for all backends.")
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
-  (add-to-list 'company-backends 'company-anaconda)
-  (add-to-list 'company-backends 'company-shell)
-  (global-company-mode 1))
-
-(use-package quickrun
-  :bind (("C-x q" . quickrun)
-         ("C-x a" . quickrun-with-arg)))
-
 (use-package flycheck
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -75,5 +39,45 @@
   :config
   (add-hook 'prog-mode-hook #'symbol-overlay-mode)
   (add-hook 'markdown-mode-hook #'symbol-overlay-mode))
+
+(use-package pcre2el :config (setq rxt-global-mode t))
+
+(use-package migemo
+  :if (executable-find "cmigemo")
+  :config
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs" "-i" "\g"))
+  (setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+
+  (setq migemo-use-pattern-alist t)
+  (setq migemo-use-frequent-pattern-alist t)
+  (setq migemo-pattern-alist-length 1000)
+
+  (load-library "migemo")
+  (migemo-init))
+
+(use-package recentf
+  :config
+  (setq recentf-max-saved-items 500)
+  (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+  (setq recentf-auto-cleanup 'never)
+  (recentf-mode 1))
+
+(use-package which-key
+  :config
+  (which-key-mode))
+
+(use-package undohist :config (undohist-initialize))
+
+(use-package smartparens-config
+  :config
+  (smartparens-global-mode t))
+
+(use-package git-gutter
+  :config
+  (global-git-gutter-mode +1))
 
 ;;; 10-coding ends here
