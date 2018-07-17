@@ -9,6 +9,27 @@
           "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
   (yas-global-mode 1))
 
+(use-package company
+  :ensure t
+  :config
+  (define-key company-active-map (kbd "\C-n") 'company-select-next)
+  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (setq company-transformers '(company-sort-by-occurrence))
+  (setq company-idle-delay 0.1)
+  (setq company-minimum-prefix-length 2)
+  (setq company-selection-wrap-around t)
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+  (add-to-list 'company-backends 'company-anaconda)
+  (add-to-list 'company-backends 'company-shell)
+  (global-company-mode 1))
+
 (use-package flycheck
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -27,6 +48,19 @@
   (setq-default ispell-program-name "aspell")
   (eval-after-load "ispell"
     '(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))))
+
+(use-package quickrun
+  :bind (("C-x q" . quickrun)
+         ("C-x a" . quickrun-with-arg)))
+
+(use-package dumb-jump
+  :bind (("M-." . dumb-jump-quick-look)
+         ("M-n" . dumb-jump-go)
+         ("M-p" . dumb-jump-back))
+  :config (dumb-jump-mode)
+  (setq dumb-jump-default-project "")
+  (setq dumb-jump-max-find-time 10)
+  (setq dumb-jump-selector 'ivy))
 
 ;; 括弧の色付け
 (use-package rainbow-delimiters
@@ -58,19 +92,6 @@
 
   (load-library "migemo")
   (migemo-init))
-
-(use-package recentf
-  :config
-  (setq recentf-max-saved-items 500)
-  (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-  (setq recentf-auto-cleanup 'never)
-  (recentf-mode 1))
-
-(use-package which-key
-  :config
-  (which-key-mode))
-
-(use-package undohist :config (undohist-initialize))
 
 (use-package smartparens-config
   :config
