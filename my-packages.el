@@ -27,6 +27,7 @@
 (quelpa 'dashboard)
 (quelpa 'volatile-highlights)
 (quelpa 'beacon)
+(quelpa 'dimmer)
 
 ;; theme
 (quelpa 'nord-theme)
