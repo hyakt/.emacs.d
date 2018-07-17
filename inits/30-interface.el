@@ -43,14 +43,14 @@
   (use-package avy-migemo-e.g.counsel))
 
 (use-package company
+  :ensure t
   :config
   (define-key company-active-map (kbd "\C-n") 'company-select-next)
   (define-key company-active-map (kbd "\C-p") 'company-select-previous)
   (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
-  (setq company-dabbrev-downcase nil)
-  (setq company-transformers '(company-sort-by-backend-importance))
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3)
+  (setq company-transformers '(company-sort-by-occurrence))
+  (setq company-idle-delay 0.1)
+  (setq company-minimum-prefix-length 2)
   (setq company-selection-wrap-around t)
   (defvar company-mode/enable-yas t
     "Enable yasnippet for all backends.")
@@ -59,8 +59,6 @@
         backend
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
   (add-to-list 'company-backends 'company-anaconda)
   (add-to-list 'company-backends 'company-shell)
   (global-company-mode 1))
