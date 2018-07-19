@@ -7,11 +7,15 @@
 (use-package ov
   :init
   (defun my/buffer-ricty-face ()
-    "Minchoize current buffer."
+    "Rictyoise current buffer."
     (interactive)
     (ov (point-min) (point-max) 'face '(:family "Ricty Diminished"))))
 
-;; Org-bulletsの記号を維持したまま出力
+(defun my/set-alpha (alpha-num)
+  "set frame parameter 'alpha"
+  (interactive "nAlpha: ")
+  (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
+
 (defun my/org-bullets-export (path)
   "Export to bullets style text file."
   (interactive "FExport file: ")
