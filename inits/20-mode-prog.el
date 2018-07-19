@@ -52,8 +52,7 @@
   :init
   (add-hook 'js2-mode-hook 'tern-mode)
   :config
-  (tern-mode t)
-  (add-to-list 'company-backends 'company-tern))
+  (tern-mode t))
 
 (use-package add-node-modules-path :config (add-hook 'js2-mode-hook #'add-node-modules-path))
 

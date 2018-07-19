@@ -1,3 +1,4 @@
+
 ;;; 10-coding.el --- コーディングのサポート設定
 ;;; Commentary:
 
@@ -10,15 +11,19 @@
   (yas-global-mode 1))
 
 (use-package company
-  :ensure t
+  :defer t
+  :init (global-company-mode)
+  :bind (:map company-active-map
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("C-d" . company-show-doc-buffer))
   :config
-  (define-key company-active-map (kbd "\C-n") 'company-select-next)
-  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
   (setq company-transformers '(company-sort-by-occurrence))
   (setq company-idle-delay 0.1)
   (setq company-minimum-prefix-length 2)
   (setq company-selection-wrap-around t)
+  (setq company-tooltip-align-annotations t)
+  (setq company-show-numbers t)
   (defvar company-mode/enable-yas t
     "Enable yasnippet for all backends.")
   (defun company-mode/backend-with-yas (backend)
@@ -27,7 +32,12 @@
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
   (add-to-list 'company-backends 'company-anaconda)
-  (global-company-mode 1))
+  (add-to-list 'company-backends 'company-tern))
+
+(use-package company-flx :hook (company-mode . company-flx-mode))
+(use-package company-quickhelp
+  :hook (company-mode . company-quickhelp-mode)
+  :config (setq company-quickhelp-delay .1))
 
 (use-package flycheck
   :config
