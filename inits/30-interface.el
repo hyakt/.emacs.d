@@ -48,6 +48,9 @@
   (add-to-list 'term-unbind-key-list "C-f")
   (add-to-list 'term-unbind-key-list "C-v"))
 
+(use-package eshell
+  :bind (("C-r" . counsel-esh-history)))
+
 (use-package which-key
   :config
   (which-key-mode))
