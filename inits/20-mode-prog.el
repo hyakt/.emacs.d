@@ -1,4 +1,4 @@
-;;; 20-edit-mode-prog.el --- プログラム用メジャーモード設定
+;;; 20-mode-prog.el --- プログラム用メジャーモード設定
 ;;; Commentary:
 
 ;;; Code:
@@ -71,3 +71,5 @@
 
 ;; Swift
 (use-package swift-mode :config (add-to-list 'flycheck-checkers 'swift))
+
+;;; 20-mode-prog ends here

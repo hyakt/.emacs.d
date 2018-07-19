@@ -1,4 +1,4 @@
-;;; 30-interface.el --- インターフェースについての設定
+;;; 40-interface.el --- インターフェースについての設定
 ;;; Commentary:
 
 ;;; Code:
@@ -71,4 +71,4 @@
     (kill-buffer)
     (delete-window)))
 
-;;; 30-interface ends here
+;;; 40-interface ends here

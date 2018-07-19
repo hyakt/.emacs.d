@@ -1,4 +1,4 @@
-;;; 20-edit-mode-doc.el --- 文章編集用メジャーモード設定
+;;; 21-mode-doc.el --- 文章編集用メジャーモード設定
 ;;; Commentary:
 
 ;;; Code:
@@ -156,3 +156,4 @@
                                                                                (2 markdown-header-face-6)
                                                                                (3 markdown-header-face-6)))))))
 
+;;; 21-mode-doc ends here

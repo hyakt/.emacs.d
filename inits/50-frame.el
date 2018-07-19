@@ -1,4 +1,4 @@
-;;; 40-frame.el --- フレーム機能についての設定
+;;; 50-frame.el --- フレーム機能についての設定
 ;;; Commentary:
 
 ;;; Code:
@@ -123,4 +123,4 @@
 
 (use-package origami :config (setq global-origami-mode t))
 
-;;; 40-frame.el ends here
+;;; 50-frame.el ends here

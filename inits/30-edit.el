@@ -1,4 +1,4 @@
-;;; 31-edit.el --- 編集機能についての設定
+;;; 30-edit.el --- 編集機能についての設定
 ;;; Commentary:
 
 ;;; Code:
@@ -31,7 +31,7 @@
   :bind (("C-," . er/expand-region)
          ("C-M-," . er/contract-region)))
 
-(use-package wdired
+(use-package dired
   :bind (:map dired-mode-map
               ("e" . wdired-change-to-wdired-mode)
               ("(" . dired-hide-details-mode)
@@ -52,4 +52,4 @@
 
 (use-package open-junk-file :bind (("M-`" . open-junk-file)))
 
-;;; 31-edit ends here
+;;; 30-edit ends here

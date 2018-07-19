@@ -27,7 +27,6 @@
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
   (add-to-list 'company-backends 'company-anaconda)
-  (add-to-list 'company-backends 'company-shell)
   (global-company-mode 1))
 
 (use-package flycheck
