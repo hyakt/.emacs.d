@@ -16,6 +16,11 @@
   (interactive "nAlpha: ")
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
 
+(defun my/full-screen ()
+  "set frame maxmize"
+  (interactive)
+  (toggle-frame-maximized))
+
 (defun my/org-bullets-export (path)
   "Export to bullets style text file."
   (interactive "FExport file: ")
