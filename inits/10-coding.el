@@ -92,7 +92,9 @@
   (load-library "migemo")
   (migemo-init))
 
-(use-package smartparens-config
+(use-package smartparens
+  :bind (("C-M-n" . sp-forward-sexp)
+         ("C-M-p" . sp-backward-sexp))
   :config
   (smartparens-global-mode t))
 
