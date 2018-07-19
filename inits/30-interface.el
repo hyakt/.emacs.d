@@ -49,7 +49,10 @@
   (add-to-list 'term-unbind-key-list "C-v"))
 
 (use-package eshell
-  :bind (("C-r" . counsel-esh-history)))
+  :defer t
+  :config
+  (add-hook 'eshell-mode-hook
+            (lambda () (bind-key "C-r" 'counsel-esh-history eshell-mode-map))))
 
 (use-package which-key
   :config
