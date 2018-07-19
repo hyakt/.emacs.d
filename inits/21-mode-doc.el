@@ -19,7 +19,6 @@
   (setq org-default-notes-file (concat org-directory "note.org"))
 
   (use-package org-bullets
-    :ensure t
     :init
     (setq org-bullets-bullet-list '("■" "◎" "○" "●" "►" "◇"))
     :config

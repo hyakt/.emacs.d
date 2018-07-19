@@ -59,8 +59,7 @@
   (which-key-mode))
 
 (use-package docker
-  :bind(( "C-x c" . docker))
-  :ensure t)
+  :bind(( "C-x c" . docker)))
 
 (use-package magit
   :bind ("C-x g" . magit-status)

@@ -27,6 +27,8 @@
 (quelpa 'yasnippet)
 (quelpa 'yasnippet-snippets)
 (quelpa 'company)
+(quelpa 'company-flx)
+(quelpa 'company-quickhelp)
 (quelpa 'company-tern)
 (quelpa 'company-anaconda)
 (quelpa 'quickrun)
