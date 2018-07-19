@@ -1,16 +1,17 @@
-;;; 40-view.el --- 表示機能についての設定
+;;; 40-frame.el --- フレーム機能についての設定
 ;;; Commentary:
 
 ;;; Code:
 (use-package neotree :defer t
-  :bind (("M-=" . neotree-toggle))
+  :bind (("M-=" . neotree-toggle)
+         :map neotree-mode-map
+         ("M-w" . my/neotree-kill-filename-at-point))
   :config
   (defun my/neotree-kill-filename-at-point ()
     "Kill full path of note at point."
     (interactive)
     (message "Copy %s"
              (kill-new (neo-buffer--get-filename-current-line))))
-  (bind-key "M-w" 'my/neotree-kill-filename-at-point neotree-mode-map)
 
   (setq neo-show-hidden-files t)
   (setq neo-create-file-auto-open t)
@@ -93,79 +94,33 @@
 
   (push '("*Remember*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config))
 
-;; read onlyの設定
-(setq view-read-only t)
-(defvar pager-keybind
-      `( ;; vi-like
-        ("h" . backward-word)
-        ("l" . forward-word)
-        ("j" . next-line)
-        ("k" . previous-line)
-        (";" . gene-word)
-        ("b" . scroll-down)
-        (" " . scroll-up)
-        ("n" . ,(lambda () (interactive) (scroll-up 1)))
-        ("p" . ,(lambda () (interactive) (scroll-down 1)))
-        ;; bm-easy
-        ("." . bm-toggle)
-        ("[" . bm-previous)
-        ("]" . bm-next)
-        ;; langhelp-like
-        ("c" . scroll-other-window-down)
-        ("v" . scroll-other-window)))
-
-(defun define-many-keys (keymap key-table &optional includes)
-  (let (key cmd)
-    (dolist (key-cmd key-table)
-      (setq key (car key-cmd)
-            cmd (cdr key-cmd))
-      (if (or (not includes) (member key includes))
-        (define-key keymap key cmd))))
-  keymap)
-
-(defun view-mode-hook0 ()
-  (define-many-keys view-mode-map pager-keybind)
-  (hl-line-mode 1)
-  (define-key view-mode-map " " 'scroll-up))
-(add-hook 'view-mode-hook 'view-mode-hook0)
-
-;; 書き込み不能なファイルはview-modeで開くように
-(defadvice find-file
-  (around find-file-switch-to-view-file (file &optional wild) activate)
-  (if (and (not (file-writable-p file))
-           (not (file-directory-p file)))
-      (view-file file)
-    ad-do-it))
-
-;; 書き込み不能な場合はview-modeを抜けないように
-(defvar view-mode-force-exit nil)
-(defmacro do-not-exit-view-mode-unless-writable-advice (f)
-  `(defadvice ,f (around do-not-exit-view-mode-unless-writable activate)
-     (if (and (buffer-file-name)
-              (not view-mode-force-exit)
-              (not (file-writable-p (buffer-file-name))))
-         (message "File is unwritable, so stay in view-mode.")
-       ad-do-it)))
-
-(do-not-exit-view-mode-unless-writable-advice view-mode-exit)
-(do-not-exit-view-mode-unless-writable-advice view-mode-disable)
-
-(use-package origami
+(use-package view
+  :bind (:map view-mode-map
+              ("h" . backward-word)
+              ("l" . forward-word)
+              ("j" . next-line)
+              ("k" . previous-line)
+              (";" . gene-word)
+              ("b" . scroll-down)
+              (" " . scroll-up)
+              ("n" . (lambda () (interactive) (scroll-up 1)))
+              ("p" . (lambda () (interactive) (scroll-down 1)))
+              ("." . bm-toggle)
+              ("[" . bm-previous)
+              ("]" . bm-next)
+              ("c" . scroll-other-window-down)
+              ("v" . scroll-other-window))
   :config
-  ;; (makunbound 'origami-view-mode-map)
-  (define-minor-mode origami-view-mode
-    "TABにorigamiの折畳みを割り当てる"
-    nil "折紙"
-    '(("\C-i" . origami-cycle))
-    (or origami-mode (origami-mode 1)))
-  (defun origami-cycle (recursive)
-    "origamiの機能をorg風にまとめる"
-    (interactive "P")
-    (call-interactively
-     (if recursive 'origami-toggle-all-nodes 'origami-toggle-node)))
-  (defun view-mode-hook--origami ()
-    (when (memq major-mode (mapcar 'car origami-parser-alist))
-      (origami-view-mode (if view-mode 1 -1))))
-  (add-hook 'view-mode-hook 'view-mode-hook--origami))
+  (setq view-read-only t)
 
-;;; 40-view.el ends here
+  ;; 書き込み不能なファイルはview-modeで開くように
+  (defadvice find-file
+      (around find-file-switch-to-view-file (file &optional wild) activate)
+    (if (and (not (file-writable-p file))
+             (not (file-directory-p file)))
+        (view-file file)
+      ad-do-it)))
+
+(use-package origami :config (setq global-origami-mode t))
+
+;;; 40-frame.el ends here

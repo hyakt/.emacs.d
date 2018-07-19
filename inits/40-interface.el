@@ -63,14 +63,12 @@
   :ensure t)
 
 (use-package magit
+  :bind ("C-x g" . magit-status)
+  (:map magit-status-mode-map ("q" . my/magit-quit-session))
   :config
-  (global-set-key (kbd "C-x g") 'magit-status)
-
   (defun my/magit-quit-session ()
     (interactive)
     (kill-buffer)
-    (delete-window))
-
-  (define-key magit-status-mode-map (kbd "q") 'my/magit-quit-session))
+    (delete-window)))
 
 ;;; 30-interface ends here

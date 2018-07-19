@@ -32,10 +32,10 @@
          ("C-M-," . er/contract-region)))
 
 (use-package wdired
-  :config
-  (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
-  (define-key dired-mode-map (kbd "(") 'dired-hide-details-mode)
-  (define-key dired-mode-map (kbd ")") 'dired-hide-details-mode))
+  :bind (:map dired-mode-map
+              ("e" . wdired-change-to-wdired-mode)
+              ("(" . dired-hide-details-mode)
+              (")" . dired-hide-details-mode)))
 
 (use-package recentf
   :config
