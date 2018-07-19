@@ -1,4 +1,3 @@
-
 ;;; 10-coding.el --- コーディングのサポート設定
 ;;; Commentary:
 

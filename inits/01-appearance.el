@@ -39,7 +39,7 @@
 (use-package beacon :config (beacon-mode 1))
 
 ;; 選択Window以外を暗くする
-(use-package dimmer :config (dimmer-mode))
+(use-package dimmer :init (dimmer-mode))
 
 ;; 編集した行にハイライト
 (use-package volatile-highlights
