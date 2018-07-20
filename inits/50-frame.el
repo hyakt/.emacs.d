@@ -12,7 +12,7 @@
     (interactive)
     (message "Copy %s"
              (kill-new (neo-buffer--get-filename-current-line))))
-
+n
   (setq neo-show-hidden-files t)
   (setq neo-create-file-auto-open t)
   (setq neo-persist-show t)
@@ -31,9 +31,7 @@
 
 (use-package other-window-or-split
   :bind (("C-t"  . ws-other-window-or-split)
-         ("C-S-t" . ws-previous-other-window-or-split)
-         ("M-t"   . ws-split-window-dwim)
-         ("C-c j" . ws-adjust-windows-size)))
+         ("C-S-t" . ws-previous-other-window-or-split)))
 
 ;; screen
 (use-package perspeen

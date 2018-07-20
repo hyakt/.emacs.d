@@ -102,10 +102,9 @@
   (migemo-init))
 
 (use-package smartparens
+  :init (smartparens-global-mode t)
   :bind (("C-M-n" . sp-forward-sexp)
-         ("C-M-p" . sp-backward-sexp))
-  :config
-  (smartparens-global-mode t))
+         ("C-M-p" . sp-backward-sexp)))
 
 (use-package git-gutter
   :config
