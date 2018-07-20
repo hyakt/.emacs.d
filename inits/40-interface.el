@@ -42,21 +42,33 @@
   (use-package avy-migemo-e.g.swiper)
   (use-package avy-migemo-e.g.counsel))
 
-(use-package multi-term
-  :bind (("M-\\" . multi-term-dedicated-toggle))
-  :config
-  (add-to-list 'term-unbind-key-list "C-f")
-  (add-to-list 'term-unbind-key-list "C-v"))
-
 (use-package eshell
   :defer t
   :config
+  (setq eshell-cmpl-ignore-case t)
+  (setq eshell-ask-to-save-history 'always)
   (add-hook 'eshell-mode-hook
             (lambda () (bind-key "C-r" 'counsel-esh-history eshell-mode-map))))
 
-(use-package which-key
+(use-package shell-pop
+  :bind (("M-t" . shell-pop))
   :config
-  (which-key-mode))
+  (custom-set-variables
+   '(shell-pop-shell-type '("eshell" " *eshell*" (lambda () (eshell))))))
+
+(use-package eshell-prompt-extras
+  :after eshell
+  :config
+  (setq eshell-highlight-prompt nil)
+  (setq eshell-prompt-function 'epe-theme-lambda))
+
+(use-package fish-completion
+  :if (executable-find "fish")
+  :config (global-fish-completion-mode))
+  
+(use-package esh-autosuggest :hook (eshell-mode . esh-autosuggest-mode))
+
+(use-package which-key :config (which-key-mode))
 
 (use-package docker
   :bind(( "C-x c" . docker)))

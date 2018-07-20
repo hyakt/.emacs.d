@@ -61,25 +61,12 @@
 (quelpa 'gitconfig-mode)
 (quelpa 'gitignore-mode)
 
-;; 20-edit-mode-doc
+;; 21-edit-mode-doc
 (quelpa 'markdown-mode)
 (quelpa 'ox-hugo)
 (quelpa 'org-bullets)
 
-;; 30-interface
-(quelpa 'counsel)
-(quelpa 'ivy)
-(quelpa 'swiper)
-(quelpa 'avy)
-(quelpa 'avy-migemo)
-(quelpa 'multi-term)
-(quelpa 'magit)
-(quelpa 'which-key)
-(quelpa 'git-timemachine)
-(quelpa 'projectile)
-(quelpa 'docker)
-
-;; 31-edit
+;; 30-edit
 (quelpa 'anzu)
 (quelpa 'undo-tree)
 (quelpa 'undohist)
@@ -89,7 +76,23 @@
 (quelpa 'wgrep)
 (quelpa 'open-junk-file)
 
-;; 40-view
+;; 40-interface
+(quelpa 'counsel)
+(quelpa 'ivy)
+(quelpa 'swiper)
+(quelpa 'avy)
+(quelpa 'avy-migemo)
+(quelpa 'magit)
+(quelpa 'which-key)
+(quelpa 'git-timemachine)
+(quelpa 'projectile)
+(quelpa 'docker)
+(quelpa 'shell-pop)
+(quelpa 'fish-completion)
+(quelpa 'esh-autosuggest)
+(quelpa 'eshell-prompt-extras)
+
+;; 50-view
 (quelpa 'codic)
 (quelpa 'neotree)
 (quelpa 'swap-buffers)
