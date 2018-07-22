@@ -104,7 +104,10 @@
 (use-package smartparens
   :init (smartparens-global-mode t)
   :bind (("C-M-n" . sp-forward-sexp)
-         ("C-M-p" . sp-backward-sexp)))
+         ("C-M-p" . sp-backward-sexp))
+  :config
+  (sp-local-pair 'emacs-lisp-mode "`" "'")
+  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil))
 
 (use-package git-gutter
   :config
