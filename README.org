@@ -3,21 +3,22 @@
 #+EMAIL: kaji1216@gmail.com
 
 ** Require
-| name                                     | package      | install |
-|------------------------------------------+--------------+---------|
-| aspell                                   | flycheck     | system  |
-| git                                      | magit        | system  |
-| python                                   | python       | system  |
-| node                                     | node         | system  |
-| tern                                     | tern         | npm     |
-| js-beautify                              | web-beautify | npm     |
-| swift                                    | swift-mode   | Xcode   |
-| Latex                                    | auctex       | system  |
-| ripgrep                                  | rg           | system  |
-| fzf                                      | fzf          | system  |
-| migemo                                   | migemo       | system  |
-| Font:Source Han Code JP                  | -            | system  |
-| Font:all-the-icons                       | -            | system  |
+| name                    | package      | install |
+|-------------------------+--------------+---------|
+| aspell                  | flycheck     | system  |
+| git                     | magit        | system  |
+| python                  | python       | system  |
+| node                    | node         | system  |
+| tern                    | tern         | npm     |
+| pry                     | ruby         | gem     |
+| js-beautify             | web-beautify | npm     |
+| swift                   | swift-mode   | Xcode   |
+| Latex                   | auctex       | system  |
+| ripgrep                 | rg           | system  |
+| fzf                     | fzf          | system  |
+| migemo                  | migemo       | system  |
+| Font:Source Han Code JP | -            | system  |
+| Font:all-the-icons      | -            | system  |
 
 
 
