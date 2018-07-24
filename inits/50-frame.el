@@ -71,6 +71,9 @@ n
   (push '("*Python*" :stick t) popwin:special-display-config)
   (push '("*jedi:doc*" :noselect t) popwin:special-display-config)
 
+  (push '("*pry*" :stick t) popwin:special-display-config)
+  (push '("*ruby*" :stick t) popwin:special-display-config)
+
   (push '("*slime-apropos*") popwin:special-display-config)
   (push '("*slime-macroexpansion*") popwin:special-display-config)
   (push '("*slime-description*") popwin:special-display-config)
