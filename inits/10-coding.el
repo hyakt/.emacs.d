@@ -29,9 +29,7 @@
     (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
         backend
       (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-  (add-to-list 'company-backends 'company-anaconda)
-  (add-to-list 'company-backends 'company-tern))
+              '(:with company-yasnippet)))))
 
 (use-package company-flx :hook (company-mode . company-flx-mode))
 (use-package company-quickhelp
