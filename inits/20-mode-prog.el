@@ -81,13 +81,16 @@
          ("Capfile$" . ruby-mode)
 	     ("Gemfile$" . ruby-mode)
 	     ("[Rr]akefile$" . ruby-mode))
-  :interpreter "pry")
+  :interpreter "pry"
+  :config
+  (use-package smartparens-ruby))
 
 (use-package inf-ruby :defer t
+  :init (defalias 'irb 'inf-ruby))
   :config
   (custom-set-variables
    '(inf-ruby-default-implementation "pry")
-   '(inf-ruby-eval-binding "Pry.toplevel_binding")))
+   '(inf-ruby-eval-binding "Pry.toplevel_binding"))
 
 (use-package robe :defer t
     :after company
