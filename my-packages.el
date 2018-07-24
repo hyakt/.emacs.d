@@ -54,7 +54,6 @@
 (quelpa 'yaml-mode)
 (quelpa 'anaconda-mode)
 (quelpa 'csharp-mode)
-(quelpa 'enh-ruby-mode)
 (quelpa 'robe)
 (quelpa 'inf-ruby)
 (quelpa 'stylus-mode)

@@ -33,17 +33,17 @@
   (setq web-mode-enable-current-column-highlight t))
 
 ;; javascript
-(use-package js2-mode
+(use-package js2-mode :defer t
   :mode (("\.js$" . js2-mode))
   :config
   (setq js2-strict-missing-semi-warning nil)
-  (setq js2-basic-offset 2)
-  (use-package tern
+  (setq js2-basic-offset 2))
+
+(use-package tern :defer t
     :after company
+    :hook ((js2-mode . tern-mode))
     :config
-    (tern-mode t)
-    (add-hook 'js2-mode-hook 'tern-mode)
-    (add-to-list 'company-backends 'company-tern)))
+    (add-to-list 'company-backends 'company-tern))
 
 (use-package web-beautify
   :defer t
@@ -60,13 +60,15 @@
   (add-hook 'python-mode-hook
             (lambda ()
               (setq indent-tabs-mode nil)
-              (setq tab-width 4)))
-  (use-package anaconda-mode
-    :after company
-    :config
-    (add-hook 'python-mode-hook 'anaconda-mode)
-    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-    (add-to-list 'company-backends 'company-anaconda)))
+              (setq tab-width 4))))
+
+(use-package anaconda-mode
+  :after company
+  :hook ((python-mode . anaconda-mode)
+         (python-mode . anaconda-eldoc-mode))
+  :config
+  (add-hook 'python-mode-hook 'anaconda-mode)
+  (add-to-list 'company-backends 'company-anaconda))
 
 ;; Swift
 (use-package swift-mode :defer t
@@ -74,20 +76,24 @@
   :config (add-to-list 'flycheck-checkers 'swift))
 
 ;; Ruby
-(use-package enh-ruby-mode :defer t
-  :mode (("\\.rb\\'" . enh-ruby-mode))
-  :interpreter "pry"
-  :config
-  (use-package robe
-    :after company
-    :config
-    (add-to-list 'company-backends 'company-tern))
-  (yard-mode t))
+(use-package ruby-mode :defer t
+  :mode (("\\.rb\\'" . ruby-mode)
+         ("Capfile$" . ruby-mode)
+	     ("Gemfile$" . ruby-mode)
+	     ("[Rr]akefile$" . ruby-mode))
+  :interpreter "pry")
 
 (use-package inf-ruby :defer t
   :config
   (custom-set-variables
    '(inf-ruby-default-implementation "pry")
    '(inf-ruby-eval-binding "Pry.toplevel_binding")))
+
+(use-package robe :defer t
+    :after company
+    :hook ((ruby-mode . robe-mode)
+           (inf-ruby-mode . robe-mode))
+    :config
+    (add-to-list 'company-backends 'company-robe))
 
 ;;; 20-mode-prog ends here
