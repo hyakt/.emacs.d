@@ -93,6 +93,7 @@
 (quelpa 'fish-completion)
 (quelpa 'esh-autosuggest)
 (quelpa 'eshell-prompt-extras)
+(quelpa 'atomic-chrome)
 
 ;; 50-view
 (quelpa 'codic)
