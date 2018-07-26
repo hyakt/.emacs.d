@@ -82,4 +82,7 @@
     (kill-buffer)
     (delete-window)))
 
+(use-package atomic-chrome :defer t
+  :init (atomic-chrome-start-server))
+
 ;;; 40-interface ends here
