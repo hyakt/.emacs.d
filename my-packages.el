@@ -62,6 +62,7 @@
 (quelpa 'ssh-config-mode)
 (quelpa 'gitconfig-mode)
 (quelpa 'gitignore-mode)
+(quelpa 'lispxmp)
 
 ;; 21-edit-mode-doc
 (quelpa 'markdown-mode)
