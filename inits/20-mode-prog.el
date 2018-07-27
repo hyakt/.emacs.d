@@ -4,8 +4,9 @@
 ;;; Code:
 
 ;; emacs-lisp
-(use-package emacs-lisp :defer t
-  :bind (("C-c C-e" . lispxmp )))
+(use-package xmplisp :defer t
+  :bind (:map emacs-lisp-mode-map
+              ("C-c C-e" . lispxmp )))
 
 ;; Haskell
 (use-package haskell-mode
@@ -102,5 +103,10 @@
            (inf-ruby-mode . robe-mode))
     :config
     (add-to-list 'company-backends 'company-robe))
+
+(use-package rcodetools :defer t
+  :hook ruby-mode
+  :bind (:map ruby-mode-map
+              ("C-c C-e" . xmp)))
 
 ;;; 20-mode-prog ends here
