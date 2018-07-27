@@ -16,8 +16,9 @@
         ( "<f2> u" . counsel-unicode-char)
         ( "C-x C-g" . counsel-git)
         ( "C-x C-d" . counsel-fzf)
-        ( "C-c j" . counsel-git-grep)
-        ( "C-c e" . counsel-rg))
+        ( "C-c e" . counsel-rg)
+        :map read-expression-map
+        ("C-r" . counsel-expression-history))
   :config
   (ivy-mode 1)
   (setq ivy-height 20)
@@ -27,13 +28,12 @@
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil)
   (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
-  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
-  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
+  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../"))))
 
 (use-package swiper :bind ((( "\C-s" . swiper))))
 
 (use-package avy
-  :bind (("C-:" . avy-goto-char))
+  :bind (("C-;" . avy-goto-char))
   :config (avy-setup-default))
 
 (use-package avy-migemo

@@ -1,4 +1,4 @@
-;;; 70-keybinds.el ---  キーバインドの設定
+;;; 02-keybinds.el ---  基本的なキーバインドの設定
 ;;; Commentary:
 
 ;;; Code:
@@ -8,10 +8,7 @@
 (bind-key (kbd "C-h") nil)
 (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
 
-;; kill-this-buffer
 (bind-key (kbd "C-x C-k") 'kill-buffer)
-
-;; find-file-other-window
 (bind-key (kbd "C-x f") 'find-file-other-window)
 
 ;; window-split
@@ -20,39 +17,15 @@
 (bind-key (kbd "C-2") 'split-window-below)
 (bind-key (kbd "C-3") 'split-window-right)
 
-;; expand-region
-(bind-key* (kbd "C-,") 'er/expand-region)
-
-;; avy
-(bind-key* (kbd "C-;") 'avy-goto-char)
-(bind-key* (kbd "C-:") 'avy-goto-line)
-
-;; other-window
-(bind-key* (kbd "C-t") 'ws-other-window-or-split)
-
-;; company-complete
-(global-unset-key (kbd "C-j"))
-(global-set-key (kbd "C-j") 'company-complete)
-
-;; reload buffer
-(defun revert-buffer-no-confirm ()
-  "Revert buffer without confirmation."
-  (interactive) (revert-buffer t t))
-
-(bind-key (kbd "<f5>") 'revert-buffer-no-confirm)
-
-;; clonse-buffer
-(defun close-and-kill-this-pane ()
+(defun my/close-and-kill-this-pane ()
       "If there are multiple windows, then close this pane and kill the buffer in it also."
       (interactive)
       (kill-this-buffer)
       (if (not (one-window-p))
           (delete-window)))
+(bind-key (kbd "C-x k") 'my/close-and-kill-this-pane)
 
-(bind-key (kbd "C-x k") 'close-and-kill-this-pane)
-
-;; kill-other-buffers
-(defun kill-other-buffers ()
+(defun my/kill-other-buffers ()
   "Kill all other buffers."
   (interactive)
   (loop for buf in (buffer-list)
@@ -64,7 +37,12 @@
                         '("*Messages*" "*Compile-Log*" "*Help*"
                           "*scratch*" "*init log*")))
         do (kill-buffer buf)))
+(bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
 
-(bind-key (kbd "C-x C-x") 'kill-other-buffers)
+;; reload buffer
+(defun revert-buffer-no-confirm ()
+  "Revert buffer without confirmation."
+  (interactive) (revert-buffer t t))
+(bind-key (kbd "<f5>") 'revert-buffer-no-confirm)
 
-;;; 60-keybinds.el ends here
+;;; 02-keybinds.el ends here
