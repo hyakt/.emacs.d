@@ -3,6 +3,10 @@
 
 ;;; Code:
 
+;; emacs-lisp
+(use-package emacs-lisp :defer t
+  :bind (("C-c C-e" . lispxmp )))
+
 ;; Haskell
 (use-package haskell-mode
   :mode (("\\.hs$" . haskell-mode)
