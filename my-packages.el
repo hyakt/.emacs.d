@@ -6,6 +6,7 @@
 
 ;; misc
 (quelpa 'use-package)
+(quelpa 'use-package-ensure-system-package)
 (quelpa 'bind-key)
 (quelpa 'init-loader)
 (quelpa 'exec-path-from-shell)
