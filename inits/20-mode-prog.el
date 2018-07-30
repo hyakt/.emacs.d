@@ -91,6 +91,7 @@
   (use-package smartparens-ruby))
 
 (use-package inf-ruby :defer t
+  :ensure-system-package ((pry . "gem install pry; gem install pry-doc;"))
   :init (defalias 'irb 'inf-ruby))
   :config
   (custom-set-variables
@@ -103,10 +104,5 @@
            (inf-ruby-mode . robe-mode))
     :config
     (add-to-list 'company-backends 'company-robe))
-
-(use-package rcodetools :defer t
-  :hook ruby-mode
-  :bind (:map ruby-mode-map
-              ("C-c C-e" . xmp)))
 
 ;;; 20-mode-prog ends here
