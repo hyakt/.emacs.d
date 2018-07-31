@@ -32,29 +32,25 @@
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet)))))
 
-(use-package company-flx :hook (company-mode . company-flx-mode))
+(use-package company-flx
+  :hook (company-mode . company-flx-mode))
+
 (use-package company-quickhelp
   :hook (company-mode . company-quickhelp-mode)
   :config (setq company-quickhelp-delay .1))
 
 (use-package flycheck
+  :hook (after-init-hook . global-flycheck-mode)
   :config
-  (add-hook 'after-init-hook #'global-flycheck-mode)
   (flycheck-pos-tip-mode))
 
 (use-package flyspell
-  :init
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'org-mode-hook 'flyspell-mode)
+  :hook (LaTeX-mode . flyspell-mode)
+  :bind (:map flyspell-mode-map
+              ("C-," . nil))
   :config
   (setq-default ispell-program-name "aspell")
   (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")))
-
-(use-package ispell
-  :config
-  (setq-default ispell-program-name "aspell")
-  (eval-after-load "ispell"
-    '(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))))
 
 (use-package quickrun
   :bind (("C-x q" . quickrun)
@@ -64,7 +60,8 @@
   :bind (("M-." . dumb-jump-quick-look)
          ("M-n" . dumb-jump-go)
          ("M-p" . dumb-jump-back))
-  :config (dumb-jump-mode)
+  :config
+  (dumb-jump-mode)
   (setq dumb-jump-default-project "")
   (setq dumb-jump-max-find-time 10)
   (setq dumb-jump-selector 'ivy))
