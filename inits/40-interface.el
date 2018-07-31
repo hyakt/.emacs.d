@@ -3,6 +3,8 @@
 
 ;;; Code:
 (use-package ivy
+  :ensure-system-package ((rg . "brew install ripgrep")
+                          (fzf . "brew install fzf"))
   :bind(( "C-c C-r" . ivy-resume)
         ( "M-x" . counsel-M-x)
         ( "M-y" . counsel-yank-pop)
@@ -74,6 +76,7 @@
   :bind(( "C-x c" . docker)))
 
 (use-package magit
+  :ensure-system-package ((git . "brew install git"))
   :bind ("C-x g" . magit-status)
   (:map magit-status-mode-map ("q" . my/magit-quit-session))
   :config

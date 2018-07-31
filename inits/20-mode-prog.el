@@ -45,13 +45,14 @@
   (setq js2-basic-offset 2))
 
 (use-package tern :defer t
-    :after company
-    :hook ((js2-mode . tern-mode))
-    :config
-    (add-to-list 'company-backends 'company-tern))
+  :after company
+  :ensure-system-package ((tern . "npm install -g tern"))
+  :hook ((js2-mode . tern-mode))
+  :config
+  (add-to-list 'company-backends 'company-tern))
 
-(use-package web-beautify
-  :defer t
+(use-package web-beautify :defer t
+  :ensure-system-package ((js-beautify . "npm install -g js-beautify"))
   :init
   ;; (add-hook 'js2-mode-hook (lambda ()(add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
   (add-hook 'json-mode-hook (lambda ()(add-hook 'before-save-hook 'web-beautify-js-buffer t t)))

@@ -45,6 +45,7 @@
   (flycheck-pos-tip-mode))
 
 (use-package flyspell
+  :ensure-system-package ((aspell . "brew install aspell"))
   :hook (LaTeX-mode . flyspell-mode)
   :bind (:map flyspell-mode-map
               ("C-," . nil))
@@ -81,7 +82,7 @@
 (use-package pcre2el :config (setq rxt-global-mode t))
 
 (use-package migemo
-  :if (executable-find "cmigemo")
+  :ensure-system-package ((tern . "brew install cmigemo"))
   :config
   (setq migemo-command "cmigemo")
   (setq migemo-options '("-q" "--emacs" "-i" "\g"))
