@@ -37,7 +37,9 @@
 
 (use-package company-quickhelp
   :hook (company-mode . company-quickhelp-mode)
-  :config (setq company-quickhelp-delay .1))
+  :config
+  (setq company-quickhelp-delay .1)
+  (setq pos-tip-use-relative-coordinates t))
 
 (use-package flycheck
   :hook (after-init-hook . global-flycheck-mode)
