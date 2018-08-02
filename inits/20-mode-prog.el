@@ -91,13 +91,14 @@
   :config
   (use-package smartparens-ruby))
 
-(use-package inf-ruby :defer t
+(use-package inf-ruby
   :ensure-system-package ((pry . "gem install pry; gem install pry-doc;"))
-  :init (defalias 'irb 'inf-ruby))
+  :init
+  (defalias 'pry 'inf-ruby)
   :config
   (custom-set-variables
    '(inf-ruby-default-implementation "pry")
-   '(inf-ruby-eval-binding "Pry.toplevel_binding"))
+   '(inf-ruby-eval-binding "Pry.toplevel_binding")))
 
 (use-package robe :defer t
     :after company
