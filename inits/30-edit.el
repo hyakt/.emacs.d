@@ -50,6 +50,9 @@
   ;; http://qiita.com/l3msh0/items/6b84082541cbbf7d00f8
   (setenv "TMPDIR" "/tmp"))
 
-(use-package open-junk-file :bind (("M-`" . open-junk-file)))
+(use-package open-junk-file
+  :bind (("M-`" . open-junk-file))
+  :config
+  (setq open-junk-file-format "~/junk/%Y-%m-%d-%H%M%S."))
 
 ;;; 30-edit ends here
