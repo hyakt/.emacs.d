@@ -12,7 +12,6 @@
     (interactive)
     (message "Copy %s"
              (kill-new (neo-buffer--get-filename-current-line))))
-n
   (setq neo-show-hidden-files t)
   (setq neo-create-file-auto-open t)
   (setq neo-persist-show t)
@@ -122,6 +121,8 @@ n
         (view-file file)
       ad-do-it)))
 
-(use-package origami :config (setq global-origami-mode t))
+(use-package yafolding
+  :init (add-hook 'prog-mode-hook
+          (lambda () (yafolding-mode))))
 
 ;;; 50-frame.el ends here
