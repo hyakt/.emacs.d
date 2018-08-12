@@ -79,6 +79,7 @@
 (quelpa 'wdired)
 (quelpa 'wgrep)
 (quelpa 'open-junk-file)
+(quelpa 'codic)
 
 ;; 40-interface
 (quelpa 'counsel)
@@ -97,13 +98,12 @@
 (quelpa 'eshell-prompt-extras)
 (quelpa 'atomic-chrome)
 
-;; 50-view
-(quelpa 'codic)
+;; 50-frame
 (quelpa 'neotree)
 (quelpa 'swap-buffers)
 (quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-split"))
 (quelpa 'perspeen)
 (quelpa 'popwin)
-(quelpa 'origami)
+(quelpa 'yafolding)
 
 ;;; my-packages.el ends here

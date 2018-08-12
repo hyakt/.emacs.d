@@ -17,7 +17,7 @@
   :bind
   (("C->" . mc/mark-next-like-this)
    ("C-<" . mc/mark-previous-like-this)
-   ("<C-M-return>" . mc/mark-all-dwim)))
+   ("C-M-." . mc/mark-all-dwim)))
 
 (use-package undo-tree :ensure t
   :bind (("M-/" . undo-tree-redo)
