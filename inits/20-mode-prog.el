@@ -85,14 +85,17 @@
 (use-package ruby-mode :defer t
   :mode (("\\.rb\\'" . ruby-mode)
          ("Capfile$" . ruby-mode)
-	     ("Gemfile$" . ruby-mode)
-	     ("[Rr]akefile$" . ruby-mode))
+         ("Gemfile$" . ruby-mode)
+         ("[Rr]akefile$" . ruby-mode))
   :interpreter "pry"
   :config
   (use-package smartparens-ruby))
 
 (use-package inf-ruby
   :ensure-system-package ((pry . "gem install pry; gem install pry-doc;"))
+  :bind (:map inf-ruby-minor-mode-map
+              ("C-c C-b" . ruby-send-buffer)
+              ("C-c C-l" . ruby-send-line))
   :init
   (defalias 'pry 'inf-ruby)
   :config
