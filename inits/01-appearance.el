@@ -50,7 +50,8 @@
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
-      '((top . 0)
+      '((fullscreen . maximized)
+        (top . 0)
         (left . 100)
         (width . (text-pixels . 1280))
         (height . (text-pixels . 800))
