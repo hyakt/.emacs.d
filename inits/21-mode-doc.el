@@ -64,6 +64,7 @@
            :kill-buffer t ))))
 
 (use-package ox-hugo :after ox)
+(use-package ox-gfm :after ox)
 (use-package ox-latex
   :config
   (setq org-latex-default-class "jsarticle")
