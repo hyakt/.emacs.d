@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: source code
+# key: src
+# --
+#+BEGIN_SRC ${1:prog_language}
+  ${2:source code input here}
+#+END_SRC
