@@ -68,6 +68,7 @@
 ;; 21-edit-mode-doc
 (quelpa 'markdown-mode)
 (quelpa 'ox-hugo)
+(quelpa 'ox-gfm)
 (quelpa 'org-bullets)
 
 ;; 30-edit
