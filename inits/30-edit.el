@@ -51,7 +51,7 @@
   (setenv "TMPDIR" "/tmp"))
 
 (use-package open-junk-file
-  :bind (("M-`" . open-junk-file))
+  :bind (("C-`" . open-junk-file))
   :config
   (setq open-junk-file-format "~/junk/%Y-%m-%d-%H%M%S."))
 
