@@ -44,28 +44,9 @@
                         (org-deadline-warning-days 0)
                         (org-agenda-clockreport-mode t))))))))
 
-(use-package org-capture
-  :bind (("C-`" . org-capture))
-  :config
-  (setq org-capture-templates
-        `(("p" "Project" entry (file+headline "~/org/project.org" "Project")
-           "* TODO %^{content}\n %i SCHEDULED: %^{Scheduled}t DEADLINE: %^{Deadline}t\n %i %?"
-           :unnarrowed t
-           :empty-lines 1 )
-          ("c" "Chore" entry (file+headline "~/org/chore.org" "Chore")
-           "* TODO %^{content} %u\n %i SCHEDULED: %^{Scheduled}t DEADLINE: %^{Deadline}t\n %i %?"
-           :prepend t
-           :empty-lines 1
-           :kill-buffer t)
-          ("n" "Note" entry (file+headline "~/org/note.org" "Note")
-           "* %? %U %i"
-           :prepend t
-           :empty-lines 1
-           :kill-buffer t ))))
-
 (use-package ox-hugo :after ox)
 (use-package ox-gfm :after ox)
-(use-package ox-latex
+(use-package ox-latex :after ox
   :config
   (setq org-latex-default-class "jsarticle")
   (setq org-latex-pdf-process '("latexmk -e '$latex=q/platex %S/' -e '$bibtex=q/pbibtex/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
