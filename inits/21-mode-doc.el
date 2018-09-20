@@ -99,6 +99,8 @@
           ("dvipdfmx"     "color"  nil)
           ("setpagesize=false,dvipdfmx"     "hyperref"  nil))))
 
+(use-package ob-sql-mode)
+
 ;; Markdown
 (use-package markdown-mode
   :mode (("\\.markdown\\'" . gfm-mode)

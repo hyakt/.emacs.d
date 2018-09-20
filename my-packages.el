@@ -64,12 +64,14 @@
 (quelpa 'gitconfig-mode)
 (quelpa 'gitignore-mode)
 (quelpa 'lispxmp)
+(quelpa 'sqlup-mode)
 
 ;; 21-edit-mode-doc
 (quelpa 'markdown-mode)
 (quelpa 'ox-hugo)
 (quelpa 'ox-gfm)
 (quelpa 'org-bullets)
+(quelpa 'ob-sql-mode)
 
 ;; 30-edit
 (quelpa 'anzu)
