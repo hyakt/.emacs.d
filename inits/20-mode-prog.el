@@ -110,4 +110,10 @@
     :config
     (add-to-list 'company-backends 'company-robe))
 
+;; SQL
+(use-package sqlup-mode :defer
+  :config
+  (add-hook 'sql-mode-hook 'sqlup-mode)
+  (add-hook 'sql-interactive-mode-hook 'sqlup-mode))
+
 ;;; 20-mode-prog ends here
