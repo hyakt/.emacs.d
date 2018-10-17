@@ -4,7 +4,7 @@
 
 ;;; Code:
 ;;ロードパス追加設定
-(add-to-list 'load-path "~/.emacs.d/elisp")
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
 
 ;; elpa設定
 (require 'package)
@@ -13,7 +13,11 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
 
-;; quelpa
+;; ローカル設定
+(load "my-proxy" t)
+(setq custom-file (locate-user-emacs-file "custom.el"))
+
+;; Quelpa
 (unless (require 'quelpa nil t)
   (with-temp-buffer
     (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
@@ -22,12 +26,9 @@
 (defun my/quelpa-setup ()
   "Setup Quelpa packages."
   (interactive)
-  (load (locate-user-emacs-file "my-packages")))
+  (load "my-packages"))
 
-(setq custom-file (locate-user-emacs-file "custom.el"))
-
-;; init-loaderの設定
-;; 設定ファイルはinits下で管理
+;; init-loader
 (require 'init-loader)
 (setq init-loader-show-log-after-init nil)
 (init-loader-load "~/.emacs.d/inits")
