@@ -65,6 +65,7 @@
 (quelpa 'gitignore-mode)
 (quelpa 'lispxmp)
 (quelpa 'sqlup-mode)
+(quelpa 'ein)
 
 ;; 21-edit-mode-doc
 (quelpa 'markdown-mode)
