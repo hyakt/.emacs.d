@@ -65,7 +65,7 @@
 (quelpa 'gitignore-mode)
 (quelpa 'lispxmp)
 (quelpa 'sqlup-mode)
-(quelpa 'ein)
+(quelpa 'ein :stable t)
 
 ;; 21-edit-mode-doc
 (quelpa 'markdown-mode)
@@ -91,7 +91,7 @@
 (quelpa 'swiper)
 (quelpa 'avy)
 (quelpa 'avy-migemo)
-(quelpa 'magit)
+(quelpa 'magit :stable t)
 (quelpa 'which-key)
 (quelpa 'git-timemachine)
 (quelpa 'projectile)
