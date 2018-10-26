@@ -88,4 +88,9 @@
 (use-package atomic-chrome :defer t
   :init (atomic-chrome-start-server))
 
+(use-package ein :defer t
+  :config
+  (setq ein:completion-backend 'ein:use-company-backend)
+  (add-to-list 'company-backends #'user-company-ein-backend))
+
 ;;; 40-interface ends here
