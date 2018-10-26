@@ -5,7 +5,7 @@
 (use-package yasnippet
   :config
   (setq yas-snippet-dirs
-        '("~/.emacs.d/my-snippets"
+        '("~/.emacs.d/site-lisp/my-snippets"
           "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
   (yas-global-mode 1))
 
