@@ -65,7 +65,6 @@
 (quelpa 'gitignore-mode)
 (quelpa 'lispxmp)
 (quelpa 'sqlup-mode)
-(quelpa 'ein :stable t)
 
 ;; 21-edit-mode-doc
 (quelpa 'markdown-mode)
@@ -101,6 +100,7 @@
 (quelpa 'esh-autosuggest)
 (quelpa 'eshell-prompt-extras)
 (quelpa 'atomic-chrome)
+(quelpa 'ein :stable t)
 
 ;; 50-frame
 (quelpa 'neotree)
