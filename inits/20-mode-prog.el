@@ -116,4 +116,12 @@
   (add-hook 'sql-mode-hook 'sqlup-mode)
   (add-hook 'sql-interactive-mode-hook 'sqlup-mode))
 
+;; Java
+(add-hook 'java-mode-hook
+          (lambda ()
+            (message "hook")
+            (setq tab-width 4)
+            (setq indent-tabs-mode t)
+            (setq c-basic-offset 4)))
+  
 ;;; 20-mode-prog ends here
