@@ -26,11 +26,20 @@
   (setq ivy-height 20)
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
-  (setq ivy-count-format "")
+  (setq ivy-count-format "(%d/%d) ")
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil)
   (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
-  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../"))))
+  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
+
+  (defun ivy-yank-action (x)
+    (kill-new x))
+  (defun ivy-copy-to-buffer-action (x)
+    (with-ivy-window
+      (insert x)))
+  (ivy-set-actions t
+   '(("i" ivy-copy-to-buffer-action "insert")
+     ("y" ivy-yank-action "yank"))))
 
 (use-package swiper :bind ((( "\C-s" . swiper))))
 
