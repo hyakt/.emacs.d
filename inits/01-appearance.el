@@ -4,7 +4,7 @@
 ;;; Code:
 ;; 全般
 (use-package all-the-icons)
-(load-theme 'nord t)              ;; themeを設定
+(load-theme 'panda t)                            ;; themeを設定
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示
@@ -105,16 +105,27 @@
 (use-package telephone-line
   :config
   (use-package telephone-line-utils)
-  (setq telephone-line-height 28)
+  (setq telephone-line-height 27)
   (setq telephone-line-primary-left-separator 'telephone-line-tan-left)
   (setq telephone-line-primary-right-separator 'telephone-line-tan-right)
   (setq telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left)
   (setq telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
-  (set-face-attribute 'telephone-line-accent-inactive nil
-                      :background "#3B4252")
-  (set-face-attribute 'telephone-line-accent-active nil
-                      :background "#434c5e"
-                      :foreground "#eceff4")
+  (let ((fg "#35ffdc")
+        (fg-accent "#F8F8F0")
+        (bg "#404954")
+        (bg-accent "#292A2B"))
+    (set-face-attribute 'mode-line nil
+                        :box nil
+                        :foreground fg
+                        :background bg)
+    (set-face-attribute 'mode-line-inactive nil
+                        :box nil
+                        :background bg-accent)
+    (set-face-attribute 'telephone-line-accent-inactive nil
+                        :background bg-accent)
+    (set-face-attribute 'telephone-line-accent-active nil
+                        :background bg-accent
+                        :foreground fg-accent))
 
     ;; Exclude some buffers in modeline
   (defvar modeline-ignored-modes nil
@@ -138,17 +149,17 @@
 
     ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
-    (let ((fg-color "#EBCB8B"))
+    (let ((fg "#b084eb"))
       (when vc-mode
         ;; double format to prevent warnings in '*Messages*' buffer
           (format "%s %s"
                   (propertize (all-the-icons-octicon "git-branch")
-                              'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :foreground ,fg-color)
+                              'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :foreground ,fg)
                               'display '(raise 0.0))
                   (propertize
                     (format "%s"
                       (telephone-line-raw vc-mode t))
-                    'face `(:foreground ,fg-color))))))
+                    'face `(:foreground ,fg))))))
 
   (telephone-line-defsegment my-flycheck-segment ()
     (when (bound-and-true-p flycheck-mode)
@@ -158,14 +169,14 @@
                                       (if (or .error .warning)
                                           (propertize (format "%s/%s"
                                                               (or .error 0) (or .warning 0))
-                                                      'face '(:foreground "#D08770"))
+                                                      'face '(:foreground "#ec2864"))
                                         ""))
-                                  (propertize ":)" 'face '(:foreground "#A3BE8C"))))
+                                  (propertize ":)" 'face '(:foreground "#7dc1ff"))))
                      ('running     "*")
                      ('no-checker  "-")
                      ('not-checked "=")
-                     ('errored     (propertize "!" 'face '(:foreground "#D08770")))
-                     ('interrupted (propertize "." 'face '(:foreground "#D08770")))
+                     ('errored     (propertize "!" 'face '(:foreground "#ec2864")))
+                     ('interrupted (propertize "." 'face '(:foreground "#ec2864")))
                      ('suspicious  "?"))))
         (propertize text
                     'help-echo (pcase flycheck-last-status-change
@@ -180,7 +191,6 @@
                     'mouse-face '(:box 1)
                     'local-map (make-mode-line-mouse-map
                                 'mouse-1 #'flycheck-list-errors)))))
-
   ;; Left edge
   (setq telephone-line-lhs
         '((nil  . (telephone-line-buffer-segment))))
