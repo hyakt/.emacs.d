@@ -76,7 +76,7 @@
 (use-package fish-completion
   :if (executable-find "fish")
   :config (global-fish-completion-mode))
-  
+
 (use-package esh-autosuggest :hook (eshell-mode . esh-autosuggest-mode))
 
 (use-package which-key :config (which-key-mode))
