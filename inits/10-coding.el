@@ -42,8 +42,8 @@
   (setq pos-tip-use-relative-coordinates t))
 
 (use-package flycheck
-  :hook (after-init-hook . global-flycheck-mode)
   :config
+  (global-flycheck-mode t)
   (flycheck-pos-tip-mode))
 
 (use-package flyspell
