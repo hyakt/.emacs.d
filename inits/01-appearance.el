@@ -106,10 +106,10 @@
   :config
   (use-package telephone-line-utils)
   (setq telephone-line-height 27)
-  (setq telephone-line-primary-left-separator 'telephone-line-tan-left)
-  (setq telephone-line-primary-right-separator 'telephone-line-tan-right)
-  (setq telephone-line-secondary-left-separator 'telephone-line-tan-hollow-left)
-  (setq telephone-line-secondary-right-separator 'telephone-line-tan-hollow-right)
+  (setq telephone-line-primary-left-separator 'telephone-line-halfsin-left)
+  (setq telephone-line-primary-right-separator 'telephone-line-halfsin-right)
+  (setq telephone-line-secondary-left-separator 'telephone-line-halfsin-hollow-left)
+  (setq telephone-line-secondary-right-separator 'telephone-line-halfsin-hollow-right)
   (let ((fg "#35ffdc")
         (fg-accent "#F8F8F0")
         (bg "#404954")
@@ -149,7 +149,7 @@
 
     ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
-    (let ((fg "#b084eb"))
+    (let ((fg "#ff90d0"))
       (when vc-mode
         ;; double format to prevent warnings in '*Messages*' buffer
           (format "%s %s"
@@ -193,14 +193,14 @@
                                 'mouse-1 #'flycheck-list-errors)))))
   ;; Left edge
   (setq telephone-line-lhs
-        '((nil  . (telephone-line-buffer-segment))))
+        '((nil  . (telephone-line-buffer-segment))
+          (nil  . (telephone-line-airline-position-segment))))
 
   ;; Right edge
   (setq telephone-line-rhs
         '((nil  . ((my-vc-segment :active)))
           (nil  . ((my-flycheck-segment :active)))
           (nil  . (telephone-line-misc-info-segment))
-          (nil  . (telephone-line-airline-position-segment))
           (accent  . (telephone-line-major-mode-segment))))
 
   (telephone-line-mode 1))
