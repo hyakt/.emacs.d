@@ -4,7 +4,7 @@
 ;;; Code:
 ;; 全般
 (use-package all-the-icons)
-(load-theme 'panda t)                            ;; themeを設定
+(load-theme 'zeno t)                            ;; themeを設定
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示
@@ -110,17 +110,10 @@
   (setq telephone-line-primary-right-separator 'telephone-line-halfsin-right)
   (setq telephone-line-secondary-left-separator 'telephone-line-halfsin-hollow-left)
   (setq telephone-line-secondary-right-separator 'telephone-line-halfsin-hollow-right)
-  (let ((fg "#35ffdc")
-        (fg-accent "#F8F8F0")
-        (bg "#404954")
-        (bg-accent "#292A2B"))
-    (set-face-attribute 'mode-line nil
-                        :box nil
-                        :foreground fg
-                        :background bg)
-    (set-face-attribute 'mode-line-inactive nil
-                        :box nil
-                        :background bg-accent)
+  (let ((fg-accent "#FF84C9")
+        (bg-accent "#282A36"))
+    (set-face-attribute 'mode-line nil :box nil)
+    (set-face-attribute 'mode-line-inactive nil :box nil)
     (set-face-attribute 'telephone-line-accent-inactive nil
                         :background bg-accent)
     (set-face-attribute 'telephone-line-accent-active nil
@@ -149,7 +142,7 @@
 
     ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
-    (let ((fg "#ff90d0"))
+    (let ((fg "#84B5FF"))
       (when vc-mode
         ;; double format to prevent warnings in '*Messages*' buffer
           (format "%s %s"
@@ -169,14 +162,14 @@
                                       (if (or .error .warning)
                                           (propertize (format "%s/%s"
                                                               (or .error 0) (or .warning 0))
-                                                      'face '(:foreground "#ec2864"))
+                                                      'face '(:foreground "#D2527F"))
                                         ""))
-                                  (propertize ":)" 'face '(:foreground "#7dc1ff"))))
+                                  (propertize ":)" 'face '(:foreground "#5FCA81"))))
                      ('running     "*")
                      ('no-checker  "-")
                      ('not-checked "=")
-                     ('errored     (propertize "!" 'face '(:foreground "#ec2864")))
-                     ('interrupted (propertize "." 'face '(:foreground "#ec2864")))
+                     ('errored     (propertize "!" 'face '(:foreground "#D2527F")))
+                     ('interrupted (propertize "." 'face '(:foreground "#D2527F")))
                      ('suspicious  "?"))))
         (propertize text
                     'help-echo (pcase flycheck-last-status-change

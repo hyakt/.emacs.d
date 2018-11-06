@@ -40,7 +40,7 @@
   (global-unset-key (kbd "C-z"))
   (setq perspeen-keymap-prefix (kbd "C-z"))
   (set-face-attribute 'perspeen-selected-face nil
-                      :foreground "#b084eb" :background nil))
+                      :foreground "#BB98FC" :background nil))
 
 (use-package popwin
   :commands (popwin-mode)
