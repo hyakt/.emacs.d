@@ -22,7 +22,7 @@
 (quelpa 'beacon)
 (quelpa 'dimmer)
 ;;; theme
-(quelpa 'panda-theme)
+(quelpa 'zeno-theme)
 
 ;; 10-coding
 (quelpa 'yasnippet)
