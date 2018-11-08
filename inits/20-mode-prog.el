@@ -111,10 +111,18 @@
     (add-to-list 'company-backends 'company-robe))
 
 ;; SQL
-(use-package sqlup-mode :defer
-  :config
-  (add-hook 'sql-mode-hook 'sqlup-mode)
-  (add-hook 'sql-interactive-mode-hook 'sqlup-mode))
+(use-package sql
+  :mode (("\.sql$" . sql-mode))
+  :init
+  (add-hook 'sql-interactive-mode-hook
+            (lambda ()
+              (buffer-face-set 'variable-pitch)
+              (toggle-truncate-lines t))))
+
+(use-package sqlup-mode
+  :commands (sqlup-mode)
+  :hook ((sql-mode . sqlup-mode)
+         (sql-interactive-mode . sqlup-mode)))
 
 ;; Java
 (add-hook 'java-mode-hook
@@ -123,5 +131,5 @@
             (setq tab-width 4)
             (setq indent-tabs-mode t)
             (setq c-basic-offset 4)))
-  
+
 ;;; 20-mode-prog ends here
