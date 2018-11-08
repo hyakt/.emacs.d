@@ -68,6 +68,9 @@
          (set-face-attribute 'default nil
                              :family "Source Han Code JP"
                              :height 120)
+         (set-face-attribute 'variable-pitch nil
+                             :family "Ricty Diminished"
+                             :height 130)
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
 
 ;; Whitespaceの設定

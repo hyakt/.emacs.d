@@ -120,6 +120,15 @@ BEG and END (region to sort)."
             (replace-match "" nil nil))
           (goto-char next-line))))))
 
+(defun my/connect-db-via-ssh-tunneling(db host dbport)
+  "Connect DB via ssh tunneling."
+  (let ((port (car (cdr (assoc 'sql-port (assoc db sql-connection-alist)))))
+        (password (car (cdr (assoc 'sql-password (assoc db sql-connection-alist))))))
+    (start-process-shell-command "DBProxy" "*Proxy*" (concat "ssh -N -L " (number-to-string port) ":localhost:" dbport " " host))
+    (setenv "PGPASSWORD" password))
+  (sleep-for 1.5)
+  (sql-connect db))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
