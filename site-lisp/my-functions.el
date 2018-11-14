@@ -9,7 +9,12 @@
   (defun my/buffer-ricty-face ()
     "Rictyoise current buffer."
     (interactive)
-    (ov (point-min) (point-max) 'face '(:family "Ricty Diminished"))))
+    (ov (point-min) (point-max) 'face '(:family "Ricty Diminished")))
+
+  (defun my/font-size (height-num)
+    "Change font size current buffer"
+    (interactive "nFontsize:")
+    (ov (point-min) (point-max) 'face '(:height height-num))))
 
 (defun my/set-alpha (alpha-num)
   "set frame parameter 'alpha"
