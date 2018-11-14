@@ -55,7 +55,7 @@
         (left . 100)
         (width . (text-pixels . 1280))
         (height . (text-pixels . 800))
-        (alpha . (98 98))))
+        (alpha . (100 100))))
 
 ;; フォント設定
 (let ((ws window-system))
@@ -70,7 +70,7 @@
                              :height 120)
          (set-face-attribute 'variable-pitch nil
                              :family "Ricty Diminished"
-                             :height 130)
+                             :height 120)
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
 
 ;; Whitespaceの設定
