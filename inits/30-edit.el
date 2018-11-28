@@ -53,6 +53,6 @@
 (use-package open-junk-file
   :bind (("C-`" . open-junk-file))
   :config
-  (setq open-junk-file-format "~/junk/%Y-%m-%d-%H%M%S."))
+  (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
 ;;; 30-edit ends here
