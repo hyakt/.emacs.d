@@ -30,7 +30,7 @@
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil)
   (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
-  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
+  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
 
   (defun ivy-yank-action (x)
     (kill-new x))
