@@ -105,7 +105,7 @@
 ;; 50-frame
 (quelpa 'neotree)
 (quelpa 'swap-buffers)
-(quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-split"))
+(quelpa '(other-window-or-split :fetcher github :repo "conao/other-window-or-spli"t))
 (quelpa 'perspeen)
 (quelpa 'popwin)
 (quelpa 'yafolding)

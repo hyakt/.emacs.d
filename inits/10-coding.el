@@ -43,8 +43,7 @@
 
 (use-package flycheck
   :config
-  (global-flycheck-mode t)
-  (flycheck-pos-tip-mode))
+  (global-flycheck-mode t))
 
 (use-package flyspell
   :ensure-system-package ((aspell . "brew install aspell"))

@@ -2,6 +2,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(use-package counsel)
 (use-package ivy
   :ensure-system-package ((rg . "brew install ripgrep")
                           (fzf . "brew install fzf"))
@@ -46,12 +47,6 @@
 (use-package avy
   :bind (("C-;" . avy-goto-char))
   :config (avy-setup-default))
-
-(use-package avy-migemo
-  :config (avy-migemo-mode 1)
-  (use-package avy-migemo-e.g.ivy)
-  (use-package avy-migemo-e.g.swiper)
-  (use-package avy-migemo-e.g.counsel))
 
 (use-package eshell
   :defer t
