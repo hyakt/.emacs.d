@@ -9,8 +9,6 @@
   :bind (("C-M-]" . org-cycle-list-bullet)
          :map org-mode-map ("C-," . nil))
   :config
-  ;; Org-Exportの読み込み
-  (use-package ox)
   (use-package ob-sql-mode)
   (use-package ox-hugo :after ox)
   (use-package ox-gfm :after ox)
@@ -29,60 +27,7 @@
         '((sequence "TODO(t)" "DOIN(i)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)" "SMDY(s)")))
 
   ;; DONEの時刻を記録
-  (setq org-log-done 'time)
-
-  (use-package ox-latex :after ox
-    :config
-    (setq org-latex-default-class "jsarticle")
-    (setq org-latex-pdf-process '("latexmk -e '$latex=q/platex %S/' -e '$bibtex=q/pbibtex/' -e '$makeindex=q/mendex -U -o %D %S/' -e '$dvipdf=q/dvipdfmx -o %D %S/' -norc -gg -pdfdvi %f"))
-    (setq org-file-apps
-          '(("pdf" . "/usr/bin/open -a Preview.app %s")))
-    (setq org-latex-with-hyperref nil)
-    (setq org-latex-hyperref-template nil)
-
-    (add-to-list 'org-latex-classes
-                 '("jsarticle"
-                   "\\documentclass[dvipdfmx,12pt,a4paper]{jsarticle}
-                  [NO-DEFAULT-PACKAGES]
-                  \\usepackage{amsmath}
-                  \\usepackage[dvipdfmx]{graphicx}"
-                   ("\\section{%s}" . "\\section*{%s}")
-                   ("\\subsection{%s}" . "\\subsection*{%s}")
-                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-    (add-to-list 'org-latex-classes
-                 '("thesis"
-                   "\\documentclass[a4j, 11pt]{ujreport}
-                  [NO-DEFAULT-PACKAGES]
-                  \\usepackage{amsmath}
-                  \\usepackage[dvipdfmx]{graphicx}"
-                   ("\\chapter{%s}" . "\\chapter*{%s}")
-                   ("\\section{%s}" . "\\section*{%s}")
-                   ("\\subsection{%s}" . "\\subsection*{%s}")
-                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-    (add-to-list 'org-latex-classes
-                 '("ipsj"
-                   "\\documentclass[submit]{ipsj}
-                  [NO-DEFAULT-PACKAGES]"
-                   ("\\section{%s}" . "\\section*{%s}")
-                   ("\\subsection{%s}" . "\\subsection*{%s}")
-                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-    (setq org-export-latex-packages-alist
-          '(("AUTO" "inputenc"  t)   ; automatically replaced with a coding system
-            ("T1"   "fontenc"   t)
-            ("deluxe,expert,multi"     "otf"   nil)
-            (""     "txfonts"   nil)
-            (""     "graphicx"  t)
-            ("dvipdfmx"     "color"  nil)
-            ("setpagesize=false,dvipdfmx"     "hyperref"  nil)))))
+  (setq org-log-done 'time))
 
 ;; Markdown
 (use-package markdown-mode

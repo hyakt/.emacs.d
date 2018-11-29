@@ -3,22 +3,15 @@
 
 ;;; Code:
 ;; 全般
-(use-package all-the-icons)
-(load-theme 'zeno t)                            ;; themeを設定
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示
 (setq inhibit-startup-screen 1)                  ;; scratchの初期メッセージ消去
 (setq initial-scratch-message "")
 (setq echo-keystrokes 0.1)                       ;; キーストロークをエコーエリアに早く表示する
-(setq scroll-conservatively 35
-      scroll-margin 0
-      scroll-step 1)                             ;; スクロールの設定
+(setq scroll-conservatively 35 scroll-margin 0 scroll-step 1)                             ;; スクロールの設定
 (setq mouse-highlight nil)
-
-(use-package uniquify :config                    ;; 同じバッファ名の時 <2> とかではなく、ディレクトリ名で区別
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
-
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 (show-paren-mode 1)                              ;; 対応する括弧を光らせる
 (transient-mark-mode 1)                          ;; 選択部分のハイライト
 (global-font-lock-mode 1)                        ;; フォントロックモード
@@ -28,25 +21,6 @@
 (column-number-mode 1)                           ;; 列番号を表示
 (custom-set-variables
  '(init-loader-show-log-after-init 'error-only)) ;; init-loaderが失敗した時のみエラーメッセージを表示
-
-(use-package dashboard :config
-  (dashboard-setup-startup-hook)
-  (setq dashboard-startup-banner 'logo)
-  (setq dashboard-items '((recents  . 10)
-                          (projects . 10))))
-
-;; 移動した行にハイライト
-(use-package beacon :config (beacon-mode 1))
-
-;; 選択Window以外を暗くする
-(use-package dimmer :init (dimmer-mode))
-
-;; 編集した行にハイライト
-(use-package volatile-highlights
-  :config
-  (volatile-highlights-mode t)
-  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
-  (vhl/install-extension 'undo-tree))
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
@@ -73,6 +47,41 @@
                              :height 120)
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
 
+;; カーソルの色設定
+(when (eq system-type 'darwin)
+  (defun mac-selected-keyboard-input-source-change-hook-func ()
+    ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
+    (set-cursor-color (if (or
+                           (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
+                           (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
+                          "PaleVioletRed1" "Powder blue")))
+  (add-hook 'mac-selected-keyboard-input-source-change-hook
+            'mac-selected-keyboard-input-source-change-hook-func))
+
+(use-package all-the-icons)
+
+(use-package zeno-theme
+  :init (load-theme 'zeno t))                    ;; themeを設定
+
+(use-package dashboard :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-items '((recents  . 10)
+                          (projects . 10))))
+
+;; 移動した行にハイライト
+(use-package beacon :config (beacon-mode 1))
+
+;; 選択Window以外を暗くする
+(use-package dimmer :init (dimmer-mode))
+
+;; 編集した行にハイライト
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t)
+  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+  (vhl/install-extension 'undo-tree))
+
 ;; Whitespaceの設定
 (use-package whitespace
   :config
@@ -87,27 +96,11 @@
           (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
   ;; スペースは全角のみを可視化
   (setq whitespace-space-regexp "\\(\u3000+\\)")
-
-  ;; 保存前に自動でクリーンアップ
-  ;; (setq whitespace-action '(auto-cleanup))
-
   (global-whitespace-mode 1))
-
-;; カーソルの色設定
-(when (eq system-type 'darwin)
-  (defun mac-selected-keyboard-input-source-change-hook-func ()
-    ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
-    (set-cursor-color (if (or
-                           (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
-                           (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
-                          "PaleVioletRed1" "Powder blue")))
-  (add-hook 'mac-selected-keyboard-input-source-change-hook
-            'mac-selected-keyboard-input-source-change-hook-func))
 
 ;; モードラインの設定
 (use-package telephone-line
   :config
-  (use-package telephone-line-utils)
   (setq telephone-line-height 27)
   (setq telephone-line-primary-left-separator 'telephone-line-halfsin-left)
   (setq telephone-line-primary-right-separator 'telephone-line-halfsin-right)

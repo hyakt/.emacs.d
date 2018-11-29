@@ -29,6 +29,7 @@
   :bind (("C-x C-o" . swap-buffers)))
 
 (use-package other-window-or-split
+  :straight (other-window-or-split :type git :host github :repo "conao/other-window-or-split")
   :bind (("C-t"  . ws-other-window-or-split)
          ("C-S-t" . ws-previous-other-window-or-split)))
 

@@ -2,9 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-(require 'use-package)
-(use-package use-package-ensure-system-package)
-
 (setq-default tab-width 4 indent-tabs-mode nil)   ;; タブの変わりに半角スペースを使う
 (setq auto-coding-functions nil)                  ;; HTMLのMETAタグコーディング無視
 (setq completion-ignore-case t)                   ;; file名の補完で大文字小文字を区別しない
