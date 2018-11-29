@@ -11,14 +11,6 @@
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
 ;; パッケージャ
-; elpa
-(require 'package)
-(setq package-user-dir "~/.emacs.d/elpa/")
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(package-initialize)
-
-; straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
