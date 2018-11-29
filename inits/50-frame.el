@@ -122,8 +122,4 @@
         (view-file file)
       ad-do-it)))
 
-(use-package yafolding
-  :init (add-hook 'prog-mode-hook
-          (lambda () (yafolding-mode))))
-
 ;;; 50-frame.el ends here

@@ -2,6 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-(use-package my-functions)
+(require 'my-functions)
 
 ;;; 60-common.el ends here

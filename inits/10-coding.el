@@ -9,6 +9,8 @@
           "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
   (yas-global-mode 1))
 
+(use-package yasnippet-snippets)
+
 (use-package company
   :defer t
   :init (global-company-mode)
@@ -110,5 +112,9 @@
 (use-package git-gutter
   :config
   (global-git-gutter-mode +1))
+
+(use-package yafolding
+  :init (add-hook 'prog-mode-hook
+          (lambda () (yafolding-mode))))
 
 ;;; 10-coding ends here

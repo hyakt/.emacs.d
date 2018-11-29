@@ -31,7 +31,7 @@
   :bind (("C-," . er/expand-region)
          ("C-M-," . er/contract-region)))
 
-(use-package dired
+(use-package wdired
   :bind (:map dired-mode-map
               ("e" . wdired-change-to-wdired-mode)
               ("(" . dired-hide-details-mode)
@@ -54,5 +54,9 @@
   :bind (("C-`" . open-junk-file))
   :config
   (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+
+(use-package wgrep)
+
+(use-package codic)
 
 ;;; 30-edit ends here

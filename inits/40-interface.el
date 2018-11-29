@@ -3,6 +3,7 @@
 
 ;;; Code:
 (use-package counsel)
+
 (use-package ivy
   :ensure-system-package ((rg . "brew install ripgrep")
                           (fzf . "brew install fzf"))
@@ -96,5 +97,7 @@
   :config
   (setq ein:completion-backend 'ein:use-company-backend)
   (add-to-list 'company-backends #'user-company-ein-backend))
+
+(use-package projectile)
 
 ;;; 40-interface ends here

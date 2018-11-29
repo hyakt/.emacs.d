@@ -4,7 +4,7 @@
 ;;; Code:
 
 ;; emacs-lisp
-(use-package xmplisp :defer t
+(use-package lispxmp :defer t
   :bind (:map emacs-lisp-mode-map
               ("C-c C-e" . lispxmp )))
 
@@ -49,6 +49,7 @@
   :ensure-system-package ((tern . "npm install -g tern"))
   :hook ((js2-mode . tern-mode))
   :config
+  (use-package company-tern)
   (add-to-list 'company-backends 'company-tern))
 
 (use-package web-beautify :defer t
@@ -73,6 +74,7 @@
   :hook ((python-mode . anaconda-mode)
          (python-mode . anaconda-eldoc-mode))
   :config
+  (use-package company-anaconda)
   (add-hook 'python-mode-hook 'anaconda-mode)
   (add-to-list 'company-backends 'company-anaconda))
 
@@ -88,8 +90,7 @@
          ("Gemfile$" . ruby-mode)
          ("[Rr]akefile$" . ruby-mode))
   :interpreter "pry"
-  :config
-  (use-package smartparens-ruby))
+  :config (require 'smartparens-ruby))
 
 (use-package inf-ruby
   :ensure-system-package ((pry . "gem install pry; gem install pry-doc;"))
@@ -131,5 +132,19 @@
             (setq tab-width 4)
             (setq indent-tabs-mode t)
             (setq c-basic-offset 4)))
+
+;; CSS
+(use-package sws-mode)
+
+;; Docker
+(use-package dockerfile-mode)
+(use-package docker-compose-mode)
+
+;; ssh
+(use-package ssh-config-mode)
+
+;; git
+(use-package gitconfig-mode)
+(use-package gitignore-mode)
 
 ;;; 20-mode-prog ends here
