@@ -19,7 +19,7 @@
    ("C-<" . mc/mark-previous-like-this)
    ("C-M-." . mc/mark-all-dwim)))
 
-(use-package undo-tree :ensure t
+(use-package undo-tree
   :bind (("M-/" . undo-tree-redo)
          ("C-x u" . undo-tree-visualize))
   :config
