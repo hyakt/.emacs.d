@@ -140,9 +140,6 @@
 (use-package dockerfile-mode)
 (use-package docker-compose-mode)
 
-;; ssh
-(use-package ssh-config-mode)
-
 ;; git
 (use-package gitconfig-mode)
 (use-package gitignore-mode)

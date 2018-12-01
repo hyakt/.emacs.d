@@ -63,12 +63,6 @@
 (use-package zeno-theme
   :init (load-theme 'zeno t))                    ;; themeを設定
 
-(use-package dashboard :config
-  (dashboard-setup-startup-hook)
-  (setq dashboard-startup-banner 'logo)
-  (setq dashboard-items '((recents  . 10)
-                          (projects . 10))))
-
 ;; 移動した行にハイライト
 (use-package beacon :config (beacon-mode 1))
 

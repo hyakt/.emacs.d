@@ -2,6 +2,15 @@
 ;;; Commentary:
 
 ;;; Code:
+(use-package projectile)
+
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-items '((recents  . 10)
+                          (projects . 10))))
+
 (use-package counsel)
 
 (use-package ivy
@@ -97,7 +106,5 @@
   :config
   (setq ein:completion-backend 'ein:use-company-backend)
   (add-to-list 'company-backends #'user-company-ein-backend))
-
-(use-package projectile)
 
 ;;; 40-interface ends here
