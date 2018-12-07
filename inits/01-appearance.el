@@ -5,9 +5,9 @@
 ;; 全般
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
-(setq truncate-partial-width-windows nil)        ;; スタートアップメッセージを非表示
-(setq inhibit-startup-screen 1)                  ;; scratchの初期メッセージ消去
-(setq initial-scratch-message "")
+(setq truncate-partial-width-windows nil)
+(setq inhibit-startup-screen 1)                  ;; スタートアップメッセージを非表示
+(setq initial-scratch-message "")                ;; scratchの初期メッセージ消去
 (setq echo-keystrokes 0.1)                       ;; キーストロークをエコーエリアに早く表示する
 (setq scroll-conservatively 35 scroll-margin 0 scroll-step 1)                             ;; スクロールの設定
 (setq mouse-highlight nil)
