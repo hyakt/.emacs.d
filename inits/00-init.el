@@ -10,7 +10,6 @@
 (setq gc-cons-threshold (* 10 gc-cons-threshold)) ;; GCを減らして軽くする
 (setq message-log-max 10000)                      ;; ログの記録行数を増やす
 (setq vc-follow-symlinks t)                       ;; symlinkは必ず追いかける
-(setq initial-major-mode 'org-mode)               ;; 初期のモードをorg-modeに
 (setq backup-directory-alist
       (cons (cons "\\.*$" (expand-file-name "~/.emacs.d/.backup"))
             backup-directory-alist))              ;; バックアップの設定
