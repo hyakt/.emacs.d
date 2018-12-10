@@ -85,7 +85,7 @@
 (use-package pcre2el :config (setq rxt-global-mode t))
 
 (use-package migemo
-  :ensure-system-package ((tern . "brew install cmigemo"))
+  :ensure-system-package ((cmigemo . "brew install cmigemo"))
   :config
   (setq migemo-command "cmigemo")
   (setq migemo-options '("-q" "--emacs" "-i" "\g"))
@@ -93,12 +93,6 @@
   (setq migemo-user-dictionary nil)
   (setq migemo-regex-dictionary nil)
   (setq migemo-coding-system 'utf-8-unix)
-
-  (setq migemo-use-pattern-alist t)
-  (setq migemo-use-frequent-pattern-alist t)
-  (setq migemo-pattern-alist-length 1000)
-
-  (load-library "migemo")
   (migemo-init))
 
 (use-package smartparens
