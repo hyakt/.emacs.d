@@ -2,6 +2,10 @@
 ;;; Commentary:
 
 ;;; Code:
+
+;; CSV
+(use-package csv-mode)
+
 ;; Org
 (use-package org
   :mode (("\\.org$" . org-mode)
