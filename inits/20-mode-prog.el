@@ -81,7 +81,10 @@
 ;; Swift
 (use-package swift-mode :defer t
   :after flycheck
-  :config (add-to-list 'flycheck-checkers 'swift))
+  :config
+  (add-to-list 'flycheck-checkers 'swift)
+  (use-package company-sourcekit)
+  (add-to-list 'company-backends 'company-sourcekit))
 
 ;; Ruby
 (use-package ruby-mode :defer t
