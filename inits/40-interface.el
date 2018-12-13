@@ -107,4 +107,17 @@
   (setq ein:completion-backend 'ein:use-company-backend)
   (add-to-list 'company-backends #'user-company-ein-backend))
 
+(use-package twittering-mode
+  :ensure-system-package ((gpg . "brew install gpg"))
+  :config
+  (setq twittering-use-master-password t)
+  (setq twittering-timer-interval 120)
+  (setq twittering-convert-fix-size 24)
+  (setq twittering-status-format
+        "%FOLD{%RT{%FACE[bold]{RT}} %i%s %r %C{%m/%d %H:%M}\n%FOLD[ ]{%T%RT{\nretweeted by %s @%C{%Y/%m/%d %H:%M}} \n}")
+  (setq epa-pinentry-mode 'loopback)
+  (twittering-enable-unread-status-notifier))
+
+
+
 ;;; 40-interface ends here
