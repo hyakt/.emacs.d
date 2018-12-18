@@ -1,8 +1,8 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: template-latex
-# key: templatex
+# name: latex-header
+# key: latex-header
 # --
-#+TITLE:                ${1: TITLE}
+#+TITLE:                ${1:TITLE}
 #+AUTHOR:               $2
 #+EMAIL:                $3
 #+DATE:                 ${4:`(format-time-string "%Y-%m-%d" (current-time))`}
