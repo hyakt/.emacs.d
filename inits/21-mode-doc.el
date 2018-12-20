@@ -14,8 +14,9 @@
          :map org-mode-map ("C-," . nil))
   :config
   (use-package ob-sql-mode)
-  (use-package ox-hugo :after ox)
   (use-package ox-gfm :after ox)
+  (use-package ox-qmd :after ox
+    :straight (ox-qmd :type git :host github :repo "0x60df/ox-qmd"))
 
   (setq org-startup-truncated nil)
   (setq org-src-fontify-natively t)
