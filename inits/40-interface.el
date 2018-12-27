@@ -40,19 +40,17 @@
   (setq ivy-count-format "(%d/%d) ")
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil)
-  (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
+  (setq ivy-re-builders-alist '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
 
-  (defun ivy-yank-action (x)
-    (kill-new x))
-  (defun ivy-copy-to-buffer-action (x)
-    (with-ivy-window
-      (insert x)))
+  (use-package all-the-icons-ivy :config (all-the-icons-ivy-setup))
+  (use-package ivy-hydra)
+
+  (defun ivy-yank-action (x) (kill-new x))
+  (defun ivy-copy-to-buffer-action (x) (with-ivy-window (insert x)))
   (ivy-set-actions t
    '(("i" ivy-copy-to-buffer-action "insert")
-     ("y" ivy-yank-action "yank")))
-
-  (use-package all-the-icons-ivy :config (all-the-icons-ivy-setup)))
+     ("y" ivy-yank-action "yank"))))
 
 (use-package swiper :bind ((( "\C-s" . swiper))))
 
