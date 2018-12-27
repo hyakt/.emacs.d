@@ -50,7 +50,9 @@
       (insert x)))
   (ivy-set-actions t
    '(("i" ivy-copy-to-buffer-action "insert")
-     ("y" ivy-yank-action "yank"))))
+     ("y" ivy-yank-action "yank")))
+
+  (use-package all-the-icons-ivy :config (all-the-icons-ivy-setup)))
 
 (use-package swiper :bind ((( "\C-s" . swiper))))
 
