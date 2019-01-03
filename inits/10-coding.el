@@ -106,6 +106,9 @@
 
 (use-package git-gutter
   :config
+  (setq git-gutter:modified-sign "▮")
+  (setq git-gutter:added-sign "▮")
+  (setq git-gutter:deleted-sign "▮")
   (global-git-gutter-mode +1))
 
 (use-package yafolding
