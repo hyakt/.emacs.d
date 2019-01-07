@@ -4,6 +4,7 @@
 ;;; Code:
 ;; 全般
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
+(setq-default cursor-type 'bar)
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)
 (setq inhibit-startup-screen 1)                  ;; スタートアップメッセージを非表示
@@ -21,6 +22,9 @@
 (column-number-mode 1)                           ;; 列番号を表示
 (custom-set-variables
  '(init-loader-show-log-after-init 'error-only)) ;; init-loaderが失敗した時のみエラーメッセージを表示
+
+;; タイトルバーにファイル名を表示
+(setq frame-title-format '(buffer-file-name "%f" (dired-directory dired-directory "%b")))
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
@@ -54,7 +58,7 @@
     (set-cursor-color (if (or
                            (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
                            (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
-                          "PaleVioletRed1" "Powder blue")))
+                          "#FF5996" "#60FCEC")))
   (add-hook 'mac-selected-keyboard-input-source-change-hook
             'mac-selected-keyboard-input-source-change-hook-func))
 
