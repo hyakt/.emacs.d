@@ -8,7 +8,9 @@
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-startup-banner 'logo)
-  (setq dashboard-items '((recents  . 10)
+  (use-package dashboard-hackernews)
+  (setq dashboard-items '((hackernews . 10)
+                          (recents  . 10)
                           (projects . 10))))
 
 (use-package counsel)
