@@ -53,11 +53,7 @@
   (add-to-list 'company-backends 'company-tern))
 
 (use-package web-beautify :defer t
-  :ensure-system-package ((js-beautify . "npm install -g js-beautify"))
-  :init
-  ;; (add-hook 'js2-mode-hook (lambda ()(add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
-  (add-hook 'json-mode-hook (lambda ()(add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
-  (add-hook 'css-mode (lambda ()(add-hook 'before-save-hook 'web-beautify-css-buffer t t))))
+  :ensure-system-package ((js-beautify . "npm install -g js-beautify")))
 
 (use-package add-node-modules-path :config (add-hook 'js2-mode-hook #'add-node-modules-path))
 
