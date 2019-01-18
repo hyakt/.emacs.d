@@ -144,4 +144,7 @@
 (use-package gitconfig-mode)
 (use-package gitignore-mode)
 
+;; nginx
+(use-package nginx-mode)
+
 ;;; 20-mode-prog ends here
