@@ -36,7 +36,7 @@
       (while (re-search-forward "^\\*+ " nil t)
         (let ((level (- (match-end 0) (match-beginning 0) 1)))
           (replace-match
-           (concat (string (org-bullets-level-char level)) " "))))
+           (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
       (write-file path))))
 
 (defun my/org-bullets-export-region-clipboard (start end)
@@ -48,12 +48,15 @@
       (while (re-search-forward "^\\*+" nil t)
         (let ((level (- (match-end 0) (match-beginning 0))))
           (replace-match
-           (concat (string (org-bullets-level-char level)) " "))))
+           (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
       (clipboard-kill-ring-save (point-min) (point-max)))))
 
+
+(defun char-unicode (char) (encode-char char 'ucs))
+(defun unicode-char (code) (decode-char 'ucs code))
+
 ;; ユニコードエスケープシーケンスを解除する
-;; https://gist.github.com/kosh04/568800#file-emacs-xyzzy-unicode-un-escape-region
-(defun my/unicode-unescape-region (start end)
+(defun my/unicode-decode-region (start end)
   "指定した範囲のUnicodeエスケープ文字(\\uXXXX)をデコードする."
   (interactive "*r")
   (save-restriction
@@ -65,7 +68,7 @@
                      nil t))))
 
 ;; ユニコードエスケープシーケンスをする
-(defun my/unicode-escape-region (&optional start end)
+(defun my/unicode-encode-region (&optional start end)
   "指定した範囲の文字をUnicodeエスケープする."
   (interactive "*r")
   (save-restriction
@@ -77,11 +80,9 @@
                               (char (match-string 0) 0)))
                      nil t))))
 
-(defun char-unicode (char) (encode-char char 'ucs))
-(defun unicode-char (code) (decode-char 'ucs code))
 
 ;; 文字列をURLエンコードする
-(defun url-encode-string (str &optional sys)
+(defun my/url-encode-string (str &optional sys)
   (let ((sys (or sys 'utf-8)))
     (url-hexify-string (encode-coding-string str sys))))
 
@@ -134,7 +135,7 @@ BEG and END (region to sort)."
   (sleep-for 1.5)
   (sql-connect db))
 
-(defun reopen-with-sudo-tramp ()
+(defun my/reopen-with-sudo-tramp ()
   "Reopen current buffer-file with sudo using tramp."
   (interactive)
   (let ((file-name (buffer-file-name)))
@@ -142,6 +143,13 @@ BEG and END (region to sort)."
     (if file-name
         (find-alternate-file (replace-regexp-in-string ":.*:" (concat ":" (match-string 1 file-name) "|sudo:root" ":") file-name))
       (error "Cannot get a file name"))))
+
+(defun my/copy-buffer-name-clipboard ()
+  (interactive)
+  (let ((file-name buffer-file-name))
+    (with-temp-buffer
+      (insert file-name)
+      (clipboard-kill-ring-save (point-min) (point-max)))))
 
 (provide 'my-functions)
 
