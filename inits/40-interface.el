@@ -60,6 +60,13 @@
   :bind (("C-;" . avy-goto-char))
   :config (avy-setup-default))
 
+(use-package avy-migemo
+  :config
+  (avy-migemo-mode t)
+  (require 'avy-migemo-e.g.ivy)
+  (require 'avy-migemo-e.g.swiper)
+  (require 'avy-migemo-e.g.counsel))
+
 (use-package eshell
   :defer t
   :config
