@@ -64,8 +64,7 @@
   :config
   (avy-migemo-mode t)
   (require 'avy-migemo-e.g.ivy)
-  (require 'avy-migemo-e.g.swiper)
-  (require 'avy-migemo-e.g.counsel))
+  (require 'avy-migemo-e.g.swiper))
 
 (use-package eshell
   :defer t
