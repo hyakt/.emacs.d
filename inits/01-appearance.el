@@ -23,8 +23,8 @@
 (custom-set-variables
  '(init-loader-show-log-after-init 'error-only)) ;; init-loaderが失敗した時のみエラーメッセージを表示
 
-;; タイトルバーにファイル名を表示
-(setq frame-title-format '(buffer-file-name "%f" (dired-directory dired-directory "%b")))
+;; タイトルバーに何も表示しない
+(setq frame-title-format "")
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
