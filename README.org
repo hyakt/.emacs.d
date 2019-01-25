@@ -4,18 +4,19 @@
 
 ** Require Manual Settings
 - Install [[https://github.com/railwaycat/homebrew-emacsmacport][Emacs Mac Port]]
-#+BEGIN_SRC
+#+BEGIN_SRC sh
 brew tap railwaycat/emacsmacport
-brew install emacs-mac --with-ctags --with-glib --with-gnutls --with-imagemagick --with-modern-icon --with-modules --with-natural-title-bar --with-xml2
+brew install emacs-mac --with-ctags --with-glib --with-gnutls --with-imagemagick --with-modules --with-natural-title-bar --with-xml2
+ln -sfv /usr/local/opt/emacs-mac/Emacs.app /Applications/
 #+END_SRC
 - Set [[https://github.com/railwaycat/homebrew-emacsmacport/wiki/Natural-Title-Bar][Natural Title bar]]
-#+BEGIN_SRC
+#+BEGIN_SRC sh
 defaults write org.gnu.Emacs TransparentTitleBar DARK
 # Set No Title Bar Icon
 defaults write org.gnu.Emacs HideDocumentIcon YES
 #+END_SRC
 - Install coding fonts
-#+BEGIN_SRC
+#+BEGIN_SRC sh
 brew tap homebrew/cask-fonts
 brew cask install font-source-han-code-jp
 brew cask insatll font-ricty-diminished
