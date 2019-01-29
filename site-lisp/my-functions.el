@@ -146,10 +146,7 @@ BEG and END (region to sort)."
 
 (defun my/copy-buffer-name-clipboard ()
   (interactive)
-  (let ((file-name buffer-file-name))
-    (with-temp-buffer
-      (insert file-name)
-      (clipboard-kill-ring-save (point-min) (point-max)))))
+  (kill-new buffer-file-name))
 
 (provide 'my-functions)
 
