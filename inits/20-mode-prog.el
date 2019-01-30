@@ -111,6 +111,8 @@
     :config
     (add-to-list 'company-backends 'company-robe))
 
+(use-package php-mode)
+
 ;; SQL
 (use-package sql
   :mode (("\.sql$" . sql-mode))
