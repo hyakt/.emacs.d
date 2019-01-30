@@ -35,13 +35,10 @@
 
 ;; screen
 (use-package perspeen
-  :init (custom-set-variables '(perspeen-modestring-dividers '("" "" "|")))
   :config
   (perspeen-mode +1)
   (global-unset-key (kbd "C-z"))
-  (setq perspeen-keymap-prefix (kbd "C-z"))
-  (set-face-attribute 'perspeen-selected-face nil
-                      :foreground "#BB98FC" :background nil))
+  (setq perspeen-keymap-prefix (kbd "C-z")))
 
 (use-package popwin
   :commands (popwin-mode)
@@ -68,7 +65,7 @@
   (push '("*shell*" :height 30) popwin:special-display-config)
   (push '("*Shell Command Output*" :noselect t) popwin:special-display-config)
 
-  (push '("*Python*" :stick t) popwin:special-display-config)
+ppp  (push '("*Python*" :stick t) popwin:special-display-config)
   (push '("*jedi:doc*" :noselect t) popwin:special-display-config)
 
   (push '("*pry*" :stick t) popwin:special-display-config)

@@ -76,6 +76,12 @@
   :config
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
+;; カラーコードの表示
+(use-package rainbow-mode
+  :config
+  (add-hook 'css-mode-hook 'rainbow-mode)
+  (add-hook 'html-mode-hook 'rainbow-mode))
+
 ;; 変数などの色付け
 (use-package symbol-overlay
   :bind ("M-i" . symbol-overlay-put)

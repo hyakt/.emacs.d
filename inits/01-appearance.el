@@ -103,15 +103,18 @@
   (setq telephone-line-primary-right-separator 'telephone-line-halfsin-right)
   (setq telephone-line-secondary-left-separator 'telephone-line-halfsin-hollow-left)
   (setq telephone-line-secondary-right-separator 'telephone-line-halfsin-hollow-right)
-  (let ((fg-accent "#FF84C9")
+  (let ((fg-accent "#FF5996")
         (bg-accent "#282A36"))
-    (set-face-attribute 'mode-line nil :box nil)
-    (set-face-attribute 'mode-line-inactive nil :box nil)
-    (set-face-attribute 'telephone-line-accent-inactive nil
-                        :background bg-accent)
+    (set-face-attribute 'mode-line nil
+                        :box nil)
+    (set-face-attribute 'mode-line-inactive nil
+                        :box nil)
     (set-face-attribute 'telephone-line-accent-active nil
+                        :weight 'bold
                         :background bg-accent
-                        :foreground fg-accent))
+                        :foreground fg-accent)
+    (set-face-attribute 'telephone-line-accent-inactive nil
+                        :background bg-accent))
 
     ;; Exclude some buffers in modeline
   (defvar modeline-ignored-modes nil
@@ -133,9 +136,9 @@
         (let ((my-vc (replace-regexp-in-string "^ Git." "" vc-mode)))
           (setq vc-mode my-vc))))
 
-    ;; Display current branch
+  ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
-    (let ((fg "#84B5FF"))
+    (let ((fg "#66D9EF"))
       (when vc-mode
         ;; double format to prevent warnings in '*Messages*' buffer
           (format "%s %s"
@@ -147,22 +150,43 @@
                       (telephone-line-raw vc-mode t))
                     'face `(:foreground ,fg))))))
 
+  (telephone-line-defsegment my-perspeen-segment ()
+    (let ((fg "#A6E22E"))
+      (when perspeen-mode
+        (let ((index 0)
+              (currnet-ws 0))
+          (mapcar (lambda (ws)
+                    (setq index (1+ index))
+                    (if (eq ws perspeen-current-ws)
+                        (setq current-ws index)))
+                  perspeen-ws-list)
+          (format "%s %s"
+                  (propertize (all-the-icons-material "desktop_windows")
+                              'face `(:family ,(all-the-icons-material-family) :height 1.0 :foreground ,fg))
+                  (propertize (format "%s/%s" current-ws index)
+                              'face `(:foreground ,fg)))))))
+
   (telephone-line-defsegment my-flycheck-segment ()
+    (let ((error "#D2527F")
+          (ok "#5FCA81")
+          (other "#BB98FC"))
     (when (bound-and-true-p flycheck-mode)
       (let* ((text (pcase flycheck-last-status-change
                      ('finished (if flycheck-current-errors
                                     (let-alist (flycheck-count-errors flycheck-current-errors)
                                       (if (or .error .warning)
-                                          (propertize (format "%s/%s"
-                                                              (or .error 0) (or .warning 0))
-                                                      'face '(:foreground "#D2527F"))
+                                          (format "%s %s"
+                                                  (propertize (all-the-icons-material "error_outline")
+                                                              'face `(:family ,(all-the-icons-material-family) :foreground ,error))
+                                                  (propertize (format "%s/%s" (or .error 0) (or .warning 0))
+                                                              'face `(:foreground ,error)))
                                         ""))
-                                  (propertize ":)" 'face '(:foreground "#5FCA81"))))
-                     ('running     "*")
-                     ('no-checker  "-")
-                     ('not-checked "=")
-                     ('errored     (propertize "!" 'face '(:foreground "#D2527F")))
-                     ('interrupted (propertize "." 'face '(:foreground "#D2527F")))
+                                      (propertize ":)" 'face `(:foreground ,ok))))
+                     ('running     (propertize "*" 'face `(:foreground ,other)))
+                     ('no-checker  (propertize "-" 'face `(:foreground ,other)))
+                     ('not-checked (propertize "=" 'face `(:foreground ,other)))
+                     ('errored     (propertize "!" 'face `(:foreground ,error)))
+                     ('interrupted (propertize "." 'face `(:foreground ,error)))
                      ('suspicious  "?"))))
         (propertize text
                     'help-echo (pcase flycheck-last-status-change
@@ -176,7 +200,7 @@
                     'display '(raise 0.0)
                     'mouse-face '(:box 1)
                     'local-map (make-mode-line-mouse-map
-                                'mouse-1 #'flycheck-list-errors)))))
+                                'mouse-1 #'flycheck-list-errors))))))
   ;; Left edge
   (setq telephone-line-lhs
         '((nil  . (telephone-line-buffer-segment))
@@ -186,7 +210,7 @@
   (setq telephone-line-rhs
         '((nil  . ((my-vc-segment :active)))
           (nil  . ((my-flycheck-segment :active)))
-          (nil  . (telephone-line-misc-info-segment))
+          (nil  . ((my-perspeen-segment :active)))
           (accent  . (telephone-line-major-mode-segment))))
 
   (telephone-line-mode 1))
