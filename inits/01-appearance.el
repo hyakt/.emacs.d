@@ -4,7 +4,7 @@
 ;;; Code:
 ;; 全般
 (setq-default line-spacing 0)                    ;; 行間を無しに設定
-(setq-default cursor-type 'bar)
+(setq-default cursor-type 'box)
 (setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)
 (setq inhibit-startup-screen 1)                  ;; スタートアップメッセージを非表示
