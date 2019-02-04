@@ -108,7 +108,11 @@
          ("C-M-p" . sp-backward-sexp))
   :config
   (sp-local-pair 'emacs-lisp-mode "`" "'")
-  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil))
+  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
+  (sp-local-pair 'org-mode "*" "*")
+  (sp-local-pair 'org-mode "=" "=")
+  (sp-local-pair 'org-mode "_" "_")
+  (sp-local-pair 'org-mode "~" "~"))
 
 (use-package git-gutter
   :config
