@@ -148,6 +148,14 @@ BEG and END (region to sort)."
   (interactive)
   (kill-new buffer-file-name))
 
+(defun my/sql-indent-region (beg end)
+  "Indent the SQL statement in the region."
+  (interactive "*r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (sql-indent-buffer))))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here

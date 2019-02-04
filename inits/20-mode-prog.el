@@ -127,6 +127,8 @@
   :hook ((sql-mode . sqlup-mode)
          (sql-interactive-mode . sqlup-mode)))
 
+(use-package sql-indent)
+
 ;; Java
 (add-hook 'java-mode-hook
           (lambda ()
