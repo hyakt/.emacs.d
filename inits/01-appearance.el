@@ -34,6 +34,28 @@
         (height . (text-pixels . 800))
         (alpha . (100 100))))
 
+(add-hook 'kill-emacs-hook 'frame-size-save)
+(defun frame-size-save ()
+  "Save current the frame size and postion."
+  (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
+  (erase-buffer)
+  (insert (concat
+           "(set-frame-width  (selected-frame) "
+           (int-to-string (frame-width))")
+            (set-frame-height (selected-frame) "
+           (int-to-string (frame-height))")
+            (set-frame-position (selected-frame) "
+           (int-to-string (car (frame-position))) " "
+           (int-to-string (cdr (frame-position))) ")"))
+  (save-buffer)
+  (kill-buffer))
+
+(add-hook 'window-setup-hook 'frame-size-resume)
+(defun frame-size-resume ()
+  "Load the saved frame size."
+  (let* ((file "~/.emacs.d/.framesize"))
+    (if (file-exists-p file) (load-file file))))
+
 ;; フォント設定
 (let ((ws window-system))
   (cond ((eq ws 'w32)
