@@ -156,6 +156,19 @@ BEG and END (region to sort)."
       (narrow-to-region beg end)
       (sql-indent-buffer))))
 
+(defun my/move-or-rename-this-file (new-file-name)
+  (interactive "Fnewfile name: ")
+  (let* ((current-file-name (buffer-name)))
+    (rename-file current-file-name new-file-name)
+    (find-file new-file-name)
+    (kill-buffer current-file-name)))
+
+(defun my/delete-or-remove-this-file ()
+  (interactive)
+  (let* ((current-file-name (buffer-name)))
+    (move-file-to-trash current-file-name)
+    (kill-buffer current-file-name)))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
