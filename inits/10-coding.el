@@ -91,17 +91,6 @@
 
 (use-package pcre2el :config (setq rxt-global-mode t))
 
-(use-package migemo
-  :ensure-system-package ((cmigemo . "brew install cmigemo"))
-  :config
-  (setq migemo-command "cmigemo")
-  (setq migemo-options '("-q" "--emacs" "-i" "\g"))
-  (setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
-  (setq migemo-user-dictionary nil)
-  (setq migemo-regex-dictionary nil)
-  (setq migemo-coding-system 'utf-8-unix)
-  (migemo-init))
-
 (use-package smartparens
   :init (smartparens-global-mode t)
   :bind (("C-M-n" . sp-forward-sexp)
