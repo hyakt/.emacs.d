@@ -2,6 +2,17 @@
 ;;; Commentary:
 
 ;;; Code:
+(use-package migemo
+  :ensure-system-package ((cmigemo . "brew install cmigemo"))
+  :config
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs" "-i" "\g"))
+  (setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (migemo-init))
+
 (use-package visual-regexp
   :bind (("M-%" . vr/query-replace)))
 
@@ -51,6 +62,9 @@
   :bind (("C-`" . open-junk-file))
   :config
   (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+
+(use-package aggressive-inden
+  :config (global-aggressive-indent-mode 1))
 
 (use-package wgrep)
 
