@@ -169,6 +169,11 @@ BEG and END (region to sort)."
     (move-file-to-trash current-file-name)
     (kill-buffer current-file-name)))
 
+(defun my/dired-this-buffer ()
+  (interactive)
+  (dired
+   (file-name-directory (expand-file-name (buffer-name)))))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
