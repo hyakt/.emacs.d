@@ -63,7 +63,7 @@
   :config
   (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
-(use-package aggressive-inden
+(use-package aggressive-indent
   :config (global-aggressive-indent-mode 1))
 
 (use-package wgrep)
