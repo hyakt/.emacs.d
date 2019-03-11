@@ -6,24 +6,25 @@
   :bind (("M-=" . neotree-toggle)
          :map neotree-mode-map
          ("M-w" . my/neotree-kill-filename-at-point))
+  :custom
+  (neo-show-hidden-files t)
+  (neo-create-file-auto-open t)
+  (neo-persist-show t)
+  (neo-keymap-style 'concise)
+  (neo-smart-open t)
+  (neo-vc-integration '(face char))
+  (neo-theme (if (display-graphic-p) 'icons 'arrow))
   :config
   (defun my/neotree-kill-filename-at-point ()
     "Kill full path of note at point."
     (interactive)
     (message "Copy %s"
              (kill-new (neo-buffer--get-filename-current-line))))
-  (setq neo-show-hidden-files t)
-  (setq neo-create-file-auto-open t)
-  (setq neo-persist-show t)
-  (setq neo-keymap-style 'concise)
-  (setq neo-smart-open t)
-  (setq neo-vc-integration '(face char))
   (when neo-persist-show
     (add-hook 'popwin:before-popup-hook
               (lambda () (setq neo-persist-show nil)))
     (add-hook 'popwin:after-popup-hook
-              (lambda () (setq neo-persist-show t))))
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+              (lambda () (setq neo-persist-show t)))))
 
 (use-package swap-buffers
   :bind (("C-x C-o" . swap-buffers)))
@@ -35,17 +36,18 @@
 
 ;; screen
 (use-package perspeen
+  :custom
+  (perspeen-keymap-prefix (kbd "C-z"))
   :config
   (perspeen-mode +1)
-  (global-unset-key (kbd "C-z"))
-  (setq perspeen-keymap-prefix (kbd "C-z")))
+  (global-unset-key (kbd "C-z")))
 
 (use-package popwin
   :commands (popwin-mode)
+  :custom
+  (popwin:close-popup-window-timer-interval 0.5)
   :config
   (popwin-mode 1)
-  (setq popwin:close-popup-window-timer-interval 0.5)
-
   ;; popwin settings
   (push '("*Help*" :height 30 :stick t) popwin:special-display-config)
   (push '("*Completions*" :noselect t) popwin:special-display-config)
@@ -65,7 +67,7 @@
   (push '("*shell*" :height 30) popwin:special-display-config)
   (push '("*Shell Command Output*" :noselect t) popwin:special-display-config)
 
-ppp  (push '("*Python*" :stick t) popwin:special-display-config)
+  (push '("*Python*" :stick t) popwin:special-display-config)
   (push '("*jedi:doc*" :noselect t) popwin:special-display-config)
 
   (push '("*pry*" :stick t) popwin:special-display-config)

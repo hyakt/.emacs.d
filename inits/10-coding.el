@@ -3,10 +3,11 @@
 
 ;;; Code:
 (use-package yasnippet
+  :custom
+  (yas-snippet-dirs
+   '("~/.emacs.d/site-lisp/my-snippets"
+     "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
   :config
-  (setq yas-snippet-dirs
-        '("~/.emacs.d/site-lisp/my-snippets"
-          "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
   (yas-global-mode 1))
 
 (use-package yasnippet-snippets)
@@ -16,16 +17,17 @@
   :init (global-company-mode)
   :bind (("C-j" . company-complete)
          :map company-active-map
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
-              ("C-d" . company-show-doc-buffer))
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         ("C-d" . company-show-doc-buffer))
+  :custom
+  (company-transformers '(company-sort-by-occurrence))
+  (company-idle-delay 0.1)
+  (company-minimum-prefix-length 2)
+  (company-selection-wrap-around t)
+  (company-tooltip-align-annotations t)
+  (company-show-numbers t)
   :config
-  (setq company-transformers '(company-sort-by-occurrence))
-  (setq company-idle-delay 0.1)
-  (setq company-minimum-prefix-length 2)
-  (setq company-selection-wrap-around t)
-  (setq company-tooltip-align-annotations t)
-  (setq company-show-numbers t)
   (defvar company-mode/enable-yas t
     "Enable yasnippet for all backends.")
   (defun company-mode/backend-with-yas (backend)
@@ -39,9 +41,9 @@
 
 (use-package company-quickhelp
   :hook (company-mode . company-quickhelp-mode)
-  :config
-  (setq company-quickhelp-delay .1)
-  (setq pos-tip-use-relative-coordinates t))
+  :custom
+  (company-quickhelp-delay .1)
+  (pos-tip-use-relative-coordinates t))
 
 (use-package flycheck
   :config
@@ -65,11 +67,12 @@
   :bind (("M-." . dumb-jump-quick-look)
          ("M-n" . dumb-jump-go)
          ("M-p" . dumb-jump-back))
+  :custom
+  (dumb-jump-default-project "")
+  (dumb-jump-max-find-time 10)
+  (dumb-jump-selector 'ivy)
   :config
-  (dumb-jump-mode)
-  (setq dumb-jump-default-project "")
-  (setq dumb-jump-max-find-time 10)
-  (setq dumb-jump-selector 'ivy))
+  (dumb-jump-mode))
 
 ;; 括弧の色付け
 (use-package rainbow-delimiters
@@ -89,7 +92,9 @@
   (add-hook 'prog-mode-hook #'symbol-overlay-mode)
   (add-hook 'markdown-mode-hook #'symbol-overlay-mode))
 
-(use-package pcre2el :config (setq rxt-global-mode t))
+(use-package pcre2el
+  :custom
+  (rxt-global-mode t))
 
 (use-package smartparens
   :init (smartparens-global-mode t)

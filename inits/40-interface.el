@@ -5,13 +5,14 @@
 (use-package projectile)
 
 (use-package dashboard
+  :custom
+  (dashboard-items '((hackernews . 10)
+                     (recents  . 10)
+                     (projects . 10)))
+  (dashboard-startup-banner 'logo)
   :config
   (dashboard-setup-startup-hook)
-  (setq dashboard-startup-banner 'logo)
-  (use-package dashboard-hackernews)
-  (setq dashboard-items '((hackernews . 10)
-                          (recents  . 10)
-                          (projects . 10))))
+  (use-package dashboard-hackernews))
 
 (use-package counsel)
 
@@ -34,25 +35,24 @@
         ( "C-c e" . counsel-rg)
         :map read-expression-map
         ("C-r" . counsel-expression-history))
+  :custom
+  (ivy-height 20)
+  (ivy-use-virtual-buffers t)
+  (enable-recursive-minibuffers t)
+  (ivy-count-format "(%d/%d) ")
+  (ivy-initial-inputs-alist nil)
+  (ivy-extra-directories nil)
+  (ivy-re-builders-alist '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
   :config
   (ivy-mode 1)
-  (setq ivy-height 20)
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-initial-inputs-alist nil)
-  (setq ivy-extra-directories nil)
-  (setq ivy-re-builders-alist '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
-
   (use-package all-the-icons-ivy :config (all-the-icons-ivy-setup))
   (use-package ivy-hydra)
-
   (defun ivy-yank-action (x) (kill-new x))
   (defun ivy-copy-to-buffer-action (x) (with-ivy-window (insert x)))
   (ivy-set-actions t
-   '(("i" ivy-copy-to-buffer-action "insert")
-     ("y" ivy-yank-action "yank"))))
+                   '(("i" ivy-copy-to-buffer-action "insert")
+                     ("y" ivy-yank-action "yank"))))
 
 (use-package swiper :bind ((( "\C-s" . swiper))))
 
@@ -66,11 +66,11 @@
   (require 'avy-migemo-e.g.ivy)
   (require 'avy-migemo-e.g.swiper))
 
-(use-package eshell
-  :defer t
+(use-package eshell  :defer t
+  :custom
+  (eshell-cmpl-ignore-case t)
+  (eshell-ask-to-save-history 'always)
   :config
-  (setq eshell-cmpl-ignore-case t)
-  (setq eshell-ask-to-save-history 'always)
   (add-hook 'eshell-mode-hook
             (lambda () (bind-key "C-r" 'counsel-esh-history eshell-mode-map))))
 
@@ -82,9 +82,9 @@
 
 (use-package eshell-prompt-extras
   :after eshell
-  :config
-  (setq eshell-highlight-prompt nil)
-  (setq eshell-prompt-function 'epe-theme-lambda))
+  :custom
+  (eshell-highlight-prompt nil)
+  (eshell-prompt-function 'epe-theme-lambda))
 
 (use-package fish-completion
   :if (executable-find "fish")
@@ -112,17 +112,19 @@
 
 (use-package twittering-mode
   :ensure-system-package ((gpg . "brew install gpg"))
+  :custom
+  (twittering-use-master-password t)
+  (twittering-timer-interval 120)
+  (twittering-convert-fix-size 24)
+  (twittering-status-format
+   "%FOLD{%RT{%FACE[bold]{RT}} %i%s %r %C{%m/%d %H:%M}\n%FOLD[ ]{%T%RT{\nretweeted by %s @%C{%Y/%m/%d %H:%M}} \n}")
+  (epa-pinentry-mode 'loopback)
   :config
-  (setq twittering-use-master-password t)
-  (setq twittering-timer-interval 120)
-  (setq twittering-convert-fix-size 24)
-  (setq twittering-status-format
-        "%FOLD{%RT{%FACE[bold]{RT}} %i%s %r %C{%m/%d %H:%M}\n%FOLD[ ]{%T%RT{\nretweeted by %s @%C{%Y/%m/%d %H:%M}} \n}")
-  (setq epa-pinentry-mode 'loopback)
   (twittering-enable-unread-status-notifier))
 
 (use-package ein :defer t
+  :custom
+  (ein:completion-backend 'ein:use-company-backend)
   :config
-  (setq ein:completion-backend 'ein:use-company-backend)
   (add-to-list 'company-backends #'user-company-ein-backend))
 ;;; 40-interface ends here
