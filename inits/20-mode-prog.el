@@ -24,25 +24,25 @@
          ("\\.djhtml\\'" . web-mode)
          ("\\.html?\\'" . web-mode)
          ("\\.json\\'" . web-mode))
-  :config
-  (setq web-mode-engines-alist
-        '(("php"    . "\\.phtml\\'")
-          ("blade"  . "\\.blade\\.")))
-  (setq web-mode-markup-indent-offset 4)
-  (setq web-mode-css-indent-offset 4)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-indent-style 4)
-  (setq web-mode-enable-auto-pairing t)
-  (setq web-mode-enable-css-colorization t)
-  (setq web-mode-enable-current-element-highlight t)
-  (setq web-mode-enable-current-column-highlight t))
+  :custom
+  (web-mode-engines-alist
+   '(("php"    . "\\.phtml\\'")
+     ("blade"  . "\\.blade\\.")))
+  (web-mode-markup-indent-offset 4)
+  (web-mode-css-indent-offset 4)
+  (web-mode-code-indent-offset 2)
+  (web-mode-indent-style 4)
+  (web-mode-enable-auto-pairing t)
+  (web-mode-enable-css-colorization t)
+  (web-mode-enable-current-element-highlight t)
+  (web-mode-enable-current-column-highlight t))
 
 ;; javascript
 (use-package js2-mode :defer t
   :mode (("\.js$" . js2-mode))
-  :config
-  (setq js2-strict-missing-semi-warning nil)
-  (setq js2-basic-offset 2))
+  :custom
+  (js2-strict-missing-semi-warning nil)
+  (js2-basic-offset 2))
 
 (use-package tern :defer t
   :after company
@@ -96,10 +96,9 @@
               ("C-c C-l" . ruby-send-line))
   :init
   (defalias 'pry 'inf-ruby)
-  :config
-  (custom-set-variables
-   '(inf-ruby-default-implementation "pry")
-   '(inf-ruby-eval-binding "Pry.toplevel_binding")))
+  :custom
+  (inf-ruby-default-implementation "pry")
+  (inf-ruby-eval-binding "Pry.toplevel_binding"))
 
 (use-package robe :defer t
     :after company

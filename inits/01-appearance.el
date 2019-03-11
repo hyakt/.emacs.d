@@ -103,28 +103,30 @@
 
 ;; Whitespaceの設定
 (use-package whitespace
-  :config
-  (setq whitespace-style '(face           ; faceで可化
-                           trailing       ; 行末
-                           tabs           ; タブ
-                           spaces         ; スペース
-                           space-mark     ; 表示のマッピング
-                           tab-mark ))
-  (setq whitespace-display-mappings
-        '((space-mark ?\u3000 [?\u25a1])
-          (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
+  :custom
+  (whitespace-style '(face           ; faceで可化
+                      trailing       ; 行末
+                      tabs           ; タブ
+                      spaces         ; スペース
+                      space-mark     ; 表示のマッピング
+                      tab-mark ))
+  (whitespace-display-mappings
+   '((space-mark ?\u3000 [?\u25a1])
+     (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
   ;; スペースは全角のみを可視化
-  (setq whitespace-space-regexp "\\(\u3000+\\)")
+  (whitespace-space-regexp "\\(\u3000+\\)")
+  :config
   (global-whitespace-mode 1))
 
 ;; モードラインの設定
 (use-package telephone-line
+  :custom
+  (telephone-line-height 27)
+  (telephone-line-primary-left-separator 'telephone-line-halfsin-left)
+  (telephone-line-primary-right-separator 'telephone-line-halfsin-right)
+  (telephone-line-secondary-left-separator 'telephone-line-halfsin-hollow-left)
+  (telephone-line-secondary-right-separator 'telephone-line-halfsin-hollow-right)
   :config
-  (setq telephone-line-height 27)
-  (setq telephone-line-primary-left-separator 'telephone-line-halfsin-left)
-  (setq telephone-line-primary-right-separator 'telephone-line-halfsin-right)
-  (setq telephone-line-secondary-left-separator 'telephone-line-halfsin-hollow-left)
-  (setq telephone-line-secondary-right-separator 'telephone-line-halfsin-hollow-right)
   (let ((fg-accent "#FF5996")
         (bg-accent "#282A36"))
     (set-face-attribute 'mode-line nil
@@ -138,7 +140,7 @@
     (set-face-attribute 'telephone-line-accent-inactive nil
                         :background bg-accent))
 
-    ;; Exclude some buffers in modeline
+  ;; Exclude some buffers in modeline
   (defvar modeline-ignored-modes nil
     "List of major modes to ignore in modeline")
 
@@ -154,23 +156,23 @@
 
   ;; Hide vc backend in modeline
   (defadvice vc-mode-line (after strip-backend () activate)
-      (when (stringp vc-mode)
-        (let ((my-vc (replace-regexp-in-string "^ Git." "" vc-mode)))
-          (setq vc-mode my-vc))))
+    (when (stringp vc-mode)
+      (let ((my-vc (replace-regexp-in-string "^ Git." "" vc-mode)))
+        (setq vc-mode my-vc))))
 
   ;; Display current branch
   (telephone-line-defsegment my-vc-segment ()
     (let ((fg "#66D9EF"))
       (when vc-mode
         ;; double format to prevent warnings in '*Messages*' buffer
-          (format "%s %s"
-                  (propertize (all-the-icons-octicon "git-branch")
-                              'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :foreground ,fg)
-                              'display '(raise 0.0))
-                  (propertize
-                    (format "%s"
-                      (telephone-line-raw vc-mode t))
-                    'face `(:foreground ,fg))))))
+        (format "%s %s"
+                (propertize (all-the-icons-octicon "git-branch")
+                            'face `(:family ,(all-the-icons-octicon-family) :height 1.0 :foreground ,fg)
+                            'display '(raise 0.0))
+                (propertize
+                 (format "%s"
+                         (telephone-line-raw vc-mode t))
+                 'face `(:foreground ,fg))))))
 
   (telephone-line-defsegment my-perspeen-segment ()
     (let ((fg "#A6E22E"))
@@ -192,37 +194,37 @@
     (let ((error "#D2527F")
           (ok "#5FCA81")
           (other "#BB98FC"))
-    (when (bound-and-true-p flycheck-mode)
-      (let* ((text (pcase flycheck-last-status-change
-                     ('finished (if flycheck-current-errors
-                                    (let-alist (flycheck-count-errors flycheck-current-errors)
-                                      (if (or .error .warning)
-                                          (format "%s %s"
-                                                  (propertize (all-the-icons-material "error_outline")
-                                                              'face `(:family ,(all-the-icons-material-family) :foreground ,error))
-                                                  (propertize (format "%s/%s" (or .error 0) (or .warning 0))
-                                                              'face `(:foreground ,error)))
-                                        ""))
-                                      (propertize ":)" 'face `(:foreground ,ok))))
-                     ('running     (propertize "*" 'face `(:foreground ,other)))
-                     ('no-checker  (propertize "-" 'face `(:foreground ,other)))
-                     ('not-checked (propertize "=" 'face `(:foreground ,other)))
-                     ('errored     (propertize "!" 'face `(:foreground ,error)))
-                     ('interrupted (propertize "." 'face `(:foreground ,error)))
-                     ('suspicious  "?"))))
-        (propertize text
-                    'help-echo (pcase flycheck-last-status-change
-                                 ('finished "Display errors found by Flycheck")
-                                 ('running "Running...")
-                                 ('no-checker "No Checker")
-                                 ('not-checked "Not Checked")
-                                 ('errored "Error!")
-                                 ('interrupted "Interrupted")
-                                 ('suspicious "Suspicious?"))
-                    'display '(raise 0.0)
-                    'mouse-face '(:box 1)
-                    'local-map (make-mode-line-mouse-map
-                                'mouse-1 #'flycheck-list-errors))))))
+      (when (bound-and-true-p flycheck-mode)
+        (let* ((text (pcase flycheck-last-status-change
+                       ('finished (if flycheck-current-errors
+                                      (let-alist (flycheck-count-errors flycheck-current-errors)
+                                        (if (or .error .warning)
+                                            (format "%s %s"
+                                                    (propertize (all-the-icons-material "error_outline")
+                                                                'face `(:family ,(all-the-icons-material-family) :foreground ,error))
+                                                    (propertize (format "%s/%s" (or .error 0) (or .warning 0))
+                                                                'face `(:foreground ,error)))
+                                          ""))
+                                    (propertize ":)" 'face `(:foreground ,ok))))
+                       ('running     (propertize "*" 'face `(:foreground ,other)))
+                       ('no-checker  (propertize "-" 'face `(:foreground ,other)))
+                       ('not-checked (propertize "=" 'face `(:foreground ,other)))
+                       ('errored     (propertize "!" 'face `(:foreground ,error)))
+                       ('interrupted (propertize "." 'face `(:foreground ,error)))
+                       ('suspicious  "?"))))
+          (propertize text
+                      'help-echo (pcase flycheck-last-status-change
+                                   ('finished "Display errors found by Flycheck")
+                                   ('running "Running...")
+                                   ('no-checker "No Checker")
+                                   ('not-checked "Not Checked")
+                                   ('errored "Error!")
+                                   ('interrupted "Interrupted")
+                                   ('suspicious "Suspicious?"))
+                      'display '(raise 0.0)
+                      'mouse-face '(:box 1)
+                      'local-map (make-mode-line-mouse-map
+                                  'mouse-1 #'flycheck-list-errors))))))
   ;; Left edge
   (setq telephone-line-lhs
         '((nil  . (telephone-line-buffer-segment))

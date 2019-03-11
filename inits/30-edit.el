@@ -4,13 +4,14 @@
 ;;; Code:
 (use-package migemo
   :ensure-system-package ((cmigemo . "brew install cmigemo"))
+  :custom
+  (migemo-command "cmigemo")
+  (migemo-options '("-q" "--emacs" "-i" "\g"))
+  (migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+  (migemo-user-dictionary nil)
+  (migemo-regex-dictionary nil)
+  (migemo-coding-system 'utf-8-unix)
   :config
-  (setq migemo-command "cmigemo")
-  (setq migemo-options '("-q" "--emacs" "-i" "\g"))
-  (setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
-  (setq migemo-user-dictionary nil)
-  (setq migemo-regex-dictionary nil)
-  (setq migemo-coding-system 'utf-8-unix)
   (migemo-init))
 
 (use-package visual-regexp
@@ -18,8 +19,8 @@
 
 (use-package visual-regexp-steroids
   :after visual-regexp
-  :config
-  (setq vr/engine 'pcre2el))
+  :custom
+  (vr/engine 'pcre2el))
 
 (use-package multiple-cursors
   :bind
@@ -46,10 +47,11 @@
               (")" . dired-hide-details-mode)))
 
 (use-package recentf
+  :custom
+  (recentf-max-saved-items 500)
+  (recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+  (recentf-auto-cleanup 'never)
   :config
-  (setq recentf-max-saved-items 500)
-  (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-  (setq recentf-auto-cleanup 'never)
   (recentf-mode 1))
 
 (use-package tramp
@@ -60,11 +62,12 @@
 
 (use-package open-junk-file
   :bind (("C-`" . open-junk-file))
-  :config
-  (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+  :custom
+  (open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
 (use-package aggressive-indent
-  :config (global-aggressive-indent-mode 1))
+  :config
+  (global-aggressive-indent-mode 1))
 
 (use-package wgrep)
 
