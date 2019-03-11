@@ -52,8 +52,7 @@
   (use-package company-tern)
   (add-to-list 'company-backends 'company-tern))
 
-(use-package web-beautify :defer t
-  :ensure-system-package ((js-beautify . "npm install -g js-beautify")))
+(use-package web-beautify)
 
 (use-package add-node-modules-path :config (add-hook 'js2-mode-hook #'add-node-modules-path))
 
@@ -84,8 +83,6 @@
 
 ;; Ruby
 (use-package ruby-mode :defer t
-  :ensure-system-package ((pry . "gem install pry")
-                          (pry-doc . "gem install pry-doc"))
   :mode (("\\.rb\\'" . ruby-mode)
          ("Capfile$" . ruby-mode)
          ("Gemfile$" . ruby-mode)
