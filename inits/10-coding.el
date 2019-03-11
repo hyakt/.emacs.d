@@ -102,14 +102,19 @@
   (sp-local-pair 'org-mode "~" "~"))
 
 (use-package git-gutter
+  :custom
+  (git-gutter:modified-sign " ")
+  (git-gutter:added-sign    " ")
+  (git-gutter:deleted-sign  " ")
+  :custom-face
+  (git-gutter:modified ((t (:background "#f1fa8c"))))
+  (git-gutter:added    ((t (:background "#A6E22E"))))
+  (git-gutter:deleted  ((t (:background "#D2527F"))))
   :config
-  (setq git-gutter:modified-sign "▮")
-  (setq git-gutter:added-sign "▮")
-  (setq git-gutter:deleted-sign "▮")
   (global-git-gutter-mode +1))
 
 (use-package yafolding
   :init (add-hook 'prog-mode-hook
-          (lambda () (yafolding-mode))))
+                  (lambda () (yafolding-mode))))
 
 ;;; 10-coding ends here
