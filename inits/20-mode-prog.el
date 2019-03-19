@@ -101,11 +101,11 @@
   (inf-ruby-eval-binding "Pry.toplevel_binding"))
 
 (use-package robe :defer t
-    :after company
-    :hook ((ruby-mode . robe-mode)
-           (inf-ruby-mode . robe-mode))
-    :config
-    (add-to-list 'company-backends 'company-robe))
+  :after company
+  :hook ((ruby-mode . robe-mode)
+         (inf-ruby-mode . robe-mode))
+  :config
+  (add-to-list 'company-backends 'company-robe))
 
 (use-package php-mode)
 
@@ -152,5 +152,11 @@
   :config
   (add-hook 'go-mode-hook 'flycheck-mode)
   (use-package company-go))
+
+;;elixir
+(use-package elixir-mode
+  :config
+  (use-package alchemist)
+  (use-package flycheck-elixir))
 
 ;;; 20-mode-prog ends here
