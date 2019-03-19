@@ -147,4 +147,10 @@
 ;; nginx
 (use-package nginx-mode)
 
+;; go
+(use-package go-mode
+  :config
+  (add-hook 'go-mode-hook 'flycheck-mode)
+  (use-package company-go))
+
 ;;; 20-mode-prog ends here
