@@ -66,7 +66,7 @@
         ((eq ws 'mac)
          (set-face-attribute 'default nil
                              :family "Source Han Code JP"
-                             :height 120)
+                             :height 110)
          (set-face-attribute 'variable-pitch nil
                              :family "Ricty Diminished"
                              :height 120)
