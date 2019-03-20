@@ -35,11 +35,11 @@
          ("C-S-t" . ws-previous-other-window-or-split)))
 
 ;; screen
-(use-package perspeen
+(use-package eyebrowse
   :custom
-  (perspeen-keymap-prefix (kbd "C-z"))
+  (eyebrowse-keymap-prefix (kbd "C-z"))
   :config
-  (perspeen-mode +1)
+  (eyebrowse-mode 1)
   (global-unset-key (kbd "C-z")))
 
 (use-package popwin
