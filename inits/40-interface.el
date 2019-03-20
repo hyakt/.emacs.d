@@ -47,6 +47,7 @@
   (ivy-mode 1)
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
   (use-package all-the-icons-ivy :config (all-the-icons-ivy-setup))
+  (use-package ivy-rich :config (ivy-rich-mode 1))
   (use-package ivy-hydra)
   (defun ivy-yank-action (x) (kill-new x))
   (defun ivy-copy-to-buffer-action (x) (with-ivy-window (insert x)))
