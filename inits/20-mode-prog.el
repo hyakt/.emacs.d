@@ -5,12 +5,20 @@
 
 ;; lsp-mode
 (use-package lsp-mode
-  :config
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode))
-  (use-package company-lsp
-    :config
-    (add-to-list 'company-backends 'company-lsp)))
+  :custom ((lsp-inhibit-message t)
+           (lsp-message-project-root-warning t)
+           (create-lockfiles nil))
+  :hook   (prog-major-mode . lsp-prog-major-mode-enable))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :custom (scroll-margin 0)
+  :hook   (lsp-mode . lsp-ui-mode))
+
+(use-package company-lsp
+  :after (lsp-mode company yasnippet)
+  :defines company-backends
+  :init (push 'company-lsp company-backends))
 
 ;; emacs-lisp
 (use-package lispxmp :defer t
@@ -179,11 +187,7 @@
                      (lambda ()
                        (setq global-aggressive-indent-mode nil))))
 
-(use-package lsp-scala
-  :after scala-mode
-  :demand t
-  :hook (scala-mode . lsp)
-  :init (setq lsp-scala-server-command "/usr/local/bin/metals-emacs"))
+(use-package ensime)
 
 (use-package sbt-mode
   :commands sbt-start sbt-command)
