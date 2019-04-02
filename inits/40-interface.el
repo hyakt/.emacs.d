@@ -6,13 +6,11 @@
 
 (use-package dashboard
   :custom
-  (dashboard-items '((hackernews . 10)
-                     (recents  . 10)
+  (dashboard-items '((recents  . 10)
                      (projects . 10)))
   (dashboard-startup-banner 'logo)
   :config
-  (dashboard-setup-startup-hook)
-  (use-package dashboard-hackernews))
+  (dashboard-setup-startup-hook))
 
 (use-package counsel)
 
