@@ -153,10 +153,13 @@
   (add-hook 'go-mode-hook 'flycheck-mode)
   (use-package company-go))
 
-;;elixir
+;; elixir
 (use-package elixir-mode
   :config
   (use-package alchemist)
   (use-package flycheck-elixir))
+
+;; R
+(use-package ess)
 
 ;;; 20-mode-prog ends here
