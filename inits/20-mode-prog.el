@@ -3,6 +3,15 @@
 
 ;;; Code:
 
+;; lsp-mode
+(use-package lsp-mode
+  :config
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode))
+  (use-package company-lsp
+    :config
+    (add-to-list 'company-backends 'company-lsp)))
+
 ;; emacs-lisp
 (use-package lispxmp :defer t
   :bind (:map emacs-lisp-mode-map
@@ -140,11 +149,11 @@
 (use-package dockerfile-mode)
 (use-package docker-compose-mode)
 
-;; git
+;; Git
 (use-package gitconfig-mode)
 (use-package gitignore-mode)
 
-;; nginx
+;; Nginx
 (use-package nginx-mode)
 
 ;; go
@@ -161,5 +170,22 @@
 
 ;; R
 (use-package ess)
+
+;; Scala
+(use-package scala-mode
+  :interpreter
+  ("scala" . scala-mode)
+  :config  (add-hook 'scala-mode-hook
+                     (lambda ()
+                       (setq global-aggressive-indent-mode nil))))
+
+(use-package lsp-scala
+  :after scala-mode
+  :demand t
+  :hook (scala-mode . lsp)
+  :init (setq lsp-scala-server-command "/usr/local/bin/metals-emacs"))
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command)
 
 ;;; 20-mode-prog ends here
