@@ -181,12 +181,12 @@
 
 ;; Scala
 (use-package scala-mode
-  :interpreter
-  ("scala" . scala-mode))
+  :interpreter ("scala" . scala-mode))
 
 (use-package sbt-mode
   :commands sbt-start sbt-command)
 
-(use-package ensime)
+(use-package ensime
+  :custom ((ensime-startup-notification nil)))
 
 ;;; 20-mode-prog ends here
