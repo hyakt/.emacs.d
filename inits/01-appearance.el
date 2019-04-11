@@ -86,10 +86,12 @@
 (use-package all-the-icons)
 
 (use-package doom-themes
+  :custom-face
+  (ivy-current-match ((t (:background "#5C748E"))))
   :init (load-theme 'doom-city-lights t)
   :config
   (doom-themes-neotree-config)
-  (doom-themes-org-config))                    ;; themeを設定
+  (doom-themes-org-config))
 
 ;; 移動した行にハイライト
 (use-package beacon :config (beacon-mode 1))
