@@ -128,4 +128,7 @@
   (google-translate-default-source-language "en")
   (google-translate-default-target-language "ja"))
 
+(use-package google-this
+  :config (google-this-mode 1))
+
 ;;; 10-coding ends here
