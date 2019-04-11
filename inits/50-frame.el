@@ -71,15 +71,6 @@
     (push '("*pry*" :stick t) popwin:special-display-config)
     (push '("*ruby*" :stick t) popwin:special-display-config)
 
-    (push '("*slime-apropos*") popwin:special-display-config)
-    (push '("*slime-macroexpansion*") popwin:special-display-config)
-    (push '("*slime-description*") popwin:special-display-config)
-    (push '("*slime-compilation*" :noselect t) popwin:special-display-config)
-    (push '("*slime-xref*") popwin:special-display-config)
-    (push '(sldb-mode :stick t) popwin:special-display-config)
-    (push '(slime-repl-mode) popwin:special-display-config)
-    (push '(slime-connection-list-mode) popwin:special-display-config)
-
     (push '("*undo-tree*" :width 0.2 :position right) popwin:special-display-config)
     (push '("*Google Translate*" :position bottom :height 35) popwin:special-display-config)
     (push '("*Codic Result*" :noselect t) popwin:special-display-config)
@@ -90,7 +81,7 @@
     (push '("*magit-process*" :noselect t :height 15 :width 80) popwin:special-display-config)
     (push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
 
-    (push '("*Remember*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config)
+    (push '("*Python*" :stick t) popwin:special-display-config)
 
     (popwin-mode 1)))
 
