@@ -39,11 +39,8 @@
 (use-package company-flx
   :hook (company-mode . company-flx-mode))
 
-(use-package company-quickhelp
-  :hook (company-mode . company-quickhelp-mode)
-  :custom
-  (company-quickhelp-delay .1)
-  (pos-tip-use-relative-coordinates t))
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
 (use-package flycheck
   :config
