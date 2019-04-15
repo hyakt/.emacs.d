@@ -41,6 +41,8 @@
   (ivy-initial-inputs-alist nil)
   (ivy-extra-directories nil)
   (ivy-re-builders-alist '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
+  (ivy-format-function 'ivy-format-function-arrow)
+  (counsel-yank-pop-separator "\n-------\n")
   :config
   (ivy-mode 1)
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
