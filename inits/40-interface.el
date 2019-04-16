@@ -157,6 +157,16 @@
 (use-package ivy-hydra
   :after ivy)
 
+(use-package ivy-posframe
+  :after ivy
+  :custom-face
+  (ivy-posframe ((t (:background "#181E24"))))
+  :custom
+  (ivy-display-function #'ivy-posframe-display-at-frame-center)
+  (ivy-posframe-border-width 0)
+  :config
+  (ivy-posframe-enable))
+
 (use-package swiper
   :after ivy
   :bind ((( "\C-s" . swiper))))
