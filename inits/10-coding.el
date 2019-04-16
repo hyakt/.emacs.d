@@ -42,6 +42,9 @@
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
+(use-package company-quickhelp
+  :init (company-quickhelp-mode 1))
+
 (use-package flycheck
   :config
   (global-flycheck-mode t)
