@@ -131,27 +131,27 @@
           counsel-find-file
           (:columns
            ((ivy-rich-file-icon :width 2)
-            (ivy-rich-candidate (:width 30))))
+            (ivy-rich-candidate)))
           counsel-file-jump
           (:columns
            ((ivy-rich-file-icon :width 2)
-            (ivy-rich-candidate (:width 30))))
+            (ivy-rich-candidate)))
           counsel-git
           (:columns
            ((ivy-rich-file-icon :width 2)
-            (ivy-rich-candidate (:width 30))))
+            (ivy-rich-candidate)))
           counsel-projectile-find-file
           (:columns
            ((ivy-rich-file-icon :width 2)
-            (ivy-rich-candidate (:width 30))))
+            (ivy-rich-candidate)))
           counsel-projectile-find-dir
           (:columns
            ((ivy-rich-file-icon :width 2)
-            (ivy-rich-candidate (:width 30))))
+            (ivy-rich-candidate)))
           counsel-recentf
           (:columns
            ((ivy-rich-file-icon :width 2)
-            (ivy-rich-candidate (:width 90))
+            (ivy-rich-candidate)
             (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))))))
 
 (use-package ivy-hydra
