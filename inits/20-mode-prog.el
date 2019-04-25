@@ -59,7 +59,8 @@
   :mode (("\.js$" . js2-mode))
   :custom
   (js2-strict-missing-semi-warning nil)
-  (js2-basic-offset 2))
+  (js2-basic-offset 2)
+  (js-switch-indent-offset 2))
 
 (use-package tern :defer t
   :after company
