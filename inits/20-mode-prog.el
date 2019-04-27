@@ -58,14 +58,14 @@
 (use-package js2-mode :defer t
   :mode (("\.js$" . js2-mode))
   :custom
-  (js2-strict-missing-semi-warning nil)
-  (js2-basic-offset 2)
-  (js-switch-indent-offset 2))
+  ((js2-basic-offset 2)
+   (js-switch-indent-offset 2)))
 
 (use-package tern :defer t
   :after company
   :ensure-system-package ((tern . "npm install -g tern"))
-  :hook ((js2-mode . tern-mode))
+  :hook ((js2-mode . tern-mode)
+         (rjsx-mode . tern-mode))
   :config
   (use-package company-tern)
   (add-to-list 'company-backends 'company-tern))
@@ -74,13 +74,17 @@
 
 (use-package add-node-modules-path :config (add-hook 'js2-mode-hook #'add-node-modules-path))
 
+(use-package rjsx-mode
+  :custom ((indent-tabs-mode nil)
+           (js-indent-level 2))
+  :mode (("components\\/.*\\.js\\'" . rjsx-mode)
+         ("containers\\/.*\\.js\\'" . rjsx-mode)
+         ("screens\\/.*\\.js\\'" . rjsx-mode)))
+
 ;; Python
 (use-package python :defer t
-  :config
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (setq indent-tabs-mode nil)
-              (setq tab-width 4))))
+  :custom((indent-tabs-mode nil)
+          (tab-width 4)))
 
 (use-package anaconda-mode
   :after company
@@ -130,7 +134,7 @@
 ;; SQL
 (use-package sql
   :mode (("\.sql$" . sql-mode))
-  :init
+  :config
   (add-hook 'sql-interactive-mode-hook
             (lambda ()
               (buffer-face-set 'variable-pitch)
