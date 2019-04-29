@@ -171,11 +171,13 @@
   :after ivy
   :bind ((( "\C-s" . swiper))))
 
-(use-package avy)
+(use-package avy
+  :bind ((( "C-;" . avy-goto-char))))
 
 (use-package avy-migemo
   :config
   (avy-migemo-mode t)
+  (avy-migemo-remove-names 'avy-migemo-goto-char)
   (require 'avy-migemo-e.g.ivy)
   (require 'avy-migemo-e.g.swiper))
 
