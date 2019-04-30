@@ -30,7 +30,7 @@
         ( "<f2> i" . counsel-info-lookup-symbol)
         ( "<f2> u" . counsel-unicode-char)
         ( "C-x C-g" . counsel-git)
-        ( "C-x C-d" . counsel-fzf)
+        ( "C-x f" . counsel-fzf)
         ( "C-c e" . counsel-rg)
         :map read-expression-map
         ("C-r" . counsel-expression-history))
@@ -180,6 +180,39 @@
   (avy-migemo-remove-names 'avy-migemo-goto-char)
   (require 'avy-migemo-e.g.ivy)
   (require 'avy-migemo-e.g.swiper))
+
+(use-package wdired
+  :after dired
+  :bind (:map dired-mode-map (("r" . wdired-change-to-wdired-mode)
+                              ("C-t" . nil))))
+
+(use-package peep-dired
+  :after dired
+  :bind (:map dired-mode-map
+              ("P" . peep-dired)))
+
+(use-package all-the-icons-dired
+  :after dired )
+
+(use-package dired-sidebar
+  :after dired
+  :bind (("C-x C-d" . dired-sidebar-toggle-sidebar))
+  :commands (qdired-sidebar-toggle-sidebar)
+  :init
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  :custom ((dired-sidebar-use-term-integration t)
+           (dired-sidebar-use-custom-modeline nil)))
+
+(defcustom dired-sidebar-mode-line-format
+  '("%e" mode-line-front-space
+    mode-line-buffer-identification
+    " "  mode-line-end-spaces)
+  "Mode line format for `dired-sidebar'."
+  :type 'list
+  :group 'dired-sidebar)
 
 (use-package eshell  :defer t
   :custom

@@ -40,12 +40,6 @@
   :bind (("C-," . er/expand-region)
          ("C-M-," . er/contract-region)))
 
-(use-package wdired
-  :bind (:map dired-mode-map
-              ("e" . wdired-change-to-wdired-mode)
-              ("(" . dired-hide-details-mode)
-              (")" . dired-hide-details-mode)))
-
 (use-package recentf
   :custom
   (recentf-max-saved-items 500)
