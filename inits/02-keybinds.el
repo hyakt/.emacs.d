@@ -9,7 +9,6 @@
 (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
 
 (bind-key (kbd "C-x C-k") 'kill-buffer)
-(bind-key (kbd "C-x f") 'find-file-other-window)
 
 ;; window-split
 (bind-key (kbd "C-0") 'delete-window)
