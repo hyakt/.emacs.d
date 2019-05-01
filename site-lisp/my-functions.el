@@ -24,7 +24,18 @@
 (defun my/full-screen ()
   "set frame maxmize"
   (interactive)
-  (toggle-frame-maximized))
+  (let ((frame (selected-frame))
+        (one-half-display-pixel-width (display-pixel-width)))
+    (set-frame-width frame one-half-display-pixel-width nil 'pixelwise)
+    (set-frame-position frame 0 0)))
+
+(defun my/half-screen ()
+  "set frame half"
+  (interactive)
+  (let ((frame (selected-frame))
+        (one-half-display-pixel-width (/ (display-pixel-width) 2)))
+    (set-frame-width frame one-half-display-pixel-width nil 'pixelwise)
+    (set-frame-position frame 0 0)))
 
 (defun my/org-bullets-export (path)
   "Export to bullets style text file."
