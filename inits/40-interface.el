@@ -255,6 +255,8 @@
     (kill-buffer)
     (delete-window)))
 
+(use-package git-timemachine)
+
 (use-package atomic-chrome :defer t
   :init (atomic-chrome-start-server))
 
