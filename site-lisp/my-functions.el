@@ -185,6 +185,11 @@ BEG and END (region to sort)."
   (dired
    (file-name-directory (expand-file-name (buffer-name)))))
 
+(defun my/eslint-fix-file ()
+  (interactive)
+  (message "eslint --fixing the file" (buffer-file-name))
+  (shell-command (concat "npx eslint --fix " (buffer-file-name))))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
