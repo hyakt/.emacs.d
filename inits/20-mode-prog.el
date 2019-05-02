@@ -62,6 +62,15 @@
    (js-switch-indent-offset 2)
    (js2-strict-missing-semi-warning nil)))
 
+;; jsx (react)
+(use-package rjsx-mode
+  :custom ((indent-tabs-mode nil)
+           (js-indent-level 2))
+  :mode (("components\\/.*\\.js\\'" . rjsx-mode)
+         ("containers\\/.*\\.js\\'" . rjsx-mode)
+         ("screens\\/.*\\.js\\'" . rjsx-mode)
+         ("navigation\\/.*\\.js\\'" . rjsx-mode)))
+
 (use-package tern :defer t
   :after company
   :ensure-system-package ((tern . "npm install -g tern"))
@@ -74,13 +83,6 @@
 (use-package web-beautify)
 
 (use-package add-node-modules-path :config (add-hook 'js2-mode-hook #'add-node-modules-path))
-
-(use-package rjsx-mode
-  :custom ((indent-tabs-mode nil)
-           (js-indent-level 2))
-  :mode (("components\\/.*\\.js\\'" . rjsx-mode)
-         ("containers\\/.*\\.js\\'" . rjsx-mode)
-         ("screens\\/.*\\.js\\'" . rjsx-mode)))
 
 ;; Python
 (use-package python :defer t
