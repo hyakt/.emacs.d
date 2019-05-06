@@ -53,6 +53,10 @@
                    '(("i" ivy-copy-to-buffer-action "insert")
                      ("y" ivy-yank-action "yank"))))
 
+(use-package counsel-ghq
+  :straight (:host github :repo "windymelt/counsel-ghq" :branch "master")
+  :bind(( "C-c C-g" . counsel-ghq)))
+
 (use-package ivy-rich
   :defines all-the-icons-mode-icon-alist
   :functions (all-the-icons-icon-family-for-mode all-the-icons-icon-family-for-file)
