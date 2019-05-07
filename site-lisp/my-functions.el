@@ -25,8 +25,8 @@
   "set frame maxmize"
   (interactive)
   (let ((frame (selected-frame))
-        (one-half-display-pixel-width (display-pixel-width)))
-    (set-frame-width frame one-half-display-pixel-width nil 'pixelwise)
+        (display-pixel-width (display-pixel-width)))
+    (set-frame-width frame display-pixel-width nil 'pixelwise)
     (set-frame-position frame 0 0)))
 
 (defun my/half-screen ()
