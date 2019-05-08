@@ -64,9 +64,6 @@
          ("C-x a" . quickrun-with-arg)))
 
 (use-package dumb-jump
-  :bind (("M-." . dumb-jump-quick-look)
-         ("M-n" . dumb-jump-go)
-         ("M-p" . dumb-jump-back))
   :custom
   (dumb-jump-default-project "")
   (dumb-jump-max-find-time 10)
