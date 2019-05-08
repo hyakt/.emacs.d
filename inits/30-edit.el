@@ -36,6 +36,16 @@
 
 (use-package undohist :config (undohist-initialize))
 
+(use-package point-history
+  :straight (point-history :type git :host github :repo "blue0513/point-history")
+  :config
+  (point-history-mode t))
+
+(use-package ivy-point-history
+  :after (ivy)
+  :bind (("C-x C-p" . ivy-point-history))
+  :straight (ivy-point-history :type git :host github :repo "SuzumiyaAoba/ivy-point-history"))
+
 (use-package expand-region
   :bind (("C-," . er/expand-region)
          ("C-M-," . er/contract-region)))
