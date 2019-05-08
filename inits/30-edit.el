@@ -43,7 +43,7 @@
 
 (use-package ivy-point-history
   :after (ivy)
-  :bind (("C-x C-p" . ivy-point-history))
+  :bind (("M-p" . ivy-point-history))
   :straight (ivy-point-history :type git :host github :repo "SuzumiyaAoba/ivy-point-history"))
 
 (use-package expand-region
