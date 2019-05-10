@@ -21,21 +21,32 @@
   (interactive "nAlpha: ")
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
 
-(defun my/full-screen ()
-  "set frame maxmize"
-  (interactive)
-  (let ((frame (selected-frame))
-        (display-pixel-width (display-pixel-width)))
-    (set-frame-width frame display-pixel-width nil 'pixelwise)
-    (set-frame-position frame 0 0)))
+(setq my/current-screen-geometry
+      (loop for x in (display-monitor-attributes-list)
+            when (> (length (assoc 'frames x)) 1)
+            return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
 
-(defun my/half-screen ()
-  "set frame half"
+(defun my/resize-frame (w h frame)
+  "Set frame W (width) and H (height) on FRAME."
+  (set-frame-width frame w nil 'pixelwise)
+  (set-frame-height frame h nil 'pixelwise)
+  (set-frame-position frame 0 0))
+
+(defun my/fullscreen ()
+  "Set frame maxmize."
   (interactive)
   (let ((frame (selected-frame))
-        (one-half-display-pixel-width (/ (display-pixel-width) 2)))
-    (set-frame-width frame one-half-display-pixel-width nil 'pixelwise)
-    (set-frame-position frame 0 0)))
+        (width (car my/current-screen-geometry))
+        (height (cdr my/current-screen-geometry)))
+    (my/resize-frame width height frame)))
+
+(defun my/halfscreen ()
+  "Set frame half."
+  (interactive)
+  (let ((frame (selected-frame))
+        (width (car my/current-screen-geometry))
+        (height (cdr my/current-screen-geometry)))
+    (my/resize-frame (/ width 2) height frame)))
 
 (defun my/org-bullets-export (path)
   "Export to bullets style text file."
@@ -93,7 +104,7 @@
 
 
 ;; 文字列をURLエンコードする
-(defun my/url-encode-string (str &optional sys)
+(defun url-encode-string (str &optional sys)
   (let ((sys (or sys 'utf-8)))
     (url-hexify-string (encode-coding-string str sys))))
 
