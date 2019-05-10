@@ -163,7 +163,7 @@
          (sql-interactive-mode . sqlup-mode)))
 
 (use-package sqlformat
-  :ensure-system-package ((sqlparse . "brew install sqlparse")))
+  :ensure-system-package ((sqlformat . "brew install sqlparse")))
 
 ;; Java
 (add-hook 'java-mode-hook
