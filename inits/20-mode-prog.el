@@ -148,7 +148,8 @@
   :hook ((sql-mode . sqlup-mode)
          (sql-interactive-mode . sqlup-mode)))
 
-(use-package sql-indent)
+(use-package sqlformat
+  :ensure-system-package ((sqlparse . "brew install sqlparse")))
 
 ;; Java
 (add-hook 'java-mode-hook
