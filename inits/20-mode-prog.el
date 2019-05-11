@@ -5,14 +5,22 @@
 
 ;; lsp-mode
 (use-package lsp-mode
+  :commands lsp
   :custom ((lsp-inhibit-message t)
            (lsp-message-project-root-warning t)
-           (create-lockfiles nil))
-  :hook   (prog-major-mode . lsp-prog-major-mode-enable))
+           (create-lockfiles nil)
+           (lsp-prefer-flymake nil))
+  :hook   ((prog-major-mode . lsp-prog-major-mode-enable)
+           (dart-mode . lsp )))
 
 (use-package lsp-ui
   :after lsp-mode
-  :custom (scroll-margin 0)
+  :custom ((scroll-margin 0)
+           (lsp-ui-doc-enable nil)
+           (lsp-ui-peek-enable nil)
+           (lsp-ui-sideline-enable nil)
+           (lsp-ui-imenu-enable nil)
+           (lsp-ui-flycheck-enable t))
   :hook   (lsp-mode . lsp-ui-mode))
 
 (use-package company-lsp
@@ -87,9 +95,9 @@
 ;; Dart
 (use-package dart-mode
   :custom
-  (dart-format-on-save t)
-  (dart-enable-analysis-server t)
-  (dart-sdk-path "/Applications/flutter/bin/cache/dart-sdk/"))
+  (dart-format-on-save nil)
+  (dart-enable-analysis-server nil)
+  (dart-sdk-path "~/git/github.com/flutter/flutter/bin/cache/dart-sdk/"))
 
 (use-package flutter
   :after dart-mode
