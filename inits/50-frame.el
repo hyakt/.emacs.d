@@ -82,6 +82,7 @@
     (push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
 
     (push '("*Python*" :stick t) popwin:special-display-config)
+    (push '("*Flutter*" :stick t) popwin:special-display-config)
 
     (popwin-mode 1)))
 
