@@ -22,11 +22,10 @@
          ("C-d" . company-show-doc-buffer))
   :custom
   (company-transformers '(company-sort-by-occurrence))
-  (company-idle-delay 0.1)
-  (company-minimum-prefix-length 2)
+  (company-idle-delay 0.5)
+  (company-minimum-prefix-length 5)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
-  (company-show-numbers t)
   :config
   (defvar company-mode/enable-yas t
     "Enable yasnippet for all backends.")
@@ -80,7 +79,17 @@
 (use-package rainbow-mode
   :config
   (add-hook 'css-mode-hook 'rainbow-mode)
-  (add-hook 'html-mode-hook 'rainbow-mode))
+  (add-hook 'html-mode-hook 'rainbow-mode)
+  (add-hook 'rjsx-mode-hook 'rainbow-mode))
+
+(use-package highlight-indentation
+  :config
+  (add-hook 'prog-mode-hook 'highlight-indentation-current-column-mode))
+
+(use-package clean-aindent-mode
+  :custom ((clean-aindent-is-simple-indent t)))
+
+(use-package dtrt-indent)
 
 ;; 変数などの色付け
 (use-package symbol-overlay
