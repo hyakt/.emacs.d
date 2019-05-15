@@ -22,8 +22,8 @@
          ("C-d" . company-show-doc-buffer))
   :custom
   (company-transformers '(company-sort-by-occurrence))
-  (company-idle-delay 0.5)
-  (company-minimum-prefix-length 5)
+  (company-idle-delay 0.1)
+  (company-minimum-prefix-length 2)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
   :config
@@ -43,6 +43,10 @@
 
 (use-package company-quickhelp
   :init (company-quickhelp-mode 1))
+
+(use-package company-tabnine
+  :after company
+  :config (add-to-list 'company-backends #'company-tabnine))
 
 (use-package flycheck
   :config
