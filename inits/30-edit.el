@@ -74,7 +74,11 @@
   (global-aggressive-indent-mode 1)
   (add-to-list 'aggressive-indent-excluded-modes 'scala-mode))
 
-(use-package wgrep)
+(use-package wgrep
+  :custom
+  (wgrep-enable-key "e")
+  (wgrep-auto-save-buffer t)
+  (wgrep-change-readonly-file t))
 
 (use-package codic)
 
