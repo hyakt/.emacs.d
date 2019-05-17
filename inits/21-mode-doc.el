@@ -8,6 +8,7 @@
 
 ;; Org
 (use-package org
+  :straight nil
   :mode (("\\.txt$" . org-mode))
   :bind (("C-M-]" . org-cycle-list-bullet)
          :map org-mode-map ("C-," . nil))
