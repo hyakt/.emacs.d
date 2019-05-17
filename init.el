@@ -27,7 +27,9 @@
 ;; use-package
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
+(setq straight-check-for-modifications 'live)
 (use-package use-package-ensure-system-package)
+
 
 ;; init-loader
 (use-package init-loader)
