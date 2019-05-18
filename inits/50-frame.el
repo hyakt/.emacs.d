@@ -39,6 +39,7 @@
 (use-package eyebrowse
   :custom
   (eyebrowse-keymap-prefix (kbd "C-z"))
+  (eyebrowse-new-workspace t)
   :config
   (eyebrowse-mode 1)
   (global-unset-key (kbd "C-z")))
