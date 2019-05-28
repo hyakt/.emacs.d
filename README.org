@@ -19,7 +19,7 @@ defaults write org.gnu.Emacs HideDocumentIcon YES
 #+BEGIN_SRC sh
 brew tap homebrew/cask-fonts
 brew cask install font-source-han-code-jp
-brew cask insatll font-ricty-diminished
+brew cask install font-ricty-diminished
 #+END_SRC
 - Install [[https://github.com/domtronn/all-the-icons.el/tree/master/fonts][all-the-icons font]]
 #+BEGIN_SRC emacs-lisp
