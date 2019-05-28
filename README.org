@@ -6,7 +6,7 @@
 - Install [[https://github.com/railwaycat/homebrew-emacsmacport][Emacs Mac Port]]
 #+BEGIN_SRC sh
 brew tap railwaycat/emacsmacport
-brew install emacs-mac --with-ctags --with-glib --with-gnutls --with-imagemagick --with-modules --with-natural-title-bar --with-xml2
+brew install emacs-mac --with-ctags --with-glib --with-imagemagick --with-modules --with-natural-title-bar --with-xml2
 ln -sfv /usr/local/opt/emacs-mac/Emacs.app /Applications/
 #+END_SRC
 - Set [[https://github.com/railwaycat/homebrew-emacsmacport/wiki/Natural-Title-Bar][Natural Title bar]]
