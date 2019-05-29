@@ -15,7 +15,7 @@
   (migemo-init))
 
 (use-package visual-regexp
-  :bind (("M-%" . vr/query-replace)))
+  :bind (("C-r" . vr/query-replace)))
 
 (use-package visual-regexp-steroids
   :after visual-regexp
