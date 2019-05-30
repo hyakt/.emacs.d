@@ -2,18 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-(use-package migemo
-  :ensure-system-package ((cmigemo . "brew install cmigemo"))
-  :custom
-  (migemo-command "cmigemo")
-  (migemo-options '("-q" "--emacs" "-i" "\g"))
-  (migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
-  (migemo-user-dictionary nil)
-  (migemo-regex-dictionary nil)
-  (migemo-coding-system 'utf-8-unix)
-  :config
-  (migemo-init))
-
 (use-package visual-regexp
   :bind (("C-r" . vr/query-replace)))
 
