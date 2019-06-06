@@ -32,3 +32,4 @@ games/
 hackernews/
 transient/
 .lsp-session-v1
+*.sqlite

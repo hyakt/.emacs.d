@@ -242,6 +242,8 @@
     (kill-buffer)
     (delete-window)))
 
+(use-package forge  :after magit)
+
 (use-package git-timemachine)
 
 (use-package atomic-chrome :defer t
