@@ -217,9 +217,6 @@
 (use-package sbt-mode
   :commands sbt-start sbt-command)
 
-(use-package ensime
-  :custom ((ensime-startup-notification nil)))
-
 ;; fish
 (use-package fish-mode)
 
