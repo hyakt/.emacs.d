@@ -57,11 +57,6 @@
   :custom
   (open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
-(use-package aggressive-indent
-  :config
-  (global-aggressive-indent-mode 1)
-  (add-to-list 'aggressive-indent-excluded-modes 'scala-mode))
-
 (use-package wgrep
   :custom
   (wgrep-enable-key "e")
