@@ -88,9 +88,19 @@
   (use-package company-tern)
   (add-to-list 'company-backends 'company-tern))
 
+(use-package nodejs-repl
+  :after js2-mode
+  :bind (:map js2-mode-map
+              ("C-x C-e" . nodejs-repl-send-last-expression)
+              ("C-c C-j" . nodejs-repl-send-line)
+              ("C-c C-r" . nodejs-repl-send-region)
+              ("C-c C-l" . nodejs-repl-load-file)
+              ("C-c C-z" . nodejs-repl-switch-to-repl)))
+
 (use-package web-beautify)
 
-(use-package add-node-modules-path :config (add-hook 'js2-mode-hook #'add-node-modules-path))
+(use-package add-node-modules-path
+  :config (add-hook 'js2-mode-hook #'add-node-modules-path))
 
 ;; Dart
 (use-package dart-mode
