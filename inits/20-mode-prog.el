@@ -97,6 +97,13 @@
               ("C-c C-l" . nodejs-repl-load-file)
               ("C-c C-z" . nodejs-repl-switch-to-repl)))
 
+(use-package import-js
+  :after js2-mode
+  :bind (:map js2-mode-map
+              ("C-c m" . import-js-import))
+  :config
+  (run-import-js))
+
 (use-package web-beautify)
 
 (use-package add-node-modules-path
