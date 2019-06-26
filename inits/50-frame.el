@@ -31,7 +31,7 @@
 
 (use-package other-window-or-split
   :straight (other-window-or-split :type git :host github :repo "conao/other-window-or-split")
-  :custom ((ws-split-window-width-with-em 100))
+  :custom ((ws-split-window-width-with-em 130))
   :bind (("C-t"  . ws-other-window-or-split)
          ("C-S-t" . ws-previous-other-window-or-split)))
 
