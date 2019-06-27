@@ -47,8 +47,6 @@
 
   (use-package ob-sql-mode)
   (use-package ox-gfm :after ox)
-  (use-package ox-qmd :after ox
-    :straight (ox-qmd :type git :host github :repo "0x60df/ox-qmd"))
   (use-package org-bullets
     :custom
     (org-bullets-bullet-list '("■" "○" "✸" "►" "•" "★"))
