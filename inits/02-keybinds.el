@@ -17,11 +17,11 @@
 (bind-key (kbd "C-3") 'split-window-right)
 
 (defun my/close-and-kill-this-pane ()
-      "If there are multiple windows, then close this pane and kill the buffer in it also."
-      (interactive)
-      (kill-this-buffer)
-      (if (not (one-window-p))
-          (delete-window)))
+  "If there are multiple windows, then close this pane and kill the buffer in it also."
+  (interactive)
+  (kill-this-buffer)
+  (if (not (one-window-p))
+      (delete-window)))
 (bind-key (kbd "C-x k") 'my/close-and-kill-this-pane)
 
 (defun my/kill-other-buffers ()
@@ -43,5 +43,7 @@
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
 (bind-key (kbd "<f5>") 'revert-buffer-no-confirm)
+
+(bind-key (kbd "C-x i") 'my/buffer-indent)
 
 ;;; 02-keybinds.el ends here

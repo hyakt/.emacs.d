@@ -188,7 +188,7 @@ BEG and END (region to sort)."
 (defun my/delete-or-remove-this-file ()
   (interactive)
   (let* ((current-file-name (buffer-name)))
-    (move-file-to-trash current-file-name)
+    (movep-file-to-trash current-file-name)
     (kill-buffer current-file-name)))
 
 (defun my/dired-this-buffer ()
@@ -200,6 +200,13 @@ BEG and END (region to sort)."
   (interactive)
   (message "eslint --fixing the file" (buffer-file-name))
   (shell-command (concat "npx eslint --fix " (buffer-file-name))))
+
+(defun my/buffer-indent ()
+  (interactive)
+  (let ((point (point)))
+    (mark-whole-buffer)
+    (indent-region (region-beginning)(region-end))
+    (goto-char point)))
 
 (provide 'my-functions)
 
