@@ -134,7 +134,6 @@
                   (lambda () (yafolding-mode))))
 
 (use-package google-translate
-  :bind(("C-." . google-translate-at-point))
   :custom
   (google-translate-default-source-language "en")
   (google-translate-default-target-language "ja"))
