@@ -82,6 +82,7 @@
 ;; カラーコードの表示
 (use-package rainbow-mode
   :config
+  (add-hook 'js2-mode-hook 'rainbow-mode)
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
   (add-hook 'rjsx-mode-hook 'rainbow-mode))
