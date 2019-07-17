@@ -31,5 +31,6 @@ straight/
 games/
 hackernews/
 transient/
+bin/
 .lsp-session-v1
 *.sqlite
