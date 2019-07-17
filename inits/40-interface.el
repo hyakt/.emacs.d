@@ -18,8 +18,7 @@
 (use-package ivy
   :ensure-system-package ((rg . "brew install ripgrep")
                           (fzf . "brew install fzf"))
-  :bind(( "C-c C-r" . ivy-resume)
-        ( "M-x" . counsel-M-x)
+  :bind(( "M-x" . counsel-M-x)
         ( "M-y" . counsel-yank-pop)
         ( "C-x C-f" . counsel-find-file)
         ( "C-x C-r" . counsel-recentf)
@@ -31,7 +30,7 @@
         ( "<f2> u" . counsel-unicode-char)
         ( "C-x C-g" . counsel-git)
         ( "C-x f" . counsel-fzf)
-        ( "C-c e" . counsel-rg)
+        ( "C-x e" . counsel-rg)
         :map read-expression-map
         ("C-r" . counsel-expression-history))
   :custom
@@ -55,7 +54,10 @@
 
 (use-package counsel-ghq
   :straight (:host github :repo "windymelt/counsel-ghq" :branch "master")
-  :bind(( "C-c C-g" . counsel-ghq)))
+  :bind(( "C-x C-j" . counsel-ghq)))
+
+(use-package counsel-tramp
+  :bind (( "C-x C-t" . counsel-tramp)))
 
 (use-package ivy-rich
   :defines all-the-icons-mode-icon-alist
