@@ -46,6 +46,7 @@
 
 (use-package company-tabnine
   :after company
+  :custom (company-tabnine-binaries-folder "~/.emacs.d/bin/TabNine")
   :config (add-to-list 'company-backends #'company-tabnine))
 
 (use-package flycheck
