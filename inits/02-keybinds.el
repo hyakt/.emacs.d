@@ -16,6 +16,12 @@
 (bind-key (kbd "C-2") 'split-window-below)
 (bind-key (kbd "C-3") 'split-window-right)
 
+(bind-key (kbd "C-g") '(lambda ()
+                         (interactive)
+                         (if (active-minibuffer-window)
+                             (minibuffer-keyboard-quit)
+                           (keyboard-quit))))
+
 (defun my/close-and-kill-this-pane ()
   "If there are multiple windows, then close this pane and kill the buffer in it also."
   (interactive)
