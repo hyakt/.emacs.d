@@ -18,8 +18,8 @@
   :custom ((scroll-margin 0)
            (lsp-ui-doc-enable nil)
            (lsp-ui-peek-enable nil)
-           (lsp-ui-sideline-enable nil)
-           (lsp-ui-imenu-enable nil)
+           ;; (lsp-ui-sideline-enable nil)
+           ;; (lsp-ui-imenu-enable nil)
            (lsp-ui-flycheck-enable t))
   :hook   (lsp-mode . lsp-ui-mode))
 
@@ -233,6 +233,15 @@
 
 (use-package sbt-mode
   :commands sbt-start sbt-command)
+
+(use-package scala-bootstrap
+  :straight (scala-bootstrap.el :type git :host github :repo "tarao/scala-bootstrap-el")
+  :config
+  (add-hook 'scala-mode-hook
+            '(lambda ()
+               (scala-bootstrap:with-metals-installed
+                (scala-bootstrap:with-bloop-server-started
+                 (lsp))))))
 
 ;; fish
 (use-package fish-mode)
