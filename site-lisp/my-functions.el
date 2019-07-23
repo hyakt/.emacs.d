@@ -11,6 +11,12 @@
     (interactive)
     (ov (point-min) (point-max) 'face '(:family "Ricty Diminished")))
 
+  (defun my/buffer-cica-face ()
+    "Rictyoise current buffer."
+    (interactive)
+    (ov (point-min) (point-max) 'face '(:family "Cica"))
+    (ov (point-min) (point-max) 'face '(:height 102))))
+
   (defun my/font-size (height-num)
     "Change font size current buffer"
     (interactive "nFontsize:")
