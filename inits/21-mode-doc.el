@@ -12,8 +12,7 @@
   :mode (("\\.txt$" . org-mode))
   :bind (("C-M-]" . org-cycle-list-bullet)
          :map org-mode-map
-         (("C-," . nil)
-          ("C-M-j" . org-table-insert-row))
+         (("C-," . nil))
          :map orgtbl-mode-map
          (("C-M-j" . org-table-insert-row)))
   :custom
