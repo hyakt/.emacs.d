@@ -13,12 +13,11 @@
   :config
   (dashboard-setup-startup-hook))
 
-(use-package counsel)
-
-(use-package ivy
+(use-package counsel
   :ensure-system-package ((rg . "brew install ripgrep")
                           (fzf . "brew install fzf"))
-  :bind(( "M-x" . counsel-M-x)
+  :bind(( "C-s" . swiper)
+        ( "M-x" . counsel-M-x)
         ( "M-y" . counsel-yank-pop)
         ( "C-x C-f" . counsel-find-file)
         ( "C-x C-r" . counsel-recentf)
@@ -162,10 +161,6 @@
 
 (use-package ivy-hydra
   :after ivy)
-
-(use-package swiper
-  :after ivy
-  :bind ((( "\C-s" . swiper))))
 
 (use-package avy
   :bind ((( "C-;" . avy-goto-char))))
