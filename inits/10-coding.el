@@ -12,6 +12,8 @@
 
 (use-package yasnippet-snippets)
 
+(use-package prescient)
+
 (use-package company
   :defer t
   :init (global-company-mode)
@@ -35,13 +37,15 @@
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet)))))
 
-(use-package company-flx
-  :hook (company-mode . company-flx-mode))
+(use-package company-prescient
+  :after company)
 
 (use-package company-box
+  :after company
   :hook (company-mode . company-box-mode))
 
 (use-package company-quickhelp
+  :after company
   :init (company-quickhelp-mode 1))
 
 (use-package company-tabnine

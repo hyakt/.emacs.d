@@ -1,4 +1,3 @@
-
 ;;; 40-interface.el --- インターフェースについての設定
 ;;; Commentary:
 
@@ -160,7 +159,10 @@
             (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))))))
 
 (use-package ivy-hydra
-  :after ivy)
+  :after counsel)
+
+(use-package ivy-prescient
+  :after counsel)
 
 (use-package avy
   :bind ((( "C-;" . avy-goto-char))))
