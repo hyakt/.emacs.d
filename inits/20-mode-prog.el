@@ -10,15 +10,16 @@
            (lsp-message-project-root-warning t)
            (create-lockfiles nil)
            (lsp-prefer-flymake nil))
-  :hook   ((prog-major-mode . lsp-prog-major-mode-enable)
-           (dart-mode . lsp )))
+  :hook ((js2-mode . lsp )
+         (rjsx-mode . lsp )
+         (dart-mode . lsp )))
 
 (use-package lsp-ui
   :after lsp-mode
   :custom ((scroll-margin 0)
-           (lsp-ui-doc-enable nil)
+           ;; (lsp-ui-doc-enable nil)
            (lsp-ui-peek-enable nil)
-           ;; (lsp-ui-sideline-enable nil)
+           (lsp-ui-sideline-enable nil)
            ;; (lsp-ui-imenu-enable nil)
            (lsp-ui-flycheck-enable t))
   :hook   (lsp-mode . lsp-ui-mode))
@@ -78,15 +79,6 @@
          ("containers\\/.*\\.js\\'" . rjsx-mode)
          ("screens\\/.*\\.js\\'" . rjsx-mode)
          ("navigation\\/.*\\.js\\'" . rjsx-mode)))
-
-(use-package tern :defer t
-  :after company
-  :ensure-system-package ((tern . "npm install -g tern"))
-  :hook ((js2-mode . tern-mode)
-         (rjsx-mode . tern-mode))
-  :config
-  (use-package company-tern)
-  (add-to-list 'company-backends 'company-tern))
 
 (use-package nodejs-repl
   :after js2-mode
