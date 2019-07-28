@@ -21,21 +21,21 @@
          :map company-active-map
          ("C-n" . company-select-next)
          ("C-p" . company-select-previous)
-         ("C-d" . company-show-doc-buffer))
+         ("C-d" . company-show-doc-buffer)
+         ("C-o" . company-other-backend))
   :custom
+  (company-backends
+   '((company-elisp)
+     (company-abbrev company-dabbrev)
+     (company-ispell
+     company-yasnippet
+     company-files
+     company-capf)))
   (company-transformers '(company-sort-by-occurrence))
   (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
   (company-selection-wrap-around t)
-  (company-tooltip-align-annotations t)
-  :config
-  (defvar company-mode/enable-yas t
-    "Enable yasnippet for all backends.")
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet)))))
+  (company-tooltip-align-annotations t))
 
 (use-package company-prescient
   :after company)
@@ -51,7 +51,7 @@
 (use-package company-tabnine
   :after company
   :custom (company-tabnine-binaries-folder "~/.emacs.d/bin/TabNine")
-  :config (add-to-list 'company-backends #'company-tabnine))
+  :config (add-to-list 'company-backends #'company-tabnine t))
 
 (use-package flycheck
   :config
