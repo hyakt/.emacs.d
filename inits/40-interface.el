@@ -169,7 +169,7 @@
 
 (use-package wdired
   :after dired
-  :bind (:map dired-mode-map (("r" . wdired-change-to-wdired-mode)
+  :bind (:map dired-mode-map (("e" . wdired-change-to-wdired-mode)
                               ("C-t" . nil))))
 
 (use-package peep-dired

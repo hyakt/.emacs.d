@@ -48,22 +48,18 @@
           id)))))
 
     ;;; latex
-    (require 'ox-latex)
-    (setq org-latex-default-class "bxjsarticle")
-    (setq org-latex-pdf-process '("latexmk %f\"))
--e \"$latex=q/uplatex -kanji=utf8 -no-guess-input-enc %S/\"
--e \"$bibtex=q/upbibtex %B/\"
--e \"$biber=q/biber --bblencoding=utf8 -u -U --output_safechars %B/\"
--e \"$makeindex=q/upmendex -o %D %S/\"
--e \"$dvipdf=q/dvipdfmx -o %D %S/\" -norc -gg -pdfdvi %f"))
-    (setq org-file-apps
-          '(("pdf" . "/usr/bin/open -a Preview.app %s")))
-    (setq org-latex-with-hyperref nil)
-    (setq org-latex-hyperref-template nil)
+  (require 'ox-latex)
+  (setq org-latex-default-class "bxjsarticle")
+  (setq org-latex-pdf-process '("latexmk %f"))
+  (setq org-file-apps
+        '(("pdf" . "/usr/bin/open -a Preview.app %s")))
+  (setq org-latex-with-hyperref nil)
+  (setq org-latex-hyperref-template nil)
 
-    (add-to-list 'org-latex-classes
-                 '("bxjsarticle"
-                   "\\documentclass[autodetect-engine,dvi=dvipdfmx,11pt,a4paper,ja=standard]{bxjsarticle}
+  (add-to-list 'org-latex-classes
+               '("cv"
+                 "\\documentclass[autodetect-engine,dvi=dvipdfmx,10pt,a4paper,ja=standard]{bxjsarticle}
+                      \\parindent = 0pt
                       [NO-DEFAULT-PACKAGES]
                       \\usepackage{amsmath}
                       \\usepackage{newtxtext,newtxmath}
@@ -83,19 +79,19 @@
                           \\fi
                         \\fi
                       \\fi"
-                   ("\\section{%s}" . "\\section*{%s}")
-                   ("\\subsection{%s}" . "\\subsection*{%s}")
-                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-(use-package ob-sql-mode)
-(use-package ox-gfm :after ox)
-(use-package org-bullets
-  :custom
-  (org-bullets-bullet-list '("■" "○" "✸" "►" "•" "★"))
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
+  (use-package ob-sql-mode)
+  (use-package ox-gfm :after ox)
+  (use-package org-bullets
+    :custom
+    (org-bullets-bullet-list '("■" "○" "✸" "►" "•" "★"))
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 
 ;; Markdown
 (use-package markdown-mode
