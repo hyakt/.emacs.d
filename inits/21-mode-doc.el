@@ -49,7 +49,7 @@
 
     ;;; latex
   (require 'ox-latex)
-  (setq org-latex-default-class "bxjsarticle")
+  (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
   (setq org-file-apps
         '(("pdf" . "/usr/bin/open -a Preview.app %s")))
@@ -58,8 +58,11 @@
 
   (add-to-list 'org-latex-classes
                '("cv"
-                 "\\documentclass[autodetect-engine,dvi=dvipdfmx,10pt,a4paper,ja=standard]{bxjsarticle}
+                 "\\documentclass[autodetect-engine,dvi=dvipdfmx,10pt,a4wide,ja=standard]{bxjsarticle}
                       \\parindent = 0pt
+                      \\usepackage{typearea}
+                      \\typearea{18}
+                      \\usepackage{longtable}
                       [NO-DEFAULT-PACKAGES]
                       \\usepackage{amsmath}
                       \\usepackage{newtxtext,newtxmath}
