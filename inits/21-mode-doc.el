@@ -88,6 +88,7 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
+  (use-package htmlize)
   (use-package ob-sql-mode)
   (use-package ox-gfm :after ox)
   (use-package org-bullets
