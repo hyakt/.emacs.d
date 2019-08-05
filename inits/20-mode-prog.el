@@ -12,7 +12,8 @@
            (lsp-prefer-flymake nil))
   :hook ((js2-mode . lsp )
          (rjsx-mode . lsp )
-         (dart-mode . lsp )))
+         (dart-mode . lsp )
+         (typescript-mode . lsp )))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -70,6 +71,8 @@
   ((js2-basic-offset 2)
    (js-switch-indent-offset 2)
    (js2-strict-missing-semi-warning nil)))
+
+(use-package typescript-mode)
 
 ;; jsx (react)
 (use-package rjsx-mode
