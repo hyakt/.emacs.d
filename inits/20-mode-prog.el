@@ -12,8 +12,9 @@
            (lsp-prefer-flymake nil))
   :hook ((js2-mode . lsp )
          (rjsx-mode . lsp )
-         (dart-mode . lsp )
-         (typescript-mode . lsp )))
+         (typescript-mode . lsp )
+         (web-mode . lsp )
+         (dart-mode . lsp )))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -50,7 +51,8 @@
          ("\\.mustache\\'" . web-mode)
          ("\\.djhtml\\'" . web-mode)
          ("\\.html?\\'" . web-mode)
-         ("\\.json\\'" . web-mode))
+         ("\\.json\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode))
   :custom
   (web-mode-engines-alist
    '(("php"    . "\\.phtml\\'")
@@ -58,7 +60,7 @@
   (web-mode-markup-indent-offset 4)
   (web-mode-css-indent-offset 4)
   (web-mode-code-indent-offset 2)
-  (web-mode-indent-style 4)
+  (web-mode-indent-style 2)
   (web-mode-enable-auto-pairing t)
   (web-mode-enable-css-colorization t)
   (web-mode-enable-current-element-highlight t)
