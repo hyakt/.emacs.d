@@ -74,7 +74,8 @@
    (js-switch-indent-offset 2)
    (js2-strict-missing-semi-warning nil)))
 
-(use-package typescript-mode)
+(use-package typescript-mode
+  :custom (typescript-indent-level 2))
 
 ;; jsx (react)
 (use-package rjsx-mode
