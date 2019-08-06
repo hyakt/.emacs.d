@@ -57,7 +57,7 @@
   (web-mode-engines-alist
    '(("php"    . "\\.phtml\\'")
      ("blade"  . "\\.blade\\.")))
-  (web-mode-markup-indent-offset 4)
+  (web-mode-markup-indent-offset 2)
   (web-mode-css-indent-offset 4)
   (web-mode-code-indent-offset 2)
   (web-mode-indent-style 2)
