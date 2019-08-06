@@ -36,7 +36,7 @@ M-x company-tabnine-install-binary
     #+END_SRC
 
 *** [[https://github.com/emacs-lsp/lsp-mode][LSP]]
-   - [[https://github.com/sourcegraph/javascript-typescript-langserver][JavaScript/TypeScript]]: =yarn global add javascript-typescript-langserver=
+   - [[https://github.com/theia-ide/typescript-language-server][TypeScript]]: =yarn global add typescript-language-server=
    - Scala: Using [[https://github.com/tarao/scala-bootstrap-el][ScalaBootstrap]], so installed automatically.
 
     And other requirements package installed by ensure-system-package in [[https://github.com/jwiegley/use-package][use-package]].
