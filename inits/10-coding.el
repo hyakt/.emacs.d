@@ -121,7 +121,8 @@
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
   (sp-local-pair 'org-mode "=" "=")
   (sp-local-pair 'org-mode "~" "~")
-  (sp-local-pair 'org-mode "「" "」"))
+  (sp-local-pair 'org-mode "「" "」")
+  (sp-local-pair 'web-mode "<" ">"))
 
 (use-package git-gutter
   :custom
