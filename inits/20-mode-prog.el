@@ -10,20 +10,19 @@
            (lsp-message-project-root-warning t)
            (create-lockfiles nil)
            (lsp-prefer-flymake nil))
-  :hook ((js2-mode . lsp )
-         (rjsx-mode . lsp )
-         (typescript-mode . lsp )
-         (web-mode . lsp )
-         (dart-mode . lsp )))
+  :hook ((typescript-mode . lsp)
+         (web-mode . lsp)
+         (dart-mode . lsp)))
 
 (use-package lsp-ui
   :after lsp-mode
   :custom ((scroll-margin 0)
-           ;; (lsp-ui-doc-enable nil)
            (lsp-ui-peek-enable nil)
            (lsp-ui-sideline-enable nil)
+           (lsp-ui-flycheck-enable t)
+           ;; (lsp-ui-doc-enable nil)
            ;; (lsp-ui-imenu-enable nil)
-           (lsp-ui-flycheck-enable t))
+           )
   :hook   (lsp-mode . lsp-ui-mode))
 
 (use-package company-lsp
