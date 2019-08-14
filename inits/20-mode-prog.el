@@ -57,7 +57,7 @@
    '(("php"    . "\\.phtml\\'")
      ("blade"  . "\\.blade\\.")))
   (web-mode-markup-indent-offset 2)
-  (web-mode-css-indent-offset 4)
+  (web-mode-css-indent-offset 2)
   (web-mode-code-indent-offset 2)
   (web-mode-indent-style 2)
   (web-mode-enable-auto-pairing t)
@@ -196,6 +196,12 @@
             (setq c-basic-offset 4)))
 
 ;; CSS
+(use-package css-mode
+  :straight nil
+  :custom
+  (css-indent-offset 2))
+
+;; Stylus
 (use-package sws-mode)
 
 ;; Docker
