@@ -63,7 +63,8 @@
   (web-mode-enable-auto-pairing t)
   (web-mode-enable-css-colorization t)
   (web-mode-enable-current-element-highlight t)
-  (web-mode-enable-current-column-highlight t))
+  (web-mode-enable-current-column-highlight t)
+  (web-mode-enable-auto-quoting nil))
 
 ;; javascript
 (use-package js2-mode :defer t
