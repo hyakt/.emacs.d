@@ -42,6 +42,7 @@
 
 ;; HTML
 (use-package web-mode
+  :straight (:host github :repo "hyakt/web-mode" :branch "master" :flavor t)
   :mode (("\\.phtml\\'" . web-mode)
          ("\\.tpl\\.php\\'" . web-mode)
          ("\\.[gj]sp\\'" . web-mode)
