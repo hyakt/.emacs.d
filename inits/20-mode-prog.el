@@ -17,12 +17,11 @@
 (use-package lsp-ui
   :after lsp-mode
   :custom ((scroll-margin 0)
+           ;; (lsp-ui-imenu-enable nil)
            (lsp-ui-peek-enable nil)
            (lsp-ui-sideline-enable nil)
-           (lsp-ui-flycheck-enable t)
-           ;; (lsp-ui-doc-enable nil)
-           ;; (lsp-ui-imenu-enable nil)
-           )
+           (lsp-ui-doc-enable nil)
+           (lsp-ui-flycheck-enable t))
   :hook   (lsp-mode . lsp-ui-mode))
 
 (use-package company-lsp
