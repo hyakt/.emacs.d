@@ -243,6 +243,18 @@
 
 (use-package forge  :after magit)
 
+(use-package gist
+  :custom
+  (gist-list-format '((files "Filename" 24 nil identity)
+                      (created "Created" 20 nil "%D %R")
+                      (visibility "Visibility" 10 nil
+                                  (lambda
+                                    (public)
+                                    (or
+                                     (and public "public")
+                                     "private")))
+                      (description "Description" 0 nil identity))))
+
 (use-package git-timemachine)
 
 (use-package atomic-chrome :defer t
