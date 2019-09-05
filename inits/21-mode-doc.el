@@ -101,6 +101,10 @@
 (use-package markdown-mode
   :mode (("\\.markdown\\'" . gfm-mode)
          ("\\.md\\'" . gfm-mode)
-         ("\\.mdown\\'" . gfm-mode)))
+         ("\\.mdown\\'" . gfm-mode))
+  :config
+  (add-hook 'markdown-mode-hook
+          '(lambda ()
+             (set (make-local-variable 'whitespace-action) nil))))
 
 ;;; 21-mode-doc ends here
