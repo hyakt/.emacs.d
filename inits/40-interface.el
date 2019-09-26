@@ -2,7 +2,16 @@
 ;;; Commentary:
 
 ;;; Code:
-(use-package projectile)
+(use-package projectile
+  :config
+  (projectile-global-mode)
+  (setq projectile-enable-caching t))
+
+(use-package projectile-rails
+  :after projectile
+  :commands (projectile-rails-on)
+  :init
+  (add-hook 'projectile-mode-hook 'projectile-rails-on))
 
 (use-package dashboard
   :custom
