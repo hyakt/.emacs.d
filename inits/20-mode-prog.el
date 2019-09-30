@@ -49,7 +49,6 @@
          ("\\.mustache\\'" . web-mode)
          ("\\.djhtml\\'" . web-mode)
          ("\\.html?\\'" . web-mode)
-         ("\\.json\\'" . web-mode)
          ("\\.tsx\\'" . web-mode))
   :custom
   (web-mode-engines-alist
@@ -63,7 +62,17 @@
   (web-mode-enable-css-colorization t)
   (web-mode-enable-current-element-highlight t)
   (web-mode-enable-current-column-highlight t)
-  (web-mode-enable-auto-quoting nil))
+  (web-mode-enable-auto-quoting nil)
+  (web-mode-content-types-alist
+   '(("jsx" . "\\.[t|j]s[x]?\\'")))
+  :config
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (equal web-mode-content-type "jsx")
+                (add-to-list 'web-mode-comment-formats '("jsx" . "//" ))
+                (flycheck-add-mode 'javascript-eslint 'web-mode)
+                (flycheck-mode t)
+                ))))
 
 ;; javascript
 (use-package js2-mode :defer t
@@ -75,15 +84,6 @@
 
 (use-package typescript-mode
   :custom (typescript-indent-level 2))
-
-;; jsx (react)
-(use-package rjsx-mode
-  :custom ((indent-tabs-mode nil)
-           (js-indent-level 2))
-  :mode (("components\\/.*\\.js\\'" . rjsx-mode)
-         ("containers\\/.*\\.js\\'" . rjsx-mode)
-         ("screens\\/.*\\.js\\'" . rjsx-mode)
-         ("navigation\\/.*\\.js\\'" . rjsx-mode)))
 
 (use-package nodejs-repl
   :after js2-mode
@@ -104,7 +104,9 @@
 (use-package web-beautify)
 
 (use-package add-node-modules-path
-  :config (add-hook 'js2-mode-hook #'add-node-modules-path))
+  :config
+  (add-hook 'js2-mode-hook #'add-node-modules-path)
+  (add-hook 'web-mode-hook #'add-node-modules-path))
 
 ;; Dart
 (use-package dart-mode
