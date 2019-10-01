@@ -94,7 +94,8 @@
   (add-hook 'js2-mode-hook 'rainbow-mode)
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
-  (add-hook 'rjsx-mode-hook 'rainbow-mode))
+  (add-hook 'web-mode-hook 'rainbow-mode)
+  (add-hook 'typescript-mode-hook 'rainbow-mode))
 
 (use-package highlight-indentation
   :config
