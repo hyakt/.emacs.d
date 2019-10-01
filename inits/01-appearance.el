@@ -93,6 +93,14 @@
   (doom-themes-neotree-config)
   (doom-themes-org-config))
 
+(use-package paren
+  :custom-face
+  (show-paren-match ((nil (:foreground "#f1fa8c"))))
+  :custom
+  (show-paren-style 'mixed)
+  (show-paren-when-point-inside-paren t)
+  (show-paren-when-point-in-periphery t))
+
 ;; 移動した行にハイライト
 (use-package beacon :config (beacon-mode 1))
 
