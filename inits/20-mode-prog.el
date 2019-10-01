@@ -17,11 +17,24 @@
 (use-package lsp-ui
   :after lsp-mode
   :custom ((scroll-margin 0)
-           ;; (lsp-ui-imenu-enable nil)
-           (lsp-ui-peek-enable nil)
+           (lsp-ui-imenu-enable nil)
            (lsp-ui-sideline-enable nil)
-           (lsp-ui-doc-enable nil)
-           (lsp-ui-flycheck-enable t))
+           ;; lsp-ui-peek
+           (lsp-ui-peek-enable t)
+           (lsp-ui-peek-peek-height 20)
+           (lsp-ui-peek-list-width 50)
+           (lsp-ui-peek-fontify 'on-demand) ;; never, on-demand, or always
+           ;; lsp-ui-doc
+           (lsp-ui-doc-enable t)
+           (lsp-ui-doc-header nil)
+           (lsp-ui-doc-include-signature t)
+           (lsp-ui-doc-position 'at-point) ;; top, bottom, or at-point
+           (lsp-ui-doc-max-width 150)
+           (lsp-ui-doc-max-height 30)
+           (lsp-ui-doc-use-childframe t)
+           (lsp-ui-doc-use-webkit t)
+           ;; lsp-ui-flycheck
+           (lsp-ui-flycheck-enable nil))
   :hook   (lsp-mode . lsp-ui-mode))
 
 (use-package company-lsp
