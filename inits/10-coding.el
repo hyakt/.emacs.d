@@ -79,6 +79,10 @@
   :config
   (dumb-jump-mode))
 
+(use-package smart-jump
+ :config
+ (smart-jump-setup-default-registers))
+
 ;; 括弧の色付け
 (use-package rainbow-delimiters
   :config
