@@ -6,10 +6,14 @@
 ;; lsp-mode
 (use-package lsp-mode
   :commands lsp
-  :custom ((lsp-inhibit-message t)
+  :custom ((lsp-auto-guess-root t)
+           (lsp-document-sync-method 'incremental) ;; always send incremental document
+           (lsp-response-timeout 5)
+           (lsp-enable-completion-at-point nil)
+           (lsp-inhibit-message t)
            (lsp-message-project-root-warning t)
-           (create-lockfiles nil)
-           (lsp-prefer-flymake nil))
+           (lsp-prefer-flymake 'flymake)
+           (create-lockfiles nil))
   :hook ((typescript-mode . lsp)
          (web-mode . lsp)
          (dart-mode . lsp)))
