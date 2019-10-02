@@ -2,7 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-
 ;; lsp-mode
 (use-package lsp-mode
   :commands lsp
@@ -12,7 +11,8 @@
            (lsp-enable-completion-at-point nil)
            (lsp-inhibit-message t)
            (lsp-message-project-root-warning t)
-           (lsp-prefer-flymake 'flymake)
+           ;; dont use flymake and flycheck on lsp-mode and lsp-ui.
+           (lsp-prefer-flymake :none)
            (create-lockfiles nil))
   :hook ((typescript-mode . lsp)
          (web-mode . lsp)
@@ -38,6 +38,7 @@
            (lsp-ui-doc-use-childframe t)
            (lsp-ui-doc-use-webkit t)
            ;; lsp-ui-flycheck
+           ;; don't use flymake and flycheck on lsp-mode and lsp-ui
            (lsp-ui-flycheck-enable nil))
   :hook   (lsp-mode . lsp-ui-mode))
 
@@ -88,8 +89,7 @@
               (when (equal web-mode-content-type "jsx")
                 (add-to-list 'web-mode-comment-formats '("jsx" . "//" ))
                 (flycheck-add-mode 'javascript-eslint 'web-mode)
-                (flycheck-mode t)
-                ))))
+                (flycheck-mode t)))))
 
 ;; javascript
 (use-package js2-mode :defer t
