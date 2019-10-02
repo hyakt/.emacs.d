@@ -2,51 +2,6 @@
 ;;; Commentary:
 
 ;;; Code:
-;; lsp-mode
-(use-package lsp-mode
-  :commands lsp
-  :custom ((lsp-auto-guess-root t)
-           (lsp-document-sync-method 'incremental) ;; always send incremental document
-           (lsp-response-timeout 5)
-           (lsp-enable-completion-at-point nil)
-           (lsp-inhibit-message t)
-           (lsp-message-project-root-warning t)
-           ;; dont use flymake and flycheck on lsp-mode and lsp-ui.
-           (lsp-prefer-flymake :none)
-           (create-lockfiles nil))
-  :hook ((typescript-mode . lsp)
-         (web-mode . lsp)
-         (dart-mode . lsp)))
-
-(use-package lsp-ui
-  :after lsp-mode
-  :custom ((scroll-margin 0)
-           (lsp-ui-imenu-enable nil)
-           (lsp-ui-sideline-enable nil)
-           ;; lsp-ui-peek
-           (lsp-ui-peek-enable t)
-           (lsp-ui-peek-peek-height 20)
-           (lsp-ui-peek-list-width 50)
-           (lsp-ui-peek-fontify 'on-demand) ;; never, on-demand, or always
-           ;; lsp-ui-doc
-           (lsp-ui-doc-enable t)
-           (lsp-ui-doc-header nil)
-           (lsp-ui-doc-include-signature t)
-           (lsp-ui-doc-position 'at-point) ;; top, bottom, or at-point
-           (lsp-ui-doc-max-width 150)
-           (lsp-ui-doc-max-height 30)
-           (lsp-ui-doc-use-childframe t)
-           (lsp-ui-doc-use-webkit t)
-           ;; lsp-ui-flycheck
-           ;; don't use flymake and flycheck on lsp-mode and lsp-ui
-           (lsp-ui-flycheck-enable nil))
-  :hook   (lsp-mode . lsp-ui-mode))
-
-(use-package company-lsp
-  :after (lsp-mode company yasnippet)
-  :defines company-backends
-  :init (push 'company-lsp company-backends))
-
 ;; emacs-lisp
 (use-package lispxmp :defer t
   :bind (:map emacs-lisp-mode-map
