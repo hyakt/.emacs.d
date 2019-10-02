@@ -14,6 +14,7 @@
 
 ;; HTML
 (use-package web-mode
+  :after (add-node-modules-path)
   :mode (("\\.phtml\\'" . web-mode)
          ("\\.tpl\\.php\\'" . web-mode)
          ("\\.[gj]sp\\'" . web-mode)
@@ -24,25 +25,30 @@
          ("\\.html?\\'" . web-mode)
          ("\\.tsx\\'" . web-mode))
   :custom
-  (web-mode-engines-alist
-   '(("php"    . "\\.phtml\\'")
-     ("blade"  . "\\.blade\\.")))
+  (web-mode-indent-style 2)
   (web-mode-markup-indent-offset 2)
   (web-mode-css-indent-offset 2)
   (web-mode-code-indent-offset 2)
-  (web-mode-indent-style 2)
-  (web-mode-enable-auto-pairing t)
+  (web-mode-script-padding 2)
+  (web-mode-attr-indent-offset 2)
   (web-mode-enable-css-colorization t)
+  (web-mode-enable-auto-quoting nil)
+  (web-mode-enable-auto-pairing t)
   (web-mode-enable-current-element-highlight t)
   (web-mode-enable-current-column-highlight t)
-  (web-mode-enable-auto-quoting nil)
+  (web-mode-script-padding 2)
+  (web-mode-style-padding 2)
+  (web-mode-block-padding 2)
   (web-mode-content-types-alist
    '(("jsx" . "\\.[t|j]s[x]?\\'")))
+  (web-mode-comment-formats
+   '(("javascript" . "//")
+     ("jsx" .  "//")
+     ("php" . "/*")))
   :config
   (add-hook 'web-mode-hook
             (lambda ()
               (when (equal web-mode-content-type "jsx")
-                (add-to-list 'web-mode-comment-formats '("jsx" . "//" ))
                 (flycheck-add-mode 'javascript-eslint 'web-mode)
                 (flycheck-mode t)))))
 
