@@ -29,16 +29,12 @@
   (web-mode-markup-indent-offset 2)
   (web-mode-css-indent-offset 2)
   (web-mode-code-indent-offset 2)
-  (web-mode-script-padding 2)
-  (web-mode-attr-indent-offset 2)
-  (web-mode-enable-css-colorization t)
-  (web-mode-enable-auto-quoting nil)
   (web-mode-enable-auto-pairing t)
+  (web-mode-enable-auto-quoting nil)
+  (web-mode-enable-css-colorization t)
   (web-mode-enable-current-element-highlight t)
   (web-mode-enable-current-column-highlight t)
-  (web-mode-script-padding 2)
-  (web-mode-style-padding 2)
-  (web-mode-block-padding 2)
+  (web-mode-enable-auto-quoting nil)
   (web-mode-content-types-alist
    '(("jsx" . "\\.[t|j]s[x]?\\'")))
   (web-mode-comment-formats
@@ -49,6 +45,10 @@
   (add-hook 'web-mode-hook
             (lambda ()
               (when (equal web-mode-content-type "jsx")
+                (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+                (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
+                (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+                (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
                 (flycheck-add-mode 'javascript-eslint 'web-mode)
                 (flycheck-mode t)))))
 
