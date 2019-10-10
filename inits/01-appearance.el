@@ -88,7 +88,7 @@
 (use-package doom-themes
   :custom-face
   (ivy-current-match ((t (:background "#5C748E"))))
-  :init (load-theme 'doom-city-lights t)
+  :init (load-theme 'doom-outrun-electric t)
   :config
   (doom-themes-neotree-config)
   (doom-themes-org-config))
