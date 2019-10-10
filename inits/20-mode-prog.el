@@ -20,6 +20,11 @@
 
 (use-package lsp-ui
   :after lsp-mode
+  :bind
+  (:map lsp-mode-map
+        ("M-." . lsp-ui-peek-find-references)
+        ("M-?" . lsp-ui-peek-find-definitions)
+        ("C-c d"   . toggle-lsp-ui-doc))
   :custom ((scroll-margin 0)
            (lsp-ui-imenu-enable nil)
            (lsp-ui-sideline-enable nil)
@@ -40,7 +45,15 @@
            ;; lsp-ui-flycheck
            ;; use flycheck on lsp-mode and lsp-ui
            (lsp-ui-flycheck-enable t))
-  :hook   (lsp-mode . lsp-ui-mode))
+  :hook   (lsp-mode . lsp-ui-mode)
+  :preface
+  (defun toggle-lsp-ui-doc ()
+    (interactive)
+    (if lsp-ui-doc-mode
+        (progn
+          (lsp-ui-doc-mode -1)
+          (lsp-ui-doc--hide-frame))
+      (lsp-ui-doc-mode 1))))
 
 (use-package company-lsp
   :after (lsp-mode company yasnippet)
