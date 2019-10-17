@@ -60,7 +60,7 @@
                      ("y" ivy-yank-action "yank"))))
 
 (use-package counsel-ghq
-  :straight (:host github :repo "windymelt/counsel-ghq" :branch "master")
+  :straight (:host github :repo "SuzumiyaAoba/counsel-ghq" :branch "master")
   :bind(( "C-x C-j" . counsel-ghq)))
 
 (use-package counsel-tramp
