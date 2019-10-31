@@ -86,16 +86,21 @@
 (use-package all-the-icons)
 
 (use-package doom-themes
-  :custom-face
-  (ivy-current-match ((t (:background "#5C748E"))))
-  :init (load-theme 'doom-outrun-electric t)
+  :init
+  (require 'doom-laserwave-theme)
   :config
   (doom-themes-neotree-config)
   (doom-themes-org-config))
 
+;; モードラインの設定
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (doom-modeline-mode 1)
+  (setq doom-modeline-height 32)
+  (setq doom-modeline-bar-width 3))
+
 (use-package paren
-  :custom-face
-  (show-paren-match ((nil (:foreground "#f1fa8c"))))
   :custom
   (show-paren-style 'mixed)
   (show-paren-when-point-inside-paren t)
@@ -131,13 +136,5 @@
   (whitespace-space-regexp "\\(\u3000+\\)")
   :config
   (global-whitespace-mode 1))
-
-;; モードラインの設定
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :config
-  (doom-modeline-mode 1)
-  (setq doom-modeline-height 32)
-  (setq doom-modeline-bar-width 3))
 
 ;;; 01-appearance ends here

@@ -138,9 +138,9 @@
   (git-gutter:added-sign    " ")
   (git-gutter:deleted-sign  " ")
   :custom-face
-  (git-gutter:modified ((t (:background "#f1fa8c"))))
-  (git-gutter:added    ((t (:background "#A6E22E"))))
-  (git-gutter:deleted  ((t (:background "#D2527F"))))
+  (git-gutter:modified ((t (:background "#B4DCE7"))))
+  (git-gutter:added    ((t (:background "#74DFC4"))))
+  (git-gutter:deleted  ((t (:background "#964C7B"))))
   :config
   (global-git-gutter-mode +1))
 
