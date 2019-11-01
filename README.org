@@ -2,6 +2,15 @@
 #+EMAIL: hyakt0@gmail.com
 
 * .emacs.d
+
+** Download
+    #+BEGIN_SRC sh
+mkdir -r ~/git/github.com/hyakt
+cd  ~/git/github.com/hyakt
+git clone https://github.com/hyakt/.emacs.d
+ln -s  ~/git/github.com/hyakt/.emacs.d ~/
+    #+END_SRC
+
 ** Requirements
 *** [[https://github.com/railwaycat/homebrew-emacsmacport][Emacs Mac Port]]
     #+BEGIN_SRC sh
