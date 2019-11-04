@@ -87,7 +87,7 @@
 
 (use-package doom-themes
   :init
-  (require 'doom-laserwave-theme)
+   (load-theme 'doom-laserwave t)
   :config
   (doom-themes-neotree-config)
   (doom-themes-org-config))
