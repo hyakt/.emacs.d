@@ -68,7 +68,7 @@
                              :family "Source Han Code JP"
                              :height 110)
          (set-face-attribute 'variable-pitch nil
-                             :family "Ricty Diminished"
+                             :family "Myrica M"
                              :height 120)
          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
 
