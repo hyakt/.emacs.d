@@ -121,7 +121,8 @@
 (use-package typescript-mode
   :custom (typescript-indent-level 2))
 
-(use-package coffee-mode)
+(use-package coffee-mode
+  :custom (coffee-tab-width 2))
 
 (use-package nodejs-repl
   :after js2-mode
