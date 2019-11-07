@@ -121,6 +121,8 @@
 (use-package typescript-mode
   :custom (typescript-indent-level 2))
 
+(use-package coffee-mode)
+
 (use-package nodejs-repl
   :after js2-mode
   :bind (:map js2-mode-map
