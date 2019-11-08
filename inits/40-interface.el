@@ -281,9 +281,4 @@
   :config
   (twittering-enable-unread-status-notifier))
 
-(use-package ein :defer t
-  :custom
-  (ein:completion-backend 'ein:use-company-backend)
-  :config
-  (add-to-list 'company-backends #'user-company-ein-backend))
 ;;; 40-interface ends here
