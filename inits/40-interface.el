@@ -45,13 +45,15 @@
   (ivy-use-virtual-buffers t)
   (enable-recursive-minibuffers t)
   (ivy-count-format "(%d/%d) ")
-  (ivy-initial-inputs-alist nil)
   (ivy-extra-directories nil)
   (ivy-re-builders-alist '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
   (ivy-format-function 'ivy-format-function-arrow)
   (counsel-yank-pop-separator "\n-------\n")
   :config
   (ivy-mode 1)
+  ;; :custom ではなぜか反映されないため :config でsetqする
+  (setq ivy-initial-inputs-alist nil)
+
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
   (defun ivy-yank-action (x) (kill-new x))
   (defun ivy-copy-to-buffer-action (x) (with-ivy-window (insert x)))
