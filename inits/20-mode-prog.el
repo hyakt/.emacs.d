@@ -145,7 +145,8 @@
 (use-package add-node-modules-path
   :config
   (add-hook 'js2-mode-hook #'add-node-modules-path)
-  (add-hook 'web-mode-hook #'add-node-modules-path))
+  (add-hook 'web-mode-hook #'add-node-modules-path)
+  (add-hook 'scss-mode-hook #'add-node-modules-path))
 
 ;; Dart
 (use-package dart-mode
@@ -244,6 +245,11 @@
 
 ;; Stylus
 (use-package sws-mode)
+
+;; scss
+(use-package scss-mode
+  :custom
+  (scss-indent-offset 2))
 
 ;; Docker
 (use-package dockerfile-mode)
