@@ -4,10 +4,10 @@
 * .emacs.d
 ** Download
    #+BEGIN_SRC sh
-mkdir -r ~/git/github.com/hyakt
-cd  ~/git/github.com/hyakt
+mkdir -r ~/repos/github.com/hyakt
+cd  ~/repos/github.com/hyakt
 git clone https://github.com/hyakt/.emacs.d
-ln -s  ~/git/github.com/hyakt/.emacs.d ~/
+ln -s  ~/repos/github.com/hyakt/.emacs.d ~/
    #+END_SRC
 
 ** Requirements
