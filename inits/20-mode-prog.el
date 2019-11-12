@@ -155,14 +155,14 @@
   :custom
   (dart-format-on-save nil)
   (dart-enable-analysis-server nil)
-  (dart-sdk-path "~/git/github.com/flutter/flutter/bin/cache/dart-sdk/"))
+  (dart-sdk-path "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
 
 (use-package flutter
   :after dart-mode
   :bind (:map dart-mode-map
               ("C-M-x" . #'flutter-run-or-hot-reload))
   :custom
-  (flutter-sdk-path "~/git/github.com/flutter/flutter/"))
+  (flutter-sdk-path "~/repos/github.com/flutter/flutter/"))
 
 ;; Python
 (use-package python :defer t
