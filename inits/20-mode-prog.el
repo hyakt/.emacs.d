@@ -14,8 +14,7 @@
            ;; dont use flymake and flycheck on lsp-mode and lsp-ui.
            (lsp-prefer-flymake nil)
            (create-lockfiles nil))
-  :hook ((typescript-mode . lsp)
-         (dart-mode . lsp)))
+  :hook ((dart-mode . lsp)))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -122,7 +121,13 @@
    (js2-strict-missing-semi-warning nil)))
 
 (use-package typescript-mode
-  :custom (typescript-indent-level 2))
+  :custom (typescript-indent-level 2)
+  :config
+  (add-hook 'typescript-mode-hook
+            (lambda ()
+              (lsp)
+              (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)
+              (flycheck-mode t))))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
@@ -149,6 +154,7 @@
   :config
   (add-hook 'js2-mode-hook #'add-node-modules-path)
   (add-hook 'web-mode-hook #'add-node-modules-path)
+  (add-hook 'typescript-mode-hook #'add-node-modules-path)
   (add-hook 'scss-mode-hook #'add-node-modules-path))
 
 ;; Dart
