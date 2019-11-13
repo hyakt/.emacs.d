@@ -12,10 +12,9 @@
            (lsp-inhibit-message t)
            (lsp-message-project-root-warning t)
            ;; dont use flymake and flycheck on lsp-mode and lsp-ui.
-           (lsp-prefer-flymake :none)
+           (lsp-prefer-flymake nil)
            (create-lockfiles nil))
   :hook ((typescript-mode . lsp)
-         (web-mode . lsp)
          (dart-mode . lsp)))
 
 (use-package lsp-ui
@@ -44,7 +43,7 @@
            (lsp-ui-doc-use-webkit t)
            ;; lsp-ui-flycheck
            ;; don't use flycheck on lsp-mode and lsp-ui
-           (lsp-ui-flycheck-enable nil))
+           (lsp-ui-flycheck-enable t))
   :hook   (lsp-mode . lsp-ui-mode)
   :preface
   (defun toggle-lsp-ui-doc ()
@@ -108,6 +107,8 @@
                 (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
                 (flycheck-add-mode 'javascript-eslint 'web-mode)
+                (lsp)
+                (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)
                 (flycheck-mode t)))))
 
 (use-package slim-mode)
