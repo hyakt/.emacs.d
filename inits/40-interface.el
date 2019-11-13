@@ -286,8 +286,4 @@
 (use-package phantom-inline-comment
   :straight (phantom-inline-comment :type git :host github :repo "blue0513/phantom-inline-comment"))
 
-(use-package golden-ratio
-  :config
-  (golden-ratio-mode 1))
-
 ;;; 40-interface ends here
