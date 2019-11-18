@@ -116,9 +116,16 @@
 (use-package js2-mode :defer t
   :mode (("\.js$" . js2-mode))
   :custom
-  ((js2-basic-offset 2)
+  ((js-indent-level 2)
    (js-switch-indent-offset 2)
-   (js2-strict-missing-semi-warning nil)))
+   (js2-basic-offset 2)
+   (js2-strict-missing-semi-warning nil))
+  :config
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (lsp)
+              (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)
+              (flycheck-mode t))))
 
 (use-package typescript-mode
   :custom (typescript-indent-level 2)
