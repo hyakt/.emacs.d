@@ -268,6 +268,8 @@
 
 (use-package git-timemachine)
 
+(use-package git-link)
+
 (use-package atomic-chrome :defer t
   :init (atomic-chrome-start-server))
 
