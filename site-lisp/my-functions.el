@@ -207,13 +207,6 @@ BEG and END (region to sort)."
   (message "eslint --fixing the file" (buffer-file-name))
   (shell-command (concat "npx eslint --fix " (buffer-file-name))))
 
-(defun my/buffer-indent ()
-  (interactive)
-  (let ((point (point)))
-    (mark-whole-buffer)
-    (indent-region (region-beginning)(region-end))
-    (goto-char point)))
-
 (provide 'my-functions)
 
 ;;; my-functions.el ends here

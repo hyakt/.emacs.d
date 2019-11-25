@@ -2,8 +2,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(setq-default tab-width 4 indent-tabs-mode nil)   ;; タブの変わりに半角スペースを使う
-(setq auto-coding-functions nil)                  ;; HTMLのMETAタグコーディング無視
+(setq auto-coding-functions nil)                  ;; 文字コードの自動変換保存をしない
 (setq completion-ignore-case t)                   ;; file名の補完で大文字小文字を区別しない
 (setq auto-save-default nil)                      ;; オートセーブのファイルを作らない
 (setq make-backup-files t)                        ;; Backup fileの場所指定
@@ -18,8 +17,7 @@
 (global-auto-revert-mode 1)                       ;; ファイルの自動再読み込み
 
 (require 'server)
-(unless (server-running-p)
-  (server-start))                                 ;; サーバ起動
+(unless (server-running-p) (server-start))        ;; サーバ起動
 
 (when (eq system-type 'darwin)
   (mac-auto-ascii-mode 1)

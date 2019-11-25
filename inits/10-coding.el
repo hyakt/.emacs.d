@@ -26,9 +26,9 @@
    '((company-elisp)
      (company-abbrev company-dabbrev)
      (company-ispell
-     company-yasnippet
-     company-files
-     company-capf)))
+      company-yasnippet
+      company-files
+      company-capf)))
   (company-transformers '(company-sort-by-occurrence))
   (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
@@ -78,8 +78,8 @@
   (dumb-jump-mode))
 
 (use-package smart-jump
- :config
- (smart-jump-setup-default-registers))
+  :config
+  (smart-jump-setup-default-registers))
 
 ;; 括弧の色付け
 (use-package rainbow-delimiters
@@ -126,18 +126,6 @@
   (sp-local-pair 'org-mode "~" "~")
   (sp-local-pair 'org-mode "「" "」")
   (sp-local-pair 'web-mode "<" ">"))
-
-(use-package git-gutter
-  :custom
-  (git-gutter:modified-sign " ")
-  (git-gutter:added-sign    " ")
-  (git-gutter:deleted-sign  " ")
-  :custom-face
-  (git-gutter:modified ((t (:background "#B4DCE7"))))
-  (git-gutter:added    ((t (:background "#74DFC4"))))
-  (git-gutter:deleted  ((t (:background "#964C7B"))))
-  :config
-  (global-git-gutter-mode +1))
 
 (use-package yafolding
   :init (add-hook 'prog-mode-hook
