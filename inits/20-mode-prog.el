@@ -111,6 +111,7 @@
                 (flycheck-mode t)))))
 
 (use-package slim-mode)
+(use-package haml-mode)
 
 ;; javascript
 (use-package js2-mode :defer t
