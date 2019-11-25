@@ -21,7 +21,7 @@
   :config
   (dashboard-setup-startup-hook))
 
-(use-package counsel
+(use-package swiper
   :ensure-system-package ((rg . "brew install ripgrep")
                           (fzf . "brew install fzf"))
   :bind(( "C-s" . swiper)
