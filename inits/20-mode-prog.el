@@ -123,6 +123,8 @@
   :custom
   (scss-indent-offset 2))
 
+(use-package sass-mode)
+
 (use-package sws-mode) ;; Stylus
 
 ;; javascript
