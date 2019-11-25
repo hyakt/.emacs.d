@@ -46,8 +46,6 @@
   :config
   (recentf-mode 1))
 
-(use-package docker-tramp)
-
 (use-package open-junk-file
   :bind (("C-`" . open-junk-file))
   :custom

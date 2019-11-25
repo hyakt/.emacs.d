@@ -91,8 +91,7 @@
   (web-mode-enable-current-element-highlight t)
   (web-mode-enable-current-column-highlight t)
   (web-mode-enable-auto-quoting nil)
-  (web-mode-content-types-alist
-   '(("jsx" . "\\.[t|j]s[x]?\\'")))
+  (web-mode-content-types-alist '(("jsx" . "\\.[t|j]s[x]?\\'")))
   (web-mode-comment-formats
    '(("javascript" . "//")
      ("jsx" .  "//")
@@ -118,13 +117,8 @@
   :straight nil
   :custom
   (css-indent-offset 2))
-
-(use-package scss-mode
-  :custom
-  (scss-indent-offset 2))
-
+(use-package scss-mode :custom (scss-indent-offset 2))
 (use-package sass-mode)
-
 (use-package sws-mode) ;; Stylus
 
 ;; javascript
@@ -162,15 +156,6 @@
               ("C-c C-r" . nodejs-repl-send-region)
               ("C-c C-l" . nodejs-repl-load-file)
               ("C-c C-z" . nodejs-repl-switch-to-repl)))
-
-(use-package import-js
-  :after js2-mode
-  :bind (:map js2-mode-map
-              ("C-c m" . import-js-import))
-  :config
-  (run-import-js))
-
-(use-package web-beautify)
 
 (use-package add-node-modules-path
   :config
@@ -241,6 +226,7 @@
   :config
   (add-to-list 'company-backends 'company-robe))
 
+;; PHP
 (use-package php-mode)
 
 ;; SQL
@@ -295,12 +281,8 @@
 (use-package ess)
 
 ;; Scala
-(use-package scala-mode
-  :interpreter ("scala" . scala-mode))
-
-(use-package sbt-mode
-  :commands sbt-start sbt-command)
-
+(use-package scala-mode :interpreter ("scala" . scala-mode))
+(use-package sbt-mode :commands sbt-start sbt-command)
 (use-package scala-bootstrap
   :straight (scala-bootstrap.el :type git :host github :repo "tarao/scala-bootstrap-el")
   :config

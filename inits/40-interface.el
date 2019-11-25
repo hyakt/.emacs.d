@@ -242,7 +242,9 @@
 
 (use-package docker
   :bind(( "C-x c" . docker)))
+(use-package docker-tramp)
 
+;; git
 (use-package magit
   :ensure-system-package ((git . "brew install git"))
   :bind ("C-x g" . magit-status)
@@ -252,8 +254,6 @@
     (interactive)
     (kill-buffer)
     (delete-window)))
-
-(use-package forge  :after magit)
 
 (use-package gist
   :custom
@@ -267,12 +267,21 @@
                                      "private")))
                       (description "Description" 0 nil identity))))
 
+(use-package git-gutter
+  :custom
+  (git-gutter:modified-sign " ")
+  (git-gutter:added-sign    " ")
+  (git-gutter:deleted-sign  " ")
+  :custom-face
+  (git-gutter:modified ((t (:background "#B4DCE7"))))
+  (git-gutter:added    ((t (:background "#74DFC4"))))
+  (git-gutter:deleted  ((t (:background "#964C7B"))))
+  :config
+  (global-git-gutter-mode +1))
+
+(use-package forge  :after magit)
 (use-package git-timemachine)
-
 (use-package git-link)
-
-(use-package atomic-chrome :defer t
-  :init (atomic-chrome-start-server))
 
 (use-package twittering-mode
   :ensure-system-package ((gpg . "brew install gpg"))

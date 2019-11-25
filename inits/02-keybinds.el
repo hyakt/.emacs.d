@@ -4,10 +4,8 @@
 ;;; Code:
 ;; 通常操作
 (keyboard-translate ?\C-h ?\C-?)
-
 (bind-key (kbd "C-h") nil)
 (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
-
 (bind-key (kbd "C-x C-k") 'kill-buffer)
 
 ;; window-split
@@ -16,12 +14,14 @@
 (bind-key (kbd "C-2") 'split-window-below)
 (bind-key (kbd "C-3") 'split-window-right)
 
+;; custom keyboard quit
 (bind-key (kbd "C-g") '(lambda ()
                          (interactive)
                          (if (active-minibuffer-window)
                              (minibuffer-keyboard-quit)
                            (keyboard-quit))))
 
+;; kill buffer
 (defun my/close-and-kill-this-pane ()
   "If there are multiple windows, then close this pane and kill the buffer in it also."
   (interactive)
@@ -47,9 +47,17 @@
 ;; reload buffer
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
-  (interactive) (revert-buffer t t))
+  (interactive)
+  (revert-buffer t t))
 (bind-key (kbd "<f5>") 'revert-buffer-no-confirm)
 
+;; indent buffer
+(defun my/buffer-indent ()
+  (interactive)
+  (let ((point (point)))
+    (mark-whole-buffer)
+    (indent-region (region-beginning)(region-end))
+    (goto-char point)))
 (bind-key (kbd "C-x i") 'my/buffer-indent)
 
 ;;; 02-keybinds.el ends here

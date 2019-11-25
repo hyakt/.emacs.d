@@ -3,28 +3,26 @@
 
 ;;; Code:
 ;; 全般
-(setq-default line-spacing 0)                    ;; 行間を無しに設定
+(setq-default tab-width 2 indent-tabs-mode nil)               ;; タブの変わりに半角スペースを使う
+(setq-default line-spacing 0)                                 ;; 行間を無しに設定
 (setq-default cursor-type 'box)
-(setq truncate-lines nil)                        ;; 画面端まで来たら折り返す
+(setq inhibit-startup-screen 1)                               ;; スタートアップメッセージを非表示
+(setq initial-scratch-message "")                             ;; scratchの初期メッセージ消去
+(setq truncate-lines nil)                                     ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)
-(setq inhibit-startup-screen 1)                  ;; スタートアップメッセージを非表示
-(setq initial-scratch-message "")                ;; scratchの初期メッセージ消去
-(setq echo-keystrokes 0.1)                       ;; キーストロークをエコーエリアに早く表示する
-(setq scroll-conservatively 35 scroll-margin 0 scroll-step 1)                             ;; スクロールの設定
-(setq mouse-highlight nil)
+(setq echo-keystrokes 0.1)                                    ;; キーストロークをエコーエリアに早く表示する
+(setq scroll-conservatively 35 scroll-margin 0 scroll-step 1) ;; スクロールの設定
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-(show-paren-mode 1)                              ;; 対応する括弧を光らせる
-(transient-mark-mode 1)                          ;; 選択部分のハイライト
-(global-font-lock-mode 1)                        ;; フォントロックモード
-(tool-bar-mode 0)                                ;; ツールバーを利用しない
-(set-scroll-bar-mode 'nil)                       ;; スクロールバーを使わない
-(line-number-mode 1)                             ;; 行番号を表示
-(column-number-mode 1)                           ;; 列番号を表示
+(setq frame-title-format "")                                  ;; タイトルバーに何も表示しない
+(show-paren-mode 1)                                           ;; 対応する括弧を光らせる
+(transient-mark-mode 1)                                       ;; 選択部分のハイライト
+(global-font-lock-mode 1)                                     ;; フォントロックモード
+(tool-bar-mode 0)                                             ;; ツールバーを利用しない
+(set-scroll-bar-mode 'nil)                                    ;; スクロールバーを使わない
+(line-number-mode 1)                                          ;; 行番号を表示
+(column-number-mode 1)                                        ;; 列番号を表示
 (custom-set-variables
- '(init-loader-show-log-after-init 'error-only)) ;; init-loaderが失敗した時のみエラーメッセージを表示
-
-;; タイトルバーに何も表示しない
-(setq frame-title-format "")
+ '(init-loader-show-log-after-init 'error-only))              ;; init-loaderが失敗した時のみエラーメッセージを表示
 
 ;; ウィンドウサイズの設定
 (setq default-frame-alist
@@ -35,6 +33,7 @@
         (alpha . (100 100))))
 
 (add-hook 'kill-emacs-hook 'frame-size-save)
+
 (defun frame-size-save ()
   "Save current the frame size and postion."
   (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
@@ -121,6 +120,7 @@
 
 ;; Whitespaceの設定
 (use-package whitespace
+  :straight nil
   :custom
   (whitespace-style '(face           ; faceで可化
                       trailing       ; 行末
