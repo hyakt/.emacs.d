@@ -113,6 +113,18 @@
 (use-package slim-mode)
 (use-package haml-mode)
 
+;; CSS
+(use-package css-mode
+  :straight nil
+  :custom
+  (css-indent-offset 2))
+
+(use-package scss-mode
+  :custom
+  (scss-indent-offset 2))
+
+(use-package sws-mode) ;; Stylus
+
 ;; javascript
 (use-package js2-mode :defer t
   :mode (("\.js$" . js2-mode))
@@ -253,20 +265,6 @@
             (setq tab-width 4)
             (setq indent-tabs-mode t)
             (setq c-basic-offset 4)))
-
-;; CSS
-(use-package css-mode
-  :straight nil
-  :custom
-  (css-indent-offset 2))
-
-;; Stylus
-(use-package sws-mode)
-
-;; scss
-(use-package scss-mode
-  :custom
-  (scss-indent-offset 2))
 
 ;; Docker
 (use-package dockerfile-mode)
