@@ -49,6 +49,10 @@
   (ivy-re-builders-alist '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
   (ivy-format-function 'ivy-format-function-arrow)
   (counsel-yank-pop-separator "\n-------\n")
+  (ivy-sort-matches-functions-alist  '((t)
+                                       (ivy-completion-in-region . ivy--shorter-matches-first)
+                                       (ivy-switch-buffer . ivy-sort-function-buffer)
+                                       (counsel-M-x . ivy--shorter-matches-first)))
   :config
   (ivy-mode 1)
   ;; :custom ではなぜか反映されないため :config でsetqする
@@ -170,9 +174,6 @@
             (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))))))
 
 (use-package ivy-hydra
-  :after counsel)
-
-(use-package ivy-prescient
   :after counsel)
 
 (use-package avy

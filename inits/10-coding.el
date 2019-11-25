@@ -12,8 +12,6 @@
 
 (use-package yasnippet-snippets)
 
-(use-package prescient)
-
 (use-package company
   :defer t
   :init (global-company-mode)
@@ -36,9 +34,6 @@
   (company-minimum-prefix-length 2)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t))
-
-(use-package company-prescient
-  :after company)
 
 (use-package company-box
   :after company
