@@ -32,11 +32,11 @@
                when (> (length (assoc 'frames x)) 1)
                return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
 
-(defun my/resize-frame (w h frame)
-  "Set frame W (width) and H (height) on FRAME."
-  (set-frame-width frame w nil 'pixelwise)
-  (set-frame-height frame h nil 'pixelwise)
-  (set-frame-position frame 0 0))
+(defun my/resize-frame (w h x y frame)
+  "Set frame W (width), H (height), X (position left) and Y (position top) on FRAME."
+  (set-frame-width frame (- w 20) nil 'pixelwise)
+  (set-frame-height frame (- h 10) nil 'pixelwise)
+  (set-frame-position frame x y))
 
 (defun my/fullscreen ()
   "Set frame maxmize."
@@ -44,7 +44,7 @@
   (let ((frame (selected-frame))
         (width (car my/current-screen-geometry))
         (height (cdr my/current-screen-geometry)))
-    (my/resize-frame width height frame)))
+    (my/resize-frame width height 0 0 frame)))
 
 (defun my/halfscreen ()
   "Set frame half."
@@ -52,7 +52,15 @@
   (let ((frame (selected-frame))
         (width (car my/current-screen-geometry))
         (height (cdr my/current-screen-geometry)))
-    (my/resize-frame (/ width 2) height frame)))
+    (my/resize-frame (/ width 2) height 0 0 frame)))
+
+(defun my/halfscreen-right ()
+  "Set frame half."
+  (interactive)
+  (let ((frame (selected-frame))
+        (width (car my/current-screen-geometry))
+        (height (cdr my/current-screen-geometry)))
+    (my/resize-frame (/ width 2) height (/ width 2) 0 frame)))
 
 (defun my/org-bullets-export (path)
   "Export to bullets style text file."
