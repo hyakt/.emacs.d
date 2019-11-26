@@ -28,9 +28,9 @@
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
 
 (setq my/current-screen-geometry
-      (loop for x in (display-monitor-attributes-list)
-            when (> (length (assoc 'frames x)) 1)
-            return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
+      (cl-loop for x in (display-monitor-attributes-list)
+               when (> (length (assoc 'frames x)) 1)
+               return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
 
 (defun my/resize-frame (w h frame)
   "Set frame W (width) and H (height) on FRAME."
@@ -206,6 +206,49 @@ BEG and END (region to sort)."
   (interactive)
   (message "eslint --fixing the file" (buffer-file-name))
   (shell-command (concat "npx eslint --fix " (buffer-file-name))))
+
+;; kill buffer
+(defun my/close-and-kill-this-pane ()
+  "If there are multiple windows, then close this pane and kill the buffer in it also."
+  (interactive)
+  (kill-this-buffer)
+  (if (not (one-window-p))
+      (delete-window)))
+(bind-key (kbd "C-x k") 'my/close-and-kill-this-pane)
+
+(defun my/kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (cl-loop for buf in (buffer-list)
+           unless (or
+                   (get-buffer-window buf)
+                   (string= (substring (buffer-name buf) 0 1) " ")
+                   (get-buffer-process buf)
+                   (member (buffer-name buf) ;; 消さないバッファ名を指定
+                           '("*Messages*" "*Compile-Log*" "*Help*"
+                             "*scratch*" "*init log*")))
+           do (kill-buffer buf)))
+
+;; reload buffer
+(defun my/revert-buffer-no-confirm ()
+  "Revert buffer without confirmation."
+  (interactive)
+  (revert-buffer t t))
+
+;; indent buffer
+(defun my/buffer-indent ()
+  (interactive)
+  (let ((point (point)))
+    (mark-whole-buffer)
+    (indent-region (region-beginning)(region-end))
+    (goto-char point)))
+
+;; custom keyboard quit
+(defun my/keyboard-quit ()
+  (interactive)
+  (if (active-minibuffer-window)
+      (minibuffer-keyboard-quit)
+    (keyboard-quit)))
 
 (provide 'my-functions)
 
