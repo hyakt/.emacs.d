@@ -168,10 +168,10 @@
 ;; モードラインの設定
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
+  :custom ((doom-modeline-height 32)
+           (doom-modeline-bar-width 3))
   :config
-  (doom-modeline-mode 1)
-  (setq doom-modeline-height 32)
-  (setq doom-modeline-bar-width 3))
+  (doom-modeline-mode 1))
 
 (use-package paren
   :custom
@@ -847,7 +847,7 @@
   :config
   (dashboard-setup-startup-hook))
 
-(use-package swiper
+(use-package counsel
   :ensure-system-package ((rg . "brew install ripgrep")
                           (fzf . "brew install fzf"))
   :bind(( "C-s" . swiper)
@@ -999,8 +999,7 @@
             (ivy-rich-candidate)
             (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))))))
 
-(use-package ivy-hydra
-  :after counsel)
+(use-package ivy-hydra :after counsel)
 
 (use-package avy
   :bind ((( "C-;" . avy-goto-char))))
