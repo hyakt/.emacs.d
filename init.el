@@ -218,12 +218,7 @@
 (bind-key (kbd "C-h") nil)
 (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
 (bind-key (kbd "C-x C-k") 'kill-buffer)
-
-;; window-split
-(bind-key (kbd "C-0") 'delete-window)
-(bind-key (kbd "C-1") 'delete-other-windows)
-(bind-key (kbd "C-2") 'split-window-below)
-(bind-key (kbd "C-3") 'split-window-right)
+(bind-key (kbd "C-0") 'delete-frame)
 
 ;; my/function keybinding
 (bind-key (kbd "C-g") 'my/keyboard-quit)
@@ -239,9 +234,7 @@
 ;;; ---------- コーディングのサポート設定 ----------
 (use-package yasnippet
   :custom
-  (yas-snippet-dirs
-   '("~/.emacs.d/site-lisp/my-snippets"
-     "~/.emacs.d/quelpa/build/yasnippet-snippets/snippets"))
+  (yas-snippet-dirs '("~/.emacs.d/site-lisp/my-snippets"))
   :config
   (yas-global-mode 1))
 
@@ -259,11 +252,7 @@
   :custom
   (company-backends
    '((company-elisp)
-     (company-abbrev company-dabbrev)
-     (company-ispell
-      company-yasnippet
-      company-files
-      company-capf)))
+     (company-yasnippet)))
   (company-transformers '(company-sort-by-occurrence))
   (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
@@ -277,11 +266,6 @@
 (use-package company-quickhelp
   :after company
   :init (company-quickhelp-mode 1))
-
-(use-package company-tabnine
-  :after company
-  :custom (company-tabnine-binaries-folder "~/.emacs.d/bin/TabNine")
-  :config (add-to-list 'company-backends #'company-tabnine t))
 
 (use-package flycheck
   :config
@@ -316,6 +300,15 @@
   :config
   (smart-jump-setup-default-registers))
 
+(use-package jumplist
+  :bind
+  (("M-p" . jumplist-previous)
+   ("M-n" . jumplist-next))
+  :custom
+  ((jumplist-hook-commands
+    '(swiper counsel-rg smart-jump-go smart-jump-back
+             find-file switch-buffer end-of-buffer beginning-of-buffer))))
+
 ;; 括弧の色付け
 (use-package rainbow-delimiters
   :config
@@ -330,15 +323,6 @@
   (add-hook 'web-mode-hook 'rainbow-mode)
   (add-hook 'typescript-mode-hook 'rainbow-mode))
 
-(use-package highlight-indentation
-  :config
-  (add-hook 'prog-mode-hook 'highlight-indentation-current-column-mode))
-
-(use-package clean-aindent-mode
-  :custom ((clean-aindent-is-simple-indent t)))
-
-(use-package dtrt-indent)
-
 ;; 変数などの色付け
 (use-package symbol-overlay
   :bind ("M-i" . symbol-overlay-put)
@@ -346,9 +330,8 @@
   (add-hook 'prog-mode-hook #'symbol-overlay-mode)
   (add-hook 'markdown-mode-hook #'symbol-overlay-mode))
 
-(use-package pcre2el
-  :custom
-  (rxt-global-mode t))
+;; 正規表現をPerl(PCRE) likeに
+(use-package pcre2el :custom (rxt-global-mode t))
 
 (use-package smartparens
   :init (smartparens-global-mode t)
@@ -362,6 +345,7 @@
   (sp-local-pair 'org-mode "「" "」")
   (sp-local-pair 'web-mode "<" ">"))
 
+;; 折りたたみ
 (use-package yafolding
   :init (add-hook 'prog-mode-hook
                   (lambda () (yafolding-mode))))
@@ -373,6 +357,55 @@
 
 (use-package google-this
   :config (google-this-mode 1))
+
+(use-package visual-regexp
+  :bind (("C-r" . vr/query-replace)))
+
+(use-package visual-regexp-steroids
+  :after visual-regexp
+  :custom (vr/engine 'pcre2el))
+
+(use-package phantom-inline-comment
+  :after popwin
+  :straight (phantom-inline-comment :type git :host github :repo "blue0513/phantom-inline-comment"))
+
+(use-package codic)
+
+
+;;; ---------- 編集機能の設定 ----------
+(use-package multiple-cursors
+  :bind
+  (("C->" . mc/mark-next-like-this)
+   ("C-<" . mc/mark-previous-like-this)
+   ("C-M-." . mc/mark-all-dwim)))
+
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-redo)
+         ("C-x u" . undo-tree-visualize))
+  :config
+  (global-undo-tree-mode t))
+
+;; emacsを閉じてもundo
+(use-package undohist :config (undohist-initialize))
+
+(use-package expand-region
+  :bind (("C-," . er/expand-region)
+         ("C-M-," . er/contract-region)))
+
+(use-package recentf
+  :custom
+  (recentf-max-saved-items 500)
+  (recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+  (recentf-auto-cleanup 'never)
+  :config
+  (recentf-mode 1))
+
+(use-package wgrep
+  :custom
+  (wgrep-enable-key "e")
+  (wgrep-auto-save-buffer t)
+  (wgrep-change-readonly-file t))
+
 
 ;;; ---------- コーディングのモード設定 ----------
 ;; lsp-mode
@@ -771,66 +804,7 @@
                (set (make-local-variable 'whitespace-action) nil))))
 
 
-;;; ---------- 編集機能のモード設定 ----------
-(use-package visual-regexp
-  :bind (("C-r" . vr/query-replace)))
-
-(use-package visual-regexp-steroids
-  :after visual-regexp
-  :custom
-  (vr/engine 'pcre2el))
-
-(use-package multiple-cursors
-  :bind
-  (("C->" . mc/mark-next-like-this)
-   ("C-<" . mc/mark-previous-like-this)
-   ("C-M-." . mc/mark-all-dwim)))
-
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-redo)
-         ("C-x u" . undo-tree-visualize))
-  :config
-  (global-undo-tree-mode t))
-
-(use-package undohist :config (undohist-initialize))
-
-(use-package point-history
-  :straight (point-history :type git :host github :repo "blue0513/point-history")
-  :config
-  (point-history-mode t))
-
-(use-package ivy-point-history
-  :after (ivy)
-  :bind (("M-p" . ivy-point-history))
-  :straight (ivy-point-history :type git :host github :repo "SuzumiyaAoba/ivy-point-history"))
-
-(use-package expand-region
-  :bind (("C-," . er/expand-region)
-         ("C-M-," . er/contract-region)))
-
-(use-package recentf
-  :custom
-  (recentf-max-saved-items 500)
-  (recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-  (recentf-auto-cleanup 'never)
-  :config
-  (recentf-mode 1))
-
-(use-package open-junk-file
-  :bind (("C-`" . open-junk-file))
-  :custom
-  (open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
-
-(use-package wgrep
-  :custom
-  (wgrep-enable-key "e")
-  (wgrep-auto-save-buffer t)
-  (wgrep-change-readonly-file t))
-
-(use-package codic)
-
-
-;;; ---------- インターフェースについての設定 ----------
+;;; ---------- インターフェースの設定 ----------
 (use-package projectile
   :config
   (projectile-global-mode)
@@ -1004,18 +978,14 @@
 
 (use-package ivy-hydra :after counsel)
 
-(use-package avy
-  :bind ((( "C-;" . avy-goto-char))))
+(use-package avy :bind ((( "C-;" . avy-goto-char))))
 
-(use-package wdired
-  :after dired
-  :bind (:map dired-mode-map (("e" . wdired-change-to-wdired-mode)
-                              ("C-t" . nil))))
+(use-package which-key :config (which-key-mode))
 
+;; dired
 (use-package peep-dired
   :after dired
-  :bind (:map dired-mode-map
-              ("P" . peep-dired)))
+  :bind (:map dired-mode-map ("P" . peep-dired)))
 
 (use-package all-the-icons-dired
   :after dired )
@@ -1030,15 +1000,27 @@
               (unless (file-remote-p default-directory)
                 (auto-revert-mode))))
   :custom ((dired-sidebar-use-term-integration t)
-           (dired-sidebar-use-custom-modeline nil)))
+           (dired-sidebar-use-custom-modeline nil))
+  :config
+  (defcustom dired-sidebar-mode-line-format
+    '("%e" mode-line-front-space
+      mode-line-buffer-identification
+      " "  mode-line-end-spaces)
+    "Mode line format for `dired-sidebar'."
+    :type 'list
+    :group 'dired-sidebar))
 
-(defcustom dired-sidebar-mode-line-format
-  '("%e" mode-line-front-space
-    mode-line-buffer-identification
-    " "  mode-line-end-spaces)
-  "Mode line format for `dired-sidebar'."
-  :type 'list
-  :group 'dired-sidebar)
+(use-package wdired
+  :after dired
+  :bind (:map dired-mode-map (("e" . wdired-change-to-wdired-mode)
+                              ("C-t" . nil))))
+
+;; shell
+(use-package shell-pop
+  :bind (("M-t" . shell-pop))
+  :config
+  (custom-set-variables
+   '(shell-pop-shell-type '("eshell" " *eshell*" (lambda () (eshell))))))
 
 (use-package eshell  :defer t
   :custom
@@ -1048,28 +1030,16 @@
   (add-hook 'eshell-mode-hook
             (lambda () (bind-key "C-r" 'counsel-esh-history eshell-mode-map))))
 
-(use-package shell-pop
-  :bind (("M-t" . shell-pop))
-  :config
-  (custom-set-variables
-   '(shell-pop-shell-type '("eshell" " *eshell*" (lambda () (eshell))))))
-
 (use-package eshell-prompt-extras
   :after eshell
   :custom
   (eshell-highlight-prompt nil)
   (eshell-prompt-function 'epe-theme-lambda))
 
-(use-package fish-completion
-  :if (executable-find "fish")
-  :config (global-fish-completion-mode))
-
 (use-package esh-autosuggest :hook (eshell-mode . esh-autosuggest-mode))
 
-(use-package which-key :config (which-key-mode))
-
-(use-package docker
-  :bind(( "C-x c" . docker)))
+;; docker
+(use-package docker :bind(( "C-x c" . docker)))
 (use-package docker-tramp)
 
 ;; git
@@ -1083,18 +1053,6 @@
     (kill-buffer)
     (delete-window)))
 
-(use-package gist
-  :custom
-  (gist-list-format '((files "Filename" 24 nil identity)
-                      (created "Created" 20 nil "%D %R")
-                      (visibility "Visibility" 10 nil
-                                  (lambda
-                                    (public)
-                                    (or
-                                     (and public "public")
-                                     "private")))
-                      (description "Description" 0 nil identity))))
-
 (use-package git-gutter
   :custom
   (git-gutter:modified-sign " ")
@@ -1106,6 +1064,18 @@
   (git-gutter:deleted  ((t (:background "#964C7B"))))
   :config
   (global-git-gutter-mode +1))
+
+(use-package gist
+  :custom
+  (gist-list-format '((files "Filename" 24 nil identity)
+                      (created "Created" 20 nil "%D %R")
+                      (visibility "Visibility" 10 nil
+                                  (lambda
+                                    (public)
+                                    (or
+                                     (and public "public")
+                                     "private")))
+                      (description "Description" 0 nil identity))))
 
 (use-package forge  :after magit)
 (use-package git-timemachine)
@@ -1123,35 +1093,40 @@
   :config
   (twittering-enable-unread-status-notifier))
 
-(use-package phantom-inline-comment
-  :straight (phantom-inline-comment :type git :host github :repo "blue0513/phantom-inline-comment"))
+(use-package open-junk-file
+  :bind (("C-`" . open-junk-file))
+  :custom
+  (open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+
+(use-package view
+  :bind (:map view-mode-map
+              ("h" . backward-word)
+              ("l" . forward-word)
+              ("j" . next-line)
+              ("k" . previous-line)
+              (";" . gene-word)
+              ("b" . scroll-down)
+              (" " . scroll-up)
+              ("n" . (lambda () (interactive) (scroll-up 1)))
+              ("p" . (lambda () (interactive) (scroll-down 1)))
+              ("." . bm-toggle)
+              ("[" . bm-previous)
+              ("]" . bm-next)
+              ("c" . scroll-other-window-down)
+              ("v" . scroll-other-window))
+  :config
+  (setq view-read-only t)
+
+  ;; 書き込み不能なファイルはview-modeで開くように
+  (defadvice find-file
+      (around find-file-switch-to-view-file (file &optional wild) activate)
+    (if (and (not (file-writable-p file))
+             (not (file-directory-p file)))
+        (view-file file)
+      ad-do-it)))
 
 
 ;;; ---------- フレームの設定 ----------
-(use-package neotree :defer t
-  :bind (("M-=" . neotree-toggle)
-         :map neotree-mode-map
-         ("M-w" . my/neotree-kill-filename-at-point))
-  :custom
-  (neo-show-hidden-files t)
-  (neo-create-file-auto-open t)
-  (neo-persist-show t)
-  (neo-keymap-style 'concise)
-  (neo-smart-open t)
-  (neo-vc-integration '(face char))
-  (neo-theme (if (display-graphic-p) 'icons 'arrow))
-  :config
-  (defun my/neotree-kill-filename-at-point ()
-    "Kill full path of note at point."
-    (interactive)
-    (message "Copy %s"
-             (kill-new (neo-buffer--get-filename-current-line))))
-  (when neo-persist-show
-    (add-hook 'popwin:before-popup-hook
-              (lambda () (setq neo-persist-show nil)))
-    (add-hook 'popwin:after-popup-hook
-              (lambda () (setq neo-persist-show t)))))
-
 (use-package swap-buffers
   :bind (("C-x C-o" . swap-buffers)))
 
@@ -1221,33 +1196,6 @@
     (push '("*Flutter*" :noselect t :height 15 :stick t) popwin:special-display-config)
 
     (popwin-mode 1)))
-
-(use-package view
-  :bind (:map view-mode-map
-              ("h" . backward-word)
-              ("l" . forward-word)
-              ("j" . next-line)
-              ("k" . previous-line)
-              (";" . gene-word)
-              ("b" . scroll-down)
-              (" " . scroll-up)
-              ("n" . (lambda () (interactive) (scroll-up 1)))
-              ("p" . (lambda () (interactive) (scroll-down 1)))
-              ("." . bm-toggle)
-              ("[" . bm-previous)
-              ("]" . bm-next)
-              ("c" . scroll-other-window-down)
-              ("v" . scroll-other-window))
-  :config
-  (setq view-read-only t)
-
-  ;; 書き込み不能なファイルはview-modeで開くように
-  (defadvice find-file
-      (around find-file-switch-to-view-file (file &optional wild) activate)
-    (if (and (not (file-writable-p file))
-             (not (file-directory-p file)))
-        (view-file file)
-      ad-do-it)))
 
 
 ;;; init.el ends here
