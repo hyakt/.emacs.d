@@ -160,7 +160,7 @@
 
 (use-package doom-themes
   :init
-  (load-theme 'doom-laserwave t)
+  (load "doom-laserwave-theme")
   :config
   (doom-themes-neotree-config)
   (doom-themes-org-config))
