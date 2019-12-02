@@ -6,17 +6,6 @@
 ;; bufferを一時的にRictyフォントに変更
 (use-package ov
   :init
-  (defun my/buffer-ricty-face ()
-    "Rictyoise current buffer."
-    (interactive)
-    (ov (point-min) (point-max) 'face '(:family "Ricty Diminished")))
-
-  (defun my/buffer-cica-face ()
-    "Rictyoise current buffer."
-    (interactive)
-    (ov (point-min) (point-max) 'face '(:family "Cica"))
-    (ov (point-min) (point-max) 'face '(:height 102)))
-
   (defun my/font-size (height-num)
     "Change font size current buffer"
     (interactive "nFontsize:")
@@ -26,6 +15,11 @@
   "set frame parameter 'alpha"
   (interactive "nAlpha: ")
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
+
+(defun my/buffer-face-set-variable-pitch-font ()
+  "Change the current buffer font to variable pitch font"
+  (interactive)
+  (buffer-face-set 'variable-pitch))
 
 (setq my/current-screen-geometry
       (cl-loop for x in (display-monitor-attributes-list)
