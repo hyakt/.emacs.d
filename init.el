@@ -613,7 +613,10 @@
          ("Gemfile$" . ruby-mode)
          ("[Rr]akefile$" . ruby-mode))
   :interpreter "pry"
-  :config (require 'smartparens-ruby))
+  :config
+  (require 'smartparens-ruby)
+  (add-hook 'ruby-mode-hook
+            (lambda () (lsp))))
 
 (use-package inf-ruby
   :bind (:map inf-ruby-minor-mode-map
@@ -624,13 +627,6 @@
   :custom
   (inf-ruby-default-implementation "pry")
   (inf-ruby-eval-binding "Pry.toplevel_binding"))
-
-(use-package robe :defer t
-  :after company
-  :hook ((ruby-mode . robe-mode)
-         (inf-ruby-mode . robe-mode))
-  :config
-  (add-to-list 'company-backends 'company-robe))
 
 ;; PHP
 (use-package php-mode)
