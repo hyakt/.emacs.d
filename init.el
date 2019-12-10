@@ -1,4 +1,4 @@
-;;; init.el --- My emacs settings.
+;;; init.el --- My emacs settings. -*- coding: utf-8 ; lexical-binding: t -*-
 ;; Author: hyakt <https://github.com/hyakt/.emacs.d>
 ;;
 ;;; Commentary:
@@ -167,7 +167,6 @@
 
 ;; モードラインの設定
 (use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
   :custom ((doom-modeline-height 32)
            (doom-modeline-bar-width 3))
   :config
