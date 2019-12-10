@@ -3,21 +3,13 @@
 ;;; 自作elispを乱雑に配置する。今後整理するかも。
 
 ;;; Code:
-;; bufferを一時的にRictyフォントに変更
-(use-package ov
-  :init
-  (defun my/font-size (height-num)
-    "Change font size current buffer"
-    (interactive "nFontsize:")
-    (ov (point-min) (point-max) 'face '(:height height-num))))
-
 (defun my/set-alpha (alpha-num)
-  "set frame parameter 'alpha"
+  "Set frame parameter ALPHA-NUM."
   (interactive "nAlpha: ")
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
 
 (defun my/buffer-face-set-variable-pitch-font ()
-  "Change the current buffer font to variable pitch font"
+  "Change the current buffer font to variable pitch font."
   (interactive)
   (buffer-face-set 'variable-pitch))
 
@@ -251,6 +243,11 @@ BEG and END (region to sort)."
   (if (active-minibuffer-window)
       (minibuffer-keyboard-quit)
     (keyboard-quit)))
+
+(defun my/rg-with-extention (extention)
+  "Execute counsel-rg with EXTENTION."
+  (interactive "sextention: ")
+  (counsel-rg (concat "-g'*." extention "' -- ")))
 
 (provide 'my-functions)
 
