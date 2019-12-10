@@ -223,6 +223,7 @@
 ;; my/function keybinding
 (bind-key (kbd "C-g") 'my/keyboard-quit)
 (bind-key (kbd "<f5>") 'my/revert-buffer-no-confirm)
+(bind-key (kbd "C-x k") 'my/close-and-kill-this-pane)
 (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
 (bind-key (kbd "C-x i") 'my/buffer-indent)
 (bind-key (kbd "C-x d") 'my/dired-this-buffer)
@@ -648,7 +649,15 @@
          (sql-interactive-mode . sqlup-mode)))
 
 (use-package sqlformat
-  :ensure-system-package ((sqlformat . "brew install sqlparse")))
+  :ensure-system-package ((sqlformat . "brew install sqlparse"))
+  :config
+  (defun my/sql-indent-region (beg end)
+    "Indent the SQL statement in the BEG to END (region)."
+    (interactive "*r")
+    (save-excursion
+      (save-restriction
+        (narrow-to-region beg end)
+        (sql-indent-buffer)))))
 
 ;; Java
 (add-hook 'java-mode-hook
@@ -780,16 +789,43 @@
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
-  (use-package htmlize)
-  (use-package ob-sql-mode)
-  (use-package ox-gfm :after ox)
-  (use-package org-bullets
-    :custom
-    (org-bullets-bullet-list '("■" "○" "✸" "►" "•" "★"))
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
+(use-package htmlize)
+(use-package ob-sql-mode :after org)
+(use-package ox-gfm :after ox)
+
+(use-package org-bullets
+  :after org
+  :custom
+  (org-bullets-bullet-list '("■" "○" "✸" "►" "•" "★"))
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  (defun my/org-bullets-export (path)
+    "Export to bullets style text file into PATH."
+    (interactive "FExport file: ")
+    (let* ((current-buffer-string (buffer-string)))
+      (with-temp-buffer
+        (insert current-buffer-string)
+        (goto-char (point-min))
+        (while (re-search-forward "^\\*+ " nil t)
+          (let ((level (- (match-end 0) (match-beginning 0) 1)))
+            (replace-match
+             (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
+        (write-file path))))
+
+  (defun my/org-bullets-export-region-clipboard (start end)
+    "Export to bullets style text file into clipbord from START to END."
+    (interactive "*r")
+    (let* ((current-buffer-string (buffer-substring start end)))
+      (with-temp-buffer
+        (insert current-buffer-string)
+        (goto-char (point-min))
+        (while (re-search-forward "^\\*+" nil t)
+          (let ((level (- (match-end 0) (match-beginning 0))))
+            (replace-match
+             (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
+        (clipboard-kill-ring-save (point-min) (point-max))))))
 
 ;; Markdown
 (use-package markdown-mode
@@ -858,6 +894,11 @@
   (ivy-mode 1)
   ;; :custom ではなぜか反映されないため :config でsetqする
   (setq ivy-initial-inputs-alist nil)
+
+  (defun my/rg-with-extention (extention)
+    "Execute counsel-rg with EXTENTION."
+    (interactive "sextention: ")
+    (counsel-rg (concat "-g'*." extention "' -- ")))
 
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
   (defun ivy-yank-action (x) (kill-new x))
