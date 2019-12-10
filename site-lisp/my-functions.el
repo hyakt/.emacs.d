@@ -13,10 +13,10 @@
   (interactive)
   (buffer-face-set 'variable-pitch))
 
-(setq my/current-screen-geometry
-      (cl-loop for x in (display-monitor-attributes-list)
-               when (> (length (assoc 'frames x)) 1)
-               return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
+(defvar my/current-screen-geometry
+  (cl-loop for x in (display-monitor-attributes-list)
+           when (> (length (assoc 'frames x)) 1)
+           return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
 
 (defun my/resize-frame (w h x y frame)
   "Set frame W (width), H (height), X (position left) and Y (position top) on FRAME."
@@ -48,72 +48,18 @@
         (height (cdr my/current-screen-geometry)))
     (my/resize-frame (/ width 2) height (/ width 2) 0 frame)))
 
-(defun my/org-bullets-export (path)
-  "Export to bullets style text file."
-  (interactive "FExport file: ")
-  (let* ((current-buffer-string (buffer-string)))
-    (with-temp-buffer
-      (insert current-buffer-string)
-      (goto-char (point-min))
-      (while (re-search-forward "^\\*+ " nil t)
-        (let ((level (- (match-end 0) (match-beginning 0) 1)))
-          (replace-match
-           (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
-      (write-file path))))
-
-(defun my/org-bullets-export-region-clipboard (start end)
-  (interactive "*r")
-  (let* ((current-buffer-string (buffer-substring start end)))
-    (with-temp-buffer
-      (insert current-buffer-string)
-      (goto-char (point-min))
-      (while (re-search-forward "^\\*+" nil t)
-        (let ((level (- (match-end 0) (match-beginning 0))))
-          (replace-match
-           (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
-      (clipboard-kill-ring-save (point-min) (point-max)))))
-
-
-(defun char-unicode (char) (encode-char char 'ucs))
-(defun unicode-char (code) (decode-char 'ucs code))
-
-;; ユニコードエスケープシーケンスを解除する
-(defun my/unicode-decode-region (start end)
-  "指定した範囲のUnicodeエスケープ文字(\\uXXXX)をデコードする."
-  (interactive "*r")
-  (save-restriction
-    (narrow-to-region start end)
-    (goto-char (point-min))
-    (while (re-search-forward "\\\\u\\([[:xdigit:]]\\{4\\}\\)" nil t)
-      (replace-match (string (unicode-char
-                              (string-to-number (match-string 1) 16)))
-                     nil t))))
-
-;; ユニコードエスケープシーケンスをする
-(defun my/unicode-encode-region (&optional start end)
-  "指定した範囲の文字をUnicodeエスケープする."
-  (interactive "*r")
-  (save-restriction
-    (narrow-to-region start end)
-    (goto-char (point-min))
-    (while (re-search-forward "." nil t)
-      (replace-match (format "\\u%04x"
-                             (char-unicode
-                              (char (match-string 0) 0)))
-                     nil t))))
-
-
-;; 文字列をURLエンコードする
 (defun url-encode-string (str &optional sys)
+  "STRをSYSタイプにエンコードする."
   (let ((sys (or sys 'utf-8)))
     (url-hexify-string (encode-coding-string str sys))))
 
-;; URLエンコードを文字列にデコードする
 (defun url-decode-string (str &optional sys)
+  "SYSタイプのSTRをデコードする."
   (let ((sys (or sys 'utf-8)))
     (decode-coding-string (url-unhex-string str) sys)))
 
 (defun my/url-decode-region (beg end)
+  "BEGからENDの範囲の文字をURLデコードする."
   (interactive "r")
   (let ((pos beg)
         (str (buffer-substring beg end)))
@@ -122,6 +68,7 @@
     (insert (url-decode-string str 'utf-8))))
 
 (defun my/url-encode-region (beg end)
+  "BEGからENDの範囲の文字をURLエンコードする."
   (interactive "r")
   (let ((pos beg)
         (str (buffer-substring beg end)))
@@ -148,8 +95,10 @@ BEG and END (region to sort)."
             (replace-match "" nil nil))
           (goto-char next-line))))))
 
+(defvar sql-connection-alist)
+
 (defun my/connect-db-via-ssh-tunneling(db host dbport)
-  "Connect DB via ssh tunneling."
+  "Connect DB:DBPORT@HOST via ssh tunneling."
   (let ((port (car (cdr (assoc 'sql-port (assoc db sql-connection-alist)))))
         (password (car (cdr (assoc 'sql-password (assoc db sql-connection-alist))))))
     (start-process-shell-command "DBProxy" "*Proxy*" (concat "ssh -N -L " (number-to-string port) ":localhost:" dbport " " host))
@@ -167,48 +116,42 @@ BEG and END (region to sort)."
       (error "Cannot get a file name"))))
 
 (defun my/copy-buffer-name-clipboard ()
+  "Copy buffer name to clipbord."
   (interactive)
   (kill-new buffer-file-name))
 
-(defun my/sql-indent-region (beg end)
-  "Indent the SQL statement in the region."
-  (interactive "*r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region beg end)
-      (sql-indent-buffer))))
-
-(defun my/move-or-rename-this-file (new-file-name)
+(defun my/move-or-rename-this-file (newfile)
+  "Move or Rename current buffer file to NEWFILE."
   (interactive "Fnewfile name: ")
   (let* ((current-file-name (buffer-name)))
-    (rename-file current-file-name new-file-name)
-    (find-file new-file-name)
+    (rename-file current-file-name newfile)
+    (find-file newfile)
     (kill-buffer current-file-name)))
 
 (defun my/delete-or-remove-this-file ()
+  "Delete current buffer file."
   (interactive)
   (let* ((current-file-name (buffer-name)))
-    (movep-file-to-trash current-file-name)
+    (move-file-to-trash current-file-name)
     (kill-buffer current-file-name)))
 
 (defun my/dired-this-buffer ()
+  "Open dired in this buffer."
   (interactive)
   (dired
    (file-name-directory (expand-file-name (buffer-name)))))
 
 (defun my/eslint-fix-file ()
+  "Run eslint for current file."
   (interactive)
-  (message "eslint --fixing the file" (buffer-file-name))
   (shell-command (concat "npx eslint --fix " (buffer-file-name))))
 
-;; kill buffer
 (defun my/close-and-kill-this-pane ()
   "If there are multiple windows, then close this pane and kill the buffer in it also."
   (interactive)
   (kill-this-buffer)
   (if (not (one-window-p))
       (delete-window)))
-(bind-key (kbd "C-x k") 'my/close-and-kill-this-pane)
 
 (defun my/kill-other-buffers ()
   "Kill all other buffers."
@@ -219,35 +162,30 @@ BEG and END (region to sort)."
                    (string= (substring (buffer-name buf) 0 1) " ")
                    (get-buffer-process buf)
                    (member (buffer-name buf) ;; 消さないバッファ名を指定
-                           '("*Messages*" "*Compile-Log*" "*Help*"
-                             "*scratch*" "*init log*")))
+                           '("*Messages*" "*Compile-Log*" "*Help*" "*scratch*" "*init log*")))
            do (kill-buffer buf)))
 
-;; reload buffer
 (defun my/revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
   (interactive)
   (revert-buffer t t))
 
-;; indent buffer
 (defun my/buffer-indent ()
+  "Indent whole current buffer."
   (interactive)
-  (let ((point (point)))
-    (mark-whole-buffer)
+  (let ((current (point)))
+    (push-mark (point-max) nil t)
+    (goto-char (point-min))
     (indent-region (region-beginning)(region-end))
-    (goto-char point)))
+    (goto-char current)))
 
-;; custom keyboard quit
-(defun my/keyboard-quit ()
+(defun my/keyboard-quit()
+  "Escape the minibuffer or cancel region consistently using 'Control-g'."
   (interactive)
-  (if (active-minibuffer-window)
-      (minibuffer-keyboard-quit)
+  (if (not(window-minibuffer-p (selected-window)))
+      (if (or mark-active (active-minibuffer-window))
+          (keyboard-escape-quit))
     (keyboard-quit)))
-
-(defun my/rg-with-extention (extention)
-  "Execute counsel-rg with EXTENTION."
-  (interactive "sextention: ")
-  (counsel-rg (concat "-g'*." extention "' -- ")))
 
 (provide 'my-functions)
 
