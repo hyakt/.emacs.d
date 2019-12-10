@@ -523,7 +523,10 @@
   :straight nil
   :custom
   (css-indent-offset 2))
-(use-package scss-mode :custom (scss-indent-offset 2))
+(use-package scss-mode
+  :custom (scss-indent-offset 2)
+  :config
+  (add-to-list 'company-backends 'company-css))
 (use-package sass-mode)
 (use-package sws-mode) ;; Stylus
 
