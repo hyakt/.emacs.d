@@ -615,8 +615,7 @@
   :interpreter "pry"
   :config
   (require 'smartparens-ruby)
-  (add-hook 'ruby-mode-hook
-            (lambda () (lsp))))
+  (add-hook 'ruby-mode-hook #'lsp))
 
 (use-package inf-ruby
   :bind (:map inf-ruby-minor-mode-map
