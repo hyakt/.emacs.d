@@ -56,6 +56,8 @@
       gem install solargraph
       yard gems
       yard config --gem-install-yri
+      # If using anyenv or rbenv, exec the following command.
+      rbenv rehash
     #+END_SRC
     - Scala: Using [[https://github.com/tarao/scala-bootstrap-el][ScalaBootstrap]], so installed automatically.
 
