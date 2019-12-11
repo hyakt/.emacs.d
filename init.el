@@ -226,9 +226,6 @@
 (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
 (bind-key (kbd "C-x i") 'my/buffer-indent)
 (bind-key (kbd "C-x d") 'my/dired-this-buffer)
-(bind-key (kbd "C-S-<up>") 'my/fullscreen)
-(bind-key (kbd "C-S-<left>") 'my/halfscreen)
-(bind-key (kbd "C-S-<right>") 'my/halfscreen-right)
 
 
 ;;; ---------- コーディングのサポート設定 ----------
