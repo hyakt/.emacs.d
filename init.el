@@ -890,18 +890,21 @@
   (ivy-mode 1)
   ;; :custom ではなぜか反映されないため :config でsetqする
   (setq ivy-initial-inputs-alist nil)
-
-  (defun my/rg-with-extention (extention)
-    "Execute counsel-rg with EXTENTION."
-    (interactive "sextention: ")
-    (counsel-rg (concat "-g'*." extention "' -- ")))
-
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
-  (defun ivy-yank-action (x) (kill-new x))
-  (defun ivy-copy-to-buffer-action (x) (with-ivy-window (insert x)))
+
+  (defun my/counsel-rg-with-extention (extention)
+    "Execute counsel-rg with on cursor files EXTENTION."
+    (let ((match-extention extention))
+      (string-match "^[A-Za-z0-9_]+\.\\([A-Za-z0-9_\.]+\\):" match-extention)
+      (counsel-rg (concat "-g'*." (match-string 1 match-extention) "' -- "))))
+
+  (ivy-set-actions
+   'counsel-rg
+   '(("e" my/counsel-rg-with-extention "with-extention")))
+
+  (defun my/ivy-yank-action (x) (kill-new x))
   (ivy-set-actions t
-                   '(("i" ivy-copy-to-buffer-action "insert")
-                     ("y" ivy-yank-action "yank"))))
+                   '(("y" my/ivy-yank-action "yank"))))
 
 (use-package counsel-ghq
   :straight (:host github :repo "SuzumiyaAoba/counsel-ghq" :branch "master")
