@@ -512,7 +512,15 @@
                 (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)
                 (flycheck-mode t)))))
 
-(use-package slim-mode)
+(use-package company-web)
+
+(use-package slim-mode :after company-web
+  :config
+  (add-hook 'slim-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-web-slim))
+              (company-mode t))))
+
 (use-package haml-mode)
 
 ;; CSS
@@ -520,10 +528,12 @@
   :straight nil
   :custom
   (css-indent-offset 2))
+
 (use-package scss-mode
   :custom (scss-indent-offset 2)
   :config
   (add-to-list 'company-backends 'company-css))
+
 (use-package sass-mode)
 (use-package sws-mode) ;; Stylus
 
