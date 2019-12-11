@@ -936,14 +936,15 @@
      ("w" find-file-other-window "other window")))
 
   ;; counsel-rg
-  (defun my/counsel-rg-with-extention (ivy-match)
-    "Execute counsel-rg with extention and IVY-MATCH."
-    (let ((extention (read-from-minibuffer "Extention: ")))
-      (counsel-rg (concat "-g'*." extention "' -- " ivy-match))))
+  (defun my/counsel-rg-with-extention-and-word (_)
+    "Execute counsel-rg with extention and _"
+    (let ((word (word-at-point))
+          (extention (read-from-minibuffer "Extention: ")))
+      (counsel-rg (concat "-g'*." extention "' -- " word))))
 
   (ivy-set-actions
    'counsel-rg
-   '(("e" my/counsel-rg-with-extention "with-extention")))
+   '(("e" my/counsel-rg-with-extention-and-word "with-extention")))
 
   ;; geleral action
   (defun my/ivy-yank-action (x) (kill-new x))
