@@ -920,7 +920,7 @@
   (defun confirm-delete-file (x)
     (dired-delete-file x 'confirm-each-subdirectory))
 
-  (defun my-open-externally (file-name) ; Linux
+  (defun my/open-externally (file-name) ; MacOS
     "Open file with operating system's default application."
     (interactive "fOpen externally: ")
     (let ((process-connection-type nil))
@@ -933,7 +933,7 @@
      ("c" ,(given-file #'copy-file "Copy") "copy")
      ("d" ,(reloading #'confirm-delete-file) "delete")
      ("m" ,(reloading (given-file #'rename-file "Move")) "move")
-     ("e" my-open-externally "open externally")
+     ("e" my/open-externally "open externally")
      ("w" find-file-other-window "other window")))
 
   ;; geleral action
