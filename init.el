@@ -518,8 +518,8 @@
   :config
   (add-hook 'slim-mode-hook
             (lambda ()
-              (set (make-local-variable 'company-backends) '(company-web-slim))
-              (company-mode t))))
+              (set (make-local-variable 'company-backends)
+                   '((company-web-slim company-dabbrev))))))
 
 (use-package haml-mode)
 
@@ -532,7 +532,10 @@
 (use-package scss-mode
   :custom (scss-indent-offset 2)
   :config
-  (add-to-list 'company-backends 'company-css))
+  (add-hook 'scss-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends)
+                   '((company-css company-dabbrev) company-yasnippet)))))
 
 (use-package sass-mode)
 (use-package sws-mode) ;; Stylus
@@ -599,22 +602,18 @@
   :custom((indent-tabs-mode nil)
           (tab-width 4)))
 
-(use-package anaconda-mode
-  :after company
-  :hook ((python-mode . anaconda-mode)
-         (python-mode . anaconda-eldoc-mode))
-  :config
-  (use-package company-anaconda)
-  (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-to-list 'company-backends 'company-anaconda))
-
 ;; Swift
-(use-package swift-mode :defer t
-  :after flycheck
+(use-package company-sourcekit)
+
+(use-package swift-mode
+  :defer t
+  :after flycheck company-sourcekit
   :config
-  (add-to-list 'flycheck-checkers 'swift)
-  (use-package company-sourcekit)
-  (add-to-list 'company-backends 'company-sourcekit))
+  (add-hook 'slim-mode-hook
+            (lambda ()
+              (add-to-list 'flycheck-checkers 'swift)
+              (set (make-local-variable 'company-backends)
+                   '((company-sourcekit))))))
 
 ;; Ruby
 (use-package ruby-mode :defer t
