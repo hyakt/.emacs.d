@@ -1,9 +1,9 @@
 ;;; init.el --- My emacs settings. -*- coding: utf-8 ; lexical-binding: t -*-
 ;; Author: hyakt <https://github.com/hyakt/.emacs.d>
-;;
+
 ;;; Commentary:
 ;; This is hyakt's init.el of Emacs :tada: .
-;;
+
 ;;; Code:
 ;; ロードパス追加
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
@@ -124,6 +124,7 @@
   (kill-buffer))
 
 (add-hook 'window-setup-hook 'frame-size-resume)
+
 (defun frame-size-resume ()
   "Load the saved frame size."
   (let* ((file "~/.emacs.d/.framesize"))
@@ -1247,35 +1248,26 @@
     (push '("*Backtrace*" :noselect t) popwin:special-display-config)
     (push '("*Kill Ring*" :height 30) popwin:special-display-config)
     (push '("*Compile-Log" :height 20 :stick t) popwin:special-display-config)
-
     (push '("*quickrun*" :height 10 :stick t) popwin:special-display-config)
-
     (push '("\*grep\*" :regexp t :height 0.5 :stick t) popwin:special-display-config)
     (push '("*Occur*" :noselect t) popwin:special-display-config)
-
     (push '("*ansi-term" :regexp t :height 30) popwin:special-display-config)
     (push '("*shell*" :height 30) popwin:special-display-config)
     (push '("*Shell Command Output*" :noselect t) popwin:special-display-config)
-
     (push '("*Python*" :stick t) popwin:special-display-config)
     (push '("*jedi:doc*" :noselect t) popwin:special-display-config)
-
     (push '("*pry*" :stick t) popwin:special-display-config)
     (push '("*ruby*" :stick t) popwin:special-display-config)
-
     (push '("*undo-tree*" :width 0.2 :position right) popwin:special-display-config)
     (push '("*Google Translate*" :position bottom :height 35) popwin:special-display-config)
     (push '("*Codic Result*") popwin:special-display-config)
-
     (push '("*magit-commit*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config)
     (push '("*magit-diff*" :noselect t :height 30 :width 80) popwin:special-display-config)
     (push '("*magit-edit-log*" :noselect t :height 15 :width 80) popwin:special-display-config)
     (push '("*magit-process*" :noselect t :height 15 :width 80) popwin:special-display-config)
     (push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
-
     (push '("*Python*" :stick t) popwin:special-display-config)
     (push '("*Flutter*" :noselect t :height 15 :stick t) popwin:special-display-config)
-
     (popwin-mode 1)))
 
 
