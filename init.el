@@ -892,17 +892,6 @@
   (setq ivy-initial-inputs-alist nil)
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
 
-  ;; counsel-rg
-  (defun my/counsel-rg-with-extention (ivy-match)
-    "Execute counsel-rg with on cursor files EXTENTION."
-    (let ((match ivy-match))
-      (string-match "^[A-Za-z0-9_]+\.\\([A-Za-z0-9_\.]+\\):" match)
-      (counsel-rg (concat "-g'*." (match-string 1 match) "' -- "))))
-
-  (ivy-set-actions
-   'counsel-rg
-   '(("e" my/counsel-rg-with-extention "with-extention")))
-
   ;; counsel-find-file
   (defun reloading (cmd)
     (lambda (x)
@@ -935,6 +924,16 @@
      ("m" ,(reloading (given-file #'rename-file "Move")) "move")
      ("e" my/open-externally "open externally")
      ("w" find-file-other-window "other window")))
+
+  ;; counsel-rg
+  (defun my/counsel-rg-with-extention (ivy-match)
+    "Execute counsel-rg with extention and IVY-MATCH."
+    (let ((extention (read-from-minibuffer "Extention: ")))
+      (counsel-rg (concat "-g'*." extention "' -- " ivy-match))))
+
+  (ivy-set-actions
+   'counsel-rg
+   '(("e" my/counsel-rg-with-extention "with-extention")))
 
   ;; geleral action
   (defun my/ivy-yank-action (x) (kill-new x))
