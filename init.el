@@ -892,16 +892,51 @@
   (setq ivy-initial-inputs-alist nil)
   (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
 
-  (defun my/counsel-rg-with-extention (extention)
+  ;; counsel-rg
+  (defun my/counsel-rg-with-extention (ivy-match)
     "Execute counsel-rg with on cursor files EXTENTION."
-    (let ((match-extention extention))
-      (string-match "^[A-Za-z0-9_]+\.\\([A-Za-z0-9_\.]+\\):" match-extention)
-      (counsel-rg (concat "-g'*." (match-string 1 match-extention) "' -- "))))
+    (let ((match ivy-match))
+      (string-match "^[A-Za-z0-9_]+\.\\([A-Za-z0-9_\.]+\\):" match)
+      (counsel-rg (concat "-g'*." (match-string 1 match) "' -- "))))
 
   (ivy-set-actions
    'counsel-rg
    '(("e" my/counsel-rg-with-extention "with-extention")))
 
+  ;; counsel-find-file
+  (defun reloading (cmd)
+    (lambda (x)
+      (funcall cmd x)
+      (ivy--reset-state ivy-last)))
+
+  (defun given-file (cmd prompt)
+    (lambda (source)
+      (let ((target
+             (let ((enable-recursive-minibuffers t))
+               (read-file-name
+                (format "%s %s to:" prompt source)))))
+        (funcall cmd source target 1))))
+
+  (defun confirm-delete-file (x)
+    (dired-delete-file x 'confirm-each-subdirectory))
+
+  (defun my-open-externally (file-name) ; Linux
+    "Open file with operating system's default application."
+    (interactive "fOpen externally: ")
+    (let ((process-connection-type nil))
+      (start-process "open-externally" nil
+                     "open" file-name)))
+
+  (ivy-set-actions
+   'counsel-find-file
+   `(("b" counsel-find-file-cd-bookmark-action "cd bookmark")
+     ("c" ,(given-file #'copy-file "Copy") "copy")
+     ("d" ,(reloading #'confirm-delete-file) "delete")
+     ("m" ,(reloading (given-file #'rename-file "Move")) "move")
+     ("e" my-open-externally "open externally")
+     ("w" find-file-other-window "other window")))
+
+  ;; geleral action
   (defun my/ivy-yank-action (x) (kill-new x))
   (ivy-set-actions t
                    '(("y" my/ivy-yank-action "yank"))))
