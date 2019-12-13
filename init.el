@@ -384,7 +384,11 @@
   (global-undo-tree-mode t))
 
 ;; emacsを閉じてもundo
-(use-package undohist :config (undohist-initialize))
+(use-package undohist
+  :custom
+  (undohist-ignored-files "COMMIT_EDITMSG")
+  :config
+  (undohist-initialize))
 
 (use-package expand-region
   :bind (("C-," . er/expand-region)
