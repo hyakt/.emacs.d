@@ -1136,6 +1136,12 @@
     (kill-buffer)
     (delete-window)))
 
+(use-package git-msg-prefix
+  :config
+  (setq git-msg-prefix-log-flags " --since='1 week ago' ")
+  (setq git-msg-prefix-input-method 'ivy-read)
+  (add-hook 'git-commit-mode-hook 'git-msg-prefix))
+
 (use-package git-gutter
   :custom
   (git-gutter:modified-sign " ")
