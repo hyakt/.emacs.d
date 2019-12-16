@@ -850,6 +850,11 @@
 
 
 ;;; ---------- インターフェースの設定 ----------
+(use-package ediff
+  :straight nil
+  :custom
+  (ediff-split-window-function 'split-window-horizontally))
+
 (use-package projectile
   :config
   (projectile-global-mode)
