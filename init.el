@@ -304,8 +304,9 @@
    ("M-n" . jumplist-next))
   :custom
   ((jumplist-hook-commands
-    '(swiper counsel-rg smart-jump-go smart-jump-back jumplist-previous
-             find-file switch-buffer end-of-buffer beginning-of-buffer))))
+    '(swiper counsel-rg smart-jump-go smart-jump-back
+             find-file switch-buffer end-of-buffer beginning-of-buffer))
+  (jumplist-ex-mode t)))
 
 ;; 括弧の色付け
 (use-package rainbow-delimiters
