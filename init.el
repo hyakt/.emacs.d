@@ -306,7 +306,7 @@
   ((jumplist-hook-commands
     '(swiper counsel-rg smart-jump-go smart-jump-back
              find-file switch-buffer end-of-buffer beginning-of-buffer))
-  (jumplist-ex-mode t)))
+   (jumplist-ex-mode t)))
 
 ;; 括弧の色付け
 (use-package rainbow-delimiters
@@ -315,12 +315,11 @@
 
 ;; カラーコードの表示
 (use-package rainbow-mode
-  :config
-  (add-hook 'js2-mode-hook 'rainbow-mode)
-  (add-hook 'css-mode-hook 'rainbow-mode)
-  (add-hook 'html-mode-hook 'rainbow-mode)
-  (add-hook 'web-mode-hook 'rainbow-mode)
-  (add-hook 'typescript-mode-hook 'rainbow-mode))
+  :hook ((js2-mode . rainbow-mode)
+         (css-mode . rainbow-mode)
+         (html-mode . rainbow-mode)
+         (web-mode . rainbow-mode)
+         (typescript-mode . rainbow-mode)))
 
 ;; 変数などの色付け
 (use-package symbol-overlay
@@ -545,6 +544,14 @@
 
 (use-package sass-mode)
 (use-package sws-mode) ;; Stylus
+
+(use-package emmet-mode
+  :bind (:map emmet-mode-keymap
+              ("C-j" . company-complete))
+  :hook ((html-mode . emmet-mode)
+         (web-mode . emmet-mode)
+         (css-mode . emmet-mode)
+         (scss-mode . emmet-mode)))
 
 ;; javascript
 (use-package js2-mode :defer t
