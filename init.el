@@ -174,10 +174,17 @@
   (doom-modeline-mode 1))
 
 (use-package paren
+  :bind (("M-o" . my/jump-to-match-parens))
   :custom
   (show-paren-style 'mixed)
   (show-paren-when-point-inside-paren t)
-  (show-paren-when-point-in-periphery t))
+  (show-paren-when-point-in-periphery t)
+  :config
+  (defun my/jump-to-match-parens ()
+    "対応する括弧に移動"
+    (interactive)
+    (goto-char
+     (nth 3 (show-paren--default)))))
 
 ;; 移動した行にハイライト
 (use-package beacon :config (beacon-mode 1))
@@ -304,7 +311,9 @@
    ("M-n" . jumplist-next))
   :custom
   ((jumplist-hook-commands
-    '(smart-jump-go avy-goto-char
+    '(smart-jump-go
+      avy-goto-char
+      my/jump-to-match-parens
       swiper counsel-find-file counsel-switch-buffer
       counsel-rg counsel-ghq counsel-git
       end-of-buffer beginning-of-buffer))
