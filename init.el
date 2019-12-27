@@ -407,7 +407,7 @@
 
 (use-package recentf
   :custom
-  (recentf-max-saved-items 500)
+  (recentf-max-saved-items 1000)
   (recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
   (recentf-auto-cleanup 'never)
   :config
