@@ -174,17 +174,10 @@
   (doom-modeline-mode 1))
 
 (use-package paren
-  :bind (("M-o" . my/jump-to-match-parens))
   :custom
   (show-paren-style 'mixed)
   (show-paren-when-point-inside-paren t)
-  (show-paren-when-point-in-periphery t)
-  :config
-  (defun my/jump-to-match-parens ()
-    "対応する括弧に移動"
-    (interactive)
-    (goto-char
-     (nth 3 (show-paren--default)))))
+  (show-paren-when-point-in-periphery t))
 
 ;; 移動した行にハイライト
 (use-package beacon :config (beacon-mode 1))
@@ -345,14 +338,24 @@
 (use-package smartparens
   :init (smartparens-global-mode t)
   :bind (("C-M-n" . sp-forward-sexp)
-         ("C-M-p" . sp-backward-sexp))
+         ("C-M-p" . sp-backward-sexp)
+         ("M-o" . my/jump-to-match-parens))
   :config
   (sp-local-pair 'emacs-lisp-mode "`" "'")
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
   (sp-local-pair 'org-mode "=" "=")
   (sp-local-pair 'org-mode "~" "~")
   (sp-local-pair 'org-mode "「" "」")
-  (sp-local-pair 'web-mode "<" ">"))
+  (sp-local-pair 'web-mode "<" ">")
+  (defun my/jump-to-match-parens ()
+    "対応する括弧に移動"
+    (interactive)
+    (let ((paren-point (sp-get-hybrid-sexp)))
+      (let ((beg (plist-get paren-point :beg))
+            (end (plist-get paren-point :end)))
+        (if (= (point) beg)
+            (goto-char end)
+          (goto-char beg))))))
 
 ;; 折りたたみ
 (use-package yafolding
