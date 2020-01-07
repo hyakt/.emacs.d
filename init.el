@@ -202,8 +202,7 @@
                      spaces
                      space-mark
                      tabs
-                     tag-mark
-                     trailing
+                     tab-mark
                      ))
   (whitespace-display-mappings
    '(
