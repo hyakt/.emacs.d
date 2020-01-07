@@ -77,7 +77,8 @@
 
 ;;; ---------- 外観の設定 ----------
 ;; 全般
-(setq-default tab-width 2 indent-tabs-mode nil)               ;; タブの変わりに半角スペースを使う
+(setq-default tab-width 2)               ;; タブの変わりに半角スペースを使う
+(setq-default indent-tabs-mode nil)               ;; タブの変わりに半角スペースを使う
 (setq-default line-spacing 0)                                 ;; 行間を無しに設定
 (setq-default cursor-type 'box)
 (setq inhibit-startup-screen 1)                               ;; スタートアップメッセージを非表示
@@ -196,25 +197,27 @@
 (use-package whitespace
   :straight nil
   :custom
-  (whitespace-style'(face
+  (whitespace-style'(
+                     face
                      newline
                      newline-mark
                      spaces
                      space-mark
                      tabs
                      tab-mark
+                     indentation
+                     trailing
                      ))
   (whitespace-display-mappings
    '(
-     (space-mark   ?\     [?\u00B7]     [?.])        ; space - centered dot
+     ;; (space-mark   ?\     [?·]     [?.])          ; space - middle dot
      (space-mark   ?\xA0  [?\u00A4]     [?_])        ; hard space - currency
      (space-mark   ?\u3000 [?\u25a1])                ; Japanese zenkaku space - rect
      (newline-mark ?\n    [?$ ?\n])                  ; eol - dollar sign
-     (tab-mark     ?\t    [?\u00BB ?\t] [?\\ ?\t])   ; tab - left quote mark
+     (tab-mark     ?\t    [?» ?\t] [?\\ ?\t])        ; tab - right guillemet
      ))
   (whitespace-action '(auto-cleanup))
-  ;; スペースは全角/半角を可視化
-  (whitespace-space-regexp "\\(\u3000+\\|\u0020+\\)")
+  ;; (whitespace-space-regexp "\\(^ +\\| +$\\)")
   :config
   (global-whitespace-mode 1))
 
