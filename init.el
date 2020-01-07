@@ -206,11 +206,10 @@
    '((space-mark ?\u3000 [?\u25a1])
      (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
   (whitespace-action '(auto-cleanup))
-  ;; スペースは全角のみを可視化
-  (whitespace-space-regexp "\\(\u3000+\\)")
+  ;; スペースは全角/半角を可視化
+  (whitespace-space-regexp "\\( +\\|\u3000+\\)")
   :config
   (global-whitespace-mode 1))
-
 
 ;;; ---------- 基本的なキーバインドの設定 ----------
 ;; 通常操作
