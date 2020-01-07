@@ -196,18 +196,26 @@
 (use-package whitespace
   :straight nil
   :custom
-  (whitespace-style '(face           ; faceで可化
-                      trailing       ; 行末
-                      tabs           ; タブ
-                      spaces         ; スペース
-                      space-mark     ; 表示のマッピング
-                      tab-mark ))
+  (whitespace-style'(face
+                     newline
+                     newline-mark
+                     spaces
+                     space-mark
+                     tabs
+                     tag-mark
+                     trailing
+                     ))
   (whitespace-display-mappings
-   '((space-mark ?\u3000 [?\u25a1])
-     (tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
+   '(
+     (space-mark   ?\     [?\u00B7]     [?.])        ; space - centered dot
+     (space-mark   ?\xA0  [?\u00A4]     [?_])        ; hard space - currency
+     (space-mark   ?\u3000 [?\u25a1])                ; Japanese zenkaku space - rect
+     (newline-mark ?\n    [?$ ?\n])                  ; eol - dollar sign
+     (tab-mark     ?\t    [?\u00BB ?\t] [?\\ ?\t])   ; tab - left quote mark
+     ))
   (whitespace-action '(auto-cleanup))
   ;; スペースは全角/半角を可視化
-  (whitespace-space-regexp "\\( +\\|\u3000+\\)")
+  (whitespace-space-regexp "\\(\u3000+\\|\u0020+\\)")
   :config
   (global-whitespace-mode 1))
 
