@@ -151,6 +151,7 @@ determine the exact padding."
    (tooltip           :background bg-alt :foreground fg)
    (company-box-background :foreground fg :background bg-alt)
    (whitespace-indentation :foreground cyan  :underline t)
-   (whitespace-trailing :background orange)))
+   (whitespace-trailing :background orange)
+   (indent-guide-face :foreground base3)))
 
 ;;; my/doom-laserwave-theme.el ends here

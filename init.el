@@ -199,8 +199,8 @@
   :custom
   (whitespace-style'(
                      face
-                     newline
-                     newline-mark
+                     ;; newline
+                     ;; newline-mark
                      spaces
                      space-mark
                      tabs
@@ -219,6 +219,12 @@
   (whitespace-space-regexp "\\(\u3000\\)")
   :config
   (global-whitespace-mode 1))
+
+(use-package indent-guide
+  :custom
+  (indent-guide-char ">")
+  :config
+  (indent-guide-global-mode))
 
 ;;; ---------- 基本的なキーバインドの設定 ----------
 ;; 通常操作
