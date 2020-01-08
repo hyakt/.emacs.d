@@ -205,7 +205,6 @@
                      space-mark
                      tabs
                      tab-mark
-                     indentation
                      trailing
                      ))
   (whitespace-display-mappings
@@ -217,7 +216,7 @@
      (tab-mark     ?\t    [?» ?\t] [?\\ ?\t])        ; tab - right guillemet
      ))
   (whitespace-action '(auto-cleanup))
-  ;; (whitespace-space-regexp "\\(^ +\\| +$\\)")
+  (whitespace-space-regexp "\\(\u3000\\)")
   :config
   (global-whitespace-mode 1))
 
