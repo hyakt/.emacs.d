@@ -150,6 +150,8 @@ determine the exact padding."
    (paren-face-match  :foreground yellow   :background (doom-darken bg 0.2) :weight 'ultra-bold)
    (ivy-current-match :background base7 :distant-foreground nil)
    (tooltip           :background bg-alt :foreground fg)
-   (company-box-background :foreground fg :background bg-alt)))
+   (company-box-background :foreground fg :background bg-alt)
+   (whitespace-indentation :foreground cyan  :underline t)
+   (whitespace-trailing :background orange)))
 
 ;;; doom-laserwave-theme.el ends here
