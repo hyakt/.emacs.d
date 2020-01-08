@@ -536,6 +536,7 @@
   (add-hook 'web-mode-hook
             (lambda ()
               (when (equal web-mode-content-type "jsx")
+                (setq emmet-expand-jsx-className? t)
                 (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
