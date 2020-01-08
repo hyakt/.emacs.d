@@ -2,18 +2,18 @@
 (require 'doom-themes)
 
 ;;
-(defgroup doom-laserwave-theme nil
+(defgroup my/doom-laserwave-theme nil
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom doom-laserwave-padded-modeline doom-themes-padded-modeline
+(defcustom my/doom-laserwave-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
-  :group 'doom-laserwave-theme
+  :group 'my/doom-laserwave-theme
   :type '(choice integer boolean))
 
 ;;
-(def-doom-theme doom-laserwave
+(def-doom-theme my/doom-laserwave
   "An clean 80's synthwave / outrun theme inspired by VS Code laserwave."
 
   ;; name        default   256       16
@@ -71,8 +71,8 @@ determine the exact padding."
    ;; custom categories
    (hidden     `(,(car bg) "black" "black"))
    (-modeline-pad
-    (when doom-laserwave-padded-modeline
-      (if (integerp doom-laserwave-padded-modeline) doom-laserwave-padded-modeline 4)))
+    (when my/doom-laserwave-padded-modeline
+      (if (integerp my/doom-laserwave-padded-modeline) my/doom-laserwave-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
@@ -83,7 +83,6 @@ determine the exact padding."
     `(,(doom-darken (car bg) 0.1) ,@(cdr base0)))
    (modeline-bg-inactive   (doom-darken bg 0.1))
    (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1))))
-
 
   ;; --- extra faces ------------------------
   ((elscreen-tab-other-screen-face :background "#353a42" :foreground "#1e2022")
@@ -154,4 +153,4 @@ determine the exact padding."
    (whitespace-indentation :foreground cyan  :underline t)
    (whitespace-trailing :background orange)))
 
-;;; doom-laserwave-theme.el ends here
+;;; my/doom-laserwave-theme.el ends here
