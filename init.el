@@ -162,7 +162,7 @@
 
 (use-package doom-themes
   :init
-  (load "doom-laserwave-theme")
+  (load "my-doom-laserwave-theme")
   :config
   (doom-themes-neotree-config)
   (doom-themes-org-config))
