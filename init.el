@@ -77,8 +77,8 @@
 
 ;;; ---------- 外観の設定 ----------
 ;; 全般
-(setq-default tab-width 2)               ;; タブの変わりに半角スペースを使う
-(setq-default indent-tabs-mode nil)               ;; タブの変わりに半角スペースを使う
+(setq-default tab-width 2)                                    ;; タブの幅は半角スペース 2
+(setq-default indent-tabs-mode nil)                           ;; タブの変わりに半角スペースを使う
 (setq-default line-spacing 0)                                 ;; 行間を無しに設定
 (setq-default cursor-type 'box)
 (setq inhibit-startup-screen 1)                               ;; スタートアップメッセージを非表示
@@ -634,9 +634,7 @@
   (flutter-sdk-path "~/repos/github.com/flutter/flutter/"))
 
 ;; Python
-(use-package python :defer t
-  :custom((indent-tabs-mode nil)
-          (tab-width 4)))
+(use-package python)
 
 ;; Swift
 (use-package company-sourcekit)
