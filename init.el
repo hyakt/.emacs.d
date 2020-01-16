@@ -237,6 +237,7 @@
 ;; my/function keybinding
 (bind-key (kbd "C-g") 'my/keyboard-quit)
 (bind-key (kbd "<f5>") 'my/revert-buffer-no-confirm)
+(bind-key (kbd "M-r") 'my/revert-buffer-no-confirm)
 (bind-key (kbd "C-x k") 'my/close-and-kill-this-pane)
 (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
 (bind-key (kbd "C-x i") 'my/buffer-indent)
@@ -405,18 +406,9 @@
    ("C-<" . mc/mark-previous-like-this)
    ("C-M-." . mc/mark-all-dwim)))
 
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-redo)
-         ("C-x u" . undo-tree-visualize))
-  :config
-  (global-undo-tree-mode t))
-
-;; emacsを閉じてもundo
-(use-package undohist
-  :custom
-  (undohist-ignored-files "COMMIT_EDITMSG")
-  :config
-  (undohist-initialize))
+(use-package undo-fu
+  :bind (("C-/" . undo-fu-only-undo)
+         ("M-/" . undo-fu-only-redo)))
 
 (use-package expand-region
   :bind (("C-," . er/expand-region)
