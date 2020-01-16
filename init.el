@@ -189,9 +189,7 @@
 ;; 編集した行にハイライト
 (use-package volatile-highlights
   :config
-  (volatile-highlights-mode t)
-  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
-  (vhl/install-extension 'undo-tree))
+  (volatile-highlights-mode t))
 
 ;; Whitespaceの設定
 (use-package whitespace
@@ -398,7 +396,6 @@
 
 (use-package codic)
 
-
 ;;; ---------- 編集機能の設定 ----------
 (use-package multiple-cursors
   :bind
@@ -409,6 +406,9 @@
 (use-package undo-fu
   :bind (("C-/" . undo-fu-only-undo)
          ("M-/" . undo-fu-only-redo)))
+
+(use-package git-undo
+  :bind (("C-x C-/" . git-undo)))
 
 (use-package expand-region
   :bind (("C-," . er/expand-region)
@@ -1295,7 +1295,6 @@
     (push '("*jedi:doc*" :noselect t) popwin:special-display-config)
     (push '("*pry*" :stick t) popwin:special-display-config)
     (push '("*ruby*" :stick t) popwin:special-display-config)
-    (push '("*undo-tree*" :width 0.2 :position right) popwin:special-display-config)
     (push '("*Google Translate*" :position bottom :height 35) popwin:special-display-config)
     (push '("*Codic Result*") popwin:special-display-config)
     (push '("*magit-commit*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config)
