@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: jsdoc oneline
+# key: jsdoc
+# --
+/** ${1: JSDoc comment} */
