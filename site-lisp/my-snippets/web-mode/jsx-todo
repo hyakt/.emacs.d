@@ -2,4 +2,4 @@
 # name: jsx todo
 # key: t
 # --
-{// TODO: $1 }
+{/* TODO: $1 */}
