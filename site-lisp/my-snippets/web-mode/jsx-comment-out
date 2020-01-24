@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: jsx comment out
+# key: cmo
+# --
+{/* $1 */}
