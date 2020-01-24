@@ -906,7 +906,7 @@
   :bind(( "C-s" . swiper)
         ( "M-x" . counsel-M-x)
         ( "M-y" . counsel-yank-pop)
-        ( "C-x C-f" . counsel-find-file)
+        ( "C-x C-f" . my/find-file-and-create-directory)
         ( "C-x C-r" . counsel-recentf)
         ( "C-x C-b" . switch-to-buffer)
         ( "<f1> f" . counsel-describe-function)

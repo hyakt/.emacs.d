@@ -187,6 +187,18 @@ BEG and END (region to sort)."
           (keyboard-escape-quit))
     (keyboard-quit)))
 
+(defun my/find-file-and-create-directory(filename &optional wildcards)
+  "Find a file, and then create FILENAME (WILDCARDS)
+the folder if it doesn't exist."
+  (interactive (find-file-read-args "Find file: " nil))
+  (let ((value (find-file-noselect filename nil nil wildcards)))
+    (if (listp value)
+        (mapc 'switch-to-buffer (nreverse value))
+      (switch-to-buffer value)))
+  (when (not (file-exists-p default-directory))
+    (message (format "Creating  %s" default-directory))
+    (make-directory default-directory t)))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
