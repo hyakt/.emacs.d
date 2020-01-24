@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: js-todo
+# key: t
+# --
+// TODO: $1

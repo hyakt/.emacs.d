@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: jsx todo
+# key: t
+# --
+{// TODO: $1 }
