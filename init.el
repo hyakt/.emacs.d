@@ -611,11 +611,15 @@
               ("C-c C-z" . nodejs-repl-switch-to-repl)))
 
 (use-package add-node-modules-path
-  :config
-  (add-hook 'js2-mode-hook #'add-node-modules-path)
-  (add-hook 'web-mode-hook #'add-node-modules-path)
-  (add-hook 'typescript-mode-hook #'add-node-modules-path)
-  (add-hook 'scss-mode-hook #'add-node-modules-path))
+  :hook ((js2-mode . #'add-node-modules-path)
+         (web-mode . #'add-node-modules-path)
+         (typescript-mode . #'add-node-modules-path)
+         (scss-mode . #'add-node-modules-path)))
+
+(use-package npm-mode
+  :hook ((web-mode . npm-mode)
+         (typescript-mode . npm-mode)
+         (js2-mode . npm-mode)))
 
 ;; Dart
 (use-package dart-mode
@@ -776,18 +780,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-                       (let ((id (org-entry-get nil "CUSTOM_ID")))
-                         (cond
-                          ((and id (stringp id) (string-match "\\S-" id))
-                           id)
-                          (create
-                           (setq id (my-get-custom-id))
-                           (unless id
-                             (error "Invalid ID"))
-                           (org-entry-put pom "CUSTOM_ID" id)
-                           (message "--- CUSTOM_ID assigned: %s" id)
-                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-                           id)))))
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (my-get-custom-id))
+          (unless id
+            (error "Invalid ID"))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (message "--- CUSTOM_ID assigned: %s" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
