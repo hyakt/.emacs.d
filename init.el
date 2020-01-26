@@ -360,6 +360,7 @@
   (sp-local-pair 'org-mode "~" "~")
   (sp-local-pair 'org-mode "「" "」")
   (sp-local-pair 'web-mode "<" ">")
+  :preface
   (defun my/jump-to-match-parens ()
     "対応する括弧に移動"
     (interactive)
@@ -435,14 +436,13 @@
   :commands lsp
   :custom ((lsp-auto-guess-root t)
            (lsp-document-sync-method 'incremental) ;; always send incremental document
-           (lsp-response-timeout 5)
+           (lsp-response-timeout 3)
            (lsp-enable-completion-at-point nil)
            (lsp-inhibit-message t)
            (lsp-message-project-root-warning t)
            ;; dont use flymake and flycheck on lsp-mode and lsp-ui.
            (lsp-prefer-flymake nil)
-           (create-lockfiles nil))
-  :hook ((dart-mode . lsp)))
+           (create-lockfiles nil)))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -581,13 +581,7 @@
   ((js-indent-level 2)
    (js-switch-indent-offset 2)
    (js2-basic-offset 2)
-   (js2-strict-missing-semi-warning nil))
-  :config
-  (add-hook 'js2-mode-hook
-            (lambda ()
-              (lsp)
-              (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)
-              (flycheck-mode t))))
+   (js2-strict-missing-semi-warning nil)))
 
 (use-package typescript-mode
   :custom (typescript-indent-level 2)
@@ -691,7 +685,7 @@
 
 (use-package sqlformat
   :ensure-system-package ((sqlformat . "brew install sqlparse"))
-  :config
+  :preface
   (defun my/sql-indent-region (beg end)
     "Indent the SQL statement in the BEG to END (region)."
     (interactive "*r")
@@ -842,6 +836,7 @@
   (org-bullets-bullet-list '("■" "○" "✸" "►" "•" "★"))
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  :preface
   (defun my/org-bullets-export (path)
     "Export to bullets style text file into PATH."
     (interactive "FExport file: ")
@@ -1170,7 +1165,7 @@
   :ensure-system-package ((git . "brew install git"))
   :bind ("C-x g" . magit-status)
   (:map magit-status-mode-map ("q" . my/magit-quit-session))
-  :config
+  :preface
   (defun my/magit-quit-session ()
     (interactive)
     (kill-buffer)
@@ -1258,7 +1253,7 @@
   :custom ((ws-split-window-width-with-em 130))
   :bind (("C-t"  . my/ws-other-window-or-split-and-kill-minibuffer)
          ("C-S-t" . ws-previous-other-window-or-split))
-  :config
+  :preface
   (defun my/ws-other-window-or-split-and-kill-minibuffer ()
     (interactive)
     (if (active-minibuffer-window)
