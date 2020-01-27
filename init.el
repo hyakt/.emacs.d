@@ -360,7 +360,7 @@
   (sp-local-pair 'org-mode "~" "~")
   (sp-local-pair 'org-mode "「" "」")
   (sp-local-pair 'web-mode "<" ">")
-  :preface
+  :config
   (defun my/jump-to-match-parens ()
     "対応する括弧に移動"
     (interactive)
@@ -472,7 +472,7 @@
            ;; don't use flycheck on lsp-mode and lsp-ui
            (lsp-ui-flycheck-enable t))
   :hook   (lsp-mode . lsp-ui-mode)
-  :preface
+  :config
   (defun toggle-lsp-ui-doc ()
     (interactive)
     (if lsp-ui-doc-mode
@@ -685,7 +685,7 @@
 
 (use-package sqlformat
   :ensure-system-package ((sqlformat . "brew install sqlparse"))
-  :preface
+  :config
   (defun my/sql-indent-region (beg end)
     "Indent the SQL statement in the BEG to END (region)."
     (interactive "*r")
@@ -836,7 +836,6 @@
   (org-bullets-bullet-list '("■" "○" "✸" "►" "•" "★"))
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  :preface
   (defun my/org-bullets-export (path)
     "Export to bullets style text file into PATH."
     (interactive "FExport file: ")
@@ -997,7 +996,7 @@
   :defines all-the-icons-mode-icon-alist
   :functions (all-the-icons-icon-family-for-mode all-the-icons-icon-family-for-file)
   :init (ivy-rich-mode 1)
-  :preface
+  :config
   (with-eval-after-load 'all-the-icons
     (add-to-list 'all-the-icons-mode-icon-alist
                  '(gfm-mode  all-the-icons-octicon "markdown" :v-adjust 0.0 :face all-the-icons-lblue)))
@@ -1253,7 +1252,7 @@
   :custom ((ws-split-window-width-with-em 130))
   :bind (("C-t"  . my/ws-other-window-or-split-and-kill-minibuffer)
          ("C-S-t" . ws-previous-other-window-or-split))
-  :preface
+  :config
   (defun my/ws-other-window-or-split-and-kill-minibuffer ()
     (interactive)
     (if (active-minibuffer-window)
