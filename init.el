@@ -965,12 +965,14 @@
 
   (defun my/counsel-rg-from-current-directory (_)
     "Searched by current directory and subdirectories."
-    (counsel-rg nil (file-name-directory buffer-file-name)))
+    (if (buffer-file-name)
+        (counsel-rg nil (file-name-directory buffer-file-name))
+      (counsel-rg nil (expand-file-name (counsel-directory-name (buffer-name))))))
 
   (ivy-set-actions
    'counsel-rg
    '(("e" my/counsel-rg-with-extention-and-word "with-extention")
-     ("d" my/counsel-rg-current-directory "search-from-current-directroy")))
+     ("d" my/counsel-rg-from-current-directory "search-from-current-directroy")))
 
   ;; geleral action
   (defun my/ivy-yank-action (x) (kill-new x))
