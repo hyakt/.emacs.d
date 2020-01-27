@@ -332,11 +332,7 @@
 
 ;; カラーコードの表示
 (use-package rainbow-mode
-  :hook ((js2-mode . rainbow-mode)
-         (css-mode . rainbow-mode)
-         (html-mode . rainbow-mode)
-         (web-mode . rainbow-mode)
-         (typescript-mode . rainbow-mode)))
+  :hook ((js2-mode css-mode html-mode web-mode typescript-mode) . rainbow-mode))
 
 ;; 変数などの色付け
 (use-package symbol-overlay
@@ -498,7 +494,6 @@
 
 ;; HTML
 (use-package web-mode
-  :after (add-node-modules-path)
   :mode (("\\.phtml\\'" . web-mode)
          ("\\.tpl\\.php\\'" . web-mode)
          ("\\.[gj]sp\\'" . web-mode)
@@ -569,10 +564,7 @@
 (use-package emmet-mode
   :bind (:map emmet-mode-keymap
               ("C-j" . company-complete))
-  :hook ((html-mode . emmet-mode)
-         (web-mode . emmet-mode)
-         (css-mode . emmet-mode)
-         (scss-mode . emmet-mode)))
+  :hook ((html-mode web-mode css-mode scss-mode) . emmet-mode))
 
 ;; javascript
 (use-package js2-mode :defer t
@@ -605,15 +597,10 @@
               ("C-c C-z" . nodejs-repl-switch-to-repl)))
 
 (use-package add-node-modules-path
-  :hook ((js2-mode . #'add-node-modules-path)
-         (web-mode . #'add-node-modules-path)
-         (typescript-mode . #'add-node-modules-path)
-         (scss-mode . #'add-node-modules-path)))
+  :hook ((typescript-mode js2-mode web-mode scss-mode) . add-node-modules-path))
 
 (use-package npm-mode
-  :hook ((web-mode . npm-mode)
-         (typescript-mode . npm-mode)
-         (js2-mode . npm-mode)))
+  :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
 
 ;; Dart
 (use-package dart-mode
