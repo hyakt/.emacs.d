@@ -761,18 +761,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          (setq id (my-get-custom-id))
-          (unless id
-            (error "Invalid ID"))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (message "--- CUSTOM_ID assigned: %s" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
+                       (let ((id (org-entry-get nil "CUSTOM_ID")))
+                         (cond
+                          ((and id (stringp id) (string-match "\\S-" id))
+                           id)
+                          (create
+                           (setq id (my-get-custom-id))
+                           (unless id
+                             (error "Invalid ID"))
+                           (org-entry-put pom "CUSTOM_ID" id)
+                           (message "--- CUSTOM_ID assigned: %s" id)
+                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+                           id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
@@ -948,7 +948,7 @@
                      "open" file-name)))
 
   (ivy-set-actions
-   'counsel-find-file
+   'my/find-file-and-create-directory
    `(("b" counsel-find-file-cd-bookmark-action "cd bookmark")
      ("c" ,(given-file #'copy-file "Copy") "copy")
      ("d" ,(reloading #'confirm-delete-file) "delete")
@@ -963,9 +963,14 @@
           (extention (read-from-minibuffer "Extention: ")))
       (counsel-rg (concat "-g'*." extention "' -- " word))))
 
+  (defun my/counsel-rg-from-current-directory (_)
+    "Searched by current directory and subdirectories."
+    (counsel-rg nil (file-name-directory buffer-file-name)))
+
   (ivy-set-actions
    'counsel-rg
-   '(("e" my/counsel-rg-with-extention-and-word "with-extention")))
+   '(("e" my/counsel-rg-with-extention-and-word "with-extention")
+     ("d" my/counsel-rg-current-directory "search-from-current-directroy")))
 
   ;; geleral action
   (defun my/ivy-yank-action (x) (kill-new x))
