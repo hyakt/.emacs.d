@@ -974,6 +974,17 @@
    '(("e" my/counsel-rg-with-extention-and-word "with-extention")
      ("d" my/counsel-rg-from-current-directory "search-from-current-directroy")))
 
+  ;; counsel-fzf
+  (defun my/counsel-fzf-from-current-directory (_)
+    "Searched by current directory and subdirectories."
+    (if (buffer-file-name)
+        (counsel-fzf nil (file-name-directory buffer-file-name))
+      (counsel-fzf nil (dired-current-directory))))
+
+  (ivy-set-actions
+   'counsel-fzf
+   '(("d" my/counsel-fzf-from-current-directory "search-from-current-directroy")))
+
   ;; geleral action
   (defun my/ivy-yank-action (x) (kill-new x))
   (ivy-set-actions t
