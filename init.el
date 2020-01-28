@@ -967,7 +967,7 @@
     "Searched by current directory and subdirectories."
     (if (buffer-file-name)
         (counsel-rg nil (file-name-directory buffer-file-name))
-      (counsel-rg nil (expand-file-name (counsel-directory-name (buffer-name))))))
+      (counsel-rg nil (dired-current-directory))))
 
   (ivy-set-actions
    'counsel-rg
