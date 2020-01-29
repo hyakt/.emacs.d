@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: my/lamda function
+# key: lf
+# --
+function() {
+  $1
+}
