@@ -446,7 +446,7 @@
   (:map lsp-mode-map
         ("M-." . lsp-ui-peek-find-references)
         ("M-?" . lsp-ui-peek-find-definitions)
-        ("C-c d"   . toggle-lsp-ui-doc))
+        ("C-c C-d"   . toggle-lsp-ui-doc))
   :custom ((scroll-margin 0)
            (lsp-ui-imenu-enable nil)
            (lsp-ui-sideline-enable nil)
@@ -456,8 +456,8 @@
            (lsp-ui-peek-list-width 50)
            (lsp-ui-peek-fontify 'on-demand) ;; never, on-demand, or always
            ;; lsp-ui-doc
-           (lsp-ui-doc-enable t)
-           (lsp-ui-doc-header nil)
+           (lsp-ui-doc-enable nil)
+           (lsp-ui-doc-header t)
            (lsp-ui-doc-include-signature t)
            (lsp-ui-doc-position 'at-point) ;; top, bottom, or at-point
            (lsp-ui-doc-max-width 150)
