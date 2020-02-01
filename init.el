@@ -169,7 +169,9 @@
 
 ;; モードラインの設定
 (use-package doom-modeline
-  :custom ((doom-modeline-height 32)
+  :custom ((doom-modeline-buffer-encoding nil)
+           (doom-modeline-buffer-file-name-style 'truncate-with-project)
+           (doom-modeline-height 32)
            (doom-modeline-bar-width 3))
   :config
   (doom-modeline-mode 1))
