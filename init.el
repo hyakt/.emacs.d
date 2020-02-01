@@ -308,6 +308,7 @@
   (dumb-jump-mode))
 
 (use-package smart-jump
+  :bind(("M-'" . smart-jump-references))
   :config
   (smart-jump-setup-default-registers))
 
