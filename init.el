@@ -1258,13 +1258,24 @@
   :bind (("C-t"  . my/ws-other-window-or-split-and-kill-minibuffer)
          ("C-S-t" . ws-previous-other-window-or-split))
   :config
+  (defun my/ws-other-window-or-split ()
+    (interactive)
+    (when (one-window-p)
+      (ws-split-window-dwim))
+    (when (and (and
+                (eq (length (window-list)) 2)
+                (dired-sidebar-showing-sidebar-p))
+               (not (eq (current-buffer)
+                        (dired-sidebar-buffer (selected-frame)))))
+      (ws-split-window-dwim))
+    (other-window 1))
   (defun my/ws-other-window-or-split-and-kill-minibuffer ()
     (interactive)
     (if (active-minibuffer-window)
         (progn
           (minibuffer-keyboard-quit)
-          (ws-other-window-or-split))
-      (ws-other-window-or-split))))
+          (my/ws-other-window-or-split))
+      (my/ws-other-window-or-split))))
 
 ;; screen
 (use-package eyebrowse
