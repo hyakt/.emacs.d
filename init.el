@@ -864,6 +864,22 @@
 
 
 ;;; ---------- インターフェースの設定 ----------
+(setq completion-ignored-extensions
+      (append completion-ignored-extensions
+              '("./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store")))
+
+;; https://stackoverflow.com/questions/1731634/dont-show-uninteresting-files-in-emacs-completion-window
+(defadvice completion--file-name-table (after
+                                        ignoring-backups-f-n-completion
+                                        activate)
+  "Filter out results when they match `completion-ignored-extensions'."
+  (let ((res ad-return-value))
+    (if (and (listp res)
+             (stringp (car res))
+             (cdr res))                 ; length > 1, don't ignore sole match
+        (setq ad-return-value
+              (completion-pcm--filename-try-filter res)))))
+
 (use-package ediff
   :straight nil
   :custom
@@ -924,7 +940,7 @@
   (ivy-mode 1)
   ;; :custom ではなぜか反映されないため :config でsetqする
   (setq ivy-initial-inputs-alist nil)
-  (defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../" ".DS_Store" ".tern-port")))
+  (setq counsel-find-file-ignore-regexp (regexp-opt completion-ignored-extensions))
 
   ;; counsel-find-file
   (defun reloading (cmd)
