@@ -36,7 +36,7 @@
 (load "my-functions")
 
 
-;;; ---------- 初期前提設定 ----------
+;;; ---------- 初期設定 ----------
 (setq auto-coding-functions nil)                  ;; 文字コードの自動変換保存をしない
 (setq completion-ignore-case t)                   ;; file名の補完で大文字小文字を区別しない
 (setq auto-save-default nil)                      ;; オートセーブのファイルを作らない
@@ -75,7 +75,7 @@
   (exec-path-from-shell-initialize))
 
 
-;;; ---------- 外観の設定 ----------
+;;; ---------- 外観設定 ----------
 ;; 全般
 (setq-default tab-width 2)                                    ;; タブの幅は半角スペース 2
 (setq-default indent-tabs-mode nil)                           ;; タブの変わりに半角スペースを使う
@@ -226,7 +226,7 @@
   :config
   (indent-guide-global-mode))
 
-;;; ---------- 基本的なキーバインドの設定 ----------
+;;; ---------- キーバインド設定 ----------
 ;; 通常操作
 (keyboard-translate ?\C-h ?\C-?)
 (bind-key (kbd "C-h") nil)
@@ -244,7 +244,7 @@
 (bind-key (kbd "C-x d") 'my/dired-this-buffer)
 
 
-;;; ---------- コーディングのサポート設定 ----------
+;;; ---------- 編集機能設定 ----------
 (use-package yasnippet
   :custom
   (yas-snippet-dirs '("~/.emacs.d/site-lisp/my-snippets"))
@@ -396,7 +396,6 @@
 
 (use-package codic)
 
-;;; ---------- 編集機能の設定 ----------
 (use-package multiple-cursors
   :bind
   (("C->" . mc/mark-next-like-this)
@@ -429,7 +428,7 @@
   (wgrep-change-readonly-file t))
 
 
-;;; ---------- コーディングのモード設定 ----------
+;;; ---------- メジャーモード設定 ----------
 ;; lsp-mode
 (use-package lsp-mode
   :commands lsp
@@ -863,7 +862,7 @@
                (set (make-local-variable 'whitespace-action) nil))))
 
 
-;;; ---------- インターフェースの設定 ----------
+;;; ---------- インターフェース設定 ----------
 (setq completion-ignored-extensions
       (append completion-ignored-extensions
               '("./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store")))
@@ -1267,7 +1266,7 @@
       ad-do-it)))
 
 
-;;; ---------- フレームの設定 ----------
+;;; ---------- フレーム設定 ----------
 (use-package swap-buffers
   :bind (("C-x C-o" . swap-buffers)))
 
@@ -1338,6 +1337,5 @@
     (push '("*Python*" :stick t) popwin:special-display-config)
     (push '("*Flutter*" :noselect t :height 15 :stick t) popwin:special-display-config)
     (popwin-mode 1)))
-
 
 ;;; init.el ends here
