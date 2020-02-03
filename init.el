@@ -482,6 +482,9 @@
 (use-package company-lsp
   :after (lsp-mode company yasnippet)
   :defines company-backends
+  :custom((company-lsp-cache-candidates t) ;; always using cache
+          (company-lsp-async t)
+          (company-lsp-enable-recompletion nil))
   :init (push 'company-lsp company-backends))
 
 ;; emacs-lisp
