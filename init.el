@@ -1131,9 +1131,8 @@
   :after dired )
 
 (use-package dired-sidebar
-  :after dired
   :bind (("C-x C-d" . dired-sidebar-toggle-sidebar))
-  :commands (qdired-sidebar-toggle-sidebar)
+  :commands (dired-sidebar-toggle-sidebar)
   :init
   (add-hook 'dired-sidebar-mode-hook
             (lambda ()
@@ -1276,6 +1275,7 @@
   :bind (("C-t"  . my/ws-other-window-or-split-and-kill-minibuffer)
          ("C-S-t" . ws-previous-other-window-or-split))
   :config
+  (use-package dired-sidebar)
   (defun my/ws-other-window-or-split ()
     (interactive)
     (when (one-window-p)
