@@ -319,6 +319,7 @@
   (smart-jump-setup-default-registers))
 
 (use-package jumplist
+  :defer 0
   :bind
   (("M-p" . jumplist-previous)
    ("M-n" . jumplist-next))
@@ -447,6 +448,7 @@
            (lsp-message-project-root-warning t)
            ;; dont use flymake and flycheck on lsp-mode and lsp-ui.
            (lsp-prefer-flymake nil)
+           (lsp-enable-indentation nil)
            (create-lockfiles nil)))
 
 (use-package lsp-ui
@@ -537,6 +539,7 @@
             (lambda ()
               (when (equal web-mode-content-type "jsx")
                 (setq emmet-expand-jsx-className? t)
+                (bind-key (kbd "C-x i") 'my/eslint-fix-file)
                 (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
