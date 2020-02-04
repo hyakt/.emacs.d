@@ -539,7 +539,6 @@
             (lambda ()
               (when (equal web-mode-content-type "jsx")
                 (setq emmet-expand-jsx-className? t)
-                (bind-key (kbd "C-x i") 'my/eslint-fix-file)
                 (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
