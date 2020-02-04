@@ -310,8 +310,12 @@
   (dumb-jump-mode))
 
 (use-package smart-jump
-  :bind(("M-'" . smart-jump-references))
-  :config
+  :bind(("M-." . smart-jump-go)
+        ("M-," . smart-jump-back)
+        ("M-'" . smart-jump-references)
+        ("M-P" . smart-jump-peek))
+  :custom((smart-jump-bind-keys nil))
+  :init
   (smart-jump-setup-default-registers))
 
 (use-package jumplist
@@ -320,8 +324,11 @@
    ("M-n" . jumplist-next))
   :custom
   ((jumplist-hook-commands
-    '(smart-jump-go
-      avy-goto-char
+    '(avy-goto-char
+      smart-jump-go smart-jump-ref
+      lsp-ui-peek-find-definitions lsp-ui-peek-find-references
+      xref-find-definitions xref-find-references
+      dump-jump-go
       my/jump-to-match-parens
       swiper counsel-find-file counsel-switch-buffer
       counsel-rg counsel-ghq counsel-git
@@ -444,11 +451,12 @@
 
 (use-package lsp-ui
   :after lsp-mode
-  :bind
-  (:map lsp-mode-map
-        ("M-." . lsp-ui-peek-find-references)
-        ("M-?" . lsp-ui-peek-find-definitions)
-        ("C-c C-d"   . toggle-lsp-ui-doc))
+  :bind (:map lsp-mode-map
+              ;; smart-jumpとlsp-ui-peekとの相性が良くないため
+              ;; smart-jumpのキーバインドを上書きする
+              ("M-." . lsp-ui-peek-find-definitions)
+              ("M-'" . lsp-ui-peek-find-references)
+              ("C-c C-d"   . toggle-lsp-ui-doc))
   :custom ((scroll-margin 0)
            (lsp-ui-imenu-enable nil)
            (lsp-ui-sideline-enable nil)
@@ -459,7 +467,7 @@
            (lsp-ui-peek-fontify 'on-demand) ;; never, on-demand, or always
            ;; lsp-ui-doc
            (lsp-ui-doc-enable nil)
-           (lsp-ui-doc-header t)
+           (lsp-ui-doc-header nil)
            (lsp-ui-doc-include-signature t)
            (lsp-ui-doc-position 'at-point) ;; top, bottom, or at-point
            (lsp-ui-doc-max-width 150)
@@ -470,7 +478,7 @@
            ;; don't use flycheck on lsp-mode and lsp-ui
            (lsp-ui-flycheck-enable t))
   :hook   (lsp-mode . lsp-ui-mode)
-  :config
+  :preface
   (defun toggle-lsp-ui-doc ()
     (interactive)
     (if lsp-ui-doc-mode
