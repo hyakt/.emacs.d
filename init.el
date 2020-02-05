@@ -492,7 +492,9 @@
 (use-package company-lsp
   :after (lsp-mode company yasnippet)
   :defines company-backends
-  :custom((company-lsp-cache-candidates 'auto))
+  :custom((company-lsp-cache-candidates nil)
+          (company-lsp-async t)
+          (company-lsp-enable-recompletion t))
   :init (push 'company-lsp company-backends))
 
 ;; emacs-lisp
