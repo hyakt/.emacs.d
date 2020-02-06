@@ -494,7 +494,7 @@
   :defines company-backends
   :custom((company-lsp-cache-candidates nil)
           (company-lsp-async t)
-          (company-lsp-enable-recompletion t))
+          (company-lsp-enable-recompletion nil))
   :init (push 'company-lsp company-backends))
 
 ;; emacs-lisp
@@ -544,8 +544,7 @@
                 (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
                 (flycheck-add-mode 'javascript-eslint 'web-mode)
-                (lsp)
-                (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)
+                (tide-setup)
                 (flycheck-mode t)))))
 
 (use-package company-web)
@@ -591,13 +590,7 @@
    (js2-strict-missing-semi-warning nil)))
 
 (use-package typescript-mode
-  :custom (typescript-indent-level 2)
-  :config
-  (add-hook 'typescript-mode-hook
-            (lambda ()
-              (lsp)
-              (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)
-              (flycheck-mode t))))
+  :custom (typescript-indent-level 2))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
@@ -616,6 +609,12 @@
 
 (use-package npm-mode
   :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
+
+(use-package tide
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
 
 ;; Dart
 (use-package dart-mode
