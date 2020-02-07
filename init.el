@@ -545,7 +545,8 @@
                 (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
                 (flycheck-add-mode 'javascript-eslint 'web-mode)
                 (tide-setup)
-                (flycheck-mode t)))))
+                (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
+                (flycheck-add-next-checker 'jsx-tide 'javascript-eslint 'append)))))
 
 (use-package company-web)
 
@@ -590,7 +591,13 @@
    (js2-strict-missing-semi-warning nil)))
 
 (use-package typescript-mode
-  :custom (typescript-indent-level 2))
+  :custom (typescript-indent-level 2)
+  :init
+  (add-hook 'typescript-mode-hook
+            (lambda()
+              (tide-setup)
+              (tide-hl-identifier-mode)
+              (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append))))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
@@ -612,9 +619,7 @@
 
 (use-package tide
   :after (typescript-mode company flycheck)
-  :hook ((typescript-mode . tide-setup)
-         (typescript-mode . tide-hl-identifier-mode)
-         (before-save . tide-format-before-save)))
+  :hook ((before-save . tide-format-before-save)))
 
 ;; Dart
 (use-package dart-mode
