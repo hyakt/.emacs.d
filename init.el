@@ -197,16 +197,17 @@
 (use-package whitespace
   :straight nil
   :custom
-  (whitespace-style'(
-                     face
-                     ;; newline
-                     ;; newline-mark
-                     spaces
-                     space-mark
-                     tabs
-                     tab-mark
-                     trailing
-                     ))
+  (whitespace-style
+   '(
+     face
+     ;; newline
+     ;; newline-mark
+     spaces
+     space-mark
+     tabs
+     tab-mark
+     trailing
+     ))
   (whitespace-display-mappings
    '(
      ;; (space-mark   ?\     [?·]     [?.])          ; space - middle dot
@@ -1227,15 +1228,16 @@
 
 (use-package gist
   :custom
-  (gist-list-format '((files "Filename" 24 nil identity)
-                      (created "Created" 20 nil "%D %R")
-                      (visibility "Visibility" 10 nil
-                                  (lambda
-                                    (public)
-                                    (or
-                                     (and public "public")
-                                     "private")))
-                      (description "Description" 0 nil identity))))
+  (gist-list-format
+   '((files "Filename" 24 nil identity)
+     (created "Created" 20 nil "%D %R")
+     (visibility "Visibility" 10 nil
+                 (lambda
+                   (public)
+                   (or
+                    (and public "public")
+                    "private")))
+     (description "Description" 0 nil identity))))
 
 (use-package forge  :after magit)
 (use-package git-timemachine)
