@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: my/console.log only message
+# key: clm
+# --
+console.log('$1');
