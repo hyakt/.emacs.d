@@ -326,6 +326,7 @@
   :custom
   ((jumplist-hook-commands
     '(avy-goto-char
+      mouse-set-point
       smart-jump-go smart-jump-ref
       lsp-ui-peek-find-definitions lsp-ui-peek-find-references
       xref-find-definitions xref-find-references
