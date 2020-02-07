@@ -618,6 +618,9 @@
   :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
 
 (use-package tide
+  :bind (:map tide-mode-map
+              ("M-." . nil)
+              ("M-," . nil))
   :after (typescript-mode company flycheck)
   :hook ((before-save . tide-format-before-save)))
 
