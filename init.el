@@ -169,7 +169,7 @@
 
 ;; モードラインの設定
 (use-package doom-modeline
-  :custom ((doom-modeline-buffer-encoding nil)
+  :custom ((doom-modeline-buffer-encoding t)
            (doom-modeline-buffer-file-name-style 'truncate-with-project)
            (doom-modeline-height 32)
            (doom-modeline-bar-width 3))
@@ -565,10 +565,12 @@
 (use-package css-mode
   :straight nil
   :custom
-  (css-indent-offset 2))
+  ((flycheck-checker 'css-stylelint)
+   (css-indent-offset 2)))
 
 (use-package scss-mode
-  :custom (scss-indent-offset 2)
+  :custom ((scss-indent-offset 2)
+           (flycheck-checker 'scss-stylelint))
   :config
   (add-hook 'scss-mode-hook
             (lambda ()
@@ -785,18 +787,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-                       (let ((id (org-entry-get nil "CUSTOM_ID")))
-                         (cond
-                          ((and id (stringp id) (string-match "\\S-" id))
-                           id)
-                          (create
-                           (setq id (my-get-custom-id))
-                           (unless id
-                             (error "Invalid ID"))
-                           (org-entry-put pom "CUSTOM_ID" id)
-                           (message "--- CUSTOM_ID assigned: %s" id)
-                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-                           id)))))
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (my-get-custom-id))
+          (unless id
+            (error "Invalid ID"))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (message "--- CUSTOM_ID assigned: %s" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
