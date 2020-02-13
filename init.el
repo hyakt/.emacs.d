@@ -666,8 +666,7 @@
          ("[Rr]akefile$" . ruby-mode))
   :interpreter "pry"
   :config
-  (require 'smartparens-ruby)
-  (add-hook 'ruby-mode-hook #'lsp))
+  (require 'smartparens-ruby))
 
 (use-package inf-ruby
   :bind (:map inf-ruby-minor-mode-map
