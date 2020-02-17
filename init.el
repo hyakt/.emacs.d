@@ -207,6 +207,7 @@
      tabs
      tab-mark
      trailing
+     empty
      ))
   (whitespace-display-mappings
    '(
