@@ -501,7 +501,8 @@
   :init (push 'company-lsp company-backends))
 
 ;; emacs-lisp
-(use-package lispxmp :defer t
+(use-package lispxmp
+  :defer t
   :bind (:map emacs-lisp-mode-map
               ("C-c C-e" . lispxmp )))
 
@@ -553,7 +554,8 @@
 
 (use-package company-web)
 
-(use-package slim-mode :after company-web
+(use-package slim-mode
+  :after company-web
   :config
   (add-hook 'slim-mode-hook
             (lambda ()
@@ -587,7 +589,8 @@
   :hook ((html-mode web-mode css-mode scss-mode) . emmet-mode))
 
 ;; javascript
-(use-package js2-mode :defer t
+(use-package js2-mode
+  :defer t
   :mode (("\.js$" . js2-mode))
   :custom
   ((js-indent-level 2)
@@ -660,7 +663,8 @@
                    '((company-sourcekit))))))
 
 ;; Ruby
-(use-package ruby-mode :defer t
+(use-package ruby-mode
+  :defer t
   :mode (("\\.rb\\'" . ruby-mode)
          ("Capfile$" . ruby-mode)
          ("Gemfile$" . ruby-mode)
@@ -1185,7 +1189,8 @@
   (custom-set-variables
    '(shell-pop-shell-type '("eshell" " *eshell*" (lambda () (eshell))))))
 
-(use-package eshell  :defer t
+(use-package eshell
+  :defer t
   :custom
   (eshell-cmpl-ignore-case t)
   (eshell-ask-to-save-history 'always)
