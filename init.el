@@ -549,8 +549,7 @@
                 (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
                 (flycheck-add-mode 'javascript-eslint 'web-mode)
                 (tide-setup)
-                (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
-                (flycheck-add-next-checker 'jsx-tide 'javascript-eslint 'append)))))
+                (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)))))
 
 (use-package company-web)
 
@@ -568,15 +567,20 @@
 (use-package css-mode
   :straight nil
   :custom
-  ((flycheck-checker 'css-stylelint)
-   (css-indent-offset 2)))
+  ((css-indent-offset 2))
+  :config
+  (add-hook 'css-mode-hook
+            (lambda ()
+              (set (make-local-variable 'flycheck-checker)
+                   (setq flycheck-checker 'css-stylelint)))))
 
 (use-package scss-mode
-  :custom ((scss-indent-offset 2)
-           (flycheck-checker 'scss-stylelint))
+  :custom ((scss-indent-offset 2))
   :config
   (add-hook 'scss-mode-hook
             (lambda ()
+              (set (make-local-variable 'flycheck-checker)
+                   (setq flycheck-checker 'scss-stylelint))
               (set (make-local-variable 'company-backends)
                    '((company-css company-dabbrev) company-yasnippet)))))
 
@@ -791,18 +795,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          (setq id (my-get-custom-id))
-          (unless id
-            (error "Invalid ID"))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (message "--- CUSTOM_ID assigned: %s" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
+                       (let ((id (org-entry-get nil "CUSTOM_ID")))
+                         (cond
+                          ((and id (stringp id) (string-match "\\S-" id))
+                           id)
+                          (create
+                           (setq id (my-get-custom-id))
+                           (unless id
+                             (error "Invalid ID"))
+                           (org-entry-put pom "CUSTOM_ID" id)
+                           (message "--- CUSTOM_ID assigned: %s" id)
+                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+                           id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
