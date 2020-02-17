@@ -521,7 +521,7 @@
          ("\\.mustache\\'" . web-mode)
          ("\\.djhtml\\'" . web-mode)
          ("\\.html?\\'" . web-mode)
-         ("\\.tsx\\'" . web-mode))
+         ("\\.[jt]sx\\'" . web-mode))
   :custom
   (web-mode-indent-style 2)
   (web-mode-markup-indent-offset 2)
@@ -533,7 +533,6 @@
   (web-mode-enable-current-element-highlight t)
   (web-mode-enable-current-column-highlight t)
   (web-mode-enable-auto-quoting nil)
-  (web-mode-content-types-alist '(("jsx" . "\\.[t|j]s[x]?\\'")))
   (web-mode-comment-formats
    '(("javascript" . "//")
      ("jsx" .  "//")
@@ -547,7 +546,9 @@
                 (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
                 (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
-                (flycheck-add-mode 'javascript-eslint 'web-mode)
+                (flycheck-add-mode 'javascript-eslint 'web-mode))
+              (when (and (stringp buffer-file-name)
+                         (string-match "\\.tsx\\'" buffer-file-name))
                 (tide-setup)
                 (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)))))
 
