@@ -40,12 +40,6 @@
       M-x all-the-icons-install-fonts
     #+END_SRC
 
-*** [[https://tabnine.com/][TabNine]]
-    install on =~/.emacs.d/bin/TabNine=
-    #+BEGIN_SRC emacs-lisp
-      M-x company-tabnine-install-binary
-    #+END_SRC
-
 *** [[https://github.com/emacs-lsp/lsp-mode][LSP]]
     - [[https://github.com/theia-ide/typescript-language-server][TypeScript]](unused):
     #+BEGIN_SRC sh
