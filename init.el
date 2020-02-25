@@ -953,6 +953,7 @@
         ( "C-x C-g" . counsel-git)
         ( "C-x f" . counsel-fzf)
         ( "C-x e" . counsel-rg)
+        ( "C-x c" . counsel-flycheck)
         :map read-expression-map
         ("C-r" . counsel-expression-history))
   :custom
@@ -1212,7 +1213,7 @@
 (use-package esh-autosuggest :hook (eshell-mode . esh-autosuggest-mode))
 
 ;; docker
-(use-package docker :bind(( "C-x c" . docker)))
+(use-package docker)
 (use-package docker-tramp)
 
 ;; git
