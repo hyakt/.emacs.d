@@ -283,8 +283,10 @@
   :init (company-quickhelp-mode 1))
 
 (use-package flycheck
-  :config
-  (global-flycheck-mode t))
+  :init
+  (global-flycheck-mode t)
+  :custom
+  ((flycheck-disabled-checkers '(slim-lint))))
 
 (use-package flyspell
   :ensure-system-package ((aspell . "brew install aspell"))
