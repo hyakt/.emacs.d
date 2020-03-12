@@ -199,6 +199,45 @@ the folder if it doesn't exist."
     (message (format "Creating  %s" default-directory))
     (make-directory default-directory t)))
 
+(defcustom my/mocha-config-path nil
+  "Mocha config path")
+
+(use-package projectile
+  :init
+  (defun my/projectile-run-async-shell-command-in-root (command)
+    "Invoke `async-shell-command' COMMAND in the project's root."
+    (projectile-with-default-dir
+        (projectile-ensure-project (projectile-project-root))
+      (async-shell-command command)))
+
+  (defun my/mocha-exec-current-buffer ()
+    "Run eslint for current file."
+    (interactive)
+    (setenv "NODE_ENV" "test")
+    (my/projectile-run-async-shell-command-in-root
+     (concat "npx mocha -c"
+             (when my/mocha-config-path
+               (concat " --config " my/mocha-config-path))
+             (concat " " (buffer-file-name)))))
+
+  (defun my/mocha-exec-current-buffer ()
+    "Run eslint for current file."
+    (interactive)
+    (setenv "NODE_ENV" "test")
+    (my/projectile-run-async-shell-command-in-root
+     (concat "npx mocha -c"
+             (when my/mocha-config-path
+               (concat " --config " my/mocha-config-path))
+             (concat " " (buffer-file-name)))))
+
+  (defun my/mocha-exec-add-save-hook ()
+    (interactive)
+    (add-hook 'before-save-hook 'my/mocha-exec-current-buffer))
+
+  (defun my/mocha-exec-remove-save-hook ()
+    (interactive)
+    (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer)))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
