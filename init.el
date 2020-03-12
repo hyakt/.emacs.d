@@ -1343,39 +1343,31 @@
   (eyebrowse-mode 1)
   (global-unset-key (kbd "C-z")))
 
-(use-package popwin
+(use-package shackle
   :custom
-  (popwin:close-popup-window-timer-interval 0.1)
-  :config
-  (progn
-    ;; popwin settings
-    (push '("*Help*" :height 30 :stick t) popwin:special-display-config)
-    (push '("*Completions*" :noselect t) popwin:special-display-config)
-    (push '("*compilation*" :noselect t) popwin:special-display-config)
-    (push '("*Messages*") popwin:special-display-config)
-    (push '("*Backtrace*" :noselect t) popwin:special-display-config)
-    (push '("*Kill Ring*" :height 30) popwin:special-display-config)
-    (push '("*Compile-Log" :height 20 :stick t) popwin:special-display-config)
-    (push '("*quickrun*" :height 10 :stick t) popwin:special-display-config)
-    (push '("\*grep\*" :regexp t :height 0.5 :stick t) popwin:special-display-config)
-    (push '("*Occur*" :noselect t) popwin:special-display-config)
-    (push '("*ansi-term" :regexp t :height 30) popwin:special-display-config)
-    (push '("*shell*" :height 30) popwin:special-display-config)
-    (push '("*Shell Command Output*" :noselect t) popwin:special-display-config)
-    (push '("*Python*" :stick t) popwin:special-display-config)
-    (push '("*jedi:doc*" :noselect t) popwin:special-display-config)
-    (push '("*pry*" :stick t) popwin:special-display-config)
-    (push '("*ruby*" :stick t) popwin:special-display-config)
-    (push '("*Google Translate*" :position bottom :height 35) popwin:special-display-config)
-    (push '("*Codic Result*") popwin:special-display-config)
-    (push '("*magit-commit*" :noselect t :height 30 :width 80 :stick t) popwin:special-display-config)
-    (push '("*magit-diff*" :noselect t :height 30 :width 80) popwin:special-display-config)
-    (push '("*magit-edit-log*" :noselect t :height 15 :width 80) popwin:special-display-config)
-    (push '("*magit-process*" :noselect t :height 15 :width 80) popwin:special-display-config)
-    (push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
-    (push '("*Python*" :stick t) popwin:special-display-config)
-    (push '("*Flutter*" :noselect t :height 15 :stick t) popwin:special-display-config)
-    (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
-    (popwin-mode 1)))
+  (shackle-rules
+   '(("*Help*"                 :align right)
+     ("*Messages*"             :align right)
+     ("*Backtrace*"            :align right)
+     ("*Completions*"          :align below :ratio 0.33)
+     ("*compilation*"          :align below :ratio 0.33)
+     ("*Compile-Log"           :align below :ratio 0.33)
+     ("*Kill Ring*"            :align below :ratio 0.33)
+     ("*Occur*"                :align below :ratio 0.33)
+     ("*Google Translate*"     :align below :ratio 0.33)
+     ("*Codic Result*"         :align below :ratio 0.33)
+     ("*quickrun*"             :align below :ratio 0.33)
+     ;; repl
+     ("*Python*"               :align below :ratio 0.33 :select t)
+     ("*pry*"                  :align below :ratio 0.33 :select t)
+     ("*ruby*"                 :align below :ratio 0.33 :select t)
+     ("*nodejs*"               :align below :ratio 0.33 :select t)
+     ("*shell*"                :align below :ratio 0.33 :select t)
+     ;; excute shell
+     ("*Async Shell Command*"  :align right)
+     ("*Shell Command Output*" :align right)
+     ))
+  :init
+  (shackle-mode 1))
 
 ;;; init.el ends here
