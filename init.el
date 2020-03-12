@@ -1351,28 +1351,30 @@
 
 (use-package shackle
   :custom
-  (shackle-rules
-   '(("*Help*"                 :align right)
-     ("*Messages*"             :align right)
-     ("*Backtrace*"            :align right)
-     ("*Completions*"          :align below :ratio 0.33)
-     ("*compilation*"          :align below :ratio 0.33)
-     ("*Compile-Log"           :align below :ratio 0.33)
-     ("*Kill Ring*"            :align below :ratio 0.33)
-     ("*Occur*"                :align below :ratio 0.33)
-     ("*Google Translate*"     :align below :ratio 0.33)
-     ("*Codic Result*"         :align below :ratio 0.33)
-     ("*quickrun*"             :align below :ratio 0.33)
-     ;; repl
-     ("*Python*"               :align below :ratio 0.33 :select t)
-     ("*pry*"                  :align below :ratio 0.33 :select t)
-     ("*ruby*"                 :align below :ratio 0.33 :select t)
-     ("*nodejs*"               :align below :ratio 0.33 :select t)
-     ("*shell*"                :align below :ratio 0.33 :select t)
-     ;; excute shell
-     ("*Async Shell Command*"  :align right)
-     ("*Shell Command Output*" :align right)
-     ))
+  ((shackle-default-size 0.4)
+   (shackle-rules
+    '(("*Help*"                 :align right)
+      ("*Messages*"             :align right)
+      ("*Backtrace*"            :align right)
+      ("*Completions*"          :align below :ratio 0.33)
+      ("*compilation*"          :align below :ratio 0.33)
+      ("*Compile-Log"           :align below :ratio 0.33)
+      ("*Kill Ring*"            :align below :ratio 0.33)
+      ("*Occur*"                :align below :ratio 0.33)
+      ("*Google Translate*"     :align below :ratio 0.33)
+      ("*Codic Result*"         :align below :ratio 0.33)
+      ("*quickrun*"             :align below :ratio 0.33)
+      (magit-status-mode        :select t :inhibit-window-quit t)
+      ;; repl
+      ("*Python*"               :align below :ratio 0.33 :select t)
+      ("*pry*"                  :align below :ratio 0.33 :select t)
+      ("*ruby*"                 :align below :ratio 0.33 :select t)
+      ("*nodejs*"               :align below :ratio 0.33 :select t)
+      ("*shell*"                :align below :ratio 0.33 :select t)
+      ;; excute shell
+      ("*Async Shell Command*"  :align right)
+      ("*Shell Command Output*" :align right)
+      )))
   :init
   (shackle-mode 1))
 
