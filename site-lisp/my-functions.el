@@ -211,7 +211,7 @@ the folder if it doesn't exist."
       (async-shell-command command)))
 
   (defun my/mocha-exec-current-buffer ()
-    "Run eslint for current file."
+    "Run mocha for current file."
     (interactive)
     (setenv "NODE_ENV" "test")
     (my/projectile-run-async-shell-command-in-root
@@ -220,21 +220,23 @@ the folder if it doesn't exist."
                (concat " --config " my/mocha-config-path))
              (concat " " (buffer-file-name)))))
 
-  (defun my/mocha-exec-current-buffer ()
-    "Run eslint for current file."
+  (defun my/mocha-watch-current-buffer ()
+    "Watch mocha for current file."
     (interactive)
     (setenv "NODE_ENV" "test")
     (my/projectile-run-async-shell-command-in-root
-     (concat "npx mocha -c"
+     (concat "npx mocha -c -w --extension js,ts,jsx,tsx"
              (when my/mocha-config-path
                (concat " --config " my/mocha-config-path))
              (concat " " (buffer-file-name)))))
 
   (defun my/mocha-exec-add-save-hook ()
+    "Add save hook exec mocha."
     (interactive)
     (add-hook 'before-save-hook 'my/mocha-exec-current-buffer))
 
   (defun my/mocha-exec-remove-save-hook ()
+    "Remove save hook exec mocha."
     (interactive)
     (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer)))
 
