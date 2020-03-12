@@ -9,8 +9,9 @@
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 
 ;; ローカル設定
-(load "my-proxy" t)
+;; custom fileの読み込み
 (setq custom-file (locate-user-emacs-file "custom.el"))
+(when (file-exists-p custom-file) (load custom-file))
 
 ;; straight.elでパッケージ管理
 (defvar bootstrap-version)
@@ -1374,6 +1375,7 @@
     (push '("^\*magit: .+\*$" :regexp t :height 0.5) popwin:special-display-config)
     (push '("*Python*" :stick t) popwin:special-display-config)
     (push '("*Flutter*" :noselect t :height 15 :stick t) popwin:special-display-config)
+    (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
     (popwin-mode 1)))
 
 ;;; init.el ends here
