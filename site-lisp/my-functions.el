@@ -204,11 +204,11 @@ the folder if it doesn't exist."
 
 (use-package projectile
   :init
-  (defun my/projectile-run-async-shell-command-in-root (command)
+  (defun my/projectile-run-async-shell-command-in-root (command &optional output-buffer)
     "Invoke `async-shell-command' COMMAND in the project's root."
     (projectile-with-default-dir
         (projectile-ensure-project (projectile-project-root))
-      (async-shell-command command)))
+      (async-shell-command command output-buffer)))
 
   (defun my/mocha-exec-current-buffer ()
     "Run mocha for current file."
@@ -218,7 +218,8 @@ the folder if it doesn't exist."
      (concat "npx mocha -c"
              (when my/mocha-config-path
                (concat " --config " my/mocha-config-path))
-             (concat " " (buffer-file-name)))))
+             (concat " " (buffer-file-name)))
+     "*My Mocha Exec Command*"))
 
   (defun my/mocha-watch-current-buffer ()
     "Watch mocha for current file."
@@ -228,7 +229,8 @@ the folder if it doesn't exist."
      (concat "npx mocha -c -w --extension js,ts,jsx,tsx"
              (when my/mocha-config-path
                (concat " --config " my/mocha-config-path))
-             (concat " " (buffer-file-name)))))
+             (concat " " (buffer-file-name)))
+     "*My Mocha Watch Command*"))
 
   (defun my/mocha-exec-add-save-hook ()
     "Add save hook exec mocha."
