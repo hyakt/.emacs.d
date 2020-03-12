@@ -423,6 +423,12 @@
 (use-package git-undo
   :bind (("C-x C-/" . git-undo)))
 
+(use-package winner-mode
+  :straight nil
+  :bind (("M-z" . winner-undo)
+         ("C-M-z" . winner-redo))
+  :init (winner-mode t))
+
 (use-package expand-region
   :bind (("C-," . er/expand-region)
          ("C-M-," . er/contract-region)))
