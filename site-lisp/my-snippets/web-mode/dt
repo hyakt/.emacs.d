@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: my/data-test attribute
+# key: dt
+# --
+[data-test=$1]
