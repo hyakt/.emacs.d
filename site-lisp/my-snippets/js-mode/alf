@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: my/async lamda function
+# key: alf
+# --
+async function() {
+  $1
+}
