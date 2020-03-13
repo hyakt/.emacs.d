@@ -221,6 +221,17 @@ the folder if it doesn't exist."
              (concat " " (buffer-file-name)))
      "*My Mocha Exec Command*"))
 
+  (defun my/mocha-copy-command-exec-current-buffer ()
+    "Run mocha for current file for paste."
+    (interactive)
+    (let ((mocha-command
+           (concat "env NODE_PATH=test npx mocha -c"
+                   (when my/mocha-config-path
+                     (concat " --config " my/mocha-config-path))
+                   (concat " " (buffer-file-name)))))
+      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))
+      (message (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))))
+
   (defun my/mocha-watch-current-buffer ()
     "Watch mocha for current file."
     (interactive)
@@ -231,6 +242,17 @@ the folder if it doesn't exist."
                (concat " --config " my/mocha-config-path))
              (concat " " (buffer-file-name)))
      "*My Mocha Watch Command*"))
+
+  (defun my/mocha-copy-command-watch-current-buffer ()
+    "Watch mocha for current file for paste."
+    (interactive)
+    (let ((mocha-command
+           (concat "env NODE_PATH=test npx mocha -c -w --extension js,ts,jsx,tsx"
+                   (when my/mocha-config-path
+                     (concat " --config " my/mocha-config-path))
+                   (concat " " (buffer-file-name)))))
+      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))
+      (message (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))))
 
   (defun my/mocha-exec-add-save-hook ()
     "Add save hook exec mocha."
