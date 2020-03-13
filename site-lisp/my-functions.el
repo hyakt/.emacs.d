@@ -264,6 +264,15 @@ the folder if it doesn't exist."
     (interactive)
     (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer)))
 
+(defun my/generate-slack-reminder (content)
+  "Generate slack reminder with CONTENT and copy to clipboard."
+  (interactive "sContent: ")
+  (require 'org)
+  (let* ((date (org-read-date t 'to-time nil "Date:  "))
+         (time-string (format-time-string "%H:%M" date))
+         (date-string (format-time-string "%Y-%m-%d" date)))
+    (kill-new (concat "/remind me " content " at " time-string " on " date-string))))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
