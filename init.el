@@ -1174,7 +1174,8 @@
   :after dired )
 
 (use-package dired-sidebar
-  :bind (("C-x C-d" . dired-sidebar-toggle-sidebar))
+  :bind (("C-x C-d" . dired-sidebar-toggle-sidebar)
+         :map dired-sidebar-mode-map (("o" . dired-sidebar-subtree-toggle)))
   :commands (dired-sidebar-toggle-sidebar)
   :init
   (add-hook 'dired-sidebar-mode-hook
