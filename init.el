@@ -747,8 +747,7 @@
 ;; go
 (use-package go-mode
   :config
-  (add-hook 'go-mode-hook 'flycheck-mode)
-  (use-package company-go))
+  (add-hook 'go-mode-hook 'lsp))
 
 ;; elixir
 (use-package elixir-mode
