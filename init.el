@@ -321,7 +321,14 @@
         ("M-P" . smart-jump-peek))
   :custom((smart-jump-bind-keys nil))
   :init
-  (smart-jump-setup-default-registers))
+  (smart-jump-setup-default-registers)
+  (smart-jump-register :modes 'js2-mode
+                       :jump-fn 'xref-find-definitions
+                       :pop-fn 'xref-pop-marker-stack
+                       :refs-fn 'xref-find-references
+                       :should-jump t
+                       :heuristic 'point
+                       :async t))
 
 (use-package jumplist
   :defer 0
@@ -611,6 +618,13 @@
    (js-switch-indent-offset 2)
    (js2-basic-offset 2)
    (js2-strict-missing-semi-warning nil)))
+
+(use-package xref-js2
+  :custom ((xref-js2-search-program 'rg))
+  :config
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
 (use-package typescript-mode
   :custom (typescript-indent-level 2)
@@ -1364,6 +1378,7 @@
       ("*Google Translate*"       :align below :ratio 0.33)
       ("*Codic Result*"           :align below :ratio 0.33)
       ("*quickrun*"               :align below :ratio 0.33)
+      ("*xref*"                   :align below :ratio 0.33)
       (magit-status-mode          :select t :inhibit-window-quit t)
       ;; repl
       ("*Python*"                 :align below :ratio 0.33 :select t)
