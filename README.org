@@ -53,8 +53,7 @@
       # If using anyenv or rbenv, exec the following command.
       rbenv rehash
     #+END_SRC
+    - golang: https://github.com/golang/tools/blob/master/gopls/doc/user.md
     - Scala: Using [[https://github.com/tarao/scala-bootstrap-el][ScalaBootstrap]], so installed automatically.
 
     And other requirements package installed by ensure-system-package in [[https://github.com/jwiegley/use-package][use-package]].
-
-
