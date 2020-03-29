@@ -72,6 +72,7 @@
 
 (use-package exec-path-from-shell
   :if (eq system-type 'darwin)
+  :custom((exec-path-from-shell-variables '("PATH" "GOPATH")))
   :config
   (exec-path-from-shell-initialize))
 
