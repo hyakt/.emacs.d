@@ -460,14 +460,7 @@
 ;; lsp-mode
 (use-package lsp-mode
   :commands lsp
-  :custom ((lsp-keep-workspace-alive t)
-           ;; (lsp-auto-guess-root t) ;; プロジェクトのルートを自動的に推測
-           (lsp-document-sync-method 'incremental) ;; always send incremental document
-           (lsp-response-timeout 3)
-           (lsp-enable-completion-at-point nil)
-           (lsp-inhibit-message t)
-           (lsp-message-project-root-warning t)
-           ;; dont use flymake and flycheck on lsp-mode and lsp-ui.
+  :custom (;; dont use flymake and flycheck on lsp-mode and lsp-ui.
            (lsp-prefer-flymake nil)
            (lsp-enable-indentation nil)
            (create-lockfiles nil)))
@@ -513,9 +506,6 @@
 (use-package company-lsp
   :after (lsp-mode company yasnippet)
   :defines company-backends
-  :custom((company-lsp-cache-candidates nil)
-          (company-lsp-async t)
-          (company-lsp-enable-recompletion nil))
   :init (push 'company-lsp company-backends))
 
 ;; emacs-lisp
