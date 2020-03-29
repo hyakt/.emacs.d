@@ -460,7 +460,8 @@
 ;; lsp-mode
 (use-package lsp-mode
   :commands lsp
-  :custom ((lsp-auto-guess-root t)
+  :custom ((lsp-keep-workspace-alive t)
+           ;; (lsp-auto-guess-root t) ;; プロジェクトのルートを自動的に推測
            (lsp-document-sync-method 'incremental) ;; always send incremental document
            (lsp-response-timeout 3)
            (lsp-enable-completion-at-point nil)
@@ -759,7 +760,7 @@
 ;; Nginx
 (use-package nginx-mode)
 
-;; go
+;; golang
 (use-package go-mode
   :config
   (add-hook 'go-mode-hook 'lsp))
