@@ -731,6 +731,8 @@
         (narrow-to-region beg end)
         (sql-indent-buffer)))))
 
+(use-package graphql-mode)
+
 ;; Java
 (add-hook 'java-mode-hook
           (lambda ()
