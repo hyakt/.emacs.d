@@ -603,20 +603,29 @@
 
 ;; javascript
 (use-package js2-mode
-  :defer t
+  :after (tern xref-js2)
   :mode (("\.js$" . js2-mode))
   :custom
   ((js-indent-level 2)
    (js-switch-indent-offset 2)
    (js2-basic-offset 2)
-   (js2-strict-missing-semi-warning nil)))
-
-(use-package xref-js2
-  :custom ((xref-js2-search-program 'rg))
+   (js2-strict-missing-semi-warning nil))
   :config
   (add-hook 'js2-mode-hook
             (lambda ()
-              (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
+              (tern-mode)
+              (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
+              (set (make-local-variable 'company-backends)
+                   '((company-tern))))))
+
+(use-package tern)
+
+(use-package company-tern
+  :after tern
+  :straight (:host github :repo "emacsmirror/company-tern" :branch "master"))
+
+(use-package xref-js2
+  :custom ((xref-js2-search-program 'rg)))
 
 (use-package typescript-mode
   :custom (typescript-indent-level 2)
@@ -626,6 +635,13 @@
               (tide-setup)
               (tide-hl-identifier-mode)
               (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append))))
+
+(use-package tide
+  :bind (:map tide-mode-map
+              ("M-." . nil)
+              ("M-," . nil))
+  :after (typescript-mode company flycheck)
+  :hook ((before-save . tide-format-before-save)))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
@@ -644,13 +660,6 @@
 
 (use-package npm-mode
   :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
-
-(use-package tide
-  :bind (:map tide-mode-map
-              ("M-." . nil)
-              ("M-," . nil))
-  :after (typescript-mode company flycheck)
-  :hook ((before-save . tide-format-before-save)))
 
 ;; Dart
 (use-package dart-mode
@@ -676,7 +685,7 @@
   :defer t
   :after flycheck company-sourcekit
   :config
-  (add-hook 'slim-mode-hook
+  (add-hook 'swift-mode-hook
             (lambda ()
               (add-to-list 'flycheck-checkers 'swift)
               (set (make-local-variable 'company-backends)
