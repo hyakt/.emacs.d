@@ -1036,9 +1036,9 @@
   ;; counsel-rg
   (defun my/counsel-rg-with-extention-and-word (_)
     "Execute counsel-rg with extention and _"
-    (let ((word (word-at-point))
+    (let ((word (read-from-minibuffer "Search Word: "))
           (extention (read-from-minibuffer "Extention: ")))
-      (counsel-rg (concat "-g'*." extention "' -- " word))))
+      (counsel-rg (concat word " -- -g'*." extention "'"))))
 
   (defun my/counsel-rg-from-current-directory (_)
     "Searched by current directory and subdirectories."
