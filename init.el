@@ -1286,7 +1286,8 @@
 
 (use-package forge  :after magit)
 (use-package git-timemachine)
-(use-package git-link)
+(use-package git-link
+  :custom ((git-link-open-in-browser t)))
 
 (use-package twittering-mode
   :ensure-system-package ((gpg . "brew install gpg"))
