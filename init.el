@@ -164,7 +164,7 @@
 
 (use-package doom-themes
   :init
-  (load "my-doom-laserwave-theme")
+  (load "my-doom-radical-theme")
   :config
   (doom-themes-neotree-config)
   (doom-themes-org-config))
