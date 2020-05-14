@@ -667,6 +667,11 @@
 (use-package npm-mode
   :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
 
+(use-package jest
+  :bind (:map jest-minor-mode-map ("C-c j" . jest-popup))
+  :after (typescript-mode js2-mode web-mode)
+  :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
+
 ;; Dart
 (use-package dart-mode
   :custom
@@ -1399,7 +1404,8 @@
       ;; excute shell
       ("*Async Shell Command*"    :align right)
       ("*Shell Command Output*"   :align right)
-      ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3))))
+      ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
+      ("*jest*" :regexp t :align below :ratio 0.3))))
   :init
   (shackle-mode 1))
 
