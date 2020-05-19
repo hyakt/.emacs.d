@@ -1078,9 +1078,8 @@
   (ivy-set-actions t
                    '(("y" my/ivy-yank-action "yank"))))
 
-(use-package counsel-ghq
-  :straight (:host github :repo "SuzumiyaAoba/counsel-ghq" :branch "master")
-  :bind(( "C-x C-j" . counsel-ghq)))
+(use-package counsel-projectile
+  :bind(( "C-x C-j" . counsel-projectile-switch-project)))
 
 (use-package counsel-tramp
   :bind (( "C-x C-t" . counsel-tramp)))
