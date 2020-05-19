@@ -346,7 +346,7 @@
       dump-jump-go
       my/jump-to-match-parens
       swiper counsel-find-file counsel-switch-buffer
-      counsel-rg counsel-ghq counsel-git
+      counsel-rg counsel-projectile-switch-project counsel-git counsel-projectile
       end-of-buffer beginning-of-buffer))
    (jumplist-ex-mode t)))
 
@@ -986,7 +986,6 @@
         ( "<f1> l" . counsel-find-library)
         ( "<f2> i" . counsel-info-lookup-symbol)
         ( "<f2> u" . counsel-unicode-char)
-        ( "C-x C-g" . counsel-git)
         ( "C-x f" . counsel-fzf)
         ( "C-x e" . counsel-rg)
         ( "C-x c" . counsel-flycheck)
@@ -1079,7 +1078,8 @@
                    '(("y" my/ivy-yank-action "yank"))))
 
 (use-package counsel-projectile
-  :bind(( "C-x C-j" . counsel-projectile-switch-project)))
+  :bind(( "C-x C-j" . counsel-projectile-switch-project)
+        ( "C-x C-g" . counsel-projectile)))
 
 (use-package counsel-tramp
   :bind (( "C-x C-t" . counsel-tramp)))
