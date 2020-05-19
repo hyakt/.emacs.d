@@ -628,7 +628,7 @@
 
 (use-package company-tern
   :after tern
-  :straight (:host github :repo "emacsmirror/company-tern" :branch "master"))
+  :straight (:host github :repo "emacsattic/company-tern" :branch "master"))
 
 (use-package xref-js2
   :custom ((xref-js2-search-program 'rg)))
