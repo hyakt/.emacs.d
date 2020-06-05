@@ -647,7 +647,11 @@
               ("M-." . nil)
               ("M-," . nil))
   :after (typescript-mode company flycheck)
-  :hook ((before-save . tide-format-before-save)))
+  :hook ((before-save . tide-format-before-save))
+  :config
+  (defun my/remove-tide-format-before-save ()
+    (interactive)
+    (remove-hook 'before-save-hook 'tide-format-before-save)))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
@@ -832,18 +836,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-                       (let ((id (org-entry-get nil "CUSTOM_ID")))
-                         (cond
-                          ((and id (stringp id) (string-match "\\S-" id))
-                           id)
-                          (create
-                           (setq id (my-get-custom-id))
-                           (unless id
-                             (error "Invalid ID"))
-                           (org-entry-put pom "CUSTOM_ID" id)
-                           (message "--- CUSTOM_ID assigned: %s" id)
-                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-                           id)))))
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (my-get-custom-id))
+          (unless id
+            (error "Invalid ID"))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (message "--- CUSTOM_ID assigned: %s" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
@@ -989,6 +993,7 @@
         ( "C-x f" . counsel-fzf)
         ( "C-x e" . counsel-rg)
         ( "C-x c" . counsel-flycheck)
+        ( "C-x C-g" . counsel-git)
         :map read-expression-map
         ("C-r" . counsel-expression-history))
   :custom
@@ -1078,8 +1083,7 @@
                    '(("y" my/ivy-yank-action "yank"))))
 
 (use-package counsel-projectile
-  :bind(( "C-x C-j" . counsel-projectile-switch-project)
-        ( "C-x C-g" . counsel-projectile)))
+  :bind(( "C-x C-j" . counsel-projectile-switch-project)))
 
 (use-package counsel-tramp
   :bind (( "C-x C-t" . counsel-tramp)))
