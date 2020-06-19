@@ -455,6 +455,8 @@
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
 
+(use-package string-inflection)
+
 
 ;;; ---------- メジャーモード設定 ----------
 ;; lsp-mode
