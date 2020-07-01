@@ -262,7 +262,15 @@ the folder if it doesn't exist."
   (defun my/mocha-exec-remove-save-hook ()
     "Remove save hook exec mocha."
     (interactive)
-    (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer)))
+    (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer))
+
+  (defun my/jest-copy-command-watch-current-buffer ()
+    "Watch jest for current file for paste."
+    (interactive)
+    (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
+          (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))
+          (message (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))))
+  )
 
 (defun my/generate-slack-reminder (content)
   "Generate slack reminder with CONTENT and copy to clipboard."
