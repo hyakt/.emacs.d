@@ -838,18 +838,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          (setq id (my-get-custom-id))
-          (unless id
-            (error "Invalid ID"))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (message "--- CUSTOM_ID assigned: %s" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
+                       (let ((id (org-entry-get nil "CUSTOM_ID")))
+                         (cond
+                          ((and id (stringp id) (string-match "\\S-" id))
+                           id)
+                          (create
+                           (setq id (my-get-custom-id))
+                           (unless id
+                             (error "Invalid ID"))
+                           (org-entry-put pom "CUSTOM_ID" id)
+                           (message "--- CUSTOM_ID assigned: %s" id)
+                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+                           id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
@@ -960,9 +960,10 @@
   (ediff-split-window-function 'split-window-horizontally))
 
 (use-package projectile
+  :custom
+  ((projectile-add-known-project '("~/repos/")))
   :config
-  (projectile-global-mode)
-  (setq projectile-enable-caching t))
+  (projectile-mode +1))
 
 (use-package projectile-rails
   :after projectile
