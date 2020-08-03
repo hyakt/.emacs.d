@@ -995,7 +995,7 @@
         ( "<f2> u" . counsel-unicode-char)
         ( "C-x f" . counsel-fzf)
         ( "C-x e" . counsel-rg)
-        ( "C-x c" . counsel-flycheck)
+        ( "C-c f" . counsel-flycheck)
         ( "C-x C-g" . counsel-git)
         :map read-expression-map
         ("C-r" . counsel-expression-history))
