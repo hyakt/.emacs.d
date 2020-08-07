@@ -267,10 +267,12 @@
          ("C-d" . company-show-doc-buffer)
          ("C-o" . company-other-backend))
   :custom
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case nil)
   (company-backends
    '((company-elisp)
      (company-yasnippet)))
-  (company-transformers '(company-sort-by-occurrence))
+  (company-transformers '(company-sort-by-backend-importance))
   (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
   (company-selection-wrap-around t)
@@ -562,11 +564,14 @@
                 (tern-mode)
                 (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
                 (set (make-local-variable 'company-backends)
-                     '((company-tern))))
+                     '((company-tern :with company-dabbrev-code) company-yasnippet)))
               (when (and (stringp buffer-file-name)
                          (string-match "\\.tsx\\'" buffer-file-name))
                 (tide-setup)
-                (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)))))
+                (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
+                (set (make-local-variable 'company-backends)
+                     '((company-tide :with company-dabbrev-code) company-yasnippet)))
+              )))
 
 (use-package company-web)
 
@@ -576,7 +581,7 @@
   (add-hook 'slim-mode-hook
             (lambda ()
               (set (make-local-variable 'company-backends)
-                   '((company-web-slim company-dabbrev))))))
+                   '((company-web-slim :with company-dabbrev))))))
 
 (use-package haml-mode)
 
@@ -599,7 +604,7 @@
               (set (make-local-variable 'flycheck-checker)
                    (setq flycheck-checker 'scss-stylelint))
               (set (make-local-variable 'company-backends)
-                   '((company-css company-dabbrev) company-yasnippet)))))
+                   '((company-css :with company-dabbrev) company-yasnippet)))))
 
 (use-package sass-mode)
 (use-package sws-mode) ;; Stylus
@@ -624,7 +629,7 @@
               (tern-mode)
               (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
               (set (make-local-variable 'company-backends)
-                   '((company-tern))))))
+                   '((company-tern :with company-dabbrev-code) company-yasnippet)))))
 
 (use-package tern)
 
