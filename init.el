@@ -269,6 +269,8 @@
   :custom
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case nil)
+  (company-dabbrev-other-buffers t)
+  (company-dabbrev-code-other-buffers t)
   (company-backends
    '((company-elisp)
      (company-yasnippet)))
@@ -673,7 +675,7 @@
               ("C-c C-z" . nodejs-repl-switch-to-repl)))
 
 (use-package add-node-modules-path
-  :hook ((typescript-mode js2-mode web-mode scss-mode) . add-node-modules-path))
+  :hook ((typescript-mode js2-mode web-mode scss-mode graphql-mode) . add-node-modules-path))
 
 (use-package npm-mode
   :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
@@ -682,6 +684,8 @@
   :bind (:map jest-minor-mode-map ("C-c j" . jest-popup))
   :after (typescript-mode js2-mode web-mode)
   :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
+
+(use-package prettier-js)
 
 ;; Dart
 (use-package dart-mode
