@@ -5,6 +5,11 @@
 ;; This is hyakt's init.el of Emacs :tada: .
 
 ;;; Code:
+;; デフォルトの shell を bashに変更
+(setenv "SHELL" "/bin/bash")
+(setq-default shell-file-name "/bin/bash")
+(setq-default explicit-shell-file-name "/bin/bash")
+
 ;; ロードパス追加
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 
@@ -1010,6 +1015,7 @@
         :map read-expression-map
         ("C-r" . counsel-expression-history))
   :custom
+  (counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
   (ivy-height 20)
   (ivy-use-virtual-buffers t)
   (enable-recursive-minibuffers t)
