@@ -169,6 +169,8 @@
 
 (use-package doom-themes
   :init
+  ;; https://emacs.stackexchange.com/questions/48365/custom-theme-set-faces-does-not-work-in-emacs-27
+  (setq custom--inhibit-theme-enable nil)
   (load "my-doom-radical-theme")
   :config
   (doom-themes-neotree-config)
