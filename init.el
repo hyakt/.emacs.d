@@ -1028,8 +1028,7 @@
   (counsel-yank-pop-separator "\n-------\n")
   (ivy-sort-matches-functions-alist  '((t)
                                        (ivy-completion-in-region . ivy--shorter-matches-first)
-                                       (ivy-switch-buffer . ivy-sort-function-buffer)
-                                       (counsel-M-x . ivy--shorter-matches-first)))
+                                       (ivy-switch-buffer . ivy-sort-function-buffer)))
   :config
   (ivy-mode 1)
   ;; :custom ではなぜか反映されないため :config でsetqする
@@ -1120,6 +1119,8 @@
 (use-package avy :bind ((( "C-;" . avy-goto-char))))
 
 (use-package which-key :config (which-key-mode))
+
+(use-package amx)
 
 ;; dired
 (use-package peep-dired
