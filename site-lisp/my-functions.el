@@ -264,12 +264,19 @@ the folder if it doesn't exist."
     (interactive)
     (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer))
 
+  (defun my/jest-copy-command-current-buffer ()
+    "Watch jest for current file for paste."
+    (interactive)
+    (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest  --color " (buffer-file-name))))
+      (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))
+      (message (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))))
+
   (defun my/jest-copy-command-watch-current-buffer ()
     "Watch jest for current file for paste."
     (interactive)
     (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
-          (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))
-          (message (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))))
+      (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))
+      (message (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))))
   )
 
 (defun my/generate-slack-reminder (content)

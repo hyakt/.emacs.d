@@ -579,7 +579,7 @@
                 (tide-setup)
                 (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
                 (set (make-local-variable 'company-backends)
-                     '((company-tide :with company-dabbrev-code) company-yasnippet)))
+                     '((company-tide) company-yasnippet)))
               )))
 
 (use-package company-web)
@@ -662,12 +662,7 @@
   :bind (:map tide-mode-map
               ("M-." . nil)
               ("M-," . nil))
-  :after (typescript-mode company flycheck)
-  :hook ((before-save . tide-format-before-save))
-  :config
-  (defun my/remove-tide-format-before-save ()
-    (interactive)
-    (remove-hook 'before-save-hook 'tide-format-before-save)))
+  :after (typescript-mode company flycheck))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
@@ -693,7 +688,7 @@
   :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
 
 (use-package prettier-js
-  :hook ((graphql-mode) . prettier-js-mode))
+  :hook ((graphql-mode web-mode js2-mode typescript-mode scss-mode css-mode) . prettier-js-mode))
 
 ;; Dart
 (use-package dart-mode
