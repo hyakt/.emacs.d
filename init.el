@@ -466,7 +466,8 @@
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
 
-(use-package string-inflection)
+(use-package string-inflection
+  :bind (("M-[" . string-inflection-all-cycle)))
 
 
 ;;; ---------- メジャーモード設定 ----------
