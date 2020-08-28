@@ -690,7 +690,7 @@
   :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
 
 (use-package prettier-js
-  :hook ((graphql-mode web-mode js2-mode typescript-mode scss-mode css-mode) . prettier-js-mode))
+  :hook ((graphql-mode web-mode js2-mode typescript-mode scss-mode css-mode json-mode) . prettier-js-mode))
 
 ;; Dart
 (use-package dart-mode
