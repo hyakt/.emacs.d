@@ -1320,6 +1320,7 @@
       ("*Codic Result*"           :align below :ratio 0.33)
       ("*quickrun*"               :align below :ratio 0.33)
       ("*xref*"                   :align below :ratio 0.33)
+      ("*prettier errors*"        :align below :ratio 0.33)
       (magit-status-mode          :select t :inhibit-window-quit t)
       ;; repl
       ("*Python*"                 :align below :ratio 0.33 :select t)
@@ -1331,7 +1332,8 @@
       ("*Async Shell Command*"    :align right)
       ("*Shell Command Output*"   :align right)
       ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
-      ("*jest*" :regexp t :align below :ratio 0.3))))
+      ("*jest*" :regexp t :align below :ratio 0.3)
+      )))
   :init
   (shackle-mode 1))
 
