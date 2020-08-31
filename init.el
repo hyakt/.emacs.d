@@ -424,10 +424,6 @@
   :after visual-regexp
   :custom (vr/engine 'pcre2el))
 
-(use-package phantom-inline-comment
-  :after popwin
-  :straight (phantom-inline-comment :type git :host github :repo "blue0513/phantom-inline-comment"))
-
 (use-package codic)
 
 (use-package multiple-cursors
