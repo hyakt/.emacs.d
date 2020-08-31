@@ -417,6 +417,7 @@
   :config (google-this-mode 1))
 
 (use-package visual-regexp
+  :custom ((case-fold-search  nil))
   :bind (("C-r" . vr/query-replace)))
 
 (use-package visual-regexp-steroids
