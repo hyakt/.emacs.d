@@ -237,6 +237,11 @@
   :config
   (indent-guide-global-mode))
 
+(use-package disable-mouse
+  :custom (disable-mouse-wheel-events '("wheel-left" "wheel-right"))
+  :config (global-disable-mouse-mode))
+
+
 ;;; ---------- キーバインド設定 ----------
 ;; 通常操作
 (keyboard-translate ?\C-h ?\C-?)
