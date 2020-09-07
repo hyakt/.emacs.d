@@ -401,7 +401,19 @@
 
 (use-package elec-pair
   :straight nil
-  :init (electric-pair-mode t))
+  :init (electric-pair-mode t)
+  :hook((org-mode . org-add-electric-pairs)
+        (web-mode . web-add-electric-pairs))
+  :config
+  (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
+  (defun org-add-electric-pairs ()
+    (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
+    (setq-local electric-pair-text-pairs electric-pair-pairs))
+
+  (defvar web-electric-pairs '((?< . ?>) (?' . ?')) "Electric pairs for web-mode.")
+  (defun web-add-electric-pairs ()
+    (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
+    (setq-local electric-pair-text-pairs electric-pair-pairs)))
 
 ;; 折りたたみ
 (use-package yafolding
