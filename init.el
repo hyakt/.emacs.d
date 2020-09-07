@@ -385,28 +385,23 @@
 ;; 正規表現をPerl(PCRE) likeに
 (use-package pcre2el :custom (rxt-global-mode t))
 
-(use-package smartparens
-  :init (smartparens-global-mode t)
-  :bind (("C-M-n" . sp-forward-sexp)
-         ("C-M-p" . sp-backward-sexp)
-         ("M-o" . my/jump-to-match-parens))
-  :config
-  (sp-local-pair 'emacs-lisp-mode "`" "'")
-  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
-  (sp-local-pair 'org-mode "=" "=")
-  (sp-local-pair 'org-mode "~" "~")
-  (sp-local-pair 'org-mode "「" "」")
-  (sp-local-pair 'web-mode "<" ">")
+(use-package paren
+  :straight nil
+  :bind (("M-o" . my/jump-to-match-parens))
   :config
   (defun my/jump-to-match-parens ()
     "対応する括弧に移動"
     (interactive)
-    (let ((paren-point (sp-get-hybrid-sexp)))
-      (let ((beg (plist-get paren-point :beg))
-            (end (plist-get paren-point :end)))
-        (if (= (point) beg)
+    (let ((paren-point (show-paren--default)))
+      (let ((beg (nth 1 paren-point))
+            (end (nth 3 paren-point)))
+        (if (>= (point) beg)
             (goto-char end)
           (goto-char beg))))))
+
+(use-package elec-pair
+  :straight nil
+  :init (electric-pair-mode t))
 
 ;; 折りたたみ
 (use-package yafolding
@@ -731,9 +726,7 @@
          ("Capfile$" . ruby-mode)
          ("Gemfile$" . ruby-mode)
          ("[Rr]akefile$" . ruby-mode))
-  :interpreter "pry"
-  :config
-  (require 'smartparens-ruby))
+  :interpreter "pry")
 
 (use-package inf-ruby
   :bind (:map inf-ruby-minor-mode-map
