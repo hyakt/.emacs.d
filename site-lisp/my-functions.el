@@ -144,7 +144,11 @@ BEG and END (region to sort)."
 (defun my/eslint-fix-file ()
   "Run eslint for current file."
   (interactive)
-  (shell-command (concat "npx eslint --fix " (buffer-file-name))))
+  (message "eslint --fix %s" (buffer-file-name))
+  (call-process-shell-command
+   (concat "npx eslint --fix " (buffer-file-name))
+   nil "*Shell Command Output*" t)
+  (revert-buffer t t))
 
 (defun my/close-and-kill-this-pane ()
   "If there are multiple windows, then close this pane and kill the buffer in it also."

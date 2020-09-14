@@ -699,7 +699,7 @@
   :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
 
 (use-package prettier-js
-  :hook ((graphql-mode web-mode js2-mode typescript-mode scss-mode css-mode json-mode) . prettier-js-mode))
+  :hook ((graphql-mode js2-mode scss-mode css-mode) . prettier-js-mode))
 
 ;; Dart
 (use-package dart-mode
@@ -859,18 +859,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-                       (let ((id (org-entry-get nil "CUSTOM_ID")))
-                         (cond
-                          ((and id (stringp id) (string-match "\\S-" id))
-                           id)
-                          (create
-                           (setq id (my-get-custom-id))
-                           (unless id
-                             (error "Invalid ID"))
-                           (org-entry-put pom "CUSTOM_ID" id)
-                           (message "--- CUSTOM_ID assigned: %s" id)
-                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-                           id)))))
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (my-get-custom-id))
+          (unless id
+            (error "Invalid ID"))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (message "--- CUSTOM_ID assigned: %s" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
@@ -1196,7 +1196,9 @@
   (defun my/magit-quit-session ()
     (interactive)
     (kill-buffer)
-    (delete-window)))
+    (delete-window))
+  :config
+  (add-hook 'server-switch-hook 'magit-commit-diff))
 
 (use-package git-gutter
   :custom
