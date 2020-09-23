@@ -410,7 +410,7 @@
     (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
 
-  (defvar web-electric-pairs '((?< . ?>) (?' . ?')) "Electric pairs for web-mode.")
+  (defvar web-electric-pairs '((?< . ?>) (?' . ?') (?` . ?`)) "Electric pairs for web-mode.")
   (defun web-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs)))
@@ -673,7 +673,12 @@
   :bind (:map tide-mode-map
               ("M-." . nil)
               ("M-," . nil))
-  :after (typescript-mode company flycheck))
+  :after (typescript-mode company flycheck)
+  :hook ((before-save . tide-format-before-save))
+  :config
+  (defun my/remove-tide-format-before-save ()
+    (interactive)
+    (remove-hook 'before-save-hook 'tide-format-before-save)))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
