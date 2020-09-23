@@ -1230,7 +1230,9 @@
                     "private")))
      (description "Description" 0 nil identity))))
 
-(use-package forge  :after magit)
+(use-package magit-gh-pulls
+  :after magit
+  :hook ((magit-mode-hook . turn-on-magit-gh-pulls)))
 (use-package git-timemachine)
 (use-package git-link
   :custom ((git-link-open-in-browser t)))
