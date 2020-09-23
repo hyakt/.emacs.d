@@ -1232,7 +1232,7 @@
 
 (use-package magit-gh-pulls
   :after magit
-  :hook ((magit-mode-hook . turn-on-magit-gh-pulls)))
+  :hook ((magit-mode . turn-on-magit-gh-pulls)))
 (use-package git-timemachine)
 (use-package git-link
   :custom ((git-link-open-in-browser t)))
