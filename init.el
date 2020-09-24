@@ -864,18 +864,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          (setq id (my-get-custom-id))
-          (unless id
-            (error "Invalid ID"))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (message "--- CUSTOM_ID assigned: %s" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
+                       (let ((id (org-entry-get nil "CUSTOM_ID")))
+                         (cond
+                          ((and id (stringp id) (string-match "\\S-" id))
+                           id)
+                          (create
+                           (setq id (my-get-custom-id))
+                           (unless id
+                             (error "Invalid ID"))
+                           (org-entry-put pom "CUSTOM_ID" id)
+                           (message "--- CUSTOM_ID assigned: %s" id)
+                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+                           id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
@@ -1195,8 +1195,10 @@
 ;; git
 (use-package magit
   :ensure-system-package ((git . "brew install git"))
-  :bind ("C-x g" . magit-status)
-  (:map magit-status-mode-map ("q" . my/magit-quit-session))
+  :bind (("C-x g" . magit-status)
+         (:map magit-status-mode-map
+               ("q" . my/magit-quit-session)
+               ("C-o" . magit-diff-visit-file-other-window)))
   :preface
   (defun my/magit-quit-session ()
     (interactive)
