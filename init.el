@@ -246,6 +246,7 @@
 ;; 通常操作
 (keyboard-translate ?\C-h ?\C-?)
 (bind-key (kbd "C-h") nil)
+(bind-key (kbd "C-h") nil)
 (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
 (bind-key (kbd "C-x C-k") 'kill-buffer)
 (bind-key (kbd "C-0") 'delete-frame)
@@ -324,6 +325,10 @@
          ("C-x a" . quickrun-with-arg)))
 
 (use-package dumb-jump
+  :bind (:map dumb-jump-mode-map
+         (("C-M-g" . nil)
+          ("C-M-p" . nil)
+          ("C-M-q" . nil)))
   :custom
   (dumb-jump-default-project "")
   (dumb-jump-max-find-time 10)
@@ -441,8 +446,7 @@
 (use-package multiple-cursors
   :bind
   (("C->" . mc/mark-next-like-this)
-   ("C-<" . mc/mark-previous-like-this)
-   ("C-M-." . mc/mark-all-dwim)))
+   ("C-<" . mc/mark-previous-like-this)))
 
 (use-package undo-fu
   :bind (("C-/" . undo-fu-only-undo)
@@ -450,12 +454,6 @@
 
 (use-package git-undo
   :bind (("C-x C-/" . git-undo)))
-
-(use-package winner-mode
-  :straight nil
-  :bind (("M-z" . winner-undo)
-         ("C-M-z" . winner-redo))
-  :init (winner-mode t))
 
 (use-package expand-region
   :bind (("C-," . er/expand-region)
@@ -715,8 +713,6 @@
 
 (use-package flutter
   :after dart-mode
-  :bind (:map dart-mode-map
-              ("C-M-x" . #'flutter-run-or-hot-reload))
   :custom
   (flutter-sdk-path "~/repos/github.com/flutter/flutter/"))
 
@@ -840,10 +836,8 @@
 (use-package org
   :straight nil
   :mode (("\\.txt$" . org-mode))
-  :bind (("C-M-]" . org-cycle-list-bullet)
-         :map org-mode-map
-         (("C-," . nil)
-          ("C-M-j" . org-table-insert-row)))
+  :bind (:map org-mode-map
+              (("C-," . nil)))
   :custom
   (org-startup-truncated nil)
   (org-src-fontify-natively t)
@@ -1125,7 +1119,19 @@
 
 (use-package ivy-hydra :after counsel)
 
-(use-package avy :bind ((( "C-;" . avy-goto-char))))
+
+(use-package avy
+  :custom ((avy-background t))
+  :config
+  (defun add-keys-to-avy (prefix c &optional mode)
+    (define-key global-map
+      (read-kbd-macro (concat prefix (string c)))
+      `(lambda ()
+         (interactive)
+         (funcall (if (eq ',mode 'word)
+                      #'avy-goto-word-1
+                    #'avy-goto-char) ,c))))
+  (loop for c from ?! to ?~ do (add-keys-to-avy "C-M-" c)))
 
 (use-package which-key :config (which-key-mode))
 
