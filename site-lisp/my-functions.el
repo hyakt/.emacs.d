@@ -281,7 +281,18 @@ the folder if it doesn't exist."
     (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
       (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))
       (message (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))))
-  )
+
+  (defun my/jest-create-test-file ()
+    "Create test file for jest in test directory."
+    (interactive)
+    (let* ((test-file (replace-regexp-in-string "\\." ".test." (file-name-nondirectory (buffer-file-name))))
+           (test-dir (replace-regexp-in-string "src/" "__tests__/" (file-name-directory (buffer-file-name)))))
+      (unless (file-exists-p (expand-file-name test-file test-dir))
+        (progn (unless (file-exists-p test-dir)
+                 (make-directory test-dir :create-parents))
+               (find-file-other-window (concat test-dir test-file))
+               (save-buffer))))
+    ))
 
 (defun my/generate-slack-reminder (content)
   "Generate slack reminder with CONTENT and copy to clipboard."
