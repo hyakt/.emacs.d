@@ -326,9 +326,9 @@
 
 (use-package dumb-jump
   :bind (:map dumb-jump-mode-map
-         (("C-M-g" . nil)
-          ("C-M-p" . nil)
-          ("C-M-q" . nil)))
+              (("C-M-g" . nil)
+               ("C-M-p" . nil)
+               ("C-M-q" . nil)))
   :custom
   (dumb-jump-default-project "")
   (dumb-jump-max-find-time 10)
@@ -676,7 +676,14 @@
   :config
   (defun my/remove-tide-format-before-save ()
     (interactive)
-    (remove-hook 'before-save-hook 'tide-format-before-save)))
+    (remove-hook 'before-save-hook 'tide-format-before-save))
+  (defun my/tide-copy-type ()
+    "Copy type to clipbord."
+    (interactive)
+    (tide-command:quickinfo
+     (tide-on-response-success-callback response (:ignore-empty t)
+       (kill-new (tide-annotate-display-parts
+                  (plist-get (plist-get response :body) :displayParts)))))))
 
 (use-package coffee-mode
   :custom (coffee-tab-width 2))
