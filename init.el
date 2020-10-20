@@ -987,6 +987,7 @@
   (ediff-split-window-function 'split-window-horizontally))
 
 (use-package projectile
+  :bind (("C-x t" . projectile-toggle-between-implementation-and-test))
   :custom
   ((projectile-add-known-project '("~/repos/")))
   :config
