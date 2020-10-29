@@ -987,7 +987,13 @@
   (ediff-split-window-function 'split-window-horizontally))
 
 (use-package projectile
-  :bind (("C-x t" . projectile-toggle-between-implementation-and-test))
+  :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
+  :preface
+  (defun my/projectile-toggle-between-implementation-and-test-other-window ()
+    "Toggle between an implementation file and its test file."
+    (interactive)
+    (find-file-other-window
+     (projectile-find-implementation-or-test (buffer-file-name))))
   :custom
   ((projectile-add-known-project '("~/repos/")))
   :config
