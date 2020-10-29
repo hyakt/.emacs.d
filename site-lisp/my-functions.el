@@ -291,8 +291,7 @@ the folder if it doesn't exist."
         (progn (unless (file-exists-p test-dir)
                  (make-directory test-dir :create-parents))
                (find-file-other-window (concat test-dir test-file))
-               (save-buffer))))
-    ))
+               (save-buffer))))))
 
 (defun my/generate-slack-reminder (content)
   "Generate slack reminder with CONTENT and copy to clipboard."
