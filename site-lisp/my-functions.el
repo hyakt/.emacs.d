@@ -233,8 +233,8 @@ the folder if it doesn't exist."
                    (when my/mocha-config-path
                      (concat " --config " my/mocha-config-path))
                    (concat " " (buffer-file-name)))))
-      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))
-      (message (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))))
+      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
+      (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
 
   (defun my/mocha-watch-current-buffer ()
     "Watch mocha for current file."
@@ -255,8 +255,8 @@ the folder if it doesn't exist."
                    (when my/mocha-config-path
                      (concat " --config " my/mocha-config-path))
                    (concat " " (buffer-file-name)))))
-      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))
-      (message (concat "cd " (projectile-project-root) "; " mocha-command "; " "cd - ;"))))
+      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
+      (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
 
   (defun my/mocha-exec-add-save-hook ()
     "Add save hook exec mocha."
@@ -272,15 +272,15 @@ the folder if it doesn't exist."
     "Watch jest for current file for paste."
     (interactive)
     (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest  --color " (buffer-file-name))))
-      (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))
-      (message (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))))
+      (kill-new (concat "cd " (projectile-project-root) "; " jest-command ";"))
+      (message (concat "cd " (projectile-project-root) "; " jest-command ";"))))
 
   (defun my/jest-copy-command-watch-current-buffer ()
     "Watch jest for current file for paste."
     (interactive)
     (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
-      (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))
-      (message (concat "cd " (projectile-project-root) "; " jest-command "; " "cd - ;"))))
+      (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
+      (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
 
   (defun my/jest-create-test-file ()
     "Create test file for jest in test directory."
