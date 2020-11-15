@@ -302,6 +302,11 @@ the folder if it doesn't exist."
          (date-string (format-time-string "%Y-%m-%d" date)))
     (kill-new (concat "/remind me " content " at " time-string " on " date-string))))
 
+(defun my/open-hyper-current-buffer ()
+  "Open current buffer with Hyper term."
+  (interactive)
+  (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name))))
+
 (provide 'my-functions)
 
 ;;; my-functions.el ends here
