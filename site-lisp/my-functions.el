@@ -303,9 +303,12 @@ the folder if it doesn't exist."
     (kill-new (concat "/remind me " content " at " time-string " on " date-string))))
 
 (defun my/open-hyper-current-buffer ()
-  "Open current buffer with Hyper term."
+  "Open current buffer with Hyper term and fish."
   (interactive)
-  (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name))))
+  (let ((default-env-shell (getenv "SHELL")))
+    (setenv "SHELL" "/usr/local/bin/fish")
+    (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name)))
+    (setenv "SHELL" default-env-shell)))
 
 (provide 'my-functions)
 

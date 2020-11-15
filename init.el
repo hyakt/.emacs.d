@@ -259,6 +259,7 @@
 (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
 (bind-key (kbd "C-x i") 'my/buffer-indent)
 (bind-key (kbd "C-x d") 'my/dired-this-buffer)
+(bind-key (kbd "M-t") 'my/open-hyper-current-buffer)
 
 
 ;;; ---------- 編集機能設定 ----------
@@ -1185,11 +1186,11 @@
                               ("C-t" . nil))))
 
 ;; shell
-(use-package shell-pop
-  :bind (("M-t" . shell-pop))
-  :config
-  (custom-set-variables
-   '(shell-pop-shell-type '("eshell" " *eshell*" (lambda () (eshell))))))
+;; (use-package shell-pop
+;;   :bind (("M-t" . shell-pop))
+;;   :config
+;;   (custom-set-variables
+;;    '(shell-pop-shell-type '("eshell" " *eshell*" (lambda () (eshell))))))
 
 (use-package eshell
   :defer t
@@ -1254,6 +1255,7 @@
 
 (use-package magit-gh-pulls
   :after magit
+  :straight (:host github :repo "hyakt/magit-gh-pulls" :branch "master")
   :hook ((magit-mode . turn-on-magit-gh-pulls)))
 (use-package git-timemachine)
 (use-package git-link
