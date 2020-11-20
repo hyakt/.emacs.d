@@ -107,6 +107,9 @@
  '(init-loader-show-log-after-init 'error-only))              ;; init-loaderが失敗した時のみエラーメッセージを表示
 
 ;; ウィンドウサイズの設定
+(setq split-height-threshold 120)
+(setq split-width-threshold 200)
+
 (setq default-frame-alist
       '((top . 0)
         (left . 100)
