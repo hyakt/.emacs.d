@@ -709,7 +709,6 @@
 
 (use-package jest
   :bind (:map jest-minor-mode-map ("C-c j" . jest-popup))
-  :after (typescript-mode js2-mode web-mode)
   :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
 
 (use-package prettier-js
