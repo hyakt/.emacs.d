@@ -55,5 +55,6 @@
     #+END_SRC
     - golang: https://github.com/golang/tools/blob/master/gopls/doc/user.md
     - Scala: Using [[https://github.com/tarao/scala-bootstrap-el][ScalaBootstrap]], so installed automatically.
+    - Rust: [[https://rust-analyzer.github.io/manual.html#installation][rust-analyzer]]
 
     And other requirements package installed by ensure-system-package in [[https://github.com/jwiegley/use-package][use-package]].
