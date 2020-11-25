@@ -836,6 +836,9 @@
                 (scala-bootstrap:with-bloop-server-started
                  (lsp))))))
 
+;; Rust
+(use-package rustic)
+
 ;; fish
 (use-package fish-mode)
 
