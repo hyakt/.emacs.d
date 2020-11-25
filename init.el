@@ -837,7 +837,9 @@
                  (lsp))))))
 
 ;; Rust
-(use-package rustic)
+(use-package rustic
+  :custom ((lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
+           (rustic-format-trigger 'on-save)))
 
 ;; fish
 (use-package fish-mode)
