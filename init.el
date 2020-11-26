@@ -526,7 +526,9 @@
         (progn
           (lsp-ui-doc-mode -1)
           (lsp-ui-doc--hide-frame))
-      (lsp-ui-doc-mode 1))))
+      (lsp-ui-doc-mode 1)))
+  :config
+  (setq lsp-ui-doc-mode nil))
 
 (use-package company-lsp
   :after (lsp-mode company yasnippet)
