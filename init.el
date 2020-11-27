@@ -594,7 +594,19 @@
                 (tide-setup)
                 (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
                 (set (make-local-variable 'company-backends)
-                     '((company-tide) company-yasnippet)))
+                     '((company-tide) company-css company-yasnippet))
+
+                (defun company-tide-advice (orig-fun &rest args)
+                  (if (and (eq (car args) 'prefix) (web-mode-is-css-string (point)))
+                      'nil
+                    (apply orig-fun args)))
+                (advice-add 'company-tide :around #'company-tide-advice)
+
+                (defun web-mode-language-at-pos-advice (orig-fun &rest args)
+                  (let ((pos (or (car args) (point))))
+                    (or (and (web-mode-is-css-string pos) "css")
+                        (apply orig-fun args))))
+                (advice-add 'web-mode-language-at-pos :around #'web-mode-language-at-pos-advice))
               )))
 
 (use-package company-web)
@@ -618,7 +630,9 @@
   (add-hook 'css-mode-hook
             (lambda ()
               (set (make-local-variable 'flycheck-checker)
-                   (setq flycheck-checker 'css-stylelint)))))
+                   (setq flycheck-checker 'css-stylelint))
+              (set (make-local-variable 'company-backends)
+                   '((company-css :with company-dabbrev) company-yasnippet)))))
 
 (use-package scss-mode
   :custom ((scss-indent-offset 2))

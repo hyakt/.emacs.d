@@ -113,10 +113,13 @@ determine the exact padding."
    (doom-modeline-buffer-project-root :foreground fg :inherit 'mode-line-emphasis)
 
    ;; --- major-mode faces -------------------
-   ;; css-mode / scss-mode
+   ;; css-mode / scss-mode / web-mode
    (css-proprietary-property :foreground orange)
    (css-property             :foreground green)
    (css-selector             :foreground blue)
+   (web-mode-interpolate-color1-face :foreground orange)
+   (web-mode-interpolate-color2-face :forground green)
+   (web-mode-interpolate-color3-face :foreground blue)
 
    ;; markdown-mode
    (markdown-header-delimiter-face :foreground base7)
