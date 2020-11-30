@@ -507,7 +507,7 @@
            (lsp-ui-peek-list-width 50)
            (lsp-ui-peek-fontify 'on-demand) ;; never, on-demand, or always
            ;; lsp-ui-doc
-           (lsp-ui-doc-enable t)
+           (lsp-ui-doc-enable nil)
            (lsp-ui-doc-header nil)
            (lsp-ui-doc-include-signature t)
            (lsp-ui-doc-position 'at-point) ;; top, bottom, or at-point
