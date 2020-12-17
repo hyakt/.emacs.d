@@ -485,50 +485,11 @@
 ;; lsp-mode
 (use-package lsp-mode
   :commands lsp
-  :custom (;; dont use flymake and flycheck on lsp-mode and lsp-ui.
-           (lsp-prefer-flymake nil)
-           (lsp-enable-indentation nil)
-           (create-lockfiles nil)))
-
-(use-package lsp-ui
-  :after lsp-mode
-  :bind (:map lsp-mode-map
-              ;; smart-jumpとlsp-ui-peekとの相性が良くないため
-              ;; smart-jumpのキーバインドを上書きする
-              ("M-." . lsp-ui-peek-find-definitions)
-              ("M-'" . lsp-ui-peek-find-references)
-              ("C-c C-d"   . toggle-lsp-ui-doc))
-  :custom ((scroll-margin 0)
-           (lsp-ui-imenu-enable nil)
-           (lsp-ui-sideline-enable nil)
-           ;; lsp-ui-peek
-           (lsp-ui-peek-enable t)
-           (lsp-ui-peek-peek-height 20)
-           (lsp-ui-peek-list-width 50)
-           (lsp-ui-peek-fontify 'on-demand) ;; never, on-demand, or always
-           ;; lsp-ui-doc
-           (lsp-ui-doc-enable nil)
-           (lsp-ui-doc-header nil)
-           (lsp-ui-doc-include-signature t)
-           (lsp-ui-doc-position 'at-point) ;; top, bottom, or at-point
-           (lsp-ui-doc-max-width 150)
-           (lsp-ui-doc-max-height 30)
-           (lsp-ui-doc-use-childframe t)
-           (lsp-ui-doc-use-webkit t)
-           ;; lsp-ui-flycheck
-           ;; don't use flycheck on lsp-mode and lsp-ui
-           (lsp-ui-flycheck-enable t))
-  :hook   (lsp-mode . lsp-ui-mode)
-  :preface
-  (defun toggle-lsp-ui-doc ()
-    (interactive)
-    (if lsp-ui-doc-mode
-        (progn
-          (lsp-ui-doc-mode -1)
-          (lsp-ui-doc--hide-frame))
-      (lsp-ui-doc-mode 1)))
-  :config
-  (setq lsp-ui-doc-mode nil))
+  :custom ((lsp-enable-indentation nil)
+           (lsp-eldoc-render-all t)
+           (lsp-signature-auto-activate t)
+           (lsp-signature-render-documentation t)
+           (lsp-enable-snippet nil)))
 
 (use-package company-lsp
   :after (lsp-mode company yasnippet)
@@ -548,6 +509,7 @@
 
 ;; HTML
 (use-package web-mode
+  :straight (:host github :repo "hyakt/web-mode" :branch "master")
   :mode (("\\.phtml\\'" . web-mode)
          ("\\.tpl\\.php\\'" . web-mode)
          ("\\.[gj]sp\\'" . web-mode)
@@ -889,18 +851,18 @@
     "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
     (interactive)
     (org-with-point-at pom
-                       (let ((id (org-entry-get nil "CUSTOM_ID")))
-                         (cond
-                          ((and id (stringp id) (string-match "\\S-" id))
-                           id)
-                          (create
-                           (setq id (my-get-custom-id))
-                           (unless id
-                             (error "Invalid ID"))
-                           (org-entry-put pom "CUSTOM_ID" id)
-                           (message "--- CUSTOM_ID assigned: %s" id)
-                           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-                           id)))))
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (my-get-custom-id))
+          (unless id
+            (error "Invalid ID"))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (message "--- CUSTOM_ID assigned: %s" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
   (require 'ox-latex)
   (setq org-latex-default-class "cv")
   (setq org-latex-pdf-process '("latexmk %f"))
