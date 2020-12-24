@@ -85,9 +85,7 @@ determine the exact padding."
    (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1))))
 
   ;; --- extra faces ------------------------
-  ((elscreen-tab-other-screen-face :background "#353a42" :foreground "#1e2022")
-
-   ((line-number &override) :foreground base4)
+  (((line-number &override) :foreground base4)
    ((line-number-current-line &override) :foreground fg)
 
    (font-lock-comment-face
@@ -162,6 +160,9 @@ determine the exact padding."
    (rainbow-delimiters-depth-4-face :foreground "#868bc4")
    (rainbow-delimiters-depth-5-face :foreground "#7aa2f7")
    (rainbow-delimiters-depth-6-face :foreground "#9cacff")
-   (rainbow-delimiters-depth-7-face :foreground "#c0cefc")))
+   (rainbow-delimiters-depth-7-face :foreground "#c0cefc")
+
+   (centaur-tabs-unselected :foreground fg-alt :background bg)
+   (centaur-tabs-unselected-modified :foreground fg-alt :background bg)))
 
 ;;; my/doom-tokyo-night-theme.el ends here

@@ -1363,4 +1363,19 @@
   :init
   (shackle-mode 1))
 
+(use-package centaur-tabs
+  :bind
+  (("M-{" . centaur-tabs-backward)
+   ("M-}" . centaur-tabs-forward))
+  :custom
+  (centaur-tabs-height 34)
+  (centaur-tabs-set-icons t)
+  (centaur-tabs-set-modified-marker t)
+  (centaur-tabs-modified-marker "*")
+  (centaur-tabs-close-button "x")
+  :init
+  (centaur-tabs-mode t)
+  :config
+  (centaur-tabs-headline-match))
+
 ;;; init.el ends here
