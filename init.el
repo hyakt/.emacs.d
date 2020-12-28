@@ -727,6 +727,7 @@
          ("Capfile$" . ruby-mode)
          ("Gemfile$" . ruby-mode)
          ("[Rr]akefile$" . ruby-mode))
+  :custom ((ruby-insert-encoding-magic-comment nil))
   :interpreter "pry")
 
 (use-package inf-ruby
