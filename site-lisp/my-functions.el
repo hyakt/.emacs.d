@@ -282,23 +282,34 @@ the folder if it doesn't exist."
       (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
       (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
 
-  (defun my/jest-create-test-file ()
-    "Create test file for jest in test directory."
-    (interactive)
-    (let* ((test-file (replace-regexp-in-string "\\." ".test." (file-name-nondirectory (buffer-file-name))))
-           (test-dir (replace-regexp-in-string "src/" "__tests__/" (file-name-directory (buffer-file-name)))))
-      (unless (file-exists-p (expand-file-name test-file test-dir))
-        (progn (unless (file-exists-p test-dir)
-                 (make-directory test-dir :create-parents))
-               (find-file-other-window (concat test-dir test-file))
-               (save-buffer)))))
-
   (defun my/rspec-copy-command-current-buffer ()
     "Watch RSpec for current file for paste."
     (interactive)
     (let ((rspec-command (concat "bundle exec rspec " (buffer-file-name))))
       (kill-new (concat "cd " (projectile-project-root) "; " rspec-command "; "))
       (message (concat "cd " (projectile-project-root) "; " rspec-command "; ")))))
+
+(defun my/create-test-file-for-jest ()
+  "Create test file for jest in test directory."
+  (interactive)
+  (let* ((test-file (replace-regexp-in-string "\\." ".test." (file-name-nondirectory (buffer-file-name))))
+         (test-dir (replace-regexp-in-string "src/" "__tests__/" (file-name-directory (buffer-file-name)))))
+    (unless (file-exists-p (expand-file-name test-file test-dir))
+      (progn (unless (file-exists-p test-dir)
+               (make-directory test-dir :create-parents))
+             (find-file-other-window (concat test-dir test-file))
+             (save-buffer)))))
+
+(defun my/create-test-file-for-rspec ()
+  "Create test file for RSpec in test directory."
+  (interactive)
+  (let* ((test-file (replace-regexp-in-string "\\." "_spec." (file-name-nondirectory (buffer-file-name))))
+         (test-dir (replace-regexp-in-string "app/" "spec/" (file-name-directory (buffer-file-name)))))
+    (unless (file-exists-p (expand-file-name test-file test-dir))
+      (progn (unless (file-exists-p test-dir)
+               (make-directory test-dir :create-parents))
+             (find-file-other-window (concat test-dir test-file))
+             (save-buffer)))))
 
 (defun my/generate-slack-reminder (content)
   "Generate slack reminder with CONTENT and copy to clipboard."
