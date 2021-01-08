@@ -153,7 +153,7 @@ determine the exact padding."
    (company-box-background :foreground fg :background bg-alt)
    (whitespace-indentation :foreground cyan  :underline t)
    (whitespace-trailing :background orange)
-   (indent-guide-face :foreground base3)
+   (indent-guide-face :foreground base7)
    (rainbow-delimiters-depth-1-face :foreground "#3d59a1")
    (rainbow-delimiters-depth-2-face :foreground "#6183bb")
    (rainbow-delimiters-depth-3-face :foreground "#6d91de")
