@@ -189,10 +189,21 @@
   (doom-modeline-mode 1))
 
 (use-package paren
-  :custom
-  (show-paren-style 'mixed)
-  (show-paren-when-point-inside-paren t)
-  (show-paren-when-point-in-periphery t))
+  :straight nil
+  :custom((show-paren-style 'mixed)
+          (show-paren-when-point-inside-paren t)
+          (show-paren-when-point-in-periphery t))
+  :bind (("M-o" . my/jump-to-match-parens))
+  :config
+  (defun my/jump-to-match-parens ()
+    "対応する括弧に移動"
+    (interactive)
+    (let ((paren-point (show-paren--default)))
+      (let ((beg (nth 1 paren-point))
+            (end (nth 3 paren-point)))
+        (if (>= (point) beg)
+            (goto-char end)
+          (goto-char beg))))))
 
 ;; 移動した行にハイライト
 (use-package beacon :config (beacon-mode 1))
@@ -258,7 +269,8 @@
 (bind-key (kbd "C-g") 'my/keyboard-quit)
 (bind-key (kbd "<f5>") 'my/revert-buffer-no-confirm)
 (bind-key (kbd "M-r") 'my/revert-buffer-no-confirm)
-(bind-key (kbd "C-x k") 'my/close-and-kill-this-pane)
+(bind-key (kbd "C-x k") 'kill-this-buffer)
+(bind-key (kbd "C-x C-k") 'my/close-and-kill-this-pane)
 (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
 (bind-key (kbd "C-x i") 'my/buffer-indent)
 (bind-key (kbd "C-x d") 'my/dired-this-buffer)
@@ -393,20 +405,6 @@
 
 ;; 正規表現をPerl(PCRE) likeに
 (use-package pcre2el :custom (rxt-global-mode t))
-
-(use-package paren
-  :straight nil
-  :bind (("M-o" . my/jump-to-match-parens))
-  :config
-  (defun my/jump-to-match-parens ()
-    "対応する括弧に移動"
-    (interactive)
-    (let ((paren-point (show-paren--default)))
-      (let ((beg (nth 1 paren-point))
-            (end (nth 3 paren-point)))
-        (if (>= (point) beg)
-            (goto-char end)
-          (goto-char beg))))))
 
 (use-package elec-pair
   :straight nil
