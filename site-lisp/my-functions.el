@@ -76,6 +76,16 @@
     (delete-region beg end)
     (insert (url-encode-string str 'utf-8))))
 
+(defun my/reverse-chars-region (beg end)
+  "BEGからENDの範囲の文字反転する."
+  (interactive "r")
+  (let ((pos beg)
+        (reverse-str (mapconcat 'identity (reverse (split-string (buffer-substring beg end) "")) "")))
+    (goto-char beg)
+    (message reverse-str)
+    (delete-region beg end)
+    (insert reverse-str)))
+
 (defun my/uniq-lines (beg end)
   "Unique lines in region.
 Called from a program, there are two arguments:
