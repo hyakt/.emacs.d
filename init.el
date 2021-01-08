@@ -738,7 +738,8 @@
   (inf-ruby-default-implementation "pry")
   (inf-ruby-eval-binding "Pry.toplevel_binding"))
 
-(use-package rspec-mode)
+(use-package rspec-mode
+  :bind (:map rspec-mode-map ("C-c j" . rspec-verify-single)))
 
 ;; PHP
 (use-package php-mode)
