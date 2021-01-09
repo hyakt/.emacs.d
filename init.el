@@ -489,11 +489,6 @@
            (lsp-signature-render-documentation t)
            (lsp-enable-snippet nil)))
 
-(use-package company-lsp
-  :after (lsp-mode company yasnippet)
-  :defines company-backends
-  :init (push 'company-lsp company-backends))
-
 ;; emacs-lisp
 (use-package lispxmp
   :defer t
