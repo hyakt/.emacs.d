@@ -487,7 +487,8 @@
            (lsp-eldoc-render-all t)
            (lsp-signature-auto-activate t)
            (lsp-signature-render-documentation t)
-           (lsp-enable-snippet nil)))
+           (lsp-enable-snippet nil)
+           (lsp-headerline-breadcrumb-enable nil)))
 
 ;; emacs-lisp
 (use-package lispxmp
