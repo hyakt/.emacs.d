@@ -487,12 +487,8 @@
            (lsp-eldoc-render-all t)
            (lsp-signature-auto-activate t)
            (lsp-signature-render-documentation t)
-           (lsp-enable-snippet nil)))
-
-(use-package company-lsp
-  :after (lsp-mode company yasnippet)
-  :defines company-backends
-  :init (push 'company-lsp company-backends))
+           (lsp-enable-snippet nil)
+           (lsp-headerline-breadcrumb-enable nil)))
 
 ;; emacs-lisp
 (use-package lispxmp
@@ -684,7 +680,7 @@
   :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
 
 (use-package jest
-  :bind (:map jest-minor-mode-map ("C-c j" . jest-popup))
+  :bind (:map jest-minor-mode-map ("C-c C-c C-c" . jest-popup))
   :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
 
 (use-package prettier-js
@@ -739,7 +735,7 @@
   (inf-ruby-eval-binding "Pry.toplevel_binding"))
 
 (use-package rspec-mode
-  :bind (:map rspec-mode-map ("C-c j" . rspec-verify-single)))
+  :bind (:map rspec-mode-map ("C-c C-c C-c" . rspec-verify-single)))
 
 ;; PHP
 (use-package php-mode)
