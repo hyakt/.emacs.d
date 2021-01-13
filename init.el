@@ -493,8 +493,20 @@
 ;; emacs-lisp
 (use-package lispxmp
   :defer t
-  :bind (:map emacs-lisp-mode-map
-              ("C-c C-e" . lispxmp )))
+  :bind ((:map emacs-lisp-mode-map ("C-c C-e" . lispxmp-emacs-lisp ))
+         (:map lisp-mode-map ("C-c C-e" . lispxmp-emacs-lisp )))
+  :preface
+  (defun %lispxmp-doit (eval-last-sexp-function)
+    (let ((comment-start ";"))
+      (comment-kill nil)
+      (comment-indent)
+      (save-excursion
+        (let ((current-prefix-arg t)) (call-interactively eval-last-sexp-function)))
+      (insert " => ")))
+
+  (defun lispxmp-emacs-lisp ()
+    (interactive)
+    (%lispxmp-doit 'eval-last-sexp)))
 
 ;; Haskell
 (use-package haskell-mode
