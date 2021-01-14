@@ -1307,10 +1307,10 @@
 
 (use-package other-window-or-split
   :straight (other-window-or-split :type git :host github :repo "conao/other-window-or-split")
-  :custom ((ws-split-window-width-with-em 130))
   :bind (("C-t"  . my/ws-other-window-or-split-and-kill-minibuffer)
          ("C-S-t" . ws-previous-other-window-or-split))
   :config
+  (setq ws-split-window-width-with-em 130)
   (use-package dired-sidebar)
   (defun my/ws-other-window-or-split ()
     (interactive)
