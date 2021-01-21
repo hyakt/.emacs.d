@@ -483,6 +483,7 @@
 ;; lsp-mode
 (use-package lsp-mode
   :commands lsp
+  :bind ((:map lsp-mode-map ("C-c i" . lsp-execute-code-action)))
   :custom ((lsp-enable-indentation nil)
            (lsp-eldoc-render-all t)
            (lsp-signature-auto-activate t)
@@ -1368,7 +1369,10 @@
       ("*Async Shell Command*"    :align right)
       ("*Shell Command Output*"   :align right)
       ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
-      ("*jest*" :regexp t :align below :ratio 0.3)
+      ("*jest*"                   :regexp t :align below :ratio 0.3)
+      ;; rust
+      ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
+      ("*rustfmt*"                :align below :ratio 0.33 :select nil)
       )))
   :init
   (shackle-mode 1))
