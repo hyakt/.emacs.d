@@ -828,7 +828,8 @@
 ;; Rust
 (use-package rustic
   :custom ((lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
-           (rustic-format-trigger 'on-save)))
+           (rustic-format-display-method 'display-buffer)
+           (rustic-format-trigger 'on-compile)))
 
 ;; fish
 (use-package fish-mode)
