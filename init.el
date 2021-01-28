@@ -366,6 +366,13 @@
                        :refs-fn 'xref-find-references
                        :should-jump t
                        :heuristic 'point
+                       :async t)
+  (smart-jump-register :modes 'robe-mode
+                       :jump-fn 'robe-jump
+                       :pop-fn 'xref-pop-marker-stack
+                       :refs-fn 'xref-find-references
+                       :should-jump t
+                       :heuristic 'point
                        :async t))
 
 (use-package jumplist
@@ -750,6 +757,7 @@
   :bind (:map rspec-mode-map ("C-c C-c C-c" . rspec-verify-single)))
 
 (use-package robe
+  :bind (:map robe-mode-map ("M-." . smart-jump-go))
   :hook (ruby-mode . robe-mode)
   :config
   (add-hook 'robe-mode-hook
