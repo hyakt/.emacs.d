@@ -1405,6 +1405,8 @@
       ;; rust
       ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
       ("*rustfmt*"                :align below :ratio 0.33 :select nil)
+      ;; ruby
+      ("*rspec-compilation*"      :align below :ratio 0.33 :select nil)
       )))
   :init
   (shackle-mode 1))
