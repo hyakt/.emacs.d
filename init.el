@@ -760,8 +760,23 @@
   :bind (:map robe-mode-map ("M-." . smart-jump-go))
   :hook (ruby-mode . robe-mode)
   :config
+  (defun company-box-set-current-buffer (orig-fun &rest args)
+    (let ((company-box-buffer (apply orig-fun args))
+          (from-buffer (current-buffer)))
+      (with-current-buffer company-box-buffer
+        (setq-local company-box--from-buffer from-buffer))
+      company-box-buffer))
+
+  (defun hack-company-box-doc (orig-fun &rest args)
+    (with-current-buffer company-box--from-buffer
+      (apply orig-fun args)))
+
   (add-hook 'robe-mode-hook
             (lambda ()
+              (advice-add 'company-box--get-buffer :around #'company-box-set-current-buffer)
+              (advice-add 'company-box-doc :around #'hack-company-box-doc)
+              (setq-local company-box-doc-enable nil)
+              (company-box-mode nil)
               (set (make-local-variable 'company-backends)
                    '((company-robe)))
               (robe-start))))
