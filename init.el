@@ -729,7 +729,6 @@
 
 ;; Ruby
 (use-package ruby-mode
-  :defer t
   :mode (("\\.rb\\'" . ruby-mode)
          ("Capfile$" . ruby-mode)
          ("Gemfile$" . ruby-mode)
@@ -749,6 +748,15 @@
 
 (use-package rspec-mode
   :bind (:map rspec-mode-map ("C-c C-c C-c" . rspec-verify-single)))
+
+(use-package robe
+  :hook (ruby-mode . robe-mode)
+  :config
+  (add-hook 'robe-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends)
+                   '((company-robe)))
+              (robe-start))))
 
 ;; PHP
 (use-package php-mode)
