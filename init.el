@@ -700,7 +700,7 @@
   :hook ((typescript-mode js2-mode web-mode scss-mode) . npm-mode))
 
 (use-package jest
-  :bind (:map jest-minor-mode-map ("C-c C-c C-c" . jest-popup))
+  :bind (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
   :hook ((typescript-mode js2-mode web-mode) . jest-minor-mode))
 
 (use-package prettier-js
