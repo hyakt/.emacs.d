@@ -327,8 +327,9 @@ the folder if it doesn't exist."
   (require 'org)
   (let* ((date (org-read-date t 'to-time nil "Date:  "))
          (time-string (format-time-string "%H:%M" date))
-         (date-string (format-time-string "%Y-%m-%d" date)))
-    (kill-new (concat "/remind me " content " at " time-string " on " date-string))))
+         (date-string (format-time-string "%Y-%m-%d" date))
+         (channel (read-from-minibuffer "Channel: " "me")))
+    (kill-new (concat "/remind " channel " " content " at " time-string " on " date-string))))
 
 (defun my/open-hyper-current-buffer ()
   "Open current buffer with Hyper term and fish."
