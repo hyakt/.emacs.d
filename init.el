@@ -71,26 +71,6 @@
 ;; 自作elispの読み込み
 (load "my-functions")
 
-;;; ---------- キーバインド設定 ----------
-;; 通常操作
-(keyboard-translate ?\C-h ?\C-?)
-(bind-key (kbd "C-h") nil)
-(bind-key (kbd "C-h") nil)
-(bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
-(bind-key (kbd "C-x C-k") 'kill-buffer)
-(bind-key (kbd "C-0") 'delete-frame)
-
-;; my/function keybinding
-(bind-key (kbd "C-g") 'my/keyboard-quit)
-(bind-key (kbd "<f5>") 'my/revert-buffer-no-confirm)
-(bind-key (kbd "M-r") 'my/revert-buffer-no-confirm)
-(bind-key (kbd "C-x k") 'kill-this-buffer)
-(bind-key (kbd "C-x C-k") 'my/close-and-kill-this-pane)
-(bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
-(bind-key (kbd "C-x i") 'my/buffer-indent)
-(bind-key (kbd "C-x d") 'my/dired-this-buffer)
-(bind-key (kbd "M-t") 'my/open-hyper-current-buffer)
-
 ;;; ---------- 初期設定 ----------
 (leaf *basic
   :config
@@ -131,11 +111,32 @@
     :if (eq system-type 'darwin)
     :custom((exec-path-from-shell-variables '("PATH" "GOPATH")))
     :config
-    (exec-path-from-shell-initialize)))
+    (exec-path-from-shell-initialize))
+
+  (leaf *keybinds
+    :config
+    ;; 通常操作
+    (keyboard-translate ?\C-h ?\C-?)
+    (bind-key (kbd "C-h") nil)
+    (bind-key (kbd "C-h") nil)
+    (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
+    (bind-key (kbd "C-x C-k") 'kill-buffer)
+    (bind-key (kbd "C-0") 'delete-frame)
+
+    ;; my/function keybinding
+    (bind-key (kbd "C-g") 'my/keyboard-quit)
+    (bind-key (kbd "<f5>") 'my/revert-buffer-no-confirm)
+    (bind-key (kbd "M-r") 'my/revert-buffer-no-confirm)
+    (bind-key (kbd "C-x k") 'kill-this-buffer)
+    (bind-key (kbd "C-x C-k") 'my/close-and-kill-this-pane)
+    (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
+    (bind-key (kbd "C-x i") 'my/buffer-indent)
+    (bind-key (kbd "C-x d") 'my/dired-this-buffer)
+    (bind-key (kbd "M-t") 'my/open-hyper-current-buffer)))
 
 
 ;;; ---------- 外観設定 ----------
-(leaf *apperance
+(leaf *appearance
   :config
   ;; 全般
   (setq-default tab-width 2)                                    ;; タブの幅は半角スペース 2
@@ -489,467 +490,241 @@
 (leaf *major-mode
   :config
   (leaf lsp-mode
+    :ensure t
     :commands lsp
     :bind ((lsp-mode-map
             ("C-c i" . lsp-execute-code-action)))
+    :custom ((lsp-enable-indentation . nil)
+             (lsp-eldoc-render-all . t)
+             (lsp-signature-auto-activate .t)
+             (lsp-signature-render-documentation . t)
+             (lsp-enable-snippet . nil)
+             (lsp-headerline-breadcrumb-enable . nil)))
+
+  (leaf *web
     :config
-    (straight-use-package 'lsp-mode)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(lsp-enable-indentation nil nil nil "Customized with use-package lsp-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(lsp-eldoc-render-all t nil nil "Customized with use-package lsp-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(lsp-signature-auto-activate t nil nil "Customized with use-package lsp-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(lsp-signature-render-documentation t nil nil "Customized with use-package lsp-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(lsp-enable-snippet nil nil nil "Customized with use-package lsp-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(lsp-headerline-breadcrumb-enable nil nil nil "Customized with use-package lsp-mode"))))
-
-  (leaf lispxmp
-    :bind ((emacs-lisp-mode-map
-            ("C-c C-e" . lispxmp-emacs-lisp))
-           (lisp-mode-map
-            ("C-c C-e" . lispxmp-emacs-lisp)))
-    :config
-    (straight-use-package 'lispxmp)
-    (eval-and-compile
-      (defun %lispxmp-doit (eval-last-sexp-function)
-        (let ((comment-start ";"))
-          (comment-kill nil)
-          (comment-indent)
-          (save-excursion
-            (let ((current-prefix-arg t))
-              (call-interactively eval-last-sexp-function)))
-          (insert " => ")))
-
-      (defun lispxmp-emacs-lisp nil
-        (interactive)
-        (%lispxmp-doit 'eval-last-sexp))))
-
-  (leaf haskell-mode
-    :mode ("\\.hs$"
-           ("\\.lhs$" . literate-haskell-mode))
-    :config
-    (straight-use-package 'haskell-mode))
-
-  (leaf web-mode
-    :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.[jt]sx\\'")
-    :config
-    (straight-use-package
-     '(web-mode :host github :repo "hyakt/web-mode" :branch "master"))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-indent-style 2 nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-markup-indent-offset 2 nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-css-indent-offset 2 nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-code-indent-offset 2 nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-enable-auto-pairing t nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-enable-auto-quoting nil nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-enable-auto-indentation nil nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-enable-css-colorization t nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-enable-current-element-highlight t nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-enable-current-column-highlight t nil nil "Customized with use-package web-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(web-mode-comment-formats
-                                    '(("javascript" . "//")
-                                      ("jsx" . "//")
-                                      ("php" . "/*"))
-                                    nil nil "Customized with use-package web-mode")))
-    (with-eval-after-load 'web-mode
-      (add-hook 'web-mode-hook
-                (lambda nil
-                  (when (equal web-mode-content-type "jsx")
-                    (setq emmet-expand-jsx-className\? t)
-                    (add-to-list 'web-mode-indentation-params
-                                 '("lineup-args"))
-                    (add-to-list 'web-mode-indentation-params
-                                 '("lineup-calls"))
-                    (add-to-list 'web-mode-indentation-params
-                                 '("lineup-concats"))
-                    (add-to-list 'web-mode-indentation-params
-                                 '("lineup-ternary"))
-                    (flycheck-add-mode 'javascript-eslint 'web-mode))
-                  (when (and
-                         (stringp buffer-file-name)
-                         (string-match "\\.jsx\\'" buffer-file-name))
-                    (tern-mode)
-                    (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
-                    (set
-                     (make-local-variable 'company-backends)
-                     '((company-tern :with company-dabbrev-code)
-                       company-yasnippet)))
-                  (when (and
-                         (stringp buffer-file-name)
-                         (string-match "\\.tsx\\'" buffer-file-name))
-                    (tide-setup)
-                    (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
-                    (set
-                     (make-local-variable 'company-backends)
-                     '((company-tide)
-                       company-css company-yasnippet))
-                    (defun company-tide-advice (orig-fun &rest args)
-                      (if (and
-                           (eq
-                            (car args)
-                            'prefix)
-                           (web-mode-is-css-string
-                            (point)))
-                          'nil
-                        (apply orig-fun args)))
-
-                    (advice-add 'company-tide :around #'company-tide-advice)
-                    (defun web-mode-language-at-pos-advice (orig-fun &rest args)
-                      (let ((pos (or
+    (leaf web-mode
+      :straight (web-mode :type git :host github :repo "hyakt/web-mode")
+      :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.[jt]sx\\'")
+      :custom
+      ((web-mode-indent-style . 2)
+       (web-mode-markup-indent-offset . 2)
+       (web-mode-css-indent-offset . 2)
+       (web-mode-code-indent-offset . 2)
+       (web-mode-enable-auto-pairing . t)
+       (web-mode-enable-auto-quoting . nil)
+       (web-mode-enable-auto-indentation . nil)
+       (web-mode-enable-css-colorization . t)
+       (web-mode-enable-current-element-highlight . t)
+       (web-mode-enable-current-column-highlight . t)
+       (web-mode-enable-auto-quoting . nil)
+       (web-mode-comment-formats .
+                                 '(("javascript" . "//")
+                                   ("jsx" .  "//")
+                                   ("php" . "/*"))))
+      :hook
+      (web-mode-hook .
+                     (lambda ()
+                       ((when (equal web-mode-content-type "jsx")
+                          (setq emmet-expand-jsx-className\? t)
+                          (add-to-list 'web-mode-indentation-params
+                                       '("lineup-args"))
+                          (add-to-list 'web-mode-indentation-params
+                                       '("lineup-calls"))
+                          (add-to-list 'web-mode-indentation-params
+                                       '("lineup-concats"))
+                          (add-to-list 'web-mode-indentation-params
+                                       '("lineup-ternary"))
+                          (flycheck-add-mode 'javascript-eslint 'web-mode))
+                        (when (and
+                               (stringp buffer-file-name)
+                               (string-match "\\.jsx\\'" buffer-file-name))
+                          (tern-mode)
+                          (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
+                          (set
+                           (make-local-variable 'company-backends)
+                           '((company-tern :with company-dabbrev-code)
+                             company-yasnippet)))
+                        (when (and
+                               (stringp buffer-file-name)
+                               (string-match "\\.tsx\\'" buffer-file-name))
+                          (tide-setup)
+                          (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
+                          (set
+                           (make-local-variable 'company-backends)
+                           '((company-tide)
+                             company-css company-yasnippet))
+                          (defun company-tide-advice (orig-fun &rest args)
+                            (if (and
+                                 (eq
                                   (car args)
-                                  (point))))
-                        (or
-                         (and
-                          (web-mode-is-css-string pos)
-                          "css")
-                         (apply orig-fun args))))
+                                  'prefix)
+                                 (web-mode-is-css-string
+                                  (point)))
+                                'nil
+                              (apply orig-fun args)))
 
-                    (advice-add 'web-mode-language-at-pos :around #'web-mode-language-at-pos-advice))))))
+                          (advice-add 'company-tide :around #'company-tide-advice)
+                          (defun web-mode-language-at-pos-advice (orig-fun &rest args)
+                            (let ((pos (or
+                                        (car args)
+                                        (point))))
+                              (or
+                               (and
+                                (web-mode-is-css-string pos)
+                                "css")
+                               (apply orig-fun args))))
+                          (advice-add 'web-mode-language-at-pos :around #'web-mode-language-at-pos-advice))))))
 
-  (leaf company-web
-    :init
-    (straight-use-package 'company-web)
-    :require t)
+    (leaf emmet-mode
+      :ensure t
+      :bind ((emmet-mode-keymap
+              ("C-j" . company-complete)))
+      :hook (html-mode-hook web-mode-hook css-mode-hook scss-mode-hook))
 
-  (leaf slim-mode
-    :config
-    (straight-use-package 'slim-mode)
-    (with-eval-after-load 'company-web
-      (require 'slim-mode nil nil)
-      (add-hook 'slim-mode-hook
-                (lambda nil
-                  (set
-                   (make-local-variable 'company-backends)
-                   '((company-web-slim :with company-dabbrev)))))))
+    (leaf add-node-modules-path
+      :ensure t
+      :commands add-node-modules-path
+      :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook graphql-mode-hook))
 
-  (leaf haml-mode
-    :init
-    (straight-use-package 'haml-mode)
-    :require t)
+    (leaf prettier-js
+      :ensure t
+      :hook (graphql-mode-hook js2-mode-hook scss-mode-hook css-mode-hook))
 
-  (leaf css-mode
-    :init
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(css-indent-offset 2 nil nil "Customized with use-package css-mode")))
-    :require t
-    :config
-    (add-hook 'css-mode-hook
-              (lambda nil
-                (set
-                 (make-local-variable 'flycheck-checker)
-                 (setq flycheck-checker 'css-stylelint))
-                (set
-                 (make-local-variable 'company-backends)
-                 '((company-css :with company-dabbrev)
-                   company-yasnippet)))))
+    (leaf *html
+      :config
+      (leaf slim-mode :ensure t)
+      (leaf haml-mode :ensure t))
 
-  (leaf scss-mode
-    :init
-    (straight-use-package 'scss-mode)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(scss-indent-offset 2 nil nil "Customized with use-package scss-mode")))
-    :require t
-    :config
-    (add-hook 'scss-mode-hook
-              (lambda nil
-                (set
-                 (make-local-variable 'flycheck-checker)
-                 (setq flycheck-checker 'scss-stylelint))
-                (set
-                 (make-local-variable 'company-backends)
-                 '((company-css :with company-dabbrev)
-                   company-yasnippet)))))
+    (leaf *css
+      :config
+      (leaf css-mode
+        :custom (css-indent-offset . 2)
+        :hook
+        (css-mode-hook . (lambda ()
+                           (set
+                            (make-local-variable 'flycheck-checker)
+                            (setq flycheck-checker 'css-stylelint))
+                           (set
+                            (make-local-variable 'company-backends)
+                            '((company-css :with company-dabbrev)
+                              company-yasnippet)))))
+      (leaf scss-mode
+        :ensure t
+        :custom (scss-indent-offset . 2)
+        :hook
+        (css-mode-hook . ((lambda ()
+                            (set
+                             (make-local-variable 'flycheck-checker)
+                             (setq flycheck-checker 'scss-stylelint))
+                            (set
+                             (make-local-variable 'company-backends)
+                             '((company-css :with company-dabbrev) company-yasnippet))))))
+      (leaf sass-mode :ensure t)
+      (leaf sws-mode :ensure t))
 
-  (leaf sass-mode
-    :init
-    (straight-use-package 'sass-mode)
-    :require t)
-
-  (leaf sws-mode
-    :init
-    (straight-use-package 'sws-mode)
-    :require t)
-
-  (leaf emmet-mode
-    :bind ((emmet-mode-keymap
-            ("C-j" . company-complete)))
-    :hook (html-mode-hook web-mode-hook css-mode-hook scss-mode-hook)
-    :config
-    (straight-use-package 'emmet-mode))
-
-  (leaf js2-mode
-    :config
-    (straight-use-package 'js2-mode)
-    (with-eval-after-load 'xref-js2
-      (eval-after-load 'tern
-        '(progn
-           (let ((custom--inhibit-theme-enable nil))
-             (custom-theme-set-variables 'use-package
-                                         '(js-indent-level 2 nil nil "Customized with use-package js2-mode")))
-           (let ((custom--inhibit-theme-enable nil))
-             (custom-theme-set-variables 'use-package
-                                         '(js-switch-indent-offset 2 nil nil "Customized with use-package js2-mode")))
-           (let ((custom--inhibit-theme-enable nil))
-             (custom-theme-set-variables 'use-package
-                                         '(js2-basic-offset 2 nil nil "Customized with use-package js2-mode")))
-           (let ((custom--inhibit-theme-enable nil))
-             (custom-theme-set-variables 'use-package
-                                         '(js2-strict-missing-semi-warning nil nil nil "Customized with use-package js2-mode")))
-           (unless (fboundp 'js2-mode)
-             (autoload #'js2-mode "js2-mode" nil t))
-           (eval-after-load 'js2-mode
-             '(progn
-                (add-hook 'js2-mode-hook
-                          (lambda nil
+    (leaf *javascript
+      :config
+      (leaf js2-mode
+        :ensure (js2-mode tern xref-js2)
+        :straight (company-tern :host github :repo "emacsattic/company-tern" :branch "master")
+        :custom
+        ((js-indent-level . 2)
+         (js-switch-indent-offset . 2)
+         (js2-basic-offset . 2)
+         (js2-strict-missing-semi-warning . nil)
+         (xref-js2-search-program . 'rg))
+        :hook
+        (js2-mode-hook . ((lambda ()
                             (tern-mode)
                             (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
                             (set
                              (make-local-variable 'company-backends)
                              '((company-tern :with company-dabbrev-code)
-                               company-yasnippet))))
-                t))
+                               company-yasnippet))))))
 
-           (add-to-list 'auto-mode-alist
-                        '(".js$" . js2-mode))))))
+      (leaf typescript-mode
+        :ensure t
+        :after tide
+        :custom (typescript-indent-level . 2)
+        :hook (typescript-mode-hook . ((lambda ()
+                                         (tide-setup)
+                                         (tide-hl-identifier-mode)
+                                         (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)))))
 
-  (leaf tern
-    :init
-    (straight-use-package 'tern)
-    :require t)
+      (leaf tide
+        :ensure t
+        :after (company flycheck)
+        :bind (tide-mode-map
+               ("M-." . nil)
+               ("M-," . nil))
+        :config
+        (defun my/remove-tide-format-before-save ()
+          (interactive)
+          (remove-hook 'before-save-hook 'tide-format-before-save))
+        (defun my/tide-copy-type ()
+          "Copy type to clipbord."
+          (interactive)
+          (tide-command:quickinfo
+           (tide-on-response-success-callback response (:ignore-empty t)
+                                              (kill-new (tide-annotate-display-parts
+                                                         (plist-get (plist-get response :body) :displayParts)))))))
 
-  (leaf company-tern
-    :config
-    (straight-use-package
-     '(company-tern :host github :repo "emacsattic/company-tern" :branch "master"))
-    (with-eval-after-load 'tern
-      (require 'company-tern nil nil)))
+      (leaf coffee-mode
+        :ensure t
+        :custom (coffee-tab-width . 2))
 
-  (leaf xref-js2
-    :init
-    (straight-use-package 'xref-js2)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(xref-js2-search-program 'rg nil nil "Customized with use-package xref-js2")))
-    :require t)
+      (leaf nodejs-repl :ensure t)
 
-  (leaf typescript-mode
-    :init
-    (straight-use-package 'typescript-mode)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(typescript-indent-level 2 nil nil "Customized with use-package typescript-mode")))
-    (add-hook 'typescript-mode-hook
-              (lambda nil
-                (tide-setup)
-                (tide-hl-identifier-mode)
-                (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)))
-    :require t)
+      (leaf npm-mode
+        :ensure t
+        :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook))
 
-  (leaf tide
-    :config
-    (straight-use-package 'tide)
-    (with-eval-after-load 'flycheck
-      (eval-after-load 'company
-        '(eval-after-load 'typescript-mode
-           '(progn
-              (unless (fboundp 'tide-format-before-save)
-                (autoload #'tide-format-before-save "tide" nil t))
-              (eval-after-load 'tide
-                '(progn
-                   (defun my/remove-tide-format-before-save nil
-                     (interactive)
-                     (remove-hook 'before-save-hook 'tide-format-before-save))
-
-                   (defun my/tide-copy-type nil
-                     "Copy type to clipbord."
-                     (interactive)
-                     (tide-command:quickinfo
-                      (tide-on-response-success-callback response (:ignore-empty t)
-                        (kill-new
-                         (tide-annotate-display-parts
-                          (plist-get
-                           (plist-get response :body)
-                           :displayParts))))))
-
-                   t))
-
-              (add-hook 'before-save-hook #'tide-format-before-save)
-              (bind-keys :package tide :map tide-mode-map
-                         ("M-.")
-                         ("M-,")))))))
-
-  (leaf coffee-mode
-    :init
-    (straight-use-package 'coffee-mode)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(coffee-tab-width 2 nil nil "Customized with use-package coffee-mode")))
-    :require t)
-
-  (leaf nodejs-repl
-    :config
-    (straight-use-package 'nodejs-repl)
-    (with-eval-after-load 'js2-mode
-      (unless (fboundp 'nodejs-repl-send-last-expression)
-        (autoload #'nodejs-repl-send-last-expression "nodejs-repl" nil t))
-      (unless (fboundp 'nodejs-repl-send-line)
-        (autoload #'nodejs-repl-send-line "nodejs-repl" nil t))
-      (unless (fboundp 'nodejs-repl-send-region)
-        (autoload #'nodejs-repl-send-region "nodejs-repl" nil t))
-      (unless (fboundp 'nodejs-repl-load-file)
-        (autoload #'nodejs-repl-load-file "nodejs-repl" nil t))
-      (unless (fboundp 'nodejs-repl-switch-to-repl)
-        (autoload #'nodejs-repl-switch-to-repl "nodejs-repl" nil t))
-      (bind-keys :package nodejs-repl :map js2-mode-map
-                 ("C-x C-e" . nodejs-repl-send-last-expression)
-                 ("C-c C-j" . nodejs-repl-send-line)
-                 ("C-c C-r" . nodejs-repl-send-region)
-                 ("C-c C-l" . nodejs-repl-load-file)
-                 ("C-c C-z" . nodejs-repl-switch-to-repl))))
-
-  (leaf add-node-modules-path
-    :commands add-node-modules-path
-    :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook graphql-mode-hook)
-    :config
-    (straight-use-package 'add-node-modules-path))
-
-  (leaf npm-mode
-    :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook)
-    :config
-    (straight-use-package 'npm-mode))
-
-  (leaf jest
-    :commands jest-minor-mode
-    :bind ((jest-minor-mode-map
-            ("C-c C-c C-c" . jest-file-dwim)))
-    :hook ((typescript-mode-hook . jest-minor-mode)
-           (js2-mode-hook . jest-minor-mode)
-           (web-mode-hook . jest-minor-mode))
-    :config
-    (straight-use-package 'jest))
-
-  (leaf prettier-js
-    :hook (graphql-mode-hook js2-mode-hook scss-mode-hook css-mode-hook)
-    :config
-    (straight-use-package 'prettier-js))
-
-  (leaf dart-mode
-    :init
-    (straight-use-package 'dart-mode)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dart-format-on-save nil nil nil "Customized with use-package dart-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dart-enable-analysis-server nil nil nil "Customized with use-package dart-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dart-sdk-path "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/" nil nil "Customized with use-package dart-mode")))
-    :require t)
-
-  (leaf flutter
-    :config
-    (straight-use-package 'flutter)
-    (with-eval-after-load 'dart-mode
-      (let ((custom--inhibit-theme-enable nil))
-        (custom-theme-set-variables 'use-package
-                                    '(flutter-sdk-path "~/repos/github.com/flutter/flutter/" nil nil "Customized with use-package flutter")))
-      (require 'flutter nil nil)))
-
-  (leaf python
-    :init
-    (straight-use-package 'python)
-    :require t)
-
-  (leaf company-sourcekit
-    :init
-    (straight-use-package 'company-sourcekit)
-    :require t)
-
-  (leaf swift-mode
-    :config
-    (straight-use-package 'swift-mode)
-    (with-eval-after-load 'company-sourcekit
-      (eval-after-load 'flycheck
-        '(eval-after-load 'swift-mode
-           '(progn
-              (add-hook 'swift-mode-hook
-                        (lambda nil
-                          (add-to-list 'flycheck-checkers 'swift)
-                          (set
-                           (make-local-variable 'company-backends)
-                           '((company-sourcekit)))))
-              t)))))
+      (leaf jest
+        :ensure t
+        :bind ((jest-minor-mode-map
+                ("C-c C-c C-c" . jest-file-dwim)))
+        :hook ((typescript-mode-hook . jest-minor-mode)
+               (js2-mode-hook . jest-minor-mode)
+               (web-mode-hook . jest-minor-mode)))))
 
   (leaf ruby-mode
+    :ensure t
     :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
     :interpreter ("pry")
+    :custom ((ruby-insert-encoding-magic-comment . nil))
     :config
-    (straight-use-package 'ruby-mode)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ruby-insert-encoding-magic-comment nil nil nil "Customized with use-package ruby-mode"))))
+    (leaf inf-ruby
+      :ensure t
+      :bind ((inf-ruby-minor-mode-map
+              ("C-c C-b" . ruby-send-buffer)
+              ("C-c C-l" . ruby-send-line)))
+      :custom
+      (inf-ruby-default-implementation . "pry")
+      (inf-ruby-eval-binding . "Pry.toplevel_binding")
+      :config
+      (defalias 'pry 'inf-ruby))
 
-  (leaf inf-ruby
-    :bind ((inf-ruby-minor-mode-map
-            ("C-c C-b" . ruby-send-buffer)
-            ("C-c C-l" . ruby-send-line)))
-    :config
-    (straight-use-package 'inf-ruby)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(inf-ruby-default-implementation "pry" nil nil "Customized with use-package inf-ruby")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(inf-ruby-eval-binding "Pry.toplevel_binding" nil nil "Customized with use-package inf-ruby")))
-    (defalias 'pry 'inf-ruby))
+    (leaf rspec-mode
+      :ensure t
+      :bind ((rspec-mode-map
+              ("C-c C-c C-c" . rspec-verify-single))))
 
-  (leaf rspec-mode
-    :bind ((rspec-mode-map
-            ("C-c C-c C-c" . rspec-verify-single)))
-    :config
-    (straight-use-package 'rspec-mode))
-
-  (leaf robe
-    :bind ((robe-mode-map
-            ("M-." . smart-jump-go)))
-    :hook (ruby-mode-hook)
-    :config
-    (straight-use-package 'robe)
-    (with-eval-after-load 'robe
+    (leaf robe
+      :ensure t
+      :bind ((robe-mode-map
+              ("M-." . smart-jump-go)))
+      :hook
+      (ruby-mode-hook)
+      (robe-mode-hook . (lambda ()
+                          (advice-add 'company-box--get-buffer :around #'company-box-set-current-buffer)
+                          (advice-add 'company-box-doc :around #'hack-company-box-doc)
+                          (setq-local company-box-doc-enable nil)
+                          (company-box-mode nil)
+                          (set (make-local-variable 'company-backends)
+                               '((company-robe)))
+                          (robe-start)))
+      :config
       (defun company-box-set-current-buffer (orig-fun &rest args)
         (let ((company-box-buffer (apply orig-fun args))
               (from-buffer (current-buffer)))
@@ -959,261 +734,170 @@
 
       (defun hack-company-box-doc (orig-fun &rest args)
         (with-current-buffer company-box--from-buffer
-          (apply orig-fun args)))
+          (apply orig-fun args)))))
 
-      (add-hook 'robe-mode-hook
-                (lambda nil
-                  (advice-add 'company-box--get-buffer :around #'company-box-set-current-buffer)
-                  (advice-add 'company-box-doc :around #'hack-company-box-doc)
-                  (setq-local company-box-doc-enable nil)
-                  (company-box-mode nil)
-                  (set
-                   (make-local-variable 'company-backends)
-                   '((company-robe)))
-                  (robe-start)))))
+  (leaf swift-mode
+    :ensure t
+    :hook (swift-mode-hook . (lambda ()
+                               (add-to-list 'flycheck-checkers 'swift)
+                               (set
+                                (make-local-variable 'company-backends)
+                                '((company-sourcekit)))))
+    :config
+    (leaf company-sourcekit :ensure t))
 
-  (leaf php-mode
-    :init
-    (straight-use-package 'php-mode)
-    :require t)
+  (leaf dart-mode
+    :ensure t
+    :custom
+    (dart-format-on-save . nil)
+    (dart-enable-analysis-server . nil)
+    (dart-sdk-path . "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
+
+  (leaf flutter
+    :ensure t
+    :custom
+    (flutter-sdk-path . "~/repos/github.com/flutter/flutter/"))
 
   (leaf sql
+    :ensure t
     :mode (".sql$")
+    :hook
+    (sql-interactive-mode-hook .
+                               (lambda ()
+                                 (buffer-face-set 'variable-pitch)
+                                 (toggle-truncate-lines t)))
     :config
-    (straight-use-package 'sql)
-    (with-eval-after-load 'sql
-      (add-hook 'sql-interactive-mode-hook
-                (lambda nil
-                  (buffer-face-set 'variable-pitch)
-                  (toggle-truncate-lines t)))))
+    (leaf sqlup-mode
+      :ensure t
+      :hook (sql-mode-hook sql-interactive-mode-hook))
+    (leaf sqlformat
+      :ensure t
+      :ensure-system-package sqlparse
+      :preface
+      (defun my/sql-indent-region (beg end)
+        "Indent the SQL statement in the BEG to END (region)."
+        (interactive "*r")
+        (save-excursion
+          (save-restriction
+            (narrow-to-region beg end)
+            (sql-indent-buffer))))))
 
-  (leaf sqlup-mode
-    :hook (sql-mode-hook sql-interactive-mode-hook)
-    :config
-    (straight-use-package 'sqlup-mode))
+  (leaf python :ensure t)
 
-  (leaf sqlformat
-    :preface
-    (defun my/sql-indent-region (beg end)
-      "Indent the SQL statement in the BEG to END (region)."
-      (interactive "*r")
-      (save-excursion
-        (save-restriction
-          (narrow-to-region beg end)
-          (sql-indent-buffer))))
+  (leaf php-mode :ensure t)
 
-    :init
-    (straight-use-package 'sqlformat)
-    :require t
-    :config
-    (unless (use-package-ensure-system-package-exists\? 'sqlformat)
-      (async-shell-command "brew install sqlparse")))
+  (leaf haskell-mode :ensure t)
 
-  (leaf graphql-mode
-    :init
-    (straight-use-package 'graphql-mode)
-    :require t)
+  (leaf graphql-mode :ensure t)
 
-  (add-hook 'java-mode-hook
-            (lambda nil
-              (message "hook")
-              (setq tab-width 4)
-              (setq indent-tabs-mode t)
-              (setq c-basic-offset 4)))
-  (leaf dockerfile-mode
-    :init
-    (straight-use-package 'dockerfile-mode)
-    :require t)
+  (leaf java-mode
+    :hook
+    (java-mode-hook . (lambda ()
+                        (setq tab-width 4)
+                        (setq indent-tabs-mode t)
+                        (setq c-basic-offset 4))))
 
-  (leaf docker-compose-mode
-    :init
-    (straight-use-package 'docker-compose-mode)
-    :require t)
+  (leaf dockerfile-mode :ensure t)
 
-  (leaf gitconfig-mode
-    :init
-    (straight-use-package 'gitconfig-mode)
-    :require t)
+  (leaf docker-compose-mode :ensure t)
 
-  (leaf gitignore-mode
-    :init
-    (straight-use-package 'gitignore-mode)
-    :require t)
+  (leaf nginx-mode :ensure t)
 
-  (leaf nginx-mode
-    :init
-    (straight-use-package 'nginx-mode)
-    :require t)
+  (leaf gitconfig-mode :ensure t)
+
+  (leaf gitignore-mode :ensure t)
 
   (leaf go-mode
-    :hook ((go-mode-hook . lsp))
-    :init
-    (straight-use-package 'go-mode)
-    :require t)
+    :ensure t
+    :hook ((go-mode-hook . lsp)))
 
   (leaf elixir-mode
-    :init
-    (straight-use-package 'elixir-mode)
-    :require t
+    :ensure t
     :config
-    (leaf alchemist
-      :init
-      (straight-use-package 'alchemist)
-      :require t)
-
-    (leaf flycheck-elixir
-      :init
-      (straight-use-package 'flycheck-elixir)
-      :require t))
-
-  (leaf ess
-    :init
-    (straight-use-package 'ess)
-    :require t)
+    (leaf alchemist :ensure t)
+    (leaf flycheck-elixir :ensure t))
 
   (leaf scala-mode
+    :ensure t
     :interpreter ("scala")
     :config
-    (straight-use-package 'scala-mode))
-
-  (leaf sbt-mode
-    :commands sbt-start sbt-command
-    :config
-    (straight-use-package 'sbt-mode))
-
-  (leaf scala-bootstrap
-    :init
-    (straight-use-package
-     '(scala-bootstrap\.el :type git :host github :repo "tarao/scala-bootstrap-el"))
-    :require t
-    :config
-    (add-hook 'scala-mode-hook
-              '(lambda nil
-                 (scala-bootstrap:with-metals-installed
-                  (scala-bootstrap:with-bloop-server-started
-                   (lsp))))))
+    (leaf sbt-mode
+      :ensure t
+      :commands sbt-start sbt-command)
+    (leaf scala-bootstrap
+      :straight (scala-bootstrap :type git :host github :repo "tarao/scala-bootstrap-el")
+      :hook (scala-mode-hook . (lambda ()
+                                 (scala-bootstrap:with-metals-installed
+                                  (scala-bootstrap:with-bloop-server-started
+                                   (lsp)))))))
 
   (leaf rustic
-    :init
-    (straight-use-package 'rustic)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(lsp-rust-analyzer-server-command
-                                    '("~/.cargo/bin/rust-analyzer")
-                                    nil nil "Customized with use-package rustic")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(rustic-format-display-method 'display-buffer nil nil "Customized with use-package rustic")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(rustic-format-trigger 'on-compile nil nil "Customized with use-package rustic")))
-    :require t)
+    :ensure t
+    :custom ((lsp-rust-analyzer-server-command . '("~/.cargo/bin/rust-analyzer"))
+             (rustic-format-display-method . 'display-buffer)
+             (rustic-format-trigger . 'on-compile)))
 
-  (leaf fish-mode
-    :init
-    (straight-use-package 'fish-mode)
-    :require t)
+  (leaf fish-mode :ensure t)
 
-  (leaf csv-mode
-    :init
-    (straight-use-package 'csv-mode)
-    :require t)
+  (leaf csv-mode :ensure t)
 
   (leaf org
     :bind ((org-mode-map
-            ("C-,")))
+            ("C-," . nil)))
     :mode ("\\.txt$")
+    :custom
+    (org-startup-truncated . nil)
+    (org-src-fontify-natively . t)
+    (org-log-done . 'time)
     :config
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(org-startup-truncated nil nil nil "Customized with use-package org")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(org-src-fontify-natively t nil nil "Customized with use-package org")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(org-log-done 'time nil nil "Customized with use-package org")))
-    (with-eval-after-load 'org
-      (defun my-add-custom-id nil
-        "Add \"CUSTOM_ID\" to the current tree if not assigned yet."
-        (interactive)
-        (my-org-custom-id-get nil t))
+    (defun my-add-custom-id nil
+      "Add \"CUSTOM_ID\" to the current tree if not assigned yet."
+      (interactive)
+      (my-org-custom-id-get nil t))
 
-      (defun my-get-custom-id nil
-        "Return a part of UUID with an \"org\" prefix. e.g. \"org3ca6ef0c\"."
-        (let* ((id (org-id-new "")))
-          (when (org-uuidgen-p id)
-            (downcase
-             (concat "org"
-                     (substring
-                      (org-id-new "")
-                      0 8))))))
+    (defun my-get-custom-id nil
+      "Return a part of UUID with an \"org\" prefix. e.g. \"org3ca6ef0c\"."
+      (let* ((id (org-id-new "")))
+        (when (org-uuidgen-p id)
+          (downcase
+           (concat "org"
+                   (substring
+                    (org-id-new "")
+                    0 8))))))
 
-      (defun my-org-custom-id-get (&optional pom create)
-        "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
-        (interactive)
-        (org-with-point-at pom
-          (let ((id (org-entry-get nil "CUSTOM_ID")))
-            (cond
-             ((and id
-                   (stringp id)
-                   (string-match "\\S-" id))
-              id)
-             (create
-              (setq id (my-get-custom-id))
-              (unless id
-                (error "Invalid ID"))
-              (org-entry-put pom "CUSTOM_ID" id)
-              (message "--- CUSTOM_ID assigned: %s" id)
-              (org-id-add-location id
-                                   (buffer-file-name
-                                    (buffer-base-buffer)))
-              id)))))
+    (defun my-org-custom-id-get (&optional pom create)
+      "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
+      (interactive)
+      (org-with-point-at pom
+                         (let ((id (org-entry-get nil "CUSTOM_ID")))
+                           (cond
+                            ((and id
+                                  (stringp id)
+                                  (string-match "\\S-" id))
+                             id)
+                            (create
+                             (setq id (my-get-custom-id))
+                             (unless id
+                               (error "Invalid ID"))
+                             (org-entry-put pom "CUSTOM_ID" id)
+                             (message "--- CUSTOM_ID assigned: %s" id)
+                             (org-id-add-location id
+                                                  (buffer-file-name
+                                                   (buffer-base-buffer)))
+                             id)))))
 
-      (require 'ox-latex)
-      (setq org-latex-default-class "cv")
-      (setq org-latex-pdf-process '("latexmk %f"))
-      (setq org-file-apps '(("pdf" . "/usr/bin/open -a Preview.app %s")))
-      (setq org-latex-with-hyperref nil)
-      (setq org-latex-hyperref-template nil)
-      (add-to-list 'org-latex-classes
-                   '("cv" "\\documentclass[autodetect-engine,dvi=dvipdfmx,10pt,a4wide,ja=standard]{bxjsarticle}\n                      \\parindent = 0pt\n                      \\usepackage{typearea}\n                      \\typearea{18}\n                      \\usepackage{longtable}\n                      [NO-DEFAULT-PACKAGES]\n                      \\usepackage{amsmath}\n                      \\usepackage{newtxtext,newtxmath}\n                      \\usepackage{graphicx}\n                      \\usepackage{hyperref}\n                      \\ifdefined\\kanjiskip\n                        \\usepackage{pxjahyper}\n                        \\hypersetup{colorlinks=true}\n                      \\else\n                        \\ifdefined\\XeTeXversion\n                            \\hypersetup{colorlinks=true}\n                        \\else\n                          \\ifdefined\\directlua\n                            \\hypersetup{pdfencoding=auto,colorlinks=true}\n                          \\else\n                            \\hypersetup{unicode,colorlinks=true}\n                          \\fi\n                        \\fi\n                      \\fi"
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))))
-
-  (leaf htmlize
-    :init
-    (straight-use-package 'htmlize)
-    :require t)
-
-  (leaf ob-sql-mode
-    :config
-    (straight-use-package 'ob-sql-mode)
-    (with-eval-after-load 'org
-      (require 'ob-sql-mode nil nil)))
-
-  (leaf ox-gfm
-    :config
-    (straight-use-package 'ox-gfm)
-    (with-eval-after-load 'ox
-      (require 'ox-gfm nil nil)))
-
-  (leaf org-bullets
-    :config
-    (straight-use-package 'org-bullets)
-    (with-eval-after-load 'org
-      (let ((custom--inhibit-theme-enable nil))
-        (custom-theme-set-variables 'use-package
-                                    '(org-bullets-bullet-list
-                                      '("■" "○" "✸" "►" "•" "★")
-                                      nil nil "Customized with use-package org-bullets")))
-      (require 'org-bullets nil nil)
-      (add-hook 'org-mode-hook
-                (lambda nil
-                  (org-bullets-mode 1)))
+    (leaf ox-latex
+      :custom
+      (org-latex-default-class . "cv")
+      (org-latex-pdf-process . '("latexmk %f"))
+      (org-file-apps . '(("pdf" . "/usr/bin/open -a Preview.app %s")))
+      (org-latex-with-hyperref . nil)
+      (org-latex-hyperref-template . nil))
+    (leaf htmlize :ensure t)
+    (leaf ob-sql-mode :ensure t)
+    (leaf ox-gfm :ensure t)
+    (leaf org-bullets :ensure t
+      :config
       (defun my/org-bullets-export (path)
         "Export to bullets style text file into PATH."
         (interactive "FExport file: ")
@@ -1222,20 +906,10 @@
             (insert current-buffer-string)
             (goto-char (point-min))
             (while (re-search-forward "^\\*+ " nil t)
-              (let ((level (-
-                            (match-end 0)
-                            (match-beginning 0)
-                            1)))
+              (let ((level (- (match-end 0) (match-beginning 0) 1)))
                 (replace-match
-                 (concat
-                  (make-string
-                   (- level 1)
-                   32)
-                  (string
-                   (org-bullets-level-char level))
-                  " "))))
+                 (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
             (write-file path))))
-
       (defun my/org-bullets-export-region-clipboard (start end)
         "Export to bullets style text file into clipbord from START to END."
         (interactive "*r")
@@ -1244,34 +918,22 @@
             (insert current-buffer-string)
             (goto-char (point-min))
             (while (re-search-forward "^\\*+" nil t)
-              (let ((level (-
-                            (match-end 0)
-                            (match-beginning 0))))
+              (let ((level (- (match-end 0) (match-beginning 0))))
                 (replace-match
-                 (concat
-                  (make-string
-                   (- level 1)
-                   32)
-                  (string
-                   (org-bullets-level-char level))
-                  " "))))
-            (clipboard-kill-ring-save
-             (point-min)
-             (point-max)))))))
+                 (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
+            (clipboard-kill-ring-save (point-min) (point-max))))))
 
-  (leaf markdown-mode
-    :mode (("\\.markdown\\'" . gfm-mode)
-           ("\\.md\\'" . gfm-mode)
-           ("\\.mdown\\'" . gfm-mode))
-    :config
-    (straight-use-package 'markdown-mode)
-    (with-eval-after-load 'markdown-mode
-      (add-hook 'markdown-mode-hook
-                '(lambda nil
-                   (set
-                    (make-local-variable 'whitespace-action)
-                    nil))))))
-
+    (leaf markdown-mode
+      :ensure t
+      :mode (("\\.markdown\\'" . gfm-mode)
+             ("\\.md\\'" . gfm-mode)
+             ("\\.mdown\\'" . gfm-mode))
+      :hook
+      (markdown-mode-hook .
+                          (lambda nil
+                            (set
+                             (make-local-variable 'whitespace-action)
+                             nil))))))
 
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
@@ -1339,7 +1001,7 @@
     (dashboard-setup-startup-hook))
 
   (leaf counsel
-    :straight
+    :ensure t
     :bind (("C-s" . swiper)
            ("M-x" . counsel-M-x)
            ("M-y" . counsel-yank-pop)
@@ -1727,12 +1389,10 @@
       (async-shell-command "brew install gpg")))
 
   (leaf open-junk-file
+    :ensure t
     :bind (("C-`" . open-junk-file))
-    :config
-    (straight-use-package 'open-junk-file)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S." nil nil "Customized with use-package open-junk-file"))))
+    :custom
+    (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
   (leaf view
     :commands backward-word forward-word next-line previous-line gene-word scroll-down scroll-up bm-toggle bm-previous bm-next scroll-other-window-down scroll-other-window
