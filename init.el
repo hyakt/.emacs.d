@@ -32,10 +32,8 @@
   (leaf leaf-keywords
     :ensure t
     :init
-    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-    (leaf hydra :ensure t)
     (leaf el-get :ensure t)
-    (leaf blackout :ensure t)
+    (leaf system-packages :ensure t)
 
     :config
     ;; initialize leaf-keywords.el
@@ -233,6 +231,7 @@
     :init
     (load "my-doom-tokyo-night")
     :config
+    (load-theme 'doom-vibrant t)
     (doom-themes-neotree-config)
     (doom-themes-org-config))
 
@@ -321,23 +320,24 @@
 (leaf *edit
   :config
   (leaf yasnippet
-    :ensure t
-    :init
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(yas-snippet-dirs
-                                    '("~/.emacs.d/site-lisp/my-snippets")
-                                    nil nil "Customized with use-package yasnippet")))
-    :require t
+    :ensure (yasnippet yasnippet-snippets)
+    :custom (yas-snippet-dirs . '("~/.emacs.d/site-lisp/my-snippets"))
     :config
     (yas-global-mode 1))
 
-  (leaf yasnippet-snippets
-    :init
-    (straight-use-package 'yasnippet-snippets)
-    :require t)
-
   (leaf company
+    :ensure t
+    :custom ((company-dabbrev-downcase . nil)
+             (company-dabbrev-ignore-case . nil)
+             (company-dabbrev-other-buffers . t)
+             (company-dabbrev-code-other-buffers . t)
+             (company-backends . '((company-elisp)
+                                   (company-yasnippet)))
+             (company-transformers .'(company-sort-by-backend-importance))
+             (company-idle-delay . 0.1)
+             (company-minimum-prefix-length . 2)
+             (company-selection-wrap-around . t)
+             (company-tooltip-align-annotations . t))
     :bind (("C-j" . company-complete)
            (company-active-map
             ("C-n" . company-select-next)
@@ -345,245 +345,109 @@
             ("C-d" . company-show-doc-buffer)
             ("C-o" . company-other-backend)))
     :config
-    (straight-use-package 'company)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-dabbrev-downcase nil nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-dabbrev-ignore-case nil nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-dabbrev-other-buffers t nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-dabbrev-code-other-buffers t nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-backends
-                                    '((company-elisp)
-                                      (company-yasnippet))
-                                    nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-transformers
-                                    '(company-sort-by-backend-importance)
-                                    nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-idle-delay 0.1 nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-minimum-prefix-length 2 nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-selection-wrap-around t nil nil "Customized with use-package company")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(company-tooltip-align-annotations t nil nil "Customized with use-package company")))
-    (global-company-mode))
-
-  (leaf company-box
-    :config
-    (straight-use-package 'company-box)
-    (with-eval-after-load 'company
-      (unless (fboundp 'company-box-mode)
-        (autoload #'company-box-mode "company-box" nil t))
-      (add-hook 'company-mode-hook #'company-box-mode)))
-
-  (leaf company-quickhelp
-    :config
-    (straight-use-package 'company-quickhelp)
-    (with-eval-after-load 'company
-      (company-quickhelp-mode 1)
-      (require 'company-quickhelp nil nil)))
+    (global-company-mode)
+    (leaf company-box :ensure t :config (company-box-mode t))
+    (leaf company-quickhelp :ensure t :config (company-quickhelp-mode t)))
 
   (leaf flycheck
-    :init
-    (straight-use-package 'flycheck)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(flycheck-disabled-checkers
-                                    '(slim-lint)
-                                    nil nil "Customized with use-package flycheck")))
+    :ensure t
+    :custom
+    (flycheck-disabled-checkers . '(slim-lint))
+    :config
     (global-flycheck-mode t)
-    :require t)
-
-  (leaf flyspell
-    :bind ((flyspell-mode-map
-            ("C-,")))
-    :hook (LaTeX-mode-hook)
-    :config
-    (straight-use-package 'flyspell)
-    (with-eval-after-load 'flyspell
-      (setq-default ispell-program-name "aspell")
-      (add-to-list 'ispell-skip-region-alist
-                   '("[^ -\377]+"))
-      (unless (use-package-ensure-system-package-exists\? 'aspell)
-        (async-shell-command "brew install aspell"))))
-
-  (leaf flycheck-posframe
-    :config
-    (straight-use-package 'flycheck-posframe)
-    (with-eval-after-load 'flycheck
-      (require 'flycheck-posframe nil nil)
-      (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)))
+    (leaf flycheck-posframe :ensure t :hook flycheck-mode-hook))
 
   (leaf quickrun
+    :ensure t
     :bind (("C-x q" . quickrun)
-           ("C-x a" . quickrun-with-arg))
-    :config
-    (straight-use-package 'quickrun))
-
-  (leaf dumb-jump
-    :bind ((dumb-jump-mode-map
-            ("C-M-g")
-            ("C-M-p")
-            ("C-M-q")))
-    :init
-    (straight-use-package 'dumb-jump)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dumb-jump-default-project "" nil nil "Customized with use-package dumb-jump")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dumb-jump-max-find-time 10 nil nil "Customized with use-package dumb-jump")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dumb-jump-selector 'ivy nil nil "Customized with use-package dumb-jump")))
-    :require t
-    :config
-    (dumb-jump-mode))
+           ("C-x a" . quickrun-with-arg)))
 
   (leaf smart-jump
+    :ensure (smart-jump dumb-jump)
     :bind (("M-." . smart-jump-go)
            ("M-," . smart-jump-back)
            ("M-'" . smart-jump-references)
            ("M-P" . smart-jump-peek))
+    :custom (smart-jump-bind-keys . nil)
     :config
-    (straight-use-package 'smart-jump)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(smart-jump-bind-keys nil nil nil "Customized with use-package smart-jump")))
     (smart-jump-setup-default-registers)
-    (smart-jump-register :modes 'js2-mode :jump-fn 'xref-find-definitions :pop-fn 'xref-pop-marker-stack :refs-fn 'xref-find-references :should-jump t :heuristic 'point :async t)
-    (smart-jump-register :modes 'robe-mode :jump-fn 'robe-jump :pop-fn 'xref-pop-marker-stack :refs-fn 'xref-find-references :should-jump t :heuristic 'point :async t))
+    (smart-jump-register :modes 'js2-mode
+                         :jump-fn 'xref-find-definitions
+                         :pop-fn 'xref-pop-marker-stack
+                         :refs-fn 'xref-find-references
+                         :should-jump t
+                         :heuristic 'point
+                         :async t)
+    (smart-jump-register :modes 'robe-mode
+                         :jump-fn 'robe-jump
+                         :pop-fn 'xref-pop-marker-stack
+                         :refs-fn 'xref-find-references
+                         :should-jump t
+                         :heuristic 'point
+                         :async t))
 
   (leaf jumplist
     :ensure t
     :bind (("M-p" . jumplist-previous)
            ("M-n" . jumplist-next))
-    :config
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(jumplist-hook-commands
-                                    '(avy-goto-char mouse-set-point smart-jump-go smart-jump-ref lsp-ui-peek-find-definitions lsp-ui-peek-find-references xref-find-definitions xref-find-references dump-jump-go my/jump-to-match-parens swiper counsel-find-file counsel-switch-buffer counsel-rg counsel-projectile-switch-project counsel-git counsel-projectile end-of-buffer beginning-of-buffer)
-                                    nil nil "Customized with use-package jumplist")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(jumplist-ex-mode t nil nil "Customized with use-package jumplist")))
-    (run-with-idle-timer 0 nil #'require 'jumplist nil t))
+    :custom
+    ((jumplist-hook-commands .
+                             '(avy-goto-char
+                               mouse-set-point
+                               smart-jump-go smart-jump-ref
+                               lsp-ui-peek-find-definitions lsp-ui-peek-find-references
+                               xref-find-definitions xref-find-references
+                               dump-jump-go
+                               my/jump-to-match-parens
+                               swiper counsel-find-file counsel-switch-buffer
+                               counsel-rg counsel-projectile-switch-project counsel-git counsel-projectile
+                               end-of-buffer beginning-of-buffer))
+     (jumplist-ex-mode . t)))
 
   (leaf rainbow-delimiters
-    :hook (prog-mode-hook)
-    :init
-    (straight-use-package 'rainbow-delimiters)
-    :require t)
+    :ensure t
+    :hook (prog-mode-hook))
 
   (leaf rainbow-mode
-    :hook (js2-mode-hook css-mode-hook html-mode-hook web-mode-hook typescript-mode-hook)
-    :config
-    (straight-use-package 'rainbow-mode))
+    :ensure
+    :hook (js2-mode-hook css-mode-hook html-mode-hook web-mode-hook typescript-mode-hook))
 
   (leaf symbol-overlay
-    :bind (("M-i" . symbol-overlay-put))
-    :config
-    (straight-use-package 'symbol-overlay)
-    (with-eval-after-load 'symbol-overlay
-      (add-hook 'prog-mode-hook #'symbol-overlay-mode)
-      (add-hook 'markdown-mode-hook #'symbol-overlay-mode)))
+    :ensure t
+    :hook (prog-mode-hook markdown-mode-hook)
+    :bind (("M-i" . symbol-overlay-put)))
 
   (leaf pcre2el
-    :init
-    (straight-use-package 'pcre2el)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(rxt-global-mode t nil nil "Customized with use-package pcre2el")))
-    :require t)
+    :ensure t
+    :custom (rxt-global-mode . t))
 
   (leaf elec-pair
+    :init (electric-pair-mode)
     :commands org-add-electric-pairs web-add-electric-pairs
     :hook ((org-mode-hook . org-add-electric-pairs)
            (web-mode-hook . web-add-electric-pairs))
     :config
-    (electric-pair-mode t)
-    (with-eval-after-load 'elec-pair
-      (defvar org-electric-pairs
-        '((47 . 47)
-          (61 . 61))
-        "Electric pairs for org-mode.")
-      (defun org-add-electric-pairs nil
-        (setq-local electric-pair-pairs
-                    (append electric-pair-pairs org-electric-pairs))
-        (setq-local electric-pair-text-pairs electric-pair-pairs))
-
-      (defvar web-electric-pairs
-        '((60 . 62)
-          (39 . 39)
-          (96 . 96))
-        "Electric pairs for web-mode.")
-      (defun web-add-electric-pairs nil
-        (setq-local electric-pair-pairs
-                    (append electric-pair-pairs web-electric-pairs))
-        (setq-local electric-pair-text-pairs electric-pair-pairs))))
+    (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
+    (defun org-add-electric-pairs ()p
+           (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
+           (setq-local electric-pair-text-pairs electric-pair-pairs))
+    (defvar web-electric-pairs '((?< . ?>) (?' . ?') (?` . ?`)) "Electric pairs for web-mode.")
+    (defun web-add-electric-pairs ()
+      (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
+      (setq-local electric-pair-text-pairs electric-pair-pairs)))
 
   (leaf yafolding
-    :init
-    (straight-use-package 'yafolding)
-    (add-hook 'prog-mode-hook
-              (lambda nil
-                (yafolding-mode)))
-    :require t)
-
-  (leaf google-translate
-    :init
-    (straight-use-package 'google-translate)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(google-translate-default-source-language "en" nil nil "Customized with use-package google-translate")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(google-translate-default-target-language "ja" nil nil "Customized with use-package google-translate")))
-    :require t)
-
-  (leaf google-this
-    :init
-    (straight-use-package 'google-this)
-    :require t
-    :config
-    (google-this-mode 1))
+    :ensure t
+    :hook prog-mode-hook)
 
   (leaf visual-regexp
+    :ensure t
     :bind (("C-r" . vr/query-replace))
+    :custom ((case-fold-search . nil))
     :config
-    (straight-use-package 'visual-regexp)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(case-fold-search nil nil nil "Customized with use-package visual-regexp"))))
-
-  (leaf visual-regexp-steroids
-    :config
-    (straight-use-package 'visual-regexp-steroids)
-    (with-eval-after-load 'visual-regexp
-      (let ((custom--inhibit-theme-enable nil))
-        (custom-theme-set-variables 'use-package
-                                    '(vr/engine 'pcre2el nil nil "Customized with use-package visual-regexp-steroids")))
-      (require 'visual-regexp-steroids nil nil)))
-
-  (leaf codic
-    :init
-    (straight-use-package 'codic)
-    :require t)
+    (leaf visual-regexp-steroids
+      :ensure t
+      :custom (vr/engine . 'pcre2el)))
 
   (leaf multiple-cursors
     :ensure t
@@ -593,14 +457,7 @@
   (leaf undo-fu
     :ensure t
     :bind (("C-/" . undo-fu-only-undo)
-           ("M-/" . undo-fu-only-redo))
-    :config
-    (straight-use-package 'undo-fu))
-
-  (leaf git-undo
-    :bind (("C-x C-/" . git-undo))
-    :config
-    (straight-use-package 'git-undo))
+           ("M-/" . undo-fu-only-redo)))
 
   (leaf expand-region
     :ensure t
@@ -608,41 +465,24 @@
            ("C-M-," . er/contract-region)))
 
   (leaf recentf
-    :init
-    (straight-use-package 'recentf)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(recentf-max-saved-items 1000 nil nil "Customized with use-package recentf")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(recentf-exclude
-                                    '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/")
-                                    nil nil "Customized with use-package recentf")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(recentf-auto-cleanup 'never nil nil "Customized with use-package recentf")))
-    :require t
+    :ensure t
+    :custom
+    (recentf-max-saved-items . 1000)
+    (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+    (recentf-auto-cleanup . 'never)
     :config
     (recentf-mode 1))
 
   (leaf wgrep
-    :init
-    (straight-use-package 'wgrep)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(wgrep-enable-key "e" nil nil "Customized with use-package wgrep")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(wgrep-auto-save-buffer t nil nil "Customized with use-package wgrep")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(wgrep-change-readonly-file t nil nil "Customized with use-package wgrep")))
-    :require t)
+    :ensure t
+    :custom
+    (wgrep-enable-key . "e")
+    (wgrep-auto-save-buffer . t)
+    (wgrep-change-readonly-file . t))
 
   (leaf string-inflection
-    :bind (("M-[" . string-inflection-all-cycle))
-    :config
-    (straight-use-package 'string-inflection)))
+    :ensure t
+    :bind (("M-[" . string-inflection-all-cycle))))
 
 
 ;;; ---------- メジャーモード設定 ----------
@@ -1935,11 +1775,10 @@
     (straight-use-package 'swap-buffers))
 
   (leaf other-window-or-split
+    :straight (other-window-or-split :type git :host github :repo "conao/other-window-or-split")
     :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
            ("C-S-t" . ws-previous-other-window-or-split))
     :config
-    (straight-use-package
-     '(other-window-or-split :type git :host github :repo "conao/other-window-or-split"))
     (with-eval-after-load 'other-window-or-split
       (setq ws-split-window-width-with-em 130)
       (use-package dired-sidebar)
