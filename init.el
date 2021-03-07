@@ -869,22 +869,22 @@
       "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
       (interactive)
       (org-with-point-at pom
-                         (let ((id (org-entry-get nil "CUSTOM_ID")))
-                           (cond
-                            ((and id
-                                  (stringp id)
-                                  (string-match "\\S-" id))
-                             id)
-                            (create
-                             (setq id (my-get-custom-id))
-                             (unless id
-                               (error "Invalid ID"))
-                             (org-entry-put pom "CUSTOM_ID" id)
-                             (message "--- CUSTOM_ID assigned: %s" id)
-                             (org-id-add-location id
-                                                  (buffer-file-name
-                                                   (buffer-base-buffer)))
-                             id)))))
+        (let ((id (org-entry-get nil "CUSTOM_ID")))
+          (cond
+           ((and id
+                 (stringp id)
+                 (string-match "\\S-" id))
+            id)
+           (create
+            (setq id (my-get-custom-id))
+            (unless id
+              (error "Invalid ID"))
+            (org-entry-put pom "CUSTOM_ID" id)
+            (message "--- CUSTOM_ID assigned: %s" id)
+            (org-id-add-location id
+                                 (buffer-file-name
+                                  (buffer-base-buffer)))
+            id)))))
 
     (leaf ox-latex
       :custom
@@ -949,12 +949,10 @@
             (car res))
            (cdr res))
           (setq ad-return-value (completion-pcm--filename-try-filter res)))))
+
   (leaf ediff
-    :init
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ediff-split-window-function 'split-window-horizontally nil nil "Customized with use-package ediff")))
-    :require t)
+    :custom
+    (ediff-split-window-function . 'split-window-horizontally))
 
   (leaf projectile
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
