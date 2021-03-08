@@ -955,50 +955,34 @@
     (ediff-split-window-function . 'split-window-horizontally))
 
   (leaf projectile
+    :ensure t
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
+    :custom
+    ((projectile-add-known-project . '("~/repos/")))
+    :preface
+    (defun my/projectile-toggle-between-implementation-and-test-other-window nil
+      "Toggle between an implementation file and its test file."
+      (interactive)
+      (find-file-other-window
+       (projectile-find-implementation-or-test
+        (buffer-file-name))))
     :config
-    (straight-use-package 'projectile)
-    (eval-and-compile
-      (defun my/projectile-toggle-between-implementation-and-test-other-window nil
-        "Toggle between an implementation file and its test file."
-        (interactive)
-        (find-file-other-window
-         (projectile-find-implementation-or-test
-          (buffer-file-name)))))
+    (projectile-mode 1)
+    (leaf projectile-rails
+      :ensure t
+      :hook projectile-mode-hook))
 
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(projectile-add-known-project
-                                    '("~/repos/")
-                                    nil nil "Customized with use-package projectile")))
-    (with-eval-after-load 'projectile
-      (projectile-mode 1)))
-
-  (leaf projectile-rails
-    :config
-    (straight-use-package 'projectile-rails)
-    (with-eval-after-load 'projectile
-      (unless (fboundp 'projectile-rails-on)
-        (autoload #'projectile-rails-on "projectile-rails" nil t))
-      (add-hook 'projectile-mode-hook 'projectile-rails-on)))
-
-  (leaf dashboard
-    :init
-    (straight-use-package 'dashboard)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dashboard-items
-                                    '((recents . 10)
-                                      (projects . 10))
-                                    nil nil "Customized with use-package dashboard")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dashboard-startup-banner 'logo nil nil "Customized with use-package dashboard")))
-    :require t
+  (use-package dashboard
+    :ensure t
+    :custom
+    (dashboard-items . '((recents  . 10)
+                         (projects . 10)))
+    (dashboard-startup-banner . 'logo)
     :config
     (dashboard-setup-startup-hook))
 
   (leaf counsel
+    :ensure-system-package (fzf ripgrep)
     :ensure t
     :bind (("C-s" . swiper)
            ("M-x" . counsel-M-x)
@@ -1017,148 +1001,94 @@
            ("C-x C-g" . counsel-git)
            (read-expression-map
             ("C-r" . counsel-expression-history)))
-    :init
-    (straight-use-package 'counsel)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(counsel-grep-base-command "rg -i -M 120 --no-heading --line-number --color never '%s' %s" nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ivy-height 20 nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ivy-use-virtual-buffers t nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(enable-recursive-minibuffers t nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ivy-count-format "(%d/%d) " nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ivy-extra-directories nil nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ivy-re-builders-alist
-                                    '((t . ivy--regex-plus)
-                                      (read-file-name-internal . ivy--regex-fuzzy))
-                                    nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ivy-format-function 'ivy-format-function-arrow nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(counsel-yank-pop-separator "\n-------\n" nil nil "Customized with use-package counsel")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(ivy-sort-matches-functions-alist
-                                    '((t)
-                                      (ivy-completion-in-region . ivy--shorter-matches-first)
-                                      (ivy-switch-buffer . ivy-sort-function-buffer))
-                                    nil nil "Customized with use-package counsel")))
-    (with-eval-after-load 'counsel
-      (ivy-mode 1)
-      (setq ivy-initial-inputs-alist nil)
-      (setq counsel-find-file-ignore-regexp (regexp-opt completion-ignored-extensions))
-      (defun reloading (cmd)
-        (lambda (x)
-          (funcall cmd x)
-          (ivy--reset-state ivy-last)))
-
-      (defun given-file (cmd prompt)
-        (lambda (source)
-          (let ((target (let ((enable-recursive-minibuffers t))
-                          (read-file-name
-                           (format "%s %s to:" prompt source)))))
-            (funcall cmd source target 1))))
-
-      (defun confirm-delete-file (x)
-        (dired-delete-file x 'confirm-each-subdirectory))
-
-      (defun my/open-externally (file-name)
-        "Open file with operating system's default application."
-        (interactive "fOpen externally: ")
-        (let ((process-connection-type nil))
-          (start-process "open-externally" nil "open" file-name)))
-
-      (ivy-set-actions 'my/find-file-and-create-directory
-                       `(("b" counsel-find-file-cd-bookmark-action "cd bookmark")
-                         ("c" ,(given-file #'copy-file "Copy")
-                          "copy")
-                         ("d" ,(reloading #'confirm-delete-file)
-                          "delete")
-                         ("m" ,(reloading
-                                (given-file #'rename-file "Move"))
-                          "move")
-                         ("e" my/open-externally "open externally")
-                         ("w" find-file-other-window "other window")))
-      (defun my/counsel-rg-with-extention-and-word (_)
-        "Execute counsel-rg with extention and _"
-        (let ((word (read-from-minibuffer "Search Word: "))
-              (extention (read-from-minibuffer "Extention: ")))
-          (counsel-rg
-           (concat word " -- -g'*." extention "'"))))
-
-      (defun my/counsel-rg-from-current-directory (_)
-        "Searched by current directory and subdirectories."
-        (if (buffer-file-name)
-            (counsel-rg nil
-                        (file-name-directory buffer-file-name))
-          (counsel-rg nil
-                      (dired-current-directory))))
-
-      (ivy-set-actions 'counsel-rg
-                       '(("e" my/counsel-rg-with-extention-and-word "with-extention")
-                         ("d" my/counsel-rg-from-current-directory "search-from-current-directroy")))
-      (defun my/counsel-fzf-from-current-directory (_)
-        "Searched by current directory and subdirectories."
-        (if (buffer-file-name)
-            (counsel-fzf nil
-                         (file-name-directory buffer-file-name))
-          (counsel-fzf nil
-                       (dired-current-directory))))
-
-      (ivy-set-actions 'counsel-fzf
-                       '(("d" my/counsel-fzf-from-current-directory "search-from-current-directroy")))
-      (defun my/ivy-yank-action (x)
-        (kill-new x))
-
-      (ivy-set-actions t
-                       '(("y" my/ivy-yank-action "yank")))
-      (unless (use-package-ensure-system-package-exists\? 'rg)
-        (async-shell-command "brew install ripgrep"))
-      (unless (use-package-ensure-system-package-exists\? 'fzf)
-        (async-shell-command "brew install fzf"))))
-
-  (leaf counsel-projectile
-    :bind (("C-x C-j" . counsel-projectile-switch-project))
+    :custom
+    ((counsel-grep-base-command . "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+     (ivy-height . 20)
+     (ivy-use-virtual-buffers . t)
+     (enable-recursive-minibuffers . t)
+     (ivy-count-format . "(%d/%d) ")
+     (ivy-extra-directories . nil)
+     (ivy-re-builders-alist . '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
+     (ivy-format-function . 'ivy-format-function-arrow)
+     (counsel-yank-pop-separator . "\n-------\n")
+     (ivy-sort-matches-functions-alist . '((t)
+                                           (ivy-completion-in-region . ivy--shorter-matches-first)
+                                           (ivy-switch-buffer . ivy-sort-function-buffer))))
     :config
-    (straight-use-package 'counsel-projectile))
+    (ivy-mode 1)
 
-  (leaf counsel-tramp
-    :bind (("C-x C-t" . counsel-tramp))
-    :config
-    (straight-use-package 'counsel-tramp))
+    ;; counsel-find-file
+    (defun reloading (cmd)
+      (lambda (x)
+        (funcall cmd x)
+        (ivy--reset-state ivy-last)))
 
-  (leaf ivy-rich
-    :init
-    (straight-use-package 'ivy-rich)
-    (ivy-rich-mode 1)
-    :require t)
+    (defun given-file (cmd prompt)
+      (lambda (source)
+        (let ((target (let ((enable-recursive-minibuffers t))
+                        (read-file-name
+                         (format "%s %s to:" prompt source)))))
+          (funcall cmd source target 1))))
 
-  (leaf all-the-icons-ivy-rich
-    :init
-    (straight-use-package 'all-the-icons-ivy-rich)
-    (all-the-icons-ivy-rich-mode 1)
-    :require t)
+    (defun confirm-delete-file (x)
+      (dired-delete-file x 'confirm-each-subdirectory))
 
-  (leaf ivy-hydra
-    :config
-    (straight-use-package 'ivy-hydra)
-    (with-eval-after-load 'counsel
-      (require 'ivy-hydra nil nil)))
+    (ivy-set-actions
+     'my/find-file-and-create-directory
+     `(("b" counsel-find-file-cd-bookmark-action "cd bookmark")
+       ("c" ,(given-file #'copy-file "Copy") "copy")
+       ("d" ,(reloading #'confirm-delete-file) "delete")
+       ("m" ,(reloading (given-file #'rename-file "Move")) "move")
+       ("j" find-file-other-window "other window")))
+
+    ;; counsel-rg
+    (defun my/counsel-rg-with-extention-and-word (_)
+      "Execute counsel-rg with extention and _"
+      (let ((word (read-from-minibuffer "Search Word: "))
+            (extention (read-from-minibuffer "Extention: ")))
+        (counsel-rg (concat word " -- -g'*." extention "'"))))
+
+    (defun my/counsel-rg-from-current-directory (_)
+      "Searched by current directory and subdirectories."
+      (if (buffer-file-name)
+          (counsel-rg nil (file-name-directory buffer-file-name))
+        (counsel-rg nil (dired-current-directory))))
+
+    (ivy-set-actions
+     'counsel-rg
+     '(("e" my/counsel-rg-with-extention-and-word "with-extention")
+       ("d" my/counsel-rg-from-current-directory "search-from-current-directroy")))
+
+    ;; counsel-fzf
+    (defun my/counsel-fzf-from-current-directory (_)
+      "Searched by current directory and subdirectories."
+      (if (buffer-file-name)
+          (counsel-fzf nil (file-name-directory buffer-file-name))
+        (counsel-fzf nil (dired-current-directory))))
+
+    (ivy-set-actions
+     'counsel-fzf
+     '(("d" my/counsel-fzf-from-current-directory "search-from-current-directroy")))
+
+    ;; geleral action
+    (defun my/ivy-yank-action (x) (kill-new x))
+    (ivy-set-actions t
+                     '(("y" my/ivy-yank-action "yank")))
+
+    (leaf counsel-tramp
+      :ensure t
+      :bind (("C-x C-t" . counsel-tramp)))
+
+    (leaf ivy-rich
+      :ensure t
+      :config
+      (all-the-icons-ivy-rich-mode 1))
+
+    (leaf ivy-hydra :ensure t))
 
   (leaf avy
+    :ensure t
+    :custom (avy-background . t)
     :preface
     (defun add-keys-to-avy (prefix c &optional mode)
       (define-key global-map
@@ -1171,381 +1101,228 @@
             (if (eq ',mode 'word)
                 #'avy-goto-word-1 #'avy-goto-char)
             ,c))))
-
-    :init
-    (straight-use-package 'avy)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(avy-background t nil nil "Customized with use-package avy")))
-    :require t
     :config
     (loop for c from 33 to 126 do
           (add-keys-to-avy "C-M-" c)))
 
-  (leaf which-key
-    :init
-    (straight-use-package 'which-key)
-    :require t
+  (leaf dired
     :config
-    (which-key-mode))
+    (leaf all-the-icons-dired :ensure t)
 
-  (leaf amx
-    :init
-    (straight-use-package 'amx)
-    :require t)
+    (leaf dired-sidebar
+      :ensure t
+      :bind (("C-x C-d" . dired-sidebar-toggle-sidebar)
+             (dired-sidebar-mode-map
+              ("o" . dired-sidebar-subtree-toggle)))
+      :custom ((dired-sidebar-use-term-integration . t)
+               (dired-sidebar-use-custom-modeline . nil))
+      :config
+      (defcustom dired-sidebar-mode-line-format
+        '("%e" mode-line-front-space
+          mode-line-buffer-identification
+          " "  mode-line-end-spaces)
+        "Mode line format for `dired-sidebar'."
+        :type 'list
+        :group 'dired-sidebar))
 
-  (leaf peep-dired
+    (use-package wdired
+      :ensure t
+      :bind (:map dired-mode-map (("e" . wdired-change-to-wdired-mode)
+                                  ("C-t" . nil)))))
+
+  (leaf shell
     :config
-    (straight-use-package 'peep-dired)
-    (with-eval-after-load 'dired
-      (unless (fboundp 'peep-dired)
-        (autoload #'peep-dired "peep-dired" nil t))
-      (bind-keys :package peep-dired :map dired-mode-map
-                 ("P" . peep-dired))))
+    (leaf eshell
+      :bind (eshell-mode-map ("C-r" . counsel-esh-history))
+      :custom
+      (eshell-cmpl-ignore-case . t)
+      (eshell-ask-to-save-history . 'always)
+      :config
+      (leaf eshell-prompt-extras
+        :ensure t
+        :custom
+        (eshell-highlight-prompt . nil)
+        (eshell-prompt-function . 'epe-theme-lambda))
+      (leaf esh-autosuggest
+        :hook (eshell-mode-hook)
+        :config
+        (straight-use-package . 'esh-autosuggest)))
 
-  (leaf all-the-icons-dired
+    (leaf vterm
+      :ensure t
+      :ensure-system-package (cmake libvterm libtool)
+      :custom
+      (vterm-max-scrollback . 10000)
+      (vterm-buffer-name-string . "vterm: %s")
+      ;; delete "C-h", add <f1> and <f2>
+      (vterm-keymap-exceptions
+       . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t"))
+      :config
+      ;; Workaround of not working counsel-yank-pop
+      ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
+      (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
+        (if (equal major-mode 'vterm-mode)
+            (let ((inhibit-read-only t)
+                  (yank-undo-function (lambda (_start _end) (vterm-undo))))
+              (cl-letf (((symbol-function 'insert-for-yank)
+                         (lambda (str) (vterm-send-string str t))))
+                (apply orig-fun args)))
+          (apply orig-fun args)))
+      (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)))
+
+  (leaf git
     :config
-    (straight-use-package 'all-the-icons-dired)
-    (with-eval-after-load 'dired
-      (require 'all-the-icons-dired nil nil)))
-
-  (leaf dired-sidebar
-    :bind (("C-x C-d" . dired-sidebar-toggle-sidebar)
-           (dired-sidebar-mode-map
-            ("o" . dired-sidebar-subtree-toggle)))
-    :config
-    (straight-use-package 'dired-sidebar)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dired-sidebar-use-term-integration t nil nil "Customized with use-package dired-sidebar")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(dired-sidebar-use-custom-modeline nil nil nil "Customized with use-package dired-sidebar")))
-    (add-hook 'dired-sidebar-mode-hook
-              (lambda nil
-                (unless (file-remote-p default-directory)
-                  (auto-revert-mode))))
-    (with-eval-after-load 'dired-sidebar
-      (defcustom dired-sidebar-mode-line-format '("%e" mode-line-front-space mode-line-buffer-identification " " mode-line-end-spaces)
-        "Mode line format for `dired-sidebar'." :type 'list :group 'dired-sidebar)))
-
-  (leaf wdired
-    :config
-    (straight-use-package 'wdired)
-    (with-eval-after-load 'dired
-      (unless (fboundp 'wdired-change-to-wdired-mode)
-        (autoload #'wdired-change-to-wdired-mode "wdired" nil t))
-      (bind-keys :package wdired :map dired-mode-map
-                 ("e" . wdired-change-to-wdired-mode)
-                 ("C-t"))))
-
-  (leaf eshell
-    :config
-    (straight-use-package 'eshell)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(eshell-cmpl-ignore-case t nil nil "Customized with use-package eshell")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(eshell-ask-to-save-history 'always nil nil "Customized with use-package eshell")))
-    (with-eval-after-load 'eshell
-      (add-hook 'eshell-mode-hook
-                (lambda nil
-                  (bind-key "C-r" 'counsel-esh-history eshell-mode-map)))))
-
-  (leaf eshell-prompt-extras
-    :config
-    (straight-use-package 'eshell-prompt-extras)
-    (with-eval-after-load 'eshell
-      (let ((custom--inhibit-theme-enable nil))
-        (custom-theme-set-variables 'use-package
-                                    '(eshell-highlight-prompt nil nil nil "Customized with use-package eshell-prompt-extras")))
-      (let ((custom--inhibit-theme-enable nil))
-        (custom-theme-set-variables 'use-package
-                                    '(eshell-prompt-function 'epe-theme-lambda nil nil "Customized with use-package eshell-prompt-extras")))
-      (require 'eshell-prompt-extras nil nil)))
-
-  (leaf esh-autosuggest
-    :hook (eshell-mode-hook)
-    :config
-    (straight-use-package 'esh-autosuggest))
-
-  (leaf docker
-    :init
-    (straight-use-package 'docker)
-    :require t)
-
-  (leaf docker-tramp
-    :init
-    (straight-use-package 'docker-tramp)
-    :require t)
-
-  (leaf magit
-    :bind (("C-x g" . magit-status)
-           (magit-status-mode-map
-            ("q" . my/magit-quit-session)
-            ("C-o" . magit-diff-visit-file-other-window)))
-    :config
-    (straight-use-package 'magit)
-    (eval-and-compile
+    (leaf magit
+      :ensure t
+      :ensure-system-package git
+      :bind (("C-x g" . magit-status)
+             (magit-status-mode-map
+              ("q" . my/magit-quit-session)
+              ("C-o" . magit-diff-visit-file-other-window)))
+      :preface
+      (defun my/magit-quit-session ()
+        (interactive)
+        (kill-buffer)
+        (delete-window))
+      :hook
+      (server-switch-hook . 'magit-commi-diff)
+      :config
       (defun my/magit-quit-session nil
         (interactive)
         (kill-buffer)
         (delete-window)))
 
-    (with-eval-after-load 'magit
-      (add-hook 'server-switch-hook 'magit-commit-diff)
-      (unless (use-package-ensure-system-package-exists\? 'git)
-        (async-shell-command "brew install git"))))
+    (leaf git-gutter
+      :custom
+      (git-gutter:modified-sign . " ")
+      (git-gutter:added-sign    . " ")
+      (git-gutter:deleted-sign  . " ")
+      :custom-face
+      (git-gutter:modified ((t (:background "#B4DCE7"))))
+      (git-gutter:added    ((t (:background "#74DFC4"))))
+      (git-gutter:deleted  ((t (:background "#964C7B"))))
+      :config
+      (global-git-gutter-mode t))
 
-  (leaf git-gutter
-    :custom-face ((git-gutter:modified quote
-                                       ((t
-                                         (:background "#B4DCE7"))))
-                  (git-gutter:added quote
-                                    ((t
-                                      (:background "#74DFC4"))))
-                  (git-gutter:deleted quote
-                                      ((t
-                                        (:background "#964C7B")))))
-    :init
-    (straight-use-package 'git-gutter)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(git-gutter:modified-sign " " nil nil "Customized with use-package git-gutter")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(git-gutter:added-sign " " nil nil "Customized with use-package git-gutter")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(git-gutter:deleted-sign " " nil nil "Customized with use-package git-gutter")))
-    :require t
+    (leaf git-timemachine :ensure t)
+
+    (leaf git-link
+      :ensure t
+      :custom (git-link-open-in-browser . t))
+
+    (leaf magit-gh-pulls
+      :straight (magit-gh-pulls :host github :repo "hyakt/magit-gh-pulls" :branch "master")
+      :hook ((magit-mode-hook . turn-on-magit-gh-pulls)))
+
+    (use-package gist
+      :custom
+      (gist-list-format .
+                        '((files "Filename" 24 nil identity)
+                          (created "Created" 20 nil "%D %R")
+                          (visibility "Visibility" 10 nil
+                                      (lambda
+                                        (public)
+                                        (or
+                                         (and public "public")
+                                         "private")))
+                          (description "Description" 0 nil identity)))))
+
+  (leaf docker :ensure t
     :config
-    (global-git-gutter-mode 1))
+    (leaf docker-tramp :ensure t))
 
-  (leaf gist
-    :init
-    (straight-use-package 'gist)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(gist-list-format
-                                    '((files "Filename" 24 nil identity)
-                                      (created "Created" 20 nil "%D %R")
-                                      (visibility "Visibility" 10 nil
-                                                  (lambda (public)
-                                                    (or
-                                                     (and public "public")
-                                                     "private")))
-                                      (description "Description" 0 nil identity))
-                                    nil nil "Customized with use-package gist")))
-    :require t)
-
-  (leaf magit-gh-pulls
+  (leaf window
     :config
-    (straight-use-package
-     '(magit-gh-pulls :host github :repo "hyakt/magit-gh-pulls" :branch "master"))
-    (with-eval-after-load 'magit
-      (unless (fboundp 'turn-on-magit-gh-pulls)
-        (autoload #'turn-on-magit-gh-pulls "magit-gh-pulls" nil t))
-      (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls)))
+    (leaf swap-buffers
+      :ensure t
+      :bind (("C-x C-o" . swap-buffers)))
 
-  (leaf git-timemachine
-    :init
-    (straight-use-package 'git-timemachine)
-    :require t)
-
-  (leaf git-link
-    :init
-    (straight-use-package 'git-link)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(git-link-open-in-browser t nil nil "Customized with use-package git-link")))
-    :require t)
-
-  (leaf twittering-mode
-    :init
-    (straight-use-package 'twittering-mode)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(twittering-use-master-password t nil nil "Customized with use-package twittering-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(twittering-timer-interval 120 nil nil "Customized with use-package twittering-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(twittering-convert-fix-size 24 nil nil "Customized with use-package twittering-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(twittering-status-format "%FOLD{%RT{%FACE[bold]{RT}} %i%s %r %C{%m/%d %H:%M}\n%FOLD[ ]{%T%RT{\nretweeted by %s @%C{%Y/%m/%d %H:%M}} \n}" nil nil "Customized with use-package twittering-mode")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(epa-pinentry-mode 'loopback nil nil "Customized with use-package twittering-mode")))
-    :require t
-    :config
-    (twittering-enable-unread-status-notifier)
-    (unless (use-package-ensure-system-package-exists\? 'gpg)
-      (async-shell-command "brew install gpg")))
-
-  (leaf open-junk-file
-    :ensure t
-    :bind (("C-`" . open-junk-file))
-    :custom
-    (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S."))
-
-  (leaf view
-    :commands backward-word forward-word next-line previous-line gene-word scroll-down scroll-up bm-toggle bm-previous bm-next scroll-other-window-down scroll-other-window
-    :config
-    (straight-use-package 'view)
-    (with-eval-after-load 'view
-      (setq view-read-only t)
-      (defadvice find-file (around find-file-switch-to-view-file
-                                   (file &optional wild)
-                                   activate)
-        (if (and
-             (not (file-writable-p file))
-             (not (file-directory-p file)))
-            (view-file file)
-          ad-do-it)))
-
-    (bind-keys :package view :map view-mode-map
-               ("h" . backward-word)
-               ("l" . forward-word)
-               ("j" . next-line)
-               ("k" . previous-line)
-               (";" . gene-word)
-               ("b" . scroll-down)
-               (" " . scroll-up)
-               ("n" lambda nil
-                (interactive)
-                (scroll-up 1))
-               ("p" lambda nil
-                (interactive)
-                (scroll-down 1))
-               ("." . bm-toggle)
-               ("[" . bm-previous)
-               ("]" . bm-next)
-               ("c" . scroll-other-window-down)
-               ("v" . scroll-other-window)))
-
-  (leaf swap-buffers
-    :bind (("C-x C-o" . swap-buffers))
-    :config
-    (straight-use-package 'swap-buffers))
-
-  (leaf other-window-or-split
-    :straight (other-window-or-split :type git :host github :repo "conao/other-window-or-split")
-    :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
-           ("C-S-t" . ws-previous-other-window-or-split))
-    :config
-    (with-eval-after-load 'other-window-or-split
-      (setq ws-split-window-width-with-em 130)
-      (use-package dired-sidebar)
-
-      (defun my/ws-other-window-or-split nil
+    (leaf other-window-or-split
+      :straight (other-window-or-split :type git :host github :repo "conao/other-window-or-split")
+      :after (dired-sidebar)
+      :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
+             ("C-S-t" . ws-previous-other-window-or-split))
+      :custom (ws-split-window-width-with-em . 130)
+      :config
+      (defun my/ws-other-window-or-split ()
         (interactive)
         (when (one-window-p)
           (ws-split-window-dwim))
-        (when (and
-               (and
-                (eq
-                 (length
-                  (window-list))
-                 2)
-                (dired-sidebar-showing-sidebar-p))
-               (not (eq
-                     (current-buffer)
-                     (dired-sidebar-buffer
-                      (selected-frame)))))
+        (when (and (and
+                    (eq (length (window-list)) 2)
+                    (dired-sidebar-showing-sidebar-p))
+                   (not (eq (current-buffer)
+                            (dired-sidebar-buffer (selected-frame)))))
           (ws-split-window-dwim))
         (other-window 1))
-
-      (defun my/ws-other-window-or-split-and-kill-minibuffer nil
+      (defun my/ws-other-window-or-split-and-kill-minibuffer ()
         (interactive)
         (if (active-minibuffer-window)
             (progn
               (minibuffer-keyboard-quit)
               (my/ws-other-window-or-split))
+          (my/ws-other-window-or-split))))
 
-          (my/ws-other-window-or-split)))))
+    (leaf eyebrowse
+      :ensure t
+      :custom
+      (eyebrowse-keymap-prefix (kbd "C-z"))
+      (eyebrowse-new-workspace t)
+      :config
+      (eyebrowse-mode . 1)
+      (global-unset-key . (kbd "C-z")))
 
-  (leaf eyebrowse
-    :bind (("C-z"))
-    :init
-    (straight-use-package 'eyebrowse)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(eyebrowse-keymap-prefix
-                                    (kbd "C-z")
-                                    nil nil "Customized with use-package eyebrowse")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(eyebrowse-new-workspace t nil nil "Customized with use-package eyebrowse")))
-    :require t
+    (leaf shackle
+      :ensure t
+      :custom
+      ((shackle-default-size . 0.4)
+       (shackle-rules .
+                      '(("*Help*"                   :align right)
+                        ("*Messages*"               :align right)
+                        ("*Backtrace*"              :align right)
+                        ("*Completions*"            :align below :ratio 0.33)
+                        ("*compilation*"            :align below :ratio 0.33)
+                        ("*Compile-Log"             :align below :ratio 0.33)
+                        ("*Kill Ring*"              :align below :ratio 0.33)
+                        ("*Occur*"                  :align below :ratio 0.33)
+                        ("*Google Translate*"       :align below :ratio 0.33)
+                        ("*Codic Result*"           :align below :ratio 0.33)
+                        ("*quickrun*"               :align below :ratio 0.33)
+                        ("*xref*"                   :align below :ratio 0.33)
+                        ("*prettier errors*"        :align below :ratio 0.33)
+                        (magit-status-mode          :select t :inhibit-window-quit t)
+                        ;; repl
+                        ("*Python*"                 :align below :ratio 0.33 :select t)
+                        ("*pry*"                    :align below :ratio 0.33 :select t)
+                        ("*ruby*"                   :align below :ratio 0.33 :select t)
+                        ("*nodejs*"                 :align below :ratio 0.33 :select t)
+                        ("*shell*"                  :align below :ratio 0.33 :select t)
+                        ;; excute shell
+                        ("*Async Shell Command*"    :align right)
+                        ("*Shell Command Output*"   :align right)
+                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
+                        ("*jest*"                   :regexp t :align below :pratio 0.3)
+                        ;; rust
+                        ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
+                        ("*rustfmt*"                :align below :ratio 0.33 :select nil)
+                        ;; ruby
+                        ("*rspec-compilation*"      :align below :ratio 0.33 :select nil)
+                        )))
+      :config
+      (shackle-mode 1)))
+
+  (leaf which-key
+    :ensure t
     :config
-    (eyebrowse-mode 1))
+    (which-key-mode))
 
-  (leaf shackle
-    :init
-    (straight-use-package 'shackle)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(shackle-default-size 0.4 nil nil "Customized with use-package shackle")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(shackle-rules
-                                    '(("*Help*" :align right)
-                                      ("*Messages*" :align right)
-                                      ("*Backtrace*" :align right)
-                                      ("*Completions*" :align below :ratio 0.33)
-                                      ("*compilation*" :align below :ratio 0.33)
-                                      ("*Compile-Log" :align below :ratio 0.33)
-                                      ("*Kill Ring*" :align below :ratio 0.33)
-                                      ("*Occur*" :align below :ratio 0.33)
-                                      ("*Google Translate*" :align below :ratio 0.33)
-                                      ("*Codic Result*" :align below :ratio 0.33)
-                                      ("*quickrun*" :align below :ratio 0.33)
-                                      ("*xref*" :align below :ratio 0.33)
-                                      ("*prettier errors*" :align below :ratio 0.33)
-                                      (magit-status-mode :select t :inhibit-window-quit t)
-                                      ("*Python*" :align below :ratio 0.33 :select t)
-                                      ("*pry*" :align below :ratio 0.33 :select t)
-                                      ("*ruby*" :align below :ratio 0.33 :select t)
-                                      ("*nodejs*" :align below :ratio 0.33 :select t)
-                                      ("*shell*" :align below :ratio 0.33 :select t)
-                                      ("*Async Shell Command*" :align right)
-                                      ("*Shell Command Output*" :align right)
-                                      ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
-                                      ("*jest*" :regexp t :align below :ratio 0.3)
-                                      ("*rustic-compilation*" :align below :ratio 0.33 :select nil)
-                                      ("*rustfmt*" :align below :ratio 0.33 :select nil)
-                                      ("*rspec-compilation*" :align below :ratio 0.33 :select nil))
-                                    nil nil "Customized with use-package shackle")))
-    (shackle-mode 1)
-    :require t)
+  (leaf amx :ensure t)
 
-  (leaf centaur-tabs
-    :bind (("M-{" . centaur-tabs-backward)
-           ("M-}" . centaur-tabs-forward))
-    :config
-    (straight-use-package 'centaur-tabs)
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(centaur-tabs-height 34 nil nil "Customized with use-package centaur-tabs")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(centaur-tabs-set-icons t nil nil "Customized with use-package centaur-tabs")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(centaur-tabs-set-modified-marker t nil nil "Customized with use-package centaur-tabs")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(centaur-tabs-modified-marker "*" nil nil "Customized with use-package centaur-tabs")))
-    (let ((custom--inhibit-theme-enable nil))
-      (custom-theme-set-variables 'use-package
-                                  '(centaur-tabs-close-button "x" nil nil "Customized with use-package centaur-tabs")))
-    (centaur-tabs-mode t)
-    (with-eval-after-load 'centaur-tabs
-      (centaur-tabs-headline-match))))
+  (leaf open-junk-file
+    :ensure t
+    :bind (("C-`" . open-junk-file))
+    :custom
+    (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S.")))
 
 (provide 'init)
 
