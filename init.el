@@ -47,27 +47,6 @@
     :custom ((imenu-list-size . 30)
              (imenu-list-position . 'left))))
 
-
-;; straight.elでパッケージ管理
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-;; use-packageとstraight.elを連携
-(straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
-(setq straight-check-for-modifications 'live)
-(use-package use-package-ensure-system-package)
-
 ;; 自作elispの読み込み
 (load "my-functions")
 
@@ -106,17 +85,19 @@
     (setq file-name-coding-system 'utf-8)
     (setq locale-coding-system 'utf-8))
 
-  (use-package exec-path-from-shell
+  (leaf exec-path-from-shell
     :ensure t
     :if (eq system-type 'darwin)
     :custom((exec-path-from-shell-variables '("PATH" "GOPATH")))
     :config
     (exec-path-from-shell-initialize))
 
-  (leaf *keybinds
+  (leaf bind-key
+    :ensure t
     :config
     ;; 通常操作
     (keyboard-translate ?\C-h ?\C-?)
+    (global-unset-key (kbd "C-z"))
     (bind-key (kbd "C-h") nil)
     (bind-key (kbd "C-h") nil)
     (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
@@ -486,6 +467,378 @@
     :bind (("M-[" . string-inflection-all-cycle))))
 
 
+;;; ---------- インターフェース設定 ----------
+(leaf *interface
+  :config
+  (setq completion-ignored-extensions (append completion-ignored-extensions
+                                              '("./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store")))
+  (defadvice completion--file-name-table (after ignoring-backups-f-n-completion activate)
+    "Filter out results when they match `completion-ignored-extensions'."
+    (let ((res ad-return-value))
+      (if (and
+           (listp res)
+           (stringp
+            (car res))
+           (cdr res))
+          (setq ad-return-value (completion-pcm--filename-try-filter res)))))
+
+  (leaf ediff
+    :custom
+    (ediff-split-window-function . 'split-window-horizontally))
+
+  (leaf projectile
+    :ensure t
+    :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
+    :custom
+    ((projectile-add-known-project . '("~/repos/")))
+    :preface
+    (defun my/projectile-toggle-between-implementation-and-test-other-window nil
+      "Toggle between an implementation file and its test file."
+      (interactive)
+      (find-file-other-window
+       (projectile-find-implementation-or-test
+        (buffer-file-name))))
+    :config
+    (projectile-mode 1)
+    (leaf projectile-rails
+      :ensure t
+      :hook projectile-mode-hook))
+
+  (leaf dashboard
+    :ensure t
+    :custom
+    (dashboard-items . '((recents  . 10)
+                         (projects . 10)))
+    (dashboard-startup-banner . 'logo)
+    :config
+    (dashboard-setup-startup-hook))
+
+  (leaf counsel
+    :ensure t
+    :ensure-system-package fzf (rg . ripgrep)
+    :bind (("C-s" . swiper)
+           ("M-x" . counsel-M-x)
+           ("M-y" . counsel-yank-pop)
+           ("C-x C-f" . my/find-file-and-create-directory)
+           ("C-x C-r" . counsel-recentf)
+           ( "C-x C-b" . switch-to-buffer)
+           ("<f1> f" . counsel-describe-function)
+           ("<f1> v" . counsel-describe-variable)
+           ("<f1> l" . counsel-find-library)
+           ("<f2> i" . counsel-info-lookup-symbol)
+           ("<f2> u" . counsel-unicode-char)
+           ("C-x f" . counsel-fzf)
+           ("C-x e" . counsel-rg)
+           ("C-c f" . counsel-flycheck)
+           ("C-x C-g" . counsel-git)
+           (read-expression-map
+            ("C-r" . counsel-expression-history)))
+    :custom
+    (counsel-grep-base-command . "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+    (ivy-height . 20)
+    (ivy-use-virtual-buffers . t)
+    (enable-recursive-minibuffers . t)
+    (ivy-count-format . "(%d/%d) ")
+    (ivy-extra-directories . nil)
+    (ivy-re-builders-alist . '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
+    (ivy-format-function . 'ivy-format-function-arrow)
+    (counsel-yank-pop-separator . "\n-------\n")
+    (ivy-sort-matches-functions-alist . '((t)
+                                          (ivy-completion-in-region . ivy--shorter-matches-first)
+                                          (ivy-switch-buffer . ivy-sort-function-buffer)))
+    (ivy-initial-inputs-alist . nil)
+    (counsel-find-file-ignore-regexp .(regexp-opt completion-ignored-extensions))
+    :global-minor-mode ivy-mode
+    :config
+    ;; counsel-find-file
+    (defun reloading (cmd)
+      (lambda (x)
+        (funcall cmd x)
+        (ivy--reset-state ivy-last)))
+
+    (defun given-file (cmd prompt)
+      (lambda (source)
+        (let ((target (let ((enable-recursive-minibuffers t))
+                        (read-file-name
+                         (format "%s %s to:" prompt source)))))
+          (funcall cmd source target 1))))
+
+    (defun confirm-delete-file (x)
+      (dired-delete-file x 'confirm-each-subdirectory))
+
+    (ivy-set-actions
+     'my/find-file-and-create-directory
+     `(("b" counsel-find-file-cd-bookmark-action "cd bookmark")
+       ("c" ,(given-file #'copy-file "Copy") "copy")
+       ("d" ,(reloading #'confirm-delete-file) "delete")
+       ("m" ,(reloading (given-file #'rename-file "Move")) "move")
+       ("j" find-file-other-window "other window")))
+
+    ;; counsel-rg
+    (defun my/counsel-rg-with-extention-and-word (_)
+      "Execute counsel-rg with extention and _"
+      (let ((word (read-from-minibuffer "Search Word: "))
+            (extention (read-from-minibuffer "Extention: ")))
+        (counsel-rg (concat word " -- -g'*." extention "'"))))
+
+    (defun my/counsel-rg-from-current-directory (_)
+      "Searched by current directory and subdirectories."
+      (if (buffer-file-name)
+          (counsel-rg nil (file-name-directory buffer-file-name))
+        (counsel-rg nil (dired-current-directory))))
+
+    (ivy-set-actions
+     'counsel-rg
+     '(("e" my/counsel-rg-with-extention-and-word "with-extention")
+       ("d" my/counsel-rg-from-current-directory "search-from-current-directroy")))
+
+    ;; counsel-fzf
+    (defun my/counsel-fzf-from-current-directory (_)
+      "Searched by current directory and subdirectories."
+      (if (buffer-file-name)
+          (counsel-fzf nil (file-name-directory buffer-file-name))
+        (counsel-fzf nil (dired-current-directory))))
+
+    (ivy-set-actions
+     'counsel-fzf
+     '(("d" my/counsel-fzf-from-current-directory "search-from-current-directroy")))
+
+    ;; geleral action
+    (defun my/ivy-yank-action (x) (kill-new x))
+    (ivy-set-actions t
+                     '(("y" my/ivy-yank-action "yank")))
+
+    (leaf counsel-tramp
+      :ensure t
+      :bind (("C-x C-t" . counsel-tramp)))
+
+    (leaf ivy-rich
+      :ensure t
+      :global-minor-mode all-the-icons-ivy-rich-mode)
+
+    (leaf ivy-hydra :ensure t))
+
+  (leaf avy
+    :ensure t
+    :custom (avy-background . t)
+    :preface
+    (defun add-keys-to-avy (prefix c &optional mode)
+      (define-key global-map
+        (read-kbd-macro
+         (concat prefix
+                 (string c)))
+        `(lambda nil
+           (interactive)
+           (funcall
+            (if (eq ',mode 'word)
+                #'avy-goto-word-1 #'avy-goto-char)
+            ,c))))
+    :config
+    (loop for c from 33 to 126 do
+          (add-keys-to-avy "C-M-" c)))
+
+  (leaf dired
+    :config
+    (leaf all-the-icons-dired :ensure t)
+
+    (leaf dired-sidebar
+      :ensure t
+      :bind (("C-x C-d" . dired-sidebar-toggle-sidebar)
+             (dired-sidebar-mode-map
+              ("o" . dired-sidebar-subtree-toggle)))
+      :custom ((dired-sidebar-use-term-integration . t)
+               (dired-sidebar-use-custom-modeline . nil))
+      :config
+      (defcustom dired-sidebar-mode-line-format
+        '("%e" mode-line-front-space
+          mode-line-buffer-identification
+          " "  mode-line-end-spaces)
+        "Mode line format for `dired-sidebar'."
+        :type 'list
+        :group 'dired-sidebar))
+
+    (leaf wdired
+      :ensure t
+      :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode)
+                             ("C-t" . nil)))))
+
+  (leaf shell
+    :config
+    (leaf eshell
+      :bind (eshell-mode-map ("C-r" . counsel-esh-history))
+      :custom
+      (eshell-cmpl-ignore-case . t)
+      (eshell-ask-to-save-history . 'always)
+      :config
+      (leaf eshell-prompt-extras
+        :ensure t
+        :custom
+        (eshell-highlight-prompt . nil)
+        (eshell-prompt-function . 'epe-theme-lambda))
+      (leaf esh-autosuggest
+        :ensure t
+        :hook (eshell-mode-hook)))
+
+    (leaf vterm
+      :ensure t
+      :ensure-system-package (cmake libtool)
+      :custom
+      (vterm-max-scrollback . 10000)
+      (vterm-buffer-name-string . "vterm: %s")
+      ;; delete "C-h", add <f1> and <f2>
+      (vterm-keymap-exceptions
+       . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t"))
+      :config
+      ;; Workaround of not working counsel-yank-pop
+      ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
+      (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
+        (if (equal major-mode 'vterm-mode)
+            (let ((inhibit-read-only t)
+                  (yank-undo-function (lambda (_start _end) (vterm-undo))))
+              (cl-letf (((symbol-function 'insert-for-yank)
+                         (lambda (str) (vterm-send-string str t))))
+                (apply orig-fun args)))
+          (apply orig-fun args)))
+      (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)))
+
+  (leaf git
+    :config
+    (leaf magit
+      :ensure t
+      :ensure-system-package git
+      :bind (("C-x g" . magit-status)
+             (magit-status-mode-map
+              ("q" . my/magit-quit-session)
+              ("C-o" . magit-diff-visit-file-other-window)))
+      :preface
+      (defun my/magit-quit-session ()
+        (interactive)
+        (kill-buffer)
+        (delete-window))
+      :hook
+      (server-switch-hook . 'magit-commi-diff)
+      :config
+      (defun my/magit-quit-session nil
+        (interactive)
+        (kill-buffer)
+        (delete-window)))
+
+    (leaf git-gutter
+      :ensure t
+      :custom
+      (git-gutter:modified-sign . " ")
+      (git-gutter:added-sign    . " ")
+      (git-gutter:deleted-sign  . " ")
+      :custom-face
+      (git-gutter:modified . '((t (:background "#B4DCE7"))))
+      (git-gutter:added    . '((t (:background "#74DFC4"))))
+      (git-gutter:deleted  . '((t (:background "#964C7B"))))
+      :global-minor-mode global-git-gutter-mode)
+
+    (leaf git-timemachine :ensure t)
+
+    (leaf git-link
+      :ensure t
+      :custom (git-link-open-in-browser . t))
+
+    (leaf magit-gh-pulls
+      :el-get (magit-gh-pulls :url "https://github.com/hyakt/magit-gh-pulls.git")
+      :hook ((magit-mode-hook . turn-on-magit-gh-pulls))))
+
+  (leaf docker :ensure t
+    :config
+    (leaf docker-tramp :ensure t))
+
+  (leaf window
+    :config
+    (leaf swap-buffers
+      :ensure t
+      :bind ("C-x C-o" . swap-buffers))
+
+    (leaf other-window-or-split
+      :el-get (other-window-or-split :url "https://github.com/conao/other-window-or-split.git")
+      :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
+             ("C-S-t" . ws-previous-other-window-or-split))
+      :custom (ws-split-window-width-with-em . 130)
+      :config
+      (require 'dired-sidebar)
+      (defun my/ws-other-window-or-split ()
+        (interactive)
+        (when (one-window-p)
+          (ws-split-window-dwim))
+        (when (and (and
+                    (eq (length (window-list)) 2)
+                    (dired-sidebar-showing-sidebar-p))
+                   (not (eq (current-buffer)
+                            (dired-sidebar-buffer (selected-frame)))))
+          (ws-split-window-dwim))
+        (other-window 1))
+      (defun my/ws-other-window-or-split-and-kill-minibuffer ()
+        (interactive)
+        (if (active-minibuffer-window)
+            (progn
+              (minibuffer-keyboard-quit)
+              (my/ws-other-window-or-split))
+          (my/ws-other-window-or-split))))
+
+    (leaf eyebrowse
+      :ensure t
+      :custom
+      (eyebrowse-new-workspace . t)
+      (eyebrowse-keymap-prefix . "\C-z")
+      :global-minor-mode eyebrowse-mode)
+
+    (leaf shackle
+      :ensure t
+      :custom
+      ((shackle-default-size . 0.4)
+       (shackle-rules .
+                      '(("*Help*"                   :align right)
+                        ("*Messages*"               :align right)
+                        ("*Backtrace*"              :align right)
+                        ("*Completions*"            :align below :ratio 0.33)
+                        ("*compilation*"            :align below :ratio 0.33)
+                        ("*Compile-Log"             :align below :ratio 0.33)
+                        ("*Kill Ring*"              :align below :ratio 0.33)
+                        ("*Occur*"                  :align below :ratio 0.33)
+                        ("*Google Translate*"       :align below :ratio 0.33)
+                        ("*Codic Result*"           :align below :ratio 0.33)
+                        ("*quickrun*"               :align below :ratio 0.33)
+                        ("*xref*"                   :align below :ratio 0.33)
+                        ("*prettier errors*"        :align below :ratio 0.33)
+                        (magit-status-mode          :select t :inhibit-window-quit t)
+                        ;; repl
+                        ("*Python*"                 :align below :ratio 0.33 :select t)
+                        ("*pry*"                    :align below :ratio 0.33 :select t)
+                        ("*ruby*"                   :align below :ratio 0.33 :select t)
+                        ("*nodejs*"                 :align below :ratio 0.33 :select t)
+                        ("*shell*"                  :align below :ratio 0.33 :select t)
+                        ;; excute shell
+                        ("*Async Shell Command*"    :align right)
+                        ("*Shell Command Output*"   :align right)
+                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
+                        ("*jest*"                   :regexp t :align below :pratio 0.3)
+                        ;; rust
+                        ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
+                        ("*rustfmt*"                :align below :ratio 0.33 :select nil)
+                        ;; ruby
+                        ("*rspec-compilation*"      :align below :ratio 0.33 :select nil)
+                        )))
+      :config
+      (shackle-mode 1)))
+
+  (leaf which-key
+    :ensure t
+    :global-minor-mode which-key-mode)
+
+  (leaf amx :ensure t)
+
+  (leaf open-junk-file
+    :ensure t
+    :bind (("C-`" . open-junk-file))
+    :custom
+    (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S.")))
+
 ;;; ---------- メジャーモード設定 ----------
 (leaf *major-mode
   :config
@@ -501,10 +854,10 @@
              (lsp-enable-snippet . nil)
              (lsp-headerline-breadcrumb-enable . nil)))
 
-  (leaf *web
+  (leaf web
     :config
     (leaf web-mode
-      :straight (web-mode :type git :host github :repo "hyakt/web-mode")
+      :el-get (web-mode :url "https://github.com/hyakt/web-mode")
       :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.[jt]sx\\'")
       :custom
       ((web-mode-indent-style . 2)
@@ -591,12 +944,12 @@
       :ensure t
       :hook (graphql-mode-hook js2-mode-hook scss-mode-hook css-mode-hook))
 
-    (leaf *html
+    (leaf html
       :config
       (leaf slim-mode :ensure t)
       (leaf haml-mode :ensure t))
 
-    (leaf *css
+    (leaf css
       :config
       (leaf css-mode
         :custom (css-indent-offset . 2)
@@ -623,11 +976,11 @@
       (leaf sass-mode :ensure t)
       (leaf sws-mode :ensure t))
 
-    (leaf *javascript
+    (leaf javascript
       :config
       (leaf js2-mode
         :ensure (js2-mode tern xref-js2)
-        :straight (company-tern :host github :repo "emacsattic/company-tern" :branch "master")
+        :el-get (company-tern :url "https://github.com/emacsattic/company-tern")
         :custom
         ((js-indent-level . 2)
          (js-switch-indent-offset . 2)
@@ -825,7 +1178,7 @@
       :ensure t
       :commands sbt-start sbt-command)
     (leaf scala-bootstrap
-      :straight (scala-bootstrap :type git :host github :repo "tarao/scala-bootstrap-el")
+      :el-get (scala-bootstrap :url "https://github.com/tarao/scala-bootstrap-el")
       :hook (scala-mode-hook . (lambda ()
                                  (scala-bootstrap:with-metals-installed
                                   (scala-bootstrap:with-bloop-server-started
@@ -869,22 +1222,22 @@
       "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
       (interactive)
       (org-with-point-at pom
-        (let ((id (org-entry-get nil "CUSTOM_ID")))
-          (cond
-           ((and id
-                 (stringp id)
-                 (string-match "\\S-" id))
-            id)
-           (create
-            (setq id (my-get-custom-id))
-            (unless id
-              (error "Invalid ID"))
-            (org-entry-put pom "CUSTOM_ID" id)
-            (message "--- CUSTOM_ID assigned: %s" id)
-            (org-id-add-location id
-                                 (buffer-file-name
-                                  (buffer-base-buffer)))
-            id)))))
+                         (let ((id (org-entry-get nil "CUSTOM_ID")))
+                           (cond
+                            ((and id
+                                  (stringp id)
+                                  (string-match "\\S-" id))
+                             id)
+                            (create
+                             (setq id (my-get-custom-id))
+                             (unless id
+                               (error "Invalid ID"))
+                             (org-entry-put pom "CUSTOM_ID" id)
+                             (message "--- CUSTOM_ID assigned: %s" id)
+                             (org-id-add-location id
+                                                  (buffer-file-name
+                                                   (buffer-base-buffer)))
+                             id)))))
 
     (leaf ox-latex
       :custom
@@ -934,395 +1287,6 @@
                             (set
                              (make-local-variable 'whitespace-action)
                              nil))))))
-
-;;; ---------- インターフェース設定 ----------
-(leaf *interface
-  :config
-  (setq completion-ignored-extensions (append completion-ignored-extensions
-                                              '("./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store")))
-  (defadvice completion--file-name-table (after ignoring-backups-f-n-completion activate)
-    "Filter out results when they match `completion-ignored-extensions'."
-    (let ((res ad-return-value))
-      (if (and
-           (listp res)
-           (stringp
-            (car res))
-           (cdr res))
-          (setq ad-return-value (completion-pcm--filename-try-filter res)))))
-
-  (leaf ediff
-    :custom
-    (ediff-split-window-function . 'split-window-horizontally))
-
-  (leaf projectile
-    :ensure t
-    :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
-    :custom
-    ((projectile-add-known-project . '("~/repos/")))
-    :preface
-    (defun my/projectile-toggle-between-implementation-and-test-other-window nil
-      "Toggle between an implementation file and its test file."
-      (interactive)
-      (find-file-other-window
-       (projectile-find-implementation-or-test
-        (buffer-file-name))))
-    :config
-    (projectile-mode 1)
-    (leaf projectile-rails
-      :ensure t
-      :hook projectile-mode-hook))
-
-  (use-package dashboard
-    :ensure t
-    :custom
-    (dashboard-items . '((recents  . 10)
-                         (projects . 10)))
-    (dashboard-startup-banner . 'logo)
-    :config
-    (dashboard-setup-startup-hook))
-
-  (leaf counsel
-    :ensure-system-package (fzf ripgrep)
-    :ensure t
-    :bind (("C-s" . swiper)
-           ("M-x" . counsel-M-x)
-           ("M-y" . counsel-yank-pop)
-           ("C-x C-f" . my/find-file-and-create-directory)
-           ("C-x C-r" . counsel-recentf)
-           ("C-x C-b" . switch-to-buffer)
-           ("<f1> f" . counsel-describe-function)
-           ("<f1> v" . counsel-describe-variable)
-           ("<f1> l" . counsel-find-library)
-           ("<f2> i" . counsel-info-lookup-symbol)
-           ("<f2> u" . counsel-unicode-char)
-           ("C-x f" . counsel-fzf)
-           ("C-x e" . counsel-rg)
-           ("C-c f" . counsel-flycheck)
-           ("C-x C-g" . counsel-git)
-           (read-expression-map
-            ("C-r" . counsel-expression-history)))
-    :custom
-    ((counsel-grep-base-command . "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
-     (ivy-height . 20)
-     (ivy-use-virtual-buffers . t)
-     (enable-recursive-minibuffers . t)
-     (ivy-count-format . "(%d/%d) ")
-     (ivy-extra-directories . nil)
-     (ivy-re-builders-alist . '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
-     (ivy-format-function . 'ivy-format-function-arrow)
-     (counsel-yank-pop-separator . "\n-------\n")
-     (ivy-sort-matches-functions-alist . '((t)
-                                           (ivy-completion-in-region . ivy--shorter-matches-first)
-                                           (ivy-switch-buffer . ivy-sort-function-buffer))))
-    :config
-    (ivy-mode 1)
-
-    ;; counsel-find-file
-    (defun reloading (cmd)
-      (lambda (x)
-        (funcall cmd x)
-        (ivy--reset-state ivy-last)))
-
-    (defun given-file (cmd prompt)
-      (lambda (source)
-        (let ((target (let ((enable-recursive-minibuffers t))
-                        (read-file-name
-                         (format "%s %s to:" prompt source)))))
-          (funcall cmd source target 1))))
-
-    (defun confirm-delete-file (x)
-      (dired-delete-file x 'confirm-each-subdirectory))
-
-    (ivy-set-actions
-     'my/find-file-and-create-directory
-     `(("b" counsel-find-file-cd-bookmark-action "cd bookmark")
-       ("c" ,(given-file #'copy-file "Copy") "copy")
-       ("d" ,(reloading #'confirm-delete-file) "delete")
-       ("m" ,(reloading (given-file #'rename-file "Move")) "move")
-       ("j" find-file-other-window "other window")))
-
-    ;; counsel-rg
-    (defun my/counsel-rg-with-extention-and-word (_)
-      "Execute counsel-rg with extention and _"
-      (let ((word (read-from-minibuffer "Search Word: "))
-            (extention (read-from-minibuffer "Extention: ")))
-        (counsel-rg (concat word " -- -g'*." extention "'"))))
-
-    (defun my/counsel-rg-from-current-directory (_)
-      "Searched by current directory and subdirectories."
-      (if (buffer-file-name)
-          (counsel-rg nil (file-name-directory buffer-file-name))
-        (counsel-rg nil (dired-current-directory))))
-
-    (ivy-set-actions
-     'counsel-rg
-     '(("e" my/counsel-rg-with-extention-and-word "with-extention")
-       ("d" my/counsel-rg-from-current-directory "search-from-current-directroy")))
-
-    ;; counsel-fzf
-    (defun my/counsel-fzf-from-current-directory (_)
-      "Searched by current directory and subdirectories."
-      (if (buffer-file-name)
-          (counsel-fzf nil (file-name-directory buffer-file-name))
-        (counsel-fzf nil (dired-current-directory))))
-
-    (ivy-set-actions
-     'counsel-fzf
-     '(("d" my/counsel-fzf-from-current-directory "search-from-current-directroy")))
-
-    ;; geleral action
-    (defun my/ivy-yank-action (x) (kill-new x))
-    (ivy-set-actions t
-                     '(("y" my/ivy-yank-action "yank")))
-
-    (leaf counsel-tramp
-      :ensure t
-      :bind (("C-x C-t" . counsel-tramp)))
-
-    (leaf ivy-rich
-      :ensure t
-      :config
-      (all-the-icons-ivy-rich-mode 1))
-
-    (leaf ivy-hydra :ensure t))
-
-  (leaf avy
-    :ensure t
-    :custom (avy-background . t)
-    :preface
-    (defun add-keys-to-avy (prefix c &optional mode)
-      (define-key global-map
-        (read-kbd-macro
-         (concat prefix
-                 (string c)))
-        `(lambda nil
-           (interactive)
-           (funcall
-            (if (eq ',mode 'word)
-                #'avy-goto-word-1 #'avy-goto-char)
-            ,c))))
-    :config
-    (loop for c from 33 to 126 do
-          (add-keys-to-avy "C-M-" c)))
-
-  (leaf dired
-    :config
-    (leaf all-the-icons-dired :ensure t)
-
-    (leaf dired-sidebar
-      :ensure t
-      :bind (("C-x C-d" . dired-sidebar-toggle-sidebar)
-             (dired-sidebar-mode-map
-              ("o" . dired-sidebar-subtree-toggle)))
-      :custom ((dired-sidebar-use-term-integration . t)
-               (dired-sidebar-use-custom-modeline . nil))
-      :config
-      (defcustom dired-sidebar-mode-line-format
-        '("%e" mode-line-front-space
-          mode-line-buffer-identification
-          " "  mode-line-end-spaces)
-        "Mode line format for `dired-sidebar'."
-        :type 'list
-        :group 'dired-sidebar))
-
-    (use-package wdired
-      :ensure t
-      :bind (:map dired-mode-map (("e" . wdired-change-to-wdired-mode)
-                                  ("C-t" . nil)))))
-
-  (leaf shell
-    :config
-    (leaf eshell
-      :bind (eshell-mode-map ("C-r" . counsel-esh-history))
-      :custom
-      (eshell-cmpl-ignore-case . t)
-      (eshell-ask-to-save-history . 'always)
-      :config
-      (leaf eshell-prompt-extras
-        :ensure t
-        :custom
-        (eshell-highlight-prompt . nil)
-        (eshell-prompt-function . 'epe-theme-lambda))
-      (leaf esh-autosuggest
-        :hook (eshell-mode-hook)
-        :config
-        (straight-use-package . 'esh-autosuggest)))
-
-    (leaf vterm
-      :ensure t
-      :ensure-system-package (cmake libvterm libtool)
-      :custom
-      (vterm-max-scrollback . 10000)
-      (vterm-buffer-name-string . "vterm: %s")
-      ;; delete "C-h", add <f1> and <f2>
-      (vterm-keymap-exceptions
-       . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t"))
-      :config
-      ;; Workaround of not working counsel-yank-pop
-      ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
-      (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
-        (if (equal major-mode 'vterm-mode)
-            (let ((inhibit-read-only t)
-                  (yank-undo-function (lambda (_start _end) (vterm-undo))))
-              (cl-letf (((symbol-function 'insert-for-yank)
-                         (lambda (str) (vterm-send-string str t))))
-                (apply orig-fun args)))
-          (apply orig-fun args)))
-      (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)))
-
-  (leaf git
-    :config
-    (leaf magit
-      :ensure t
-      :ensure-system-package git
-      :bind (("C-x g" . magit-status)
-             (magit-status-mode-map
-              ("q" . my/magit-quit-session)
-              ("C-o" . magit-diff-visit-file-other-window)))
-      :preface
-      (defun my/magit-quit-session ()
-        (interactive)
-        (kill-buffer)
-        (delete-window))
-      :hook
-      (server-switch-hook . 'magit-commi-diff)
-      :config
-      (defun my/magit-quit-session nil
-        (interactive)
-        (kill-buffer)
-        (delete-window)))
-
-    (leaf git-gutter
-      :custom
-      (git-gutter:modified-sign . " ")
-      (git-gutter:added-sign    . " ")
-      (git-gutter:deleted-sign  . " ")
-      :custom-face
-      (git-gutter:modified ((t (:background "#B4DCE7"))))
-      (git-gutter:added    ((t (:background "#74DFC4"))))
-      (git-gutter:deleted  ((t (:background "#964C7B"))))
-      :config
-      (global-git-gutter-mode t))
-
-    (leaf git-timemachine :ensure t)
-
-    (leaf git-link
-      :ensure t
-      :custom (git-link-open-in-browser . t))
-
-    (leaf magit-gh-pulls
-      :straight (magit-gh-pulls :host github :repo "hyakt/magit-gh-pulls" :branch "master")
-      :hook ((magit-mode-hook . turn-on-magit-gh-pulls)))
-
-    (use-package gist
-      :custom
-      (gist-list-format .
-                        '((files "Filename" 24 nil identity)
-                          (created "Created" 20 nil "%D %R")
-                          (visibility "Visibility" 10 nil
-                                      (lambda
-                                        (public)
-                                        (or
-                                         (and public "public")
-                                         "private")))
-                          (description "Description" 0 nil identity)))))
-
-  (leaf docker :ensure t
-    :config
-    (leaf docker-tramp :ensure t))
-
-  (leaf window
-    :config
-    (leaf swap-buffers
-      :ensure t
-      :bind (("C-x C-o" . swap-buffers)))
-
-    (leaf other-window-or-split
-      :straight (other-window-or-split :type git :host github :repo "conao/other-window-or-split")
-      :after (dired-sidebar)
-      :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
-             ("C-S-t" . ws-previous-other-window-or-split))
-      :custom (ws-split-window-width-with-em . 130)
-      :config
-      (defun my/ws-other-window-or-split ()
-        (interactive)
-        (when (one-window-p)
-          (ws-split-window-dwim))
-        (when (and (and
-                    (eq (length (window-list)) 2)
-                    (dired-sidebar-showing-sidebar-p))
-                   (not (eq (current-buffer)
-                            (dired-sidebar-buffer (selected-frame)))))
-          (ws-split-window-dwim))
-        (other-window 1))
-      (defun my/ws-other-window-or-split-and-kill-minibuffer ()
-        (interactive)
-        (if (active-minibuffer-window)
-            (progn
-              (minibuffer-keyboard-quit)
-              (my/ws-other-window-or-split))
-          (my/ws-other-window-or-split))))
-
-    (leaf eyebrowse
-      :ensure t
-      :custom
-      (eyebrowse-keymap-prefix (kbd "C-z"))
-      (eyebrowse-new-workspace t)
-      :config
-      (eyebrowse-mode . 1)
-      (global-unset-key . (kbd "C-z")))
-
-    (leaf shackle
-      :ensure t
-      :custom
-      ((shackle-default-size . 0.4)
-       (shackle-rules .
-                      '(("*Help*"                   :align right)
-                        ("*Messages*"               :align right)
-                        ("*Backtrace*"              :align right)
-                        ("*Completions*"            :align below :ratio 0.33)
-                        ("*compilation*"            :align below :ratio 0.33)
-                        ("*Compile-Log"             :align below :ratio 0.33)
-                        ("*Kill Ring*"              :align below :ratio 0.33)
-                        ("*Occur*"                  :align below :ratio 0.33)
-                        ("*Google Translate*"       :align below :ratio 0.33)
-                        ("*Codic Result*"           :align below :ratio 0.33)
-                        ("*quickrun*"               :align below :ratio 0.33)
-                        ("*xref*"                   :align below :ratio 0.33)
-                        ("*prettier errors*"        :align below :ratio 0.33)
-                        (magit-status-mode          :select t :inhibit-window-quit t)
-                        ;; repl
-                        ("*Python*"                 :align below :ratio 0.33 :select t)
-                        ("*pry*"                    :align below :ratio 0.33 :select t)
-                        ("*ruby*"                   :align below :ratio 0.33 :select t)
-                        ("*nodejs*"                 :align below :ratio 0.33 :select t)
-                        ("*shell*"                  :align below :ratio 0.33 :select t)
-                        ;; excute shell
-                        ("*Async Shell Command*"    :align right)
-                        ("*Shell Command Output*"   :align right)
-                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
-                        ("*jest*"                   :regexp t :align below :pratio 0.3)
-                        ;; rust
-                        ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
-                        ("*rustfmt*"                :align below :ratio 0.33 :select nil)
-                        ;; ruby
-                        ("*rspec-compilation*"      :align below :ratio 0.33 :select nil)
-                        )))
-      :config
-      (shackle-mode 1)))
-
-  (leaf which-key
-    :ensure t
-    :config
-    (which-key-mode))
-
-  (leaf amx :ensure t)
-
-  (leaf open-junk-file
-    :ensure t
-    :bind (("C-`" . open-junk-file))
-    :custom
-    (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S.")))
 
 (provide 'init)
 
