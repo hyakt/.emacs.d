@@ -18,7 +18,7 @@
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file) (load custom-file))
 
-;; <leaf-install-code>
+;; leaf-install-code
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("org" . "https://orgmode.org/elpa/")
@@ -29,23 +29,21 @@
     (package-refresh-contents)
     (package-install 'leaf))
 
-  (leaf leaf-keywords
-    :ensure t
-    :init
-    (leaf el-get :ensure t)
-    (leaf system-packages :ensure t)
-
+  (leaf leaf
     :config
-    ;; initialize leaf-keywords.el
-    (leaf-keywords-init)))
+    (leaf leaf-keywords
+      :ensure t
+      :init
+      (leaf el-get :ensure t)
+      (leaf system-packages :ensure t)
 
-(leaf leaf
-  :config
-  (leaf leaf-convert :ensure t)
-  (leaf leaf-tree
-    :ensure t
-    :custom ((imenu-list-size . 30)
-             (imenu-list-position . 'left))))
+      :config
+      ;; initialize leaf-keywords.el
+      (leaf-keywords-init))
+    (leaf leaf-tree
+      :ensure t
+      :custom ((imenu-list-size . 30)
+               (imenu-list-position . 'left)))))
 
 ;; 自作elispの読み込み
 (load "my-functions")
@@ -210,10 +208,9 @@
 
   (leaf doom-themes
     :ensure t
-    :init
-    (load "my-doom-tokyo-night")
     :config
-    (load-theme 'doom-vibrant t)
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
+    (load-theme 'doom-palenight t)
     (doom-themes-neotree-config)
     (doom-themes-org-config))
 
