@@ -369,6 +369,7 @@
                          :async t))
 
   (leaf jumplist
+    :require t
     :ensure t
     :bind (("M-p" . jumplist-previous)
            ("M-n" . jumplist-next))
@@ -382,7 +383,7 @@
                                dump-jump-go
                                my/jump-to-match-parens
                                swiper counsel-find-file counsel-switch-buffer
-                               counsel-rg counsel-projectile-switch-project counsel-git counsel-projectile
+                               counsel-rg counsel-projectile-switch-project counsel-git counsel-projectile counsel-ghq
                                end-of-buffer beginning-of-buffer))
      (jumplist-ex-mode . t)))
 
