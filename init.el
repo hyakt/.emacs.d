@@ -36,7 +36,6 @@
       :init
       (leaf el-get :ensure t)
       (leaf system-packages :ensure t)
-
       :config
       ;; initialize leaf-keywords.el
       (leaf-keywords-init))
@@ -836,7 +835,7 @@
   (leaf web
     :config
     (leaf web-mode
-      :el-get (web-mode :url "https://github.com/hyakt/web-mode")
+      :el-get (web-mode :url "https://github.com/hyakt/web-mode.git")
       :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.[jt]sx\\'")
       :custom
       ((web-mode-indent-style . 2)
