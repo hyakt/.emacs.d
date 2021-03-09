@@ -122,43 +122,39 @@
 ;;; ---------- 外観設定 ----------
 (leaf *appearance
   :ensure all-the-icons
-  :config
-  ;; 全般
-  (setq-default tab-width 2)                                    ;; タブの幅は半角スペース 2
-  (setq-default indent-tabs-mode nil)                           ;; タブの変わりに半角スペースを使う
-  (setq-default line-spacing 0)                                 ;; 行間を無しに設定
-  (setq-default cursor-type 'box)
-  (setq inhibit-startup-screen 1)                               ;; スタートアップメッセージを非表示
-  (setq initial-scratch-message "")                             ;; scratchの初期メッセージ消去
-  (setq truncate-lines nil)                                     ;; 画面端まで来たら折り返す
-  (setq truncate-partial-width-windows nil)
-  (setq echo-keystrokes 0.1)                                    ;; キーストロークをエコーエリアに早く表示する
-  (setq scroll-conservatively 35 scroll-margin 0 scroll-step 1) ;; スクロールの設定
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-  (setq frame-title-format "")                                  ;; タイトルバーに何も表示しない
-  (show-paren-mode 1)                                           ;; 対応する括弧を光らせる
-  (transient-mark-mode 1)                                       ;; 選択部分のハイライト
-  (global-font-lock-mode 1)                                     ;; フォントロックモード
-  (tool-bar-mode 0)                                             ;; ツールバーを利用しない
-  (set-scroll-bar-mode 'nil)                                    ;; スクロールバーを使わない
-  (line-number-mode 1)                                          ;; 行番号を表示
-  (column-number-mode 1)                                        ;; 列番号を表示
-  (custom-set-variables
-   '(init-loader-show-log-after-init 'error-only))              ;; init-loaderが失敗した時のみエラーメッセージを表示
-
-  ;; ウィンドウサイズの設定
-  (setq split-height-threshold 120)
-  (setq split-width-threshold 200)
-
-  (setq default-frame-alist
-        '((top . 0)
-          (left . 100)
-          (width . (text-pixels . 1280))
-          (height . (text-pixels . 800))
-          (alpha . (100 100))))
-
-  (add-hook 'kill-emacs-hook 'frame-size-save)
-
+  :custom
+  (cursor-type .'box)
+  (echo-keystrokes . 0.1)                                     ;; キーストロークをエコーエリアに早く表示する
+  (frame-title-format . "")                                   ;; タイトルバーに何も表示しない
+  (indent-tabs-mode . nil)                                    ;; タブの変わりに半角スペースを使う
+  (inhibit-startup-screen . 1)                                ;; スタートアップメッセージを非表示
+  (init-loader-show-log-after-init . 'error-only)             ;; init-loaderが失敗した時のみエラーメッセージを表示
+  (initial-scratch-message . "")                              ;; scratchの初期メッセージ消去
+  (line-spacing . 0)                                          ;; 行間を無しに設定
+  (scroll-conservatively . 35)                                ;; スクロールの設定
+  (scroll-margin . 0)                                         ;; スクロールの設定
+  (scroll-step . 1)
+  (scroll-bar-mode . nil)                                     ;; スクロールバーを使わない
+  (tab-width . 2)                                             ;; タブの幅は半角スペース 2
+  (tool-bar-mode . nil)                                       ;; ツールバーを利用しない
+  (truncate-lines . nil)                                      ;; 画面端まで来たら折り返す
+  (truncate-partial-width-windows . nil)
+  (uniquify-buffer-name-style . 'post-forward-angle-brackets) ;; 同じ名前のバッファを開いたときの設定
+  (split-height-threshold . 120)
+  (split-width-threshold . 200)
+  (default-frame-alist .
+    '((top . 0)
+      (left . 100)
+      (width . (text-pixels . 1280))
+      (height . (text-pixels . 800))
+      (alpha . (100 100))))
+  :global-minor-mode
+  show-paren-mode                                             ;; 対応する括弧を光らせる
+  transient-mark-mode                                         ;; 選択部分のハイライト
+  global-font-lock-mode                                       ;; フォントロックモード
+  line-number-mode                                            ;; 行番号を表示
+  column-number-mode                                          ;; 列番号を表示
+  :preface
   (defun frame-size-save ()
     "Save current the frame size and postion."
     (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
@@ -173,32 +169,27 @@
              (int-to-string (cdr (frame-position))) ")"))
     (save-buffer)
     (kill-buffer))
-
-  (add-hook 'window-setup-hook 'frame-size-resume)
-
   (defun frame-size-resume ()
     "Load the saved frame size."
     (let* ((file "~/.emacs.d/.framesize"))
       (if (file-exists-p file) (load-file file))))
+  :hook
+  (window-setup-hook . frame-size-resume)
+  (kill-emacs-hook . frame-size-save)
+  :init
+  (leaf font
+    :config
+    (set-face-attribute 'default nil
+                        :family "Source Han Code JP"
+                        :height 110)
+    (set-face-attribute 'variable-pitch nil
+                        :family "Myrica M"
+                        :height 120)
+    (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))
 
-  ;; フォント設定
-  (let ((ws window-system))
-    (cond ((eq ws 'w32)
-           (set-face-attribute 'default nil
-                               :family "Consolas"
-                               :height 100)
-           (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Consolas")))
-          ((eq ws 'mac)
-           (set-face-attribute 'default nil
-                               :family "Source Han Code JP"
-                               :height 110)
-           (set-face-attribute 'variable-pitch nil
-                               :family "Myrica M"
-                               :height 120)
-           (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))))
-
-  ;; カーソルの色設定
-  (when (eq system-type 'darwin)
+  (leaf cursor
+    :when (eq system-type 'darwin)
+    :config
     (defun mac-selected-keyboard-input-source-change-hook-func ()
       ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
       (set-cursor-color (if (or
@@ -403,9 +394,9 @@
            (web-mode-hook . web-add-electric-pairs))
     :config
     (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
-    (defun org-add-electric-pairs ()p
-           (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
-           (setq-local electric-pair-text-pairs electric-pair-pairs))
+    (defun org-add-electric-pairs ()
+      (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
+      (setq-local electric-pair-text-pairs electric-pair-pairs))
     (defvar web-electric-pairs '((?< . ?>) (?' . ?') (?` . ?`)) "Electric pairs for web-mode.")
     (defun web-add-electric-pairs ()
       (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
@@ -835,6 +826,7 @@
     :bind (("C-`" . open-junk-file))
     :custom
     (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S.")))
+
 
 ;;; ---------- メジャーモード設定 ----------
 (leaf *major-mode
