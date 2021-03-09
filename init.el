@@ -338,8 +338,7 @@
     :custom
     (flycheck-disabled-checkers . '(slim-lint))
     :config
-    (global-flycheck-mode t)
-    (leaf flycheck-posframe :ensure t :hook flycheck-mode-hook))
+    (global-flycheck-mode t))
 
   (leaf quickrun
     :ensure t
