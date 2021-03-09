@@ -124,8 +124,7 @@
     (bind-key (kbd "C-x C-k") 'my/close-and-kill-this-pane)
     (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
     (bind-key (kbd "C-x i") 'my/buffer-indent)
-    (bind-key (kbd "C-x d") 'my/dired-this-buffer)
-    (bind-key (kbd "M-t") 'my/open-hyper-current-buffer)))
+    (bind-key (kbd "C-x d") 'my/dired-this-buffer)))
 
 
 ;;; ---------- 外観設定 ----------
@@ -670,6 +669,7 @@
     (leaf vterm
       :ensure t
       :ensure-system-package (cmake libtool)
+      :bind ("M-t" . vterm)
       :custom
       (vterm-max-scrollback . 10000)
       (vterm-buffer-name-string . "vterm: %s")
@@ -687,7 +687,24 @@
                          (lambda (str) (vterm-send-string str t))))
                 (apply orig-fun args)))
           (apply orig-fun args)))
-      (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)))
+      (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)
+      (leaf vterm-toggle
+        :ensure t
+        :custom
+        (vterm-toggle-scope . 'project)
+        :config
+        ;; Show vterm buffer in the window located at bottom
+        (add-to-list 'display-buffer-alist
+                     '((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
+                       (display-buffer-reuse-window display-buffer-in-direction)
+                       (direction . bottom)
+                       (reusable-frames . visible)
+                       (window-height . 0.4)))
+        ;; Above display config affects all vterm command, not only vterm-toggle
+        (defun my/vterm-new-buffer-in-current-window()
+          (interactive)
+          (let ((display-buffer-alist nil))
+            (vterm))))))
 
   (leaf git
     :config
