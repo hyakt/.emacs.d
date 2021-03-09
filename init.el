@@ -596,6 +596,11 @@
     (ivy-set-actions t
                      '(("y" my/ivy-yank-action "yank")))
 
+    (leaf counsel-ghq
+      :ensure-system-package ghq
+      :el-get (counsel-ghq :url "https://github.com/windymelt/counsel-ghq.git")
+      :bind (("C-x C-g" . counsel-ghq)))
+
     (leaf counsel-tramp
       :ensure t
       :bind (("C-x C-t" . counsel-tramp)))
