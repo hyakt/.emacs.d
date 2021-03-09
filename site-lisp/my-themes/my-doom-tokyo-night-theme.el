@@ -2,18 +2,18 @@
 (require 'doom-themes)
 
 ;;
-(defgroup my/doom-tokyo-night-theme nil
+(defgroup my-doom-tokyo-night-theme nil
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom my/doom-tokyo-night-padded-modeline doom-themes-padded-modeline
+(defcustom my-doom-tokyo-night-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
-  :group 'my/doom-tokyo-night-theme
+  :group 'my-doom-tokyo-night-theme
   :type '(choice integer boolean))
 
 ;;
-(def-doom-theme my/doom-tokyo-night
+(def-doom-theme my-doom-tokyo-night
   "An clean 80's synthwave / outrun theme inspired by VS Code tokyo-night."
 
   ;; name        default   256  16
@@ -71,8 +71,8 @@ determine the exact padding."
    ;; custom categories
    (hidden     `(,(car bg) "black" "black"))
    (-modeline-pad
-    (when my/doom-tokyo-night-padded-modeline
-      (if (integerp my/doom-tokyo-night-padded-modeline) my/doom-tokyo-night-padded-modeline 4)))
+    (when my-doom-tokyo-night-padded-modeline
+      (if (integerp my-doom-tokyo-night-padded-modeline) my-doom-tokyo-night-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
@@ -165,4 +165,4 @@ determine the exact padding."
    (centaur-tabs-unselected :foreground fg-alt :background bg)
    (centaur-tabs-unselected-modified :foreground fg-alt :background bg)))
 
-;;; my/doom-tokyo-night-theme.el ends here
+;;; my-doom-tokyo-night-theme.el ends here

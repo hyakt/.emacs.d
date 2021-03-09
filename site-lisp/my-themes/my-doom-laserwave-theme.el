@@ -2,18 +2,18 @@
 (require 'doom-themes)
 
 ;;
-(defgroup my/doom-laserwave-theme nil
+(defgroup my-doom-laserwave-theme nil
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom my/doom-laserwave-padded-modeline doom-themes-padded-modeline
+(defcustom my-doom-laserwave-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
-  :group 'my/doom-laserwave-theme
+  :group 'my-doom-laserwave-theme
   :type '(choice integer boolean))
 
 ;;
-(def-doom-theme my/doom-laserwave
+(def-doom-theme my-doom-laserwave
   "An clean 80's synthwave / outrun theme inspired by VS Code laserwave."
 
   ;; name        default   256       16
@@ -71,8 +71,8 @@ determine the exact padding."
    ;; custom categories
    (hidden     `(,(car bg) "black" "black"))
    (-modeline-pad
-    (when my/doom-laserwave-padded-modeline
-      (if (integerp my/doom-laserwave-padded-modeline) my/doom-laserwave-padded-modeline 4)))
+    (when my-doom-laserwave-padded-modeline
+      (if (integerp my-doom-laserwave-padded-modeline) my-doom-laserwave-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
@@ -154,4 +154,4 @@ determine the exact padding."
    (whitespace-trailing :background orange)
    (indent-guide-face :foreground base3)))
 
-;;; my/doom-laserwave-theme.el ends here
+;;; my-doom-laserwave-theme.el ends here

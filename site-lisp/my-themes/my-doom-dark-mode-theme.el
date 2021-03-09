@@ -2,18 +2,18 @@
 (require 'doom-themes)
 
 ;;
-(defgroup my/doom-dark-mode-theme nil
+(defgroup my-doom-dark-mode-theme nil
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom my/doom-dark-mode-padded-modeline doom-themes-padded-modeline
+(defcustom my-doom-dark-mode-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
-  :group 'my/doom-dark-mode-theme
+  :group 'my-doom-dark-mode-theme
   :type '(choice integer boolean))
 
 ;;
-(def-doom-theme my/doom-dark-mode
+(def-doom-theme my-doom-dark-mode
   "A dark theme for radical hacking inspired by retro futuristic design."
 
   ;; name        default   256  16
@@ -72,8 +72,8 @@ determine the exact padding."
    ;; custom categories
    (hidden     `(,(car bg) "black" "black"))
    (-modeline-pad
-    (when my/doom-dark-mode-padded-modeline
-      (if (integerp my/doom-dark-mode-padded-modeline) my/doom-dark-mode-padded-modeline 4)))
+    (when my-doom-dark-mode-padded-modeline
+      (if (integerp my-doom-dark-mode-padded-modeline) my-doom-dark-mode-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
@@ -160,4 +160,4 @@ determine the exact padding."
    (rainbow-delimiters-depth-6-face :foreground base3)
    (rainbow-delimiters-depth-7-face :foreground base2)))
 
-;;; my/doom-dark-mode-theme.el ends here
+;;; my-doom-dark-mode-theme.el ends here
