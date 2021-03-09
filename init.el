@@ -52,50 +52,47 @@
 
 ;;; ---------- 初期設定 ----------
 (leaf *basic
+  :setq
+  `(
+    (auto-coding-functions . nil)                  ;; 文字コードの自動変換保存をしない
+    (completion-ignore-case . t)                   ;; file名の補完で大文字小文字を区別しない
+    (auto-save-default . nil)                      ;; オートセーブのファイルを作らない
+    (make-backup-files . t)                        ;; Backup fileの場所指定
+    (gc-cons-threshold . ,(* 10 gc-cons-threshold)) ;; GCを減らして軽くする
+    (message-log-max . 10000)                      ;; ログの記録行数を増やす
+    (vc-follow-symlinks . t)                       ;; symlinkは必ず追いかける
+    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup"))) ;; バックアップ先n設定
+    (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
+    )
+  :global-minor-mode global-auto-revert-mode
   :config
-  (setq auto-coding-functions nil)                  ;; 文字コードの自動変換保存をしない
-  (setq completion-ignore-case t)                   ;; file名の補完で大文字小文字を区別しない
-  (setq auto-save-default nil)                      ;; オートセーブのファイルを作らない
-  (setq make-backup-files t)                        ;; Backup fileの場所指定
-  (setq gc-cons-threshold (* 10 gc-cons-threshold)) ;; GCを減らして軽くする
-  (setq message-log-max 10000)                      ;; ログの記録行数を増やす
-  (setq vc-follow-symlinks t)                       ;; symlinkは必ず追いかける
-  (setq backup-directory-alist
-        (cons (cons "\\.*$" (expand-file-name "~/.emacs.d/.backup"))
-              backup-directory-alist))              ;; バックアップの設定
   (fset 'yes-or-no-p 'y-or-n-p)                     ;; yes-noの選択肢をy-nにする
-  (global-auto-revert-mode 1)                       ;; ファイルの自動再読み込み
 
-  (setq completion-ignored-extensions (append completion-ignored-extensions
-                                              '("./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store")))
-  (defadvice completion--file-name-table (after ignoring-backups-f-n-completion activate)
-    "Filter out results when they match `completion-ignored-extensions'."
-    (let ((res ad-return-value))
-      (if (and
-           (listp res)
-           (stringp
-            (car res))
-           (cdr res))
-          (setq ad-return-value (completion-pcm--filename-try-filter res)))))
+  (leaf server
+    :require t
+    :config
+    (unless (server-running-p) (server-start)))
 
-  (require 'server)
-  (unless (server-running-p) (server-start))        ;; サーバ起動
+  (leaf for-macos
+    :require (ucs-normalize)
+    :when (eq system-type 'darwin)
+    :setq
+    (file-name-coding-system . 'utf-8-hfs)
+    (locale-coding-system . 'utf-8-hfs)
+    :global-minor-mode mac-auto-ascii-mode
+    :config
+    (prefer-coding-system 'utf-8))
 
-  (when (eq system-type 'darwin)
-    (mac-auto-ascii-mode 1)
-    ;; 文字コードの設定
-    (require 'ucs-normalize)
-    (prefer-coding-system 'utf-8)
-    (setq file-name-coding-system 'utf-8-hfs)
-    (setq locale-coding-system 'utf-8-hfs))
-
-  (when (eq system-type 'gnu/linux)
-    (setq x-alt-keysym 'meta)
-    (setq x-super-keysym 'meta)
-    ;; 文字コードの設定
-    (prefer-coding-system 'utf-8)
-    (setq file-name-coding-system 'utf-8)
-    (setq locale-coding-system 'utf-8))
+  (leaf for-linux
+    :when (eq system-type 'gnu/linux)
+    :custom
+    (x-alt-keysym . 'meta)
+    (x-super-keysym . 'meta)
+    :setq
+    (file-name-coding-system . 'utf-8)
+    (locale-coding-system . 'utf-8)
+    :config
+    (prefer-coding-system 'utf-8))
 
   (leaf exec-path-from-shell
     :ensure t
