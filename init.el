@@ -2,25 +2,9 @@
 ;; Author: hyakt <https://github.com/hyakt/.emacs.d>
 
 ;;; Commentary:
-;; This is hyakt's init.el of Emacs :tada: .
+;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-;; デフォルトの shell を bashに変更
-(setenv "SHELL" "/bin/bash")
-(setq-default shell-file-name "/bin/bash")
-(setq-default explicit-shell-file-name "/bin/bash")
-
-;; ロードパス追加
-(eval-when-compile
-  (let ((default-directory (locate-user-emacs-file "./site-lisp")))
-    (add-to-list 'load-path default-directory)
-    (normal-top-level-add-subdirs-to-load-path)))
-
-;; ローカル設定
-;; custom fileの読み込み
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(when (file-exists-p custom-file) (load custom-file))
-
 ;; leaf-install-code
 (eval-and-compile
   (customize-set-variable
@@ -47,11 +31,11 @@
       :custom ((imenu-list-size . 30)
                (imenu-list-position . 'left)))))
 
-;; 自作elispの読み込み
-(require 'my-functions)
-
 ;;; ---------- 初期設定 ----------
 (leaf *basic
+  :setq-default
+  (shell-file-name . "/bin/bash")
+  (explicit-shell-file-name . "/bin/bash")
   :setq
   `(
     (auto-coding-functions . nil)                  ;; 文字コードの自動変換保存をしない
@@ -63,10 +47,21 @@
     (vc-follow-symlinks . t)                       ;; symlinkは必ず追いかける
     (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup"))) ;; バックアップ先n設定
     (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
+    (custom-file . "~/.emacs.d/custom.el")
     )
   :global-minor-mode global-auto-revert-mode
   :config
   (fset 'yes-or-no-p 'y-or-n-p)                     ;; yes-noの選択肢をy-nにする
+  ;; デフォルトの shell を bashに変更
+  (setenv "SHELL" "/bin/bash")
+
+  (leaf custom-file
+    :when '(file-exists-p custom-file)
+    :config (load custom-file))
+
+  (leaf my-functions
+    :load-path "~/.emacs.d/site-lisp"
+    :require t)
 
   (leaf server
     :require t
@@ -698,10 +693,11 @@
         :config
         ;; Show vterm buffer in the window located at bottom
         (add-to-list 'display-buffer-alist
-                     '((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
+                     '((lambda (bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
                        (display-buffer-reuse-window display-buffer-in-direction)
                        (direction . bottom)
                        (reusable-frames . visible)
+                       (dedicated . t)
                        (window-height . 0.4)))
         ;; Above display config affects all vterm command, not only vterm-toggle
         (defun my/vterm-new-buffer-in-current-window()
