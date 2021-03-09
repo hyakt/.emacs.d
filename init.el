@@ -128,6 +128,7 @@
 
 ;;; ---------- 外観設定 ----------
 (leaf *appearance
+  :ensure all-the-icons
   :config
   ;; 全般
   (setq-default tab-width 2)                                    ;; タブの幅は半角スペース 2
@@ -214,26 +215,21 @@
     (add-hook 'mac-selected-keyboard-input-source-change-hook
               'mac-selected-keyboard-input-source-change-hook-func))
 
-  (leaf
-    :ensure t
-    all-the-icons)
-
   (leaf doom-themes
     :ensure t
     :config
     (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
-    (load-theme 'doom-palenight t)
+    (load-theme 'doom-tokyo-night t)
     (doom-themes-neotree-config)
-    (doom-themes-org-config))
-
-  (leaf doom-modeline
-    :ensure t
-    :custom ((doom-modeline-buffer-encoding . t)
-             (doom-modeline-buffer-file-name-style . 'truncate-with-project)
-             (doom-modeline-height . 32)
-             (doom-modeline-bar-width . 3))
-    :config
-    (doom-modeline-mode 1))
+    (doom-themes-org-config)
+    (leaf doom-modeline
+      :ensure t
+      :custom ((doom-modeline-buffer-encoding . t)
+               (doom-modeline-buffer-file-name-style . 'truncate-with-project)
+               (doom-modeline-height . 32)
+               (doom-modeline-bar-width . 3))
+      :config
+      (doom-modeline-mode 1)))
 
   (leaf paren
     :after paren
@@ -256,18 +252,15 @@
 
   (leaf beacon
     :ensure t
-    :config
-    (beacon-mode 1))
+    :global-minor-mode beacon-mode)
 
   (leaf dimmer
     :ensure t
-    :config
-    (dimmer-mode))
+    :global-minor-mode dimmer-mode)
 
   (leaf volatile-highlights
     :ensure t
-    :config
-    (volatile-highlights-mode t))
+    :global-minor-mode volatile-highlights-mode)
 
   (leaf whitespace
     :custom
@@ -291,20 +284,17 @@
                                       ))
      (whitespace-action . '(auto-cleanup))
      (whitespace-space-regexp . "\\(\u3000\\)"))
-    :config
-    (global-whitespace-mode 1))
+    :global-minor-mode global-whitespace-mode)
 
   (leaf indent-guide
     :ensure t
     :custom (indent-guide-char . ">")
-    :config
-    (indent-guide-global-mode))
+    :global-minor-mode indent-guide-global-mode)
 
   (leaf disable-mouse
     :ensure t
     :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right"))
-    :config
-    (global-disable-mouse-mode)))
+    :global-minor-mode global-disable-mouse-mode))
 
 
 ;;; ---------- 編集機能設定 ----------
@@ -639,9 +629,10 @@
           (add-keys-to-avy "C-M-" c)))
 
   (leaf dired
+    :ensure (wdired all-the-icons-dired)
+    :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode)
+                           ("C-t" . nil)))
     :config
-    (leaf all-the-icons-dired :ensure t)
-
     (leaf dired-sidebar
       :ensure t
       :bind (("C-x C-d" . dired-sidebar-toggle-sidebar)
@@ -656,12 +647,7 @@
           " "  mode-line-end-spaces)
         "Mode line format for `dired-sidebar'."
         :type 'list
-        :group 'dired-sidebar))
-
-    (leaf wdired
-      :ensure t
-      :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode)
-                             ("C-t" . nil)))))
+        :group 'dired-sidebar)))
 
   (leaf shell
     :config
