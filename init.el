@@ -64,6 +64,18 @@
   (fset 'yes-or-no-p 'y-or-n-p)                     ;; yes-noの選択肢をy-nにする
   (global-auto-revert-mode 1)                       ;; ファイルの自動再読み込み
 
+  (setq completion-ignored-extensions (append completion-ignored-extensions
+                                              '("./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store")))
+  (defadvice completion--file-name-table (after ignoring-backups-f-n-completion activate)
+    "Filter out results when they match `completion-ignored-extensions'."
+    (let ((res ad-return-value))
+      (if (and
+           (listp res)
+           (stringp
+            (car res))
+           (cdr res))
+          (setq ad-return-value (completion-pcm--filename-try-filter res)))))
+
   (require 'server)
   (unless (server-running-p) (server-start))        ;; サーバ起動
 
@@ -467,18 +479,6 @@
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
   :config
-  (setq completion-ignored-extensions (append completion-ignored-extensions
-                                              '("./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store")))
-  (defadvice completion--file-name-table (after ignoring-backups-f-n-completion activate)
-    "Filter out results when they match `completion-ignored-extensions'."
-    (let ((res ad-return-value))
-      (if (and
-           (listp res)
-           (stringp
-            (car res))
-           (cdr res))
-          (setq ad-return-value (completion-pcm--filename-try-filter res)))))
-
   (leaf ediff
     :custom
     (ediff-split-window-function . 'split-window-horizontally))
@@ -611,7 +611,11 @@
 
     (leaf ivy-rich
       :ensure t
-      :global-minor-mode all-the-icons-ivy-rich-mode)
+      :global-minor-mode ivy-rich-mode)
+
+    (leaf all-the-icons-ivy-rich
+      :ensure t
+      :global-minor-mode all-the-icons-ivy-rich)
 
     (leaf ivy-hydra :ensure t))
 
@@ -662,7 +666,6 @@
   (leaf shell
     :config
     (leaf eshell
-      :bind (eshell-mode-map ("C-r" . counsel-esh-history))
       :custom
       (eshell-cmpl-ignore-case . t)
       (eshell-ask-to-save-history . 'always)
@@ -701,7 +704,7 @@
   (leaf git
     :config
     (leaf magit
-      :ensure t
+      :ensure (magit gh)
       :ensure-system-package git
       :bind (("C-x g" . magit-status)
              (magit-status-mode-map
@@ -709,13 +712,6 @@
               ("C-o" . magit-diff-visit-file-other-window)))
       :preface
       (defun my/magit-quit-session ()
-        (interactive)
-        (kill-buffer)
-        (delete-window))
-      :hook
-      (server-switch-hook . 'magit-commi-diff)
-      :config
-      (defun my/magit-quit-session nil
         (interactive)
         (kill-buffer)
         (delete-window)))
