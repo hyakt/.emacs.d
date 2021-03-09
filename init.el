@@ -11,7 +11,10 @@
 (setq-default explicit-shell-file-name "/bin/bash")
 
 ;; ロードパス追加
-(add-to-list 'load-path "~/.emacs.d/site-lisp")
+(eval-when-compile
+  (let ((default-directory (locate-user-emacs-file "./site-lisp")))
+    (add-to-list 'load-path default-directory)
+    (normal-top-level-add-subdirs-to-load-path)))
 
 ;; ローカル設定
 ;; custom fileの読み込み
@@ -45,7 +48,7 @@
                (imenu-list-position . 'left)))))
 
 ;; 自作elispの読み込み
-(load "my-functions")
+(require 'my-functions)
 
 ;;; ---------- 初期設定 ----------
 (leaf *basic
@@ -216,9 +219,10 @@
 
   (leaf doom-themes
     :ensure t
-    :config
+    :init
     (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
-    (load-theme 'doom-tokyo-night t)
+    :config
+    (load-theme 'my-doom-tokyo-night t)
     (doom-themes-neotree-config)
     (doom-themes-org-config)
     (leaf doom-modeline
@@ -1270,6 +1274,7 @@
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil
+;; byte-compile-warnings: (not cl-functions obsolete)
 ;; End:
 
 ;;; init.el ends here
