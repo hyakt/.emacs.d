@@ -4,43 +4,7 @@
 
 ;;; Code:
 (leaf my-functions
-  :ensure (projectile vterm)
   :config
-  (defun run-in-vterm-kill (process event)
-    "A process sentinel. Kills PROCESS's buffer if it is live."
-    (let ((b (process-buffer process)))
-      (and (buffer-live-p b)
-           (kill-buffer b))))
-
-  (defun my/run-in-vterm (command)
-    "Execute string COMMAND in a new vterm.
-
-Interactively, prompt for COMMAND with the current buffer's file
-name supplied. When called from Dired, supply the name of the
-file at point.
-
-Like `async-shell-command`, but run in a vterm for full terminal features.
-
-The new vterm buffer is named in the form `*foo bar.baz*`, the
-command and its arguments in earmuffs.
-
-When the command terminates, the shell remains open, but when the
-shell exits, the buffer is killed."
-    (interactive
-     (list
-      (let* ((f (cond (buffer-file-name)
-                      ((eq major-mode 'dired-mode)
-                       (dired-get-filename nil t))))
-             (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
-        (read-shell-command "Terminal command: "
-                            (cons filename 0)
-                            (cons 'shell-command-history 1)
-                            (list filename)))))
-    (with-current-buffer (vterm (concat "*" command "*"))
-      (set-process-sentinel vterm--process #'run-in-vterm-kill)
-      (vterm-send-string command)
-      (vterm-send-return)))
-
   (defun my/set-alpha (alpha-num)
     "Set frame parameter ALPHA-NUM."
     (interactive "nAlpha: ")
@@ -251,131 +215,150 @@ the folder if it doesn't exist."
       (message (format "Creating  %s" default-directory))
       (make-directory default-directory t)))
 
-  (defcustom my/mocha-config-path nil
-    "Mocha config path")
+  (leaf my/test
+    :ensure (projectile vterm vterm-toggle)
+    :config
+    (defcustom my/mocha-config-path nil
+      "Mocha config path")
 
-  (defun my/projectile-run-async-shell-command-in-root (command &optional output-buffer)
-    "Invoke `async-shell-command' COMMAND in the project's root."
-    (projectile-with-default-dir
-        (projectile-ensure-project (projectile-project-root))
-      (async-shell-command command output-buffer)))
+    (defun my/projectile-run-async-shell-command-in-root (command &optional output-buffer)
+      "Invoke `async-shell-command' COMMAND in the project's root."
+      (projectile-with-default-dir
+          (projectile-ensure-project (projectile-project-root))
+        (async-shell-command command output-buffer)))
 
-  (defun my/projectile-run-vterm-command-in-root (command)
-    "Invoke `async-shell-command' COMMAND in the project's root."
-    (projectile-with-default-dir
-        (projectile-ensure-project (projectile-project-root))
-      (my/run-in-vterm command)))
+    (defun my/projectile-run-vterm-command-in-root (command)
+      "Invoke `async-shell-command' COMMAND in the project's root."
+      (projectile-with-default-dir
+          (projectile-ensure-project (projectile-project-root))
+        (my/run-in-vterm command)))
 
-  (defun my/mocha-exec-current-buffer ()
-    "Run mocha for current file."
-    (interactive)
-    (setenv "NODE_ENV" "test")
-    (my/projectile-run-async-shell-command-in-root
-     (concat "npx mocha -c"
-             (when my/mocha-config-path
-               (concat " --config " my/mocha-config-path))
-             (concat " " (buffer-file-name)))
-     "*My Mocha Exec Command*"))
+    (defun my/run-in-vterm (command)
+      "Execute string COMMAND in a new vterm."
+      (interactive
+       (list
+        (let* ((f (cond (buffer-file-name)
+                        ((eq major-mode 'dired-mode)
+                         (dired-get-filename nil t))))
+               (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
+          (read-shell-command "Terminal command: "
+                              (cons filename 0)
+                              (cons 'shell-command-history 1)
+                              (list filename)))))
+      (with-current-buffer (vterm-toggle)
+        (vterm-send-string command)
+        (vterm-send-return)))
 
-  (defun my/mocha-copy-command-exec-current-buffer ()
-    "Run mocha for current file for paste."
-    (interactive)
-    (let ((mocha-command
-           (concat "env NODE_PATH=test npx mocha -c"
-                   (when my/mocha-config-path
-                     (concat " --config " my/mocha-config-path))
-                   (concat " " (buffer-file-name)))))
-      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
-      (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
+    (defun my/mocha-exec-current-buffer ()
+      "Run mocha for current file."
+      (interactive)
+      (setenv "NODE_ENV" "test")
+      (my/projectile-run-async-shell-command-in-root
+       (concat "npx mocha -c"
+               (when my/mocha-config-path
+                 (concat " --config " my/mocha-config-path))
+               (concat " " (buffer-file-name)))
+       "*My Mocha Exec Command*"))
 
-  (defun my/mocha-watch-current-buffer ()
-    "Watch mocha for current file."
-    (interactive)
-    (setenv "NODE_ENV" "test")
-    (my/projectile-run-async-shell-command-in-root
-     (concat "npx mocha -c -w --extension js,ts,jsx,tsx"
-             (when my/mocha-config-path
-               (concat " --config " my/mocha-config-path))
-             (concat " " (buffer-file-name)))
-     "*My Mocha Watch Command*"))
+    (defun my/mocha-copy-command-exec-current-buffer ()
+      "Run mocha for current file for paste."
+      (interactive)
+      (let ((mocha-command
+             (concat "env NODE_PATH=test npx mocha -c"
+                     (when my/mocha-config-path
+                       (concat " --config " my/mocha-config-path))
+                     (concat " " (buffer-file-name)))))
+        (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
+        (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
 
-  (defun my/mocha-copy-command-watch-current-buffer ()
-    "Watch mocha for current file for paste."
-    (interactive)
-    (let ((mocha-command
-           (concat "env NODE_PATH=test npx mocha -c -w --extension js,ts,jsx,tsx"
-                   (when my/mocha-config-path
-                     (concat " --config " my/mocha-config-path))
-                   (concat " " (buffer-file-name)))))
-      (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
-      (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
+    (defun my/mocha-watch-current-buffer ()
+      "Watch mocha for current file."
+      (interactive)
+      (setenv "NODE_ENV" "test")
+      (my/projectile-run-async-shell-command-in-root
+       (concat "npx mocha -c -w --extension js,ts,jsx,tsx"
+               (when my/mocha-config-path
+                 (concat " --config " my/mocha-config-path))
+               (concat " " (buffer-file-name)))
+       "*My Mocha Watch Command*"))
 
-  (defun my/mocha-exec-add-save-hook ()
-    "Add save hook exec mocha."
-    (interactive)
-    (add-hook 'before-save-hook 'my/mocha-exec-current-buffer))
+    (defun my/mocha-copy-command-watch-current-buffer ()
+      "Watch mocha for current file for paste."
+      (interactive)
+      (let ((mocha-command
+             (concat "env NODE_PATH=test npx mocha -c -w --extension js,ts,jsx,tsx"
+                     (when my/mocha-config-path
+                       (concat " --config " my/mocha-config-path))
+                     (concat " " (buffer-file-name)))))
+        (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
+        (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
 
-  (defun my/mocha-exec-remove-save-hook ()
-    "Remove save hook exec mocha."
-    (interactive)
-    (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer))
+    (defun my/mocha-exec-add-save-hook ()
+      "Add save hook exec mocha."
+      (interactive)
+      (add-hook 'before-save-hook 'my/mocha-exec-current-buffer))
 
-  (defun my/jest-copy-command-current-buffer ()
-    "Watch jest for current file for paste."
-    (interactive)
-    (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
-      (kill-new (concat "cd " (projectile-project-root) "; " jest-command ";"))
-      (message (concat "cd " (projectile-project-root) "; " jest-command ";"))))
+    (defun my/mocha-exec-remove-save-hook ()
+      "Remove save hook exec mocha."
+      (interactive)
+      (remove-hook 'before-save-hook 'my/mocha-exec-current-buffer))
 
-  (defun my/jest-copy-command-watch-current-buffer ()
-    "Watch jest for current file for paste."
-    (interactive)
-    (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
-      (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
-      (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
+    (defun my/jest-copy-command-current-buffer ()
+      "Watch jest for current file for paste."
+      (interactive)
+      (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
+        (kill-new (concat "cd " (projectile-project-root) "; " jest-command ";"))
+        (message (concat "cd " (projectile-project-root) "; " jest-command ";"))))
 
-  (defun my/jest-current-buffer ()
-    "Watch mocha for current file."
-    (interactive)
-    (setenv "NODE_ENV" "test")
-    (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
-      (my/projectile-run-vterm-command-in-root jest-command)))
+    (defun my/jest-copy-command-watch-current-buffer ()
+      "Watch jest for current file for paste."
+      (interactive)
+      (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
+        (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
+        (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
 
-  (defun my/jest-watch-current-buffer ()
-    "Watch mocha for current file."
-    (interactive)
-    (setenv "NODE_ENV" "test")
-    (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
-      (my/projectile-run-vterm-command-in-root jest-command)))
+    (defun my/jest-current-buffer ()
+      "Watch mocha for current file."
+      (interactive)
+      (setenv "NODE_ENV" "test")
+      (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
+        (my/projectile-run-vterm-command-in-root jest-command)))
 
-  (defun my/rspec-copy-command-current-buffer ()
-    "Watch RSpec for current file for paste."
-    (interactive)
-    (let ((rspec-command (concat "bundle exec rspec " (buffer-file-name))))
-      (kill-new (concat "cd " (projectile-project-root) "; " rspec-command "; "))
-      (message (concat "cd " (projectile-project-root) "; " rspec-command "; ")))))
+    (defun my/jest-watch-current-buffer ()
+      "Watch mocha for current file."
+      (interactive)
+      (setenv "NODE_ENV" "test")
+      (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
+        (my/projectile-run-vterm-command-in-root jest-command)))
 
-(defun my/create-test-file-for-jest ()
-  "Create test file for jest in test directory."
-  (interactive)
-  (let* ((test-file (replace-regexp-in-string "\\." ".test." (file-name-nondirectory (buffer-file-name))))
-         (test-dir (replace-regexp-in-string "src/" "__tests__/" (file-name-directory (buffer-file-name)))))
-    (unless (file-exists-p (expand-file-name test-file test-dir))
-      (progn (unless (file-exists-p test-dir)
-               (make-directory test-dir :create-parents))
-             (find-file-other-window (concat test-dir test-file))
-             (save-buffer)))))
+    (defun my/rspec-copy-command-current-buffer ()
+      "Watch RSpec for current file for paste."
+      (interactive)
+      (let ((rspec-command (concat "bundle exec rspec " (buffer-file-name))))
+        (kill-new (concat "cd " (projectile-project-root) "; " rspec-command "; "))
+        (message (concat "cd " (projectile-project-root) "; " rspec-command "; "))))
 
-(defun my/create-test-file-for-rspec ()
-  "Create test file for RSpec in test directory."
-  (interactive)
-  (let* ((test-file (replace-regexp-in-string "\\." "_spec." (file-name-nondirectory (buffer-file-name))))
-         (test-dir (replace-regexp-in-string "app/" "spec/" (file-name-directory (buffer-file-name)))))
-    (unless (file-exists-p (expand-file-name test-file test-dir))
-      (progn (unless (file-exists-p test-dir)
-               (make-directory test-dir :create-parents))
-             (find-file-other-window (concat test-dir test-file))
-             (save-buffer))))
+    (defun my/create-test-file-for-jest ()
+      "Create test file for jest in test directory."
+      (interactive)
+      (let* ((test-file (replace-regexp-in-string "\\." ".test." (file-name-nondirectory (buffer-file-name))))
+             (test-dir (replace-regexp-in-string "src/" "__tests__/" (file-name-directory (buffer-file-name)))))
+        (unless (file-exists-p (expand-file-name test-file test-dir))
+          (progn (unless (file-exists-p test-dir)
+                   (make-directory test-dir :create-parents))
+                 (find-file-other-window (concat test-dir test-file))
+                 (save-buffer)))))
+
+    (defun my/create-test-file-for-rspec ()
+      "Create test file for RSpec in test directory."
+      (interactive)
+      (let* ((test-file (replace-regexp-in-string "\\." "_spec." (file-name-nondirectory (buffer-file-name))))
+             (test-dir (replace-regexp-in-string "app/" "spec/" (file-name-directory (buffer-file-name)))))
+        (unless (file-exists-p (expand-file-name test-file test-dir))
+          (progn (unless (file-exists-p test-dir)
+                   (make-directory test-dir :create-parents))
+                 (find-file-other-window (concat test-dir test-file))
+                 (save-buffer))))))
 
   (defun my/generate-slack-reminder (content)
     "Generate slack reminder with CONTENT and copy to clipboard."
