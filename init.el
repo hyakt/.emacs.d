@@ -991,8 +991,8 @@
           (interactive)
           (tide-command:quickinfo
            (tide-on-response-success-callback response (:ignore-empty t)
-                                              (kill-new (tide-annotate-display-parts
-                                                         (plist-get (plist-get response :body) :displayParts)))))))
+             (kill-new (tide-annotate-display-parts
+                        (plist-get (plist-get response :body) :displayParts)))))))
 
       (leaf coffee-mode
         :ensure t
@@ -1023,11 +1023,13 @@
       :bind ((inf-ruby-minor-mode-map
               ("C-c C-b" . ruby-send-buffer)
               ("C-c C-l" . ruby-send-line)))
+      :init
+      (defalias 'pry 'inf-ruby)
       :custom
       (inf-ruby-default-implementation . "pry")
-      (inf-ruby-eval-binding . "Pry.toplevel_binding")
-      :config
-      (defalias 'pry 'inf-ruby))
+      (inf-ruby-eval-binding . "Pry.toplevel_binding"))
+
+    (leaf rubocop  :ensure t)
 
     (leaf rspec-mode
       :ensure t
