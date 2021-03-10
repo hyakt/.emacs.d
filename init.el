@@ -257,23 +257,25 @@
 
 ;;; ---------- 編集機能設定 ----------
 (leaf *edit
-  :bind
-  ("C-h" . nil)
-  ("C-m" . newline-and-indent) ; リターンで改行とインデント
-  ("C-x C-k" . kill-buffer)
-  ("C-0" . delete-frame)
-  ;; my/function keybinding
-  ("C-g" . my/keyboard-quit)
-  ("<f5>" . my/revert-buffer-no-confirm)
-  ("M-r" . my/revert-buffer-no-confirm)
-  ("C-x k" . kill-this-buffer)
-  ("C-x C-k" . my/close-and-kill-this-pane)
-  ("C-x C-x" . my/kill-other-buffers)
-  ("C-x i" . my/buffer-indent)
-  ("C-x d" . my/dired-this-buffer)
   :config
-  (keyboard-translate ?\C-h ?\C-?)
-  (global-unset-key (kbd "C-z"))
+  (leaf keybind
+    :bind
+    ("C-h" . nil)
+    ("C-m" . newline-and-indent) ; リターンで改行とインデント
+    ("C-x C-k" . kill-buffer)
+    ("C-0" . delete-frame)
+    ;; my/function keybinding
+    ("C-g" . my/keyboard-quit)
+    ("<f5>" . my/revert-buffer-no-confirm)
+    ("M-r" . my/revert-buffer-no-confirm)
+    ("C-x k" . kill-this-buffer)
+    ("C-x C-k" . my/close-and-kill-this-pane)
+    ("C-x C-x" . my/kill-other-buffers)
+    ("C-x i" . my/buffer-indent)
+    ("C-x d" . my/dired-this-buffer)
+    :init
+    (keyboard-translate ?\C-h ?\C-?)
+    (global-unset-key (kbd "C-z")))
 
   (leaf disable-mouse
     :ensure t
