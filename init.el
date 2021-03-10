@@ -656,13 +656,12 @@
     (leaf vterm
       :ensure t
       :ensure-system-package (cmake libtool)
-      :bind ("M-t" . vterm)
       :custom
       (vterm-max-scrollback . 10000)
       (vterm-buffer-name-string . "vterm: %s")
       ;; delete "C-h", add <f1> and <f2>
       (vterm-keymap-exceptions
-       . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t"))
+       . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t"))
       :config
       ;; Workaround of not working counsel-yank-pop
       ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
@@ -677,6 +676,7 @@
       (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)
       (leaf vterm-toggle
         :ensure t
+        :bind ("M-t" . vterm-toggle)
         :custom
         (vterm-toggle-scope . 'project)
         :config
