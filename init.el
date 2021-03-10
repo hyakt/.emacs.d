@@ -1001,6 +1001,9 @@
         (defun my/remove-tide-format-before-save ()
           (interactive)
           (remove-hook 'before-save-hook 'tide-format-before-save))
+        (defun my/add-tide-format-before-save ()
+          (interactive)
+          (add-hook 'before-save-hook 'tide-format-before-save))
         (defun my/tide-copy-type ()
           "Copy type to clipbord."
           (interactive)
