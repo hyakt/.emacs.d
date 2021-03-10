@@ -94,29 +94,7 @@
     :if (eq system-type 'darwin)
     :custom((exec-path-from-shell-variables '("PATH" "GOPATH")))
     :config
-    (exec-path-from-shell-initialize))
-
-  (leaf bind-key
-    :ensure t
-    :config
-    ;; 通常操作
-    (keyboard-translate ?\C-h ?\C-?)
-    (global-unset-key (kbd "C-z"))
-    (bind-key (kbd "C-h") nil)
-    (bind-key (kbd "C-h") nil)
-    (bind-key (kbd "C-m") 'newline-and-indent) ; リターンで改行とインデント
-    (bind-key (kbd "C-x C-k") 'kill-buffer)
-    (bind-key (kbd "C-0") 'delete-frame)
-
-    ;; my/function keybinding
-    (bind-key (kbd "C-g") 'my/keyboard-quit)
-    (bind-key (kbd "<f5>") 'my/revert-buffer-no-confirm)
-    (bind-key (kbd "M-r") 'my/revert-buffer-no-confirm)
-    (bind-key (kbd "C-x k") 'kill-this-buffer)
-    (bind-key (kbd "C-x C-k") 'my/close-and-kill-this-pane)
-    (bind-key (kbd "C-x C-x") 'my/kill-other-buffers)
-    (bind-key (kbd "C-x i") 'my/buffer-indent)
-    (bind-key (kbd "C-x d") 'my/dired-this-buffer)))
+    (exec-path-from-shell-initialize)))
 
 
 ;;; ---------- 外観設定 ----------
@@ -274,17 +252,34 @@
   (leaf indent-guide
     :ensure t
     :custom (indent-guide-char . ">")
-    :global-minor-mode indent-guide-global-mode)
-
-  (leaf disable-mouse
-    :ensure t
-    :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right"))
-    :global-minor-mode global-disable-mouse-mode))
+    :global-minor-mode indent-guide-global-mode))
 
 
 ;;; ---------- 編集機能設定 ----------
 (leaf *edit
+  :bind
+  ("C-h" . nil)
+  ("C-m" . newline-and-indent) ; リターンで改行とインデント
+  ("C-x C-k" . kill-buffer)
+  ("C-0" . delete-frame)
+  ;; my/function keybinding
+  ("C-g" . my/keyboard-quit)
+  ("<f5>" . my/revert-buffer-no-confirm)
+  ("M-r" . my/revert-buffer-no-confirm)
+  ("C-x k" . kill-this-buffer)
+  ("C-x C-k" . my/close-and-kill-this-pane)
+  ("C-x C-x" . my/kill-other-buffers)
+  ("C-x i" . my/buffer-indent)
+  ("C-x d" . my/dired-this-buffer)
   :config
+  (keyboard-translate ?\C-h ?\C-?)
+  (global-unset-key (kbd "C-z"))
+
+  (leaf disable-mouse
+    :ensure t
+    :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right"))
+    :global-minor-mode global-disable-mouse-mode)
+
   (leaf yasnippet
     :ensure (yasnippet yasnippet-snippets)
     :custom (yas-snippet-dirs . '("~/.emacs.d/site-lisp/my-snippets"))
