@@ -372,7 +372,7 @@
     :hook (prog-mode-hook))
 
   (leaf rainbow-mode
-    :ensure
+    :ensure t
     :hook (js2-mode-hook css-mode-hook html-mode-hook web-mode-hook typescript-mode-hook))
 
   (leaf symbol-overlay
@@ -861,59 +861,41 @@
                                  '(("javascript" . "//")
                                    ("jsx" .  "//")
                                    ("php" . "/*"))))
-      :hook
-      (web-mode-hook .
-                     (lambda ()
-                       ((when (equal web-mode-content-type "jsx")
-                          (setq emmet-expand-jsx-className\? t)
-                          (add-to-list 'web-mode-indentation-params
-                                       '("lineup-args"))
-                          (add-to-list 'web-mode-indentation-params
-                                       '("lineup-calls"))
-                          (add-to-list 'web-mode-indentation-params
-                                       '("lineup-concats"))
-                          (add-to-list 'web-mode-indentation-params
-                                       '("lineup-ternary"))
-                          (flycheck-add-mode 'javascript-eslint 'web-mode))
-                        (when (and
-                               (stringp buffer-file-name)
-                               (string-match "\\.jsx\\'" buffer-file-name))
-                          (tern-mode)
-                          (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
-                          (set
-                           (make-local-variable 'company-backends)
-                           '((company-tern :with company-dabbrev-code)
-                             company-yasnippet)))
-                        (when (and
-                               (stringp buffer-file-name)
-                               (string-match "\\.tsx\\'" buffer-file-name))
-                          (tide-setup)
-                          (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
-                          (set
-                           (make-local-variable 'company-backends)
-                           '((company-tide)
-                             company-css company-yasnippet))
-                          (defun company-tide-advice (orig-fun &rest args)
-                            (if (and
-                                 (eq
-                                  (car args)
-                                  'prefix)
-                                 (web-mode-is-css-string
-                                  (point)))
-                                'nil
-                              (apply orig-fun args)))
+      :config
+      (add-hook 'web-mode-hook
+                (lambda ()
+                  (when (equal web-mode-content-type "jsx")
+                    (setq emmet-expand-jsx-className? t)
+                    (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+                    (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
+                    (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+                    (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
+                    (flycheck-add-mode 'javascript-eslint 'web-mode))
+                  (when (and (stringp buffer-file-name)
+                             (string-match "\\.jsx\\'" buffer-file-name))
+                    (tern-mode)
+                    (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
+                    (set (make-local-variable 'company-backends)
+                         '((company-tern :with company-dabbrev-code) company-yasnippet)))
+                  (when (and (stringp buffer-file-name)
+                             (string-match "\\.tsx\\'" buffer-file-name))
+                    (tide-setup)
+                    (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
+                    (set (make-local-variable 'company-backends)
+                         '((company-tide) company-css company-yasnippet))
 
-                          (advice-add 'company-tide :around #'company-tide-advice)
-                          (defun web-mode-language-at-pos-advice (orig-fun &rest args)
-                            (let ((pos (or
-                                        (car args)
-                                        (point))))
-                              (or
-                               (and
-                                (web-mode-is-css-string pos)
-                                "css")
-                               (apply orig-fun args))))
-                          (advice-add 'web-mode-language-at-pos :around #'web-mode-language-at-pos-advice))))))
+                    (defun company-tide-advice (orig-fun &rest args)
+                      (if (and (eq (car args) 'prefix) (web-mode-is-css-string (point)))
+                          'nil
+                        (apply orig-fun args)))
+                    (advice-add 'company-tide :around #'company-tide-advice)
+
+                    (defun web-mode-language-at-pos-advice (orig-fun &rest args)
+                      (let ((pos (or (car args) (point))))
+                        (or (and (web-mode-is-css-string pos) "css")
+                            (apply orig-fun args))))
+                    (advice-add 'web-mode-language-at-pos :around #'web-mode-language-at-pos-advice))
+                  )))
 
     (leaf emmet-mode
       :ensure t
@@ -923,8 +905,7 @@
 
     (leaf add-node-modules-path
       :ensure t
-      :commands add-node-modules-path
-      :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook graphql-mode-hook))
+      :hook ((typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook graphql-mode-hook) . add-node-modules-path))
 
     (leaf prettier-js
       :ensure t
