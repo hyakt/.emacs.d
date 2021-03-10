@@ -4,8 +4,43 @@
 
 ;;; Code:
 (leaf my-functions
-  :ensure projectile
+  :ensure (projectile vterm)
   :config
+  (defun run-in-vterm-kill (process event)
+    "A process sentinel. Kills PROCESS's buffer if it is live."
+    (let ((b (process-buffer process)))
+      (and (buffer-live-p b)
+           (kill-buffer b))))
+
+  (defun my/run-in-vterm (command)
+    "Execute string COMMAND in a new vterm.
+
+Interactively, prompt for COMMAND with the current buffer's file
+name supplied. When called from Dired, supply the name of the
+file at point.
+
+Like `async-shell-command`, but run in a vterm for full terminal features.
+
+The new vterm buffer is named in the form `*foo bar.baz*`, the
+command and its arguments in earmuffs.
+
+When the command terminates, the shell remains open, but when the
+shell exits, the buffer is killed."
+    (interactive
+     (list
+      (let* ((f (cond (buffer-file-name)
+                      ((eq major-mode 'dired-mode)
+                       (dired-get-filename nil t))))
+             (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
+        (read-shell-command "Terminal command: "
+                            (cons filename 0)
+                            (cons 'shell-command-history 1)
+                            (list filename)))))
+    (with-current-buffer (vterm (concat "*" command "*"))
+      (set-process-sentinel vterm--process #'run-in-vterm-kill)
+      (vterm-send-string command)
+      (vterm-send-return)))
+
   (defun my/set-alpha (alpha-num)
     "Set frame parameter ALPHA-NUM."
     (interactive "nAlpha: ")
@@ -219,12 +254,17 @@ the folder if it doesn't exist."
   (defcustom my/mocha-config-path nil
     "Mocha config path")
 
-
   (defun my/projectile-run-async-shell-command-in-root (command &optional output-buffer)
     "Invoke `async-shell-command' COMMAND in the project's root."
     (projectile-with-default-dir
         (projectile-ensure-project (projectile-project-root))
       (async-shell-command command output-buffer)))
+
+  (defun my/projectile-run-vterm-command-in-root (command)
+    "Invoke `async-shell-command' COMMAND in the project's root."
+    (projectile-with-default-dir
+        (projectile-ensure-project (projectile-project-root))
+      (my/run-in-vterm command)))
 
   (defun my/mocha-exec-current-buffer ()
     "Run mocha for current file."
@@ -283,7 +323,7 @@ the folder if it doesn't exist."
   (defun my/jest-copy-command-current-buffer ()
     "Watch jest for current file for paste."
     (interactive)
-    (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest  --color " (buffer-file-name))))
+    (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
       (kill-new (concat "cd " (projectile-project-root) "; " jest-command ";"))
       (message (concat "cd " (projectile-project-root) "; " jest-command ";"))))
 
@@ -293,6 +333,20 @@ the folder if it doesn't exist."
     (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
       (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
       (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
+
+  (defun my/jest-current-buffer ()
+    "Watch mocha for current file."
+    (interactive)
+    (setenv "NODE_ENV" "test")
+    (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
+      (my/projectile-run-vterm-command-in-root jest-command)))
+
+  (defun my/jest-watch-current-buffer ()
+    "Watch mocha for current file."
+    (interactive)
+    (setenv "NODE_ENV" "test")
+    (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
+      (my/projectile-run-vterm-command-in-root jest-command)))
 
   (defun my/rspec-copy-command-current-buffer ()
     "Watch RSpec for current file for paste."
