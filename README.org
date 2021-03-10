@@ -1,60 +1,59 @@
-#+AUTHOR: Hayato KAJIYAMA
+#+AUTHOR: Hayato Kajiyama
 #+EMAIL: hyakt0@gmail.com
 
 * .emacs.d
-** Download
+** Usage
    #+BEGIN_SRC sh
-     mkdir -r ~/repos/github.com/hyakt
-     cd  ~/repos/github.com/hyakt
-     git clone https://github.com/hyakt/.emacs.d
-     ln -sfv  ~/repos/github.com/hyakt/.emacs.d ~/
+   mkdir -r ~/repos/github.com/hyakt
+   cd  ~/repos/github.com/hyakt
+   git clone https://github.com/hyakt/.emacs.d
+   ln -sfv  ~/repos/github.com/hyakt/.emacs.d ~/
    #+END_SRC
 
 ** Requirements
-*** [[https://github.com/railwaycat/homebrew-emacsmacport][Emacs Mac Port]]
+*** Emacs
+    - Install [[https://github.com/railwaycat/homebrew-emacsmacport][Emacs Mac Port]]
     #+BEGIN_SRC sh
-      brew tap railwaycat/emacsmacport
-      brew install emacs-mac --with-ctags --with-glib --with-modules --with-natural-title-bar
-      ln -sfv /usr/local/opt/emacs-mac/Emacs.app /Applications/
+    brew tap railwaycat/emacsmacport
+    brew install emacs-mac --with-ctags --with-glib --with-modules --with-natural-title-bar
+    ln -sfv /usr/local/opt/emacs-mac/Emacs.app /Applications/
+    #+END_SRC
+    -  Apply [[https://github.com/railwaycat/homebrew-emacsmacport/wiki/Natural-Title-Bar][Natural Title bar]]
+    #+BEGIN_SRC sh
+    # Adopting mac dark mode
+    defaults write org.gnu.Emacs TransparentTitleBar DARK
+    # Set No Title Bar Icon
+    defaults write org.gnu.Emacs HideDocumentIcon YES
     #+END_SRC
 
-*** [[https://github.com/railwaycat/homebrew-emacsmacport/wiki/Natural-Title-Bar][Natural Title bar]]
+*** Fonts
+    - Install fonts
     #+BEGIN_SRC sh
-      # Adopting mac dark mode
-      defaults write org.gnu.Emacs TransparentTitleBar DARK
-      # Set No Title Bar Icon
-      defaults write org.gnu.Emacs HideDocumentIcon YES
+    brew tap homebrew/cask-fonts
+    # main
+    brew cask install font-source-han-code-jp
+    # variable pitch
+    brew cask install brew cask install font-myrica
     #+END_SRC
-
-*** Coding fonts
-    #+BEGIN_SRC sh
-      brew tap homebrew/cask-fonts
-      # main
-      brew cask install font-source-han-code-jp
-      # variable pitch
-      brew cask install brew cask install font-myrica
-    #+END_SRC
-
-*** [[https://github.com/domtronn/all-the-icons.el/tree/master/fonts][all-the-icons font]]
+    - Install [[https://github.com/domtronn/all-the-icons.el/tree/master/fonts][all-the-icons font]]
     #+BEGIN_SRC emacs-lisp
-      M-x all-the-icons-install-fonts
+    M-x all-the-icons-install-fonts
     #+END_SRC
 
 *** [[https://github.com/emacs-lsp/lsp-mode][LSP]]
-    - [[https://github.com/theia-ide/typescript-language-server][TypeScript]](unused):
-    #+BEGIN_SRC sh
-      yarn global add typescript-language-server
-    #+END_SRC
-    - Ruby(unused):
-    #+BEGIN_SRC sh
-      gem install solargraph
-      yard gems
-      yard config --gem-install-yri
-      # If using anyenv or rbenv, exec the following command.
-      rbenv rehash
-    #+END_SRC
     - golang: https://github.com/golang/tools/blob/master/gopls/doc/user.md
     - Scala: Using [[https://github.com/tarao/scala-bootstrap-el][ScalaBootstrap]], so installed automatically.
     - Rust: [[https://rust-analyzer.github.io/manual.html#installation][rust-analyzer]]
-
-    And other requirements package installed by ensure-system-package in [[https://github.com/jwiegley/use-package][use-package]].
+    - [[https://github.com/theia-ide/typescript-language-server][TypeScript]](unused):
+    #+BEGIN_SRC sh
+    yarn global add typescript-language-server
+    #+END_SRC
+    - Ruby(unused):
+    #+BEGIN_SRC sh
+    gem install solargraph
+    yard gems
+    yard config --gem-install-yri
+    # If using anyenv or rbenv, exec the following command.
+    rbenv rehash
+    #+END_SRC
+    And other requirements package installed by ensure-system-package.
