@@ -36,6 +36,8 @@
   :setq-default
   (shell-file-name . "/bin/bash")
   (explicit-shell-file-name . "/bin/bash")
+  :pre-setq
+  (custom-file . "~/.emacs.d/custom.el")
   :setq
   `(
     (auto-coding-functions . nil)                  ;; 文字コードの自動変換保存をしない
@@ -47,16 +49,15 @@
     (vc-follow-symlinks . t)                       ;; symlinkは必ず追いかける
     (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup"))) ;; バックアップ先n設定
     (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
-    (custom-file . "~/.emacs.d/custom.el")
     )
   :global-minor-mode global-auto-revert-mode
-  :config
+  :init
   (fset 'yes-or-no-p 'y-or-n-p)                     ;; yes-noの選択肢をy-nにする
   ;; デフォルトの shell を bashに変更
   (setenv "SHELL" "/bin/bash")
 
   (leaf custom-file
-    :when '(file-exists-p custom-file)
+    :when (file-exists-p custom-file)
     :config (load custom-file))
 
   (leaf my-functions
