@@ -485,7 +485,7 @@
 
   (leaf counsel
     :ensure t
-    :ensure-system-package fzf (rg . ripgrep)
+    :ensure-system-package (rg . ripgrep)
     :bind (("C-s" . swiper)
            ("M-x" . counsel-M-x)
            ("M-y" . counsel-yank-pop)
@@ -497,7 +497,7 @@
            ("<f1> l" . counsel-find-library)
            ("<f2> i" . counsel-info-lookup-symbol)
            ("<f2> u" . counsel-unicode-char)
-           ("C-x f" . counsel-fzf)
+           ("C-x f" . counsel-git)
            ("C-x e" . counsel-rg)
            ("C-c f" . counsel-flycheck)
            ("C-x C-g" . counsel-git)
