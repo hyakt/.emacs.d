@@ -792,7 +792,7 @@
                         ("*quickrun*"               :align below :ratio 0.33)
                         ("*xref*"                   :align below :ratio 0.33)
                         ("*prettier errors*"        :align below :ratio 0.33)
-                        (magit-status-mode          :select t :inhibit-window-quit t)
+                        (magit-status-mode          :align below :ratio 0.4 :select t :inhibit-window-quit t)
                         ;; repl
                         ("*Python*"                 :align below :ratio 0.33 :select t)
                         ("*pry*"                    :align below :ratio 0.33 :select t)
