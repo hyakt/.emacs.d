@@ -822,6 +822,8 @@
   (leaf open-junk-file
     :ensure t
     :bind (("C-`" . open-junk-file))
+    :init
+    (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
     :custom
     (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S.")))
 
@@ -902,15 +904,27 @@
       :ensure t
       :bind ((emmet-mode-keymap
               ("C-j" . company-complete)))
-      :hook (html-mode-hook web-mode-hook css-mode-hook scss-mode-hook))
+      :hook (html-mode-hook
+             web-mode-hook
+             css-mode-hook
+             scss-mode-hook))
 
     (leaf add-node-modules-path
       :ensure t
-      :hook ((typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook graphql-mode-hook) . add-node-modules-path))
+      :hook ((typescript-mode-hook
+              js2-mode-hook
+              web-mode-hook
+              scss-mode-hook
+              graphql-mode-hook) . add-node-modules-path))
 
     (leaf prettier-js
       :ensure t
-      :hook (graphql-mode-hook js2-mode-hook scss-mode-hook css-mode-hook))
+      :hook (typescript-mode-hook
+             js2-mode-hook
+             web-mode-hook
+             css-mode-hook
+             scss-mode-hook
+             graphql-mode-hook))
 
     (leaf html
       :config
@@ -934,13 +948,13 @@
         :ensure t
         :custom (scss-indent-offset . 2)
         :hook
-        (css-mode-hook . ((lambda ()
+        (scss-mode-hook . (lambda ()
                             (set
                              (make-local-variable 'flycheck-checker)
                              (setq flycheck-checker 'scss-stylelint))
                             (set
                              (make-local-variable 'company-backends)
-                             '((company-css :with company-dabbrev) company-yasnippet))))))
+                             '((company-css :with company-dabbrev) company-yasnippet)))))
       (leaf sass-mode :ensure t)
       (leaf sws-mode :ensure t))
 
@@ -956,29 +970,28 @@
          (js2-strict-missing-semi-warning . nil)
          (xref-js2-search-program . 'rg))
         :hook
-        (js2-mode-hook . ((lambda ()
-                            (tern-mode)
-                            (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
-                            (set
-                             (make-local-variable 'company-backends)
-                             '((company-tern :with company-dabbrev-code)
-                               company-yasnippet))))))
+        (js2-mode-hook . (lambda ()
+                           (tern-mode)
+                           (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
+                           (set
+                            (make-local-variable 'company-backends)
+                            '((company-tern :with company-dabbrev-code)
+                              company-yasnippet)))))
 
       (leaf typescript-mode
         :ensure t
-        :after tide
         :custom (typescript-indent-level . 2)
-        :hook (typescript-mode-hook . ((lambda ()
-                                         (tide-setup)
-                                         (tide-hl-identifier-mode)
-                                         (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)))))
+        :hook (typescript-mode-hook . (lambda ()
+                                        (tide-setup)
+                                        (tide-hl-identifier-mode)
+                                        (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append))))
 
       (leaf tide
-        :ensure t
-        :after (company flycheck)
+        :ensure t typescript-mode company flycheck
         :bind (tide-mode-map
                ("M-." . nil)
                ("M-," . nil))
+        :hook (typescript-mode-hook)
         :config
         (defun my/remove-tide-format-before-save ()
           (interactive)
