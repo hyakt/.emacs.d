@@ -389,7 +389,7 @@
     :init (electric-pair-mode)
     :commands org-add-electric-pairs web-add-electric-pairs
     :hook ((org-mode-hook . org-add-electric-pairs)
-           (web-mode-hook . web-add-electric-pairs))
+           ((web-mode-hook typescript-mode-hook) . web-add-electric-pairs))
     :config
     (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
     (defun org-add-electric-pairs ()
