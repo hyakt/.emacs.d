@@ -984,301 +984,303 @@
         :hook (typescript-mode-hook . (lambda ()
                                         (tide-setup)
                                         (tide-hl-identifier-mode)
-                                        (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append))))
+                                        (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)
+                                        (set (make-local-variable 'company-backends)
+                                             '((company-tide) company-yasnippet)))))
 
-      (leaf tide
-        :ensure t typescript-mode company flycheck
-        :bind (tide-mode-map
-               ("M-." . nil)
-               ("M-," . nil))
-        :hook (typescript-mode-hook)
+        (leaf tide
+          :ensure t typescript-mode company flycheck
+          :bind (tide-mode-map
+                 ("M-." . nil)
+                 ("M-," . nil))
+          :hook (typescript-mode-hook)
+          :config
+          (defun my/remove-tide-format-before-save ()
+            (interactive)
+            (remove-hook 'before-save-hook 'tide-format-before-save))
+          (defun my/add-tide-format-before-save ()
+            (interactive)
+            (add-hook 'before-save-hook 'tide-format-before-save))
+          (defun my/tide-copy-type ()
+            "Copy type to clipbord."
+            (interactive)
+            (tide-command:quickinfo
+             (tide-on-response-success-callback response (:ignore-empty t)
+               (kill-new (tide-annotate-display-parts
+                          (plist-get (plist-get response :body) :displayParts)))))))
+
+        (leaf coffee-mode
+          :ensure t
+          :custom (coffee-tab-width . 2))
+
+        (leaf nodejs-repl :ensure t)
+
+        (leaf npm-mode
+          :ensure t
+          :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook))
+
+        (leaf jest
+          :ensure t
+          :bind ((jest-minor-mode-map
+                  ("C-c C-c C-c" . jest-file-dwim)))
+          :hook ((typescript-mode-hook . jest-minor-mode)
+                 (js2-mode-hook . jest-minor-mode)
+                 (web-mode-hook . jest-minor-mode)))))
+
+    (leaf ruby-mode
+      :ensure t
+      :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
+      :interpreter ("pry")
+      :custom ((ruby-insert-encoding-magic-comment . nil))
+      :config
+      (leaf inf-ruby
+        :ensure t
+        :bind ((inf-ruby-minor-mode-map
+                ("C-c C-b" . ruby-send-buffer)
+                ("C-c C-l" . ruby-send-line)))
+        :init
+        (defalias 'pry 'inf-ruby)
+        :custom
+        (inf-ruby-default-implementation . "pry")
+        (inf-ruby-eval-binding . "Pry.toplevel_binding"))
+
+      (leaf rubocop  :ensure t)
+
+      (leaf rspec-mode
+        :ensure t
+        :bind ((rspec-mode-map
+                ("C-c C-c C-c" . rspec-verify-single))))
+
+      (leaf robe
+        :ensure t
+        :bind ((robe-mode-map
+                ("M-." . smart-jump-go)))
+        :hook
+        (ruby-mode-hook)
+        (robe-mode-hook . (lambda ()
+                            (advice-add 'company-box--get-buffer :around #'company-box-set-current-buffer)
+                            (advice-add 'company-box-doc :around #'hack-company-box-doc)
+                            (setq-local company-box-doc-enable nil)
+                            (company-box-mode nil)
+                            (set (make-local-variable 'company-backends)
+                                 '((company-robe)))
+                            (robe-start)))
         :config
-        (defun my/remove-tide-format-before-save ()
-          (interactive)
-          (remove-hook 'before-save-hook 'tide-format-before-save))
-        (defun my/add-tide-format-before-save ()
-          (interactive)
-          (add-hook 'before-save-hook 'tide-format-before-save))
-        (defun my/tide-copy-type ()
-          "Copy type to clipbord."
-          (interactive)
-          (tide-command:quickinfo
-           (tide-on-response-success-callback response (:ignore-empty t)
-             (kill-new (tide-annotate-display-parts
-                        (plist-get (plist-get response :body) :displayParts)))))))
+        (defun company-box-set-current-buffer (orig-fun &rest args)
+          (let ((company-box-buffer (apply orig-fun args))
+                (from-buffer (current-buffer)))
+            (with-current-buffer company-box-buffer
+              (setq-local company-box--from-buffer from-buffer))
+            company-box-buffer))
 
-      (leaf coffee-mode
-        :ensure t
-        :custom (coffee-tab-width . 2))
+        (defun hack-company-box-doc (orig-fun &rest args)
+          (with-current-buffer company-box--from-buffer
+            (apply orig-fun args)))))
 
-      (leaf nodejs-repl :ensure t)
-
-      (leaf npm-mode
-        :ensure t
-        :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook))
-
-      (leaf jest
-        :ensure t
-        :bind ((jest-minor-mode-map
-                ("C-c C-c C-c" . jest-file-dwim)))
-        :hook ((typescript-mode-hook . jest-minor-mode)
-               (js2-mode-hook . jest-minor-mode)
-               (web-mode-hook . jest-minor-mode)))))
-
-  (leaf ruby-mode
-    :ensure t
-    :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
-    :interpreter ("pry")
-    :custom ((ruby-insert-encoding-magic-comment . nil))
-    :config
-    (leaf inf-ruby
+    (leaf swift-mode
       :ensure t
-      :bind ((inf-ruby-minor-mode-map
-              ("C-c C-b" . ruby-send-buffer)
-              ("C-c C-l" . ruby-send-line)))
-      :init
-      (defalias 'pry 'inf-ruby)
-      :custom
-      (inf-ruby-default-implementation . "pry")
-      (inf-ruby-eval-binding . "Pry.toplevel_binding"))
-
-    (leaf rubocop  :ensure t)
-
-    (leaf rspec-mode
-      :ensure t
-      :bind ((rspec-mode-map
-              ("C-c C-c C-c" . rspec-verify-single))))
-
-    (leaf robe
-      :ensure t
-      :bind ((robe-mode-map
-              ("M-." . smart-jump-go)))
-      :hook
-      (ruby-mode-hook)
-      (robe-mode-hook . (lambda ()
-                          (advice-add 'company-box--get-buffer :around #'company-box-set-current-buffer)
-                          (advice-add 'company-box-doc :around #'hack-company-box-doc)
-                          (setq-local company-box-doc-enable nil)
-                          (company-box-mode nil)
-                          (set (make-local-variable 'company-backends)
-                               '((company-robe)))
-                          (robe-start)))
+      :hook (swift-mode-hook . (lambda ()
+                                 (add-to-list 'flycheck-checkers 'swift)
+                                 (set
+                                  (make-local-variable 'company-backends)
+                                  '((company-sourcekit)))))
       :config
-      (defun company-box-set-current-buffer (orig-fun &rest args)
-        (let ((company-box-buffer (apply orig-fun args))
-              (from-buffer (current-buffer)))
-          (with-current-buffer company-box-buffer
-            (setq-local company-box--from-buffer from-buffer))
-          company-box-buffer))
+      (leaf company-sourcekit :ensure t))
 
-      (defun hack-company-box-doc (orig-fun &rest args)
-        (with-current-buffer company-box--from-buffer
-          (apply orig-fun args)))))
-
-  (leaf swift-mode
-    :ensure t
-    :hook (swift-mode-hook . (lambda ()
-                               (add-to-list 'flycheck-checkers 'swift)
-                               (set
-                                (make-local-variable 'company-backends)
-                                '((company-sourcekit)))))
-    :config
-    (leaf company-sourcekit :ensure t))
-
-  (leaf dart-mode
-    :ensure t
-    :custom
-    (dart-format-on-save . nil)
-    (dart-enable-analysis-server . nil)
-    (dart-sdk-path . "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
-
-  (leaf flutter
-    :ensure t
-    :custom
-    (flutter-sdk-path . "~/repos/github.com/flutter/flutter/"))
-
-  (leaf sql
-    :ensure t
-    :mode (".sql$")
-    :hook
-    (sql-interactive-mode-hook .
-                               (lambda ()
-                                 (buffer-face-set 'variable-pitch)
-                                 (toggle-truncate-lines t)))
-    :config
-    (leaf sqlup-mode
+    (leaf dart-mode
       :ensure t
-      :hook (sql-mode-hook sql-interactive-mode-hook))
-    (leaf sqlformat
-      :ensure t
-      :ensure-system-package sqlparse
-      :preface
-      (defun my/sql-indent-region (beg end)
-        "Indent the SQL statement in the BEG to END (region)."
-        (interactive "*r")
-        (save-excursion
-          (save-restriction
-            (narrow-to-region beg end)
-            (sql-indent-buffer))))))
-
-  (leaf python :ensure t)
-
-  (leaf php-mode :ensure t)
-
-  (leaf haskell-mode :ensure t)
-
-  (leaf graphql-mode :ensure t)
-
-  (leaf java-mode
-    :hook
-    (java-mode-hook . (lambda ()
-                        (setq tab-width 4)
-                        (setq indent-tabs-mode t)
-                        (setq c-basic-offset 4))))
-
-  (leaf dockerfile-mode :ensure t)
-
-  (leaf docker-compose-mode :ensure t)
-
-  (leaf nginx-mode :ensure t)
-
-  (leaf gitconfig-mode :ensure t)
-
-  (leaf gitignore-mode :ensure t)
-
-  (leaf go-mode
-    :ensure t
-    :hook ((go-mode-hook . lsp)))
-
-  (leaf elixir-mode
-    :ensure t
-    :config
-    (leaf alchemist :ensure t)
-    (leaf flycheck-elixir :ensure t))
-
-  (leaf scala-mode
-    :ensure t
-    :interpreter ("scala")
-    :config
-    (leaf sbt-mode
-      :ensure t
-      :commands sbt-start sbt-command)
-    (leaf scala-bootstrap
-      :el-get (scala-bootstrap :url "https://github.com/tarao/scala-bootstrap-el")
-      :hook (scala-mode-hook . (lambda ()
-                                 (scala-bootstrap:with-metals-installed
-                                  (scala-bootstrap:with-bloop-server-started
-                                   (lsp)))))))
-
-  (leaf rustic
-    :ensure t
-    :custom ((lsp-rust-analyzer-server-command . '("~/.cargo/bin/rust-analyzer"))
-             (rustic-format-display-method . 'display-buffer)
-             (rustic-format-trigger . 'on-compile)))
-
-  (leaf fish-mode :ensure t)
-
-  (leaf csv-mode :ensure t)
-
-  (leaf org
-    :bind ((org-mode-map
-            ("C-," . nil)))
-    :mode ("\\.txt$")
-    :custom
-    (org-startup-truncated . nil)
-    (org-src-fontify-natively . t)
-    (org-log-done . 'time)
-    :config
-    (defun my-add-custom-id nil
-      "Add \"CUSTOM_ID\" to the current tree if not assigned yet."
-      (interactive)
-      (my-org-custom-id-get nil t))
-
-    (defun my-get-custom-id nil
-      "Return a part of UUID with an \"org\" prefix. e.g. \"org3ca6ef0c\"."
-      (let* ((id (org-id-new "")))
-        (when (org-uuidgen-p id)
-          (downcase
-           (concat "org"
-                   (substring
-                    (org-id-new "")
-                    0 8))))))
-
-    (defun my-org-custom-id-get (&optional pom create)
-      "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
-      (interactive)
-      (org-with-point-at pom
-                         (let ((id (org-entry-get nil "CUSTOM_ID")))
-                           (cond
-                            ((and id
-                                  (stringp id)
-                                  (string-match "\\S-" id))
-                             id)
-                            (create
-                             (setq id (my-get-custom-id))
-                             (unless id
-                               (error "Invalid ID"))
-                             (org-entry-put pom "CUSTOM_ID" id)
-                             (message "--- CUSTOM_ID assigned: %s" id)
-                             (org-id-add-location id
-                                                  (buffer-file-name
-                                                   (buffer-base-buffer)))
-                             id)))))
-
-    (leaf ox-latex
       :custom
-      (org-latex-default-class . "cv")
-      (org-latex-pdf-process . '("latexmk %f"))
-      (org-file-apps . '(("pdf" . "/usr/bin/open -a Preview.app %s")))
-      (org-latex-with-hyperref . nil)
-      (org-latex-hyperref-template . nil))
-    (leaf htmlize :ensure t)
-    (leaf ob-sql-mode :ensure t)
-    (leaf ox-gfm :ensure t)
-    (leaf org-bullets :ensure t
-      :config
-      (defun my/org-bullets-export (path)
-        "Export to bullets style text file into PATH."
-        (interactive "FExport file: ")
-        (let* ((current-buffer-string (buffer-string)))
-          (with-temp-buffer
-            (insert current-buffer-string)
-            (goto-char (point-min))
-            (while (re-search-forward "^\\*+ " nil t)
-              (let ((level (- (match-end 0) (match-beginning 0) 1)))
-                (replace-match
-                 (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
-            (write-file path))))
-      (defun my/org-bullets-export-region-clipboard (start end)
-        "Export to bullets style text file into clipbord from START to END."
-        (interactive "*r")
-        (let* ((current-buffer-string (buffer-substring start end)))
-          (with-temp-buffer
-            (insert current-buffer-string)
-            (goto-char (point-min))
-            (while (re-search-forward "^\\*+" nil t)
-              (let ((level (- (match-end 0) (match-beginning 0))))
-                (replace-match
-                 (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
-            (clipboard-kill-ring-save (point-min) (point-max))))))
+      (dart-format-on-save . nil)
+      (dart-enable-analysis-server . nil)
+      (dart-sdk-path . "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
 
-    (leaf markdown-mode
+    (leaf flutter
       :ensure t
-      :mode (("\\.markdown\\'" . gfm-mode)
-             ("\\.md\\'" . gfm-mode)
-             ("\\.mdown\\'" . gfm-mode))
+      :custom
+      (flutter-sdk-path . "~/repos/github.com/flutter/flutter/"))
+
+    (leaf sql
+      :ensure t
+      :mode (".sql$")
       :hook
-      (markdown-mode-hook .
-                          (lambda nil
-                            (set
-                             (make-local-variable 'whitespace-action)
-                             nil))))))
+      (sql-interactive-mode-hook .
+                                 (lambda ()
+                                   (buffer-face-set 'variable-pitch)
+                                   (toggle-truncate-lines t)))
+      :config
+      (leaf sqlup-mode
+        :ensure t
+        :hook (sql-mode-hook sql-interactive-mode-hook))
+      (leaf sqlformat
+        :ensure t
+        :ensure-system-package sqlparse
+        :preface
+        (defun my/sql-indent-region (beg end)
+          "Indent the SQL statement in the BEG to END (region)."
+          (interactive "*r")
+          (save-excursion
+            (save-restriction
+              (narrow-to-region beg end)
+              (sql-indent-buffer))))))
 
-(provide 'init)
+    (leaf python :ensure t)
 
-;; Local Variables:
-;; indent-tabs-mode: nil
-;; byte-compile-warnings: (not cl-functions obsolete)
-;; End:
+    (leaf php-mode :ensure t)
+
+    (leaf haskell-mode :ensure t)
+
+    (leaf graphql-mode :ensure t)
+
+    (leaf java-mode
+      :hook
+      (java-mode-hook . (lambda ()
+                          (setq tab-width 4)
+                          (setq indent-tabs-mode t)
+                          (setq c-basic-offset 4))))
+
+    (leaf dockerfile-mode :ensure t)
+
+    (leaf docker-compose-mode :ensure t)
+
+    (leaf nginx-mode :ensure t)
+
+    (leaf gitconfig-mode :ensure t)
+
+    (leaf gitignore-mode :ensure t)
+
+    (leaf go-mode
+      :ensure t
+      :hook ((go-mode-hook . lsp)))
+
+    (leaf elixir-mode
+      :ensure t
+      :config
+      (leaf alchemist :ensure t)
+      (leaf flycheck-elixir :ensure t))
+
+    (leaf scala-mode
+      :ensure t
+      :interpreter ("scala")
+      :config
+      (leaf sbt-mode
+        :ensure t
+        :commands sbt-start sbt-command)
+      (leaf scala-bootstrap
+        :el-get (scala-bootstrap :url "https://github.com/tarao/scala-bootstrap-el")
+        :hook (scala-mode-hook . (lambda ()
+                                   (scala-bootstrap:with-metals-installed
+                                    (scala-bootstrap:with-bloop-server-started
+                                     (lsp)))))))
+
+    (leaf rustic
+      :ensure t
+      :custom ((lsp-rust-analyzer-server-command . '("~/.cargo/bin/rust-analyzer"))
+               (rustic-format-display-method . 'display-buffer)
+               (rustic-format-trigger . 'on-compile)))
+
+    (leaf fish-mode :ensure t)
+
+    (leaf csv-mode :ensure t)
+
+    (leaf org
+      :bind ((org-mode-map
+              ("C-," . nil)))
+      :mode ("\\.txt$")
+      :custom
+      (org-startup-truncated . nil)
+      (org-src-fontify-natively . t)
+      (org-log-done . 'time)
+      :config
+      (defun my-add-custom-id nil
+        "Add \"CUSTOM_ID\" to the current tree if not assigned yet."
+        (interactive)
+        (my-org-custom-id-get nil t))
+
+      (defun my-get-custom-id nil
+        "Return a part of UUID with an \"org\" prefix. e.g. \"org3ca6ef0c\"."
+        (let* ((id (org-id-new "")))
+          (when (org-uuidgen-p id)
+            (downcase
+             (concat "org"
+                     (substring
+                      (org-id-new "")
+                      0 8))))))
+
+      (defun my-org-custom-id-get (&optional pom create)
+        "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
+        (interactive)
+        (org-with-point-at pom
+          (let ((id (org-entry-get nil "CUSTOM_ID")))
+            (cond
+             ((and id
+                   (stringp id)
+                   (string-match "\\S-" id))
+              id)
+             (create
+              (setq id (my-get-custom-id))
+              (unless id
+                (error "Invalid ID"))
+              (org-entry-put pom "CUSTOM_ID" id)
+              (message "--- CUSTOM_ID assigned: %s" id)
+              (org-id-add-location id
+                                   (buffer-file-name
+                                    (buffer-base-buffer)))
+              id)))))
+
+      (leaf ox-latex
+        :custom
+        (org-latex-default-class . "cv")
+        (org-latex-pdf-process . '("latexmk %f"))
+        (org-file-apps . '(("pdf" . "/usr/bin/open -a Preview.app %s")))
+        (org-latex-with-hyperref . nil)
+        (org-latex-hyperref-template . nil))
+      (leaf htmlize :ensure t)
+      (leaf ob-sql-mode :ensure t)
+      (leaf ox-gfm :ensure t)
+      (leaf org-bullets :ensure t
+        :config
+        (defun my/org-bullets-export (path)
+          "Export to bullets style text file into PATH."
+          (interactive "FExport file: ")
+          (let* ((current-buffer-string (buffer-string)))
+            (with-temp-buffer
+              (insert current-buffer-string)
+              (goto-char (point-min))
+              (while (re-search-forward "^\\*+ " nil t)
+                (let ((level (- (match-end 0) (match-beginning 0) 1)))
+                  (replace-match
+                   (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
+              (write-file path))))
+        (defun my/org-bullets-export-region-clipboard (start end)
+          "Export to bullets style text file into clipbord from START to END."
+          (interactive "*r")
+          (let* ((current-buffer-string (buffer-substring start end)))
+            (with-temp-buffer
+              (insert current-buffer-string)
+              (goto-char (point-min))
+              (while (re-search-forward "^\\*+" nil t)
+                (let ((level (- (match-end 0) (match-beginning 0))))
+                  (replace-match
+                   (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
+              (clipboard-kill-ring-save (point-min) (point-max))))))
+
+      (leaf markdown-mode
+        :ensure t
+        :mode (("\\.markdown\\'" . gfm-mode)
+               ("\\.md\\'" . gfm-mode)
+               ("\\.mdown\\'" . gfm-mode))
+        :hook
+        (markdown-mode-hook .
+                            (lambda nil
+                              (set
+                               (make-local-variable 'whitespace-action)
+                               nil))))))
+
+  (provide 'init)
+
+  ;; Local Variables:
+  ;; indent-tabs-mode: nil
+  ;; byte-compile-warnings: (not cl-functions obsolete)
+  ;; End:
 
 ;;; init.el ends here
