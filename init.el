@@ -962,7 +962,7 @@
       :config
       (leaf js2-mode
         :ensure (js2-mode tern xref-js2)
-        :el-get (company-tern :url "https://github.com/emacsattic/company-tern")
+        :el-get (company-tern :url "https://github.com/emacsattic/company-tern.git")
         :custom
         ((js-indent-level . 2)
          (js-switch-indent-offset . 2)
