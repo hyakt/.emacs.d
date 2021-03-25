@@ -799,6 +799,7 @@
                         ("*ruby*"                   :align below :ratio 0.33 :select t)
                         ("*nodejs*"                 :align below :ratio 0.33 :select t)
                         ("*shell*"                  :align below :ratio 0.33 :select t)
+                        ("*Typescript*"             :align below :ratio 0.33)
                         ;; excute shell
                         ("*Async Shell Command*"    :align right)
                         ("*Shell Command Output*"   :align right)
@@ -915,7 +916,8 @@
               js2-mode-hook
               web-mode-hook
               scss-mode-hook
-              graphql-mode-hook) . add-node-modules-path))
+              graphql-mode-hook
+              ts-comint-mode-hook) . add-node-modules-path))
 
     (leaf prettier-js
       :ensure t
@@ -963,6 +965,7 @@
       (leaf js2-mode
         :ensure (js2-mode tern xref-js2)
         :el-get (company-tern :url "https://github.com/emacsattic/company-tern.git")
+        :ensure-system-package (tern . "npm i -g tern")
         :custom
         ((js-indent-level . 2)
          (js-switch-indent-offset . 2)
@@ -1006,8 +1009,19 @@
           (interactive)
           (tide-command:quickinfo
            (tide-on-response-success-callback response (:ignore-empty t)
-                                              (kill-new (tide-annotate-display-parts
-                                                         (plist-get (plist-get response :body) :displayParts)))))))
+             (kill-new (tide-annotate-display-parts
+                        (plist-get (plist-get response :body) :displayParts)))))))
+
+      (leaf ts-comint
+        :ensure t typescript-mode
+        :after typescript-mode
+        :ensure-system-package (ts-node . "npm i -g ts-node")
+        :commands (run-ts)
+        :custom (ts-comint-program-command . "ts-node")
+        :bind (typescript-mode-map
+               (("C-x C-e" . ts-send-last-sexp)
+                ("C-c b" . ts-send-buffer)
+                ("C-c r" . ts-send-region))))
 
       (leaf coffee-mode
         :ensure t
