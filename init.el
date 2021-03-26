@@ -263,7 +263,6 @@
     :bind
     ("C-h" . nil)
     ("C-m" . newline-and-indent) ; リターンで改行とインデント
-    ("C-x C-k" . kill-buffer)
     ("C-0" . delete-frame)
     ;; my/function keybinding
     ("C-g" . my/keyboard-quit)
