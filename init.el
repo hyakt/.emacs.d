@@ -410,6 +410,7 @@
     :config
     (leaf visual-regexp-steroids
       :ensure t
+      :require t
       :custom (vr/engine . 'pcre2el)))
 
   (leaf multiple-cursors
