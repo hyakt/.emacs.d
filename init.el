@@ -47,8 +47,9 @@
     (gc-cons-threshold . ,(* 10 gc-cons-threshold)) ;; GCを減らして軽くする
     (message-log-max . 10000)                      ;; ログの記録行数を増やす
     (vc-follow-symlinks . t)                       ;; symlinkは必ず追いかける
-    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup"))) ;; バックアップ先n設定
+    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup"))) ;; バックアップ先
     (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
+    (create-lockfiles . nil)                         ;; ロックファイル(.#filename)のファイルを作らない
     )
   :global-minor-mode global-auto-revert-mode
   :init
