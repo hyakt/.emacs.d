@@ -420,6 +420,7 @@
            ("C-<" . mc/mark-previous-like-this)))
 
   (leaf undo-fu
+
     :ensure t
     :bind (("C-/" . undo-fu-only-undo)
            ("M-/" . undo-fu-only-redo)))
@@ -1023,6 +1024,10 @@
                (("C-x C-e" . ts-send-last-sexp)
                 ("C-c b" . ts-send-buffer)
                 ("C-c r" . ts-send-region))))
+
+      (leaf deno-fmt
+        :ensure t
+        :hook typescript-mode)
 
       (leaf coffee-mode
         :ensure t
