@@ -922,7 +922,7 @@
               ts-comint-mode-hook) . add-node-modules-path))
 
     (leaf prettier-js
-      :ensure t
+      :ensure (t projectile)
       :hook ((typescript-mode-hook
              js2-mode-hook
              web-mode-hook
@@ -936,11 +936,11 @@
         :type '(list string)
         :group 'my/prettier-js-ignore-project-list)
       (defun my/prettier-js-ignore ()
-        "Prettier.jsを有効にしない"
-        (dir-locals-set-class-variables 'my/prettier-js-ignore-project '((nil . ((eval . (remove-hook 'before-save-hook 'prettier-js 'local))))))
+        "特定のプロジェクトとDenoのプロジェクトではPrettier.jsを有効にしない"
         (when my/prettier-js-ignore-project-list
-          (dolist (value my/prettier-js-ignore-project-list)
-            (dir-locals-set-directory-class value 'my/prettier-js-ignore-project)))))
+          (dolist (project (append my/prettier-js-ignore-project-list my/deno-project-list))
+            (when (equal (projectile-project-root) project)
+                (remove-hook 'before-save-hook 'prettier-js 'local))))))
 
     (leaf html
       :config
