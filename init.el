@@ -923,12 +923,24 @@
 
     (leaf prettier-js
       :ensure t
-      :hook (typescript-mode-hook
+      :hook ((typescript-mode-hook
              js2-mode-hook
              web-mode-hook
              css-mode-hook
              scss-mode-hook
-             graphql-mode-hook))
+             graphql-mode-hook
+             (prettier-js-mode-hook . my/ignore-prettier-js)))
+      :preface
+      (defcustom ignore-prettier-js-list nil
+        "Ignore prettier js list"
+        :type '(list string)
+        :group 'ignore-prettier-js-list)
+      (defun my/ignore-prettier-js ()
+        "Prettier.jsを有効にしない"
+        (dir-locals-set-class-variables 'ignore-prettier-js '((nil . ((eval . (remove-hook 'before-save-hook 'prettier-js 'local))))))
+        (when ignore-prettier-js-list
+          (dolist (value ignore-prettier-js-list)
+            (dir-locals-set-directory-class value 'ignore-prettier-js)))))
 
     (leaf html
       :config
