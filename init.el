@@ -929,18 +929,18 @@
              css-mode-hook
              scss-mode-hook
              graphql-mode-hook
-             (prettier-js-mode-hook . my/ignore-prettier-js)))
+             (prettier-js-mode-hook . my/prettier-js-ignore)))
       :preface
-      (defcustom ignore-prettier-js-list nil
-        "Ignore prettier js list"
+      (defcustom my/prettier-js-ignore-project-list nil
+        "Ignore prettier js project list"
         :type '(list string)
-        :group 'ignore-prettier-js-list)
-      (defun my/ignore-prettier-js ()
+        :group 'my/prettier-js-ignore-project-list)
+      (defun my/prettier-js-ignore ()
         "Prettier.jsを有効にしない"
-        (dir-locals-set-class-variables 'ignore-prettier-js '((nil . ((eval . (remove-hook 'before-save-hook 'prettier-js 'local))))))
-        (when ignore-prettier-js-list
-          (dolist (value ignore-prettier-js-list)
-            (dir-locals-set-directory-class value 'ignore-prettier-js)))))
+        (dir-locals-set-class-variables 'my/prettier-js-ignore-project '((nil . ((eval . (remove-hook 'before-save-hook 'prettier-js 'local))))))
+        (when my/prettier-js-ignore-project-list
+          (dolist (value my/prettier-js-ignore-project-list)
+            (dir-locals-set-directory-class value 'my/prettier-js-ignore-project)))))
 
     (leaf html
       :config
@@ -1038,8 +1038,19 @@
                 ("C-c r" . ts-send-region))))
 
       (leaf deno-fmt
-        :ensure t
-        :hook typescript-mode)
+        :ensure (t projectile)
+        :hook (((typescript-mode-hook web-mode-hook) . my/deno-fmt-enable))
+        :preface
+        (defcustom my/deno-project-list nil
+          "List of projects to enable deno fmt."
+          :type '(list string)
+          :group 'my/deno-project-list)
+        (defun my/deno-fmt-enable ()
+          "deno-fmt-modeを有効にする"
+          (when my/deno-project-list
+            (dolist (project my/deno-project-list)
+              (when (equal (projectile-project-root) project)
+                (deno-fmt-mode))))))
 
       (leaf coffee-mode
         :ensure t

@@ -218,6 +218,11 @@ the folder if it doesn't exist."
   (leaf my/test
     :ensure (projectile vterm vterm-toggle)
     :config
+    (defun my/copy-project-name-clipboard ()
+      "Copy project name to clipbord."
+      (interactive)
+      (kill-new (projectile-project-root)))
+
     (defcustom my/mocha-config-path nil
       "Mocha config path")
 
