@@ -977,6 +977,7 @@
     (leaf javascript
       :config
       (leaf js2-mode
+        :mode (("\\.js$"))
         :ensure (js2-mode tern xref-js2)
         :el-get (company-tern :url "https://github.com/emacsattic/company-tern.git")
         :ensure-system-package (tern . "npm i -g tern")
