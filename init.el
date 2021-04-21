@@ -274,6 +274,8 @@
     ("C-x C-x" . my/kill-other-buffers)
     ("C-x i" . my/buffer-indent)
     ("C-x d" . my/dired-this-buffer)
+    :bind*
+    ("M-c M-c M-c" . my/deepl-region)
     :init
     (keyboard-translate ?\C-h ?\C-?)
     (global-unset-key (kbd "C-z")))

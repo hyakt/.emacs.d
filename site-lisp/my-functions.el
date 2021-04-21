@@ -381,7 +381,53 @@ the folder if it doesn't exist."
     (let ((default-env-shell (getenv "SHELL")))
       (setenv "SHELL" "/usr/local/bin/fish")
       (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name)))
-      (setenv "SHELL" default-env-shell))))
+      (setenv "SHELL" default-env-shell)))
+
+  (defun my/trans-deepl (beg end)
+    (interactive "r")
+    (let ((str (buffer-substring beg end)))
+      (browse-url
+       (concat "https://www.deepl.com/translator#en/ja/" (url-hexify-string str)))))
+
+  (leaf my/translate
+    :ensure (request)
+    :require 'request
+    :config
+    (defcustom my/deepl-api-auth-key ""
+      "DeepLの無料のauth key"
+      :type 'string)
+
+    (defun my/deepl-region (beg end)
+      "BEGからENDの範囲をDeepLで翻訳する"
+      (interactive "r")
+      (let ((str (buffer-substring beg end)))
+        (request
+          "https://api-free.deepl.com/v2/translate"
+          :type "GET"
+          :data `(("auth_key" . ,(url-hexify-string my/deepl-api-auth-key)) ("text" . ,str) ("target_lang" . "JA"))
+          :parser 'json-read
+          :success (cl-function
+                    (lambda (&key data &allow-other-keys)
+                      (let ((text (decode-coding-string (url-unhex-string (assoc-default 'text (aref (assoc-default 'translations data) 0))) 'utf-8)))
+                        (kill-new text)
+                        (message "%s" text))
+                      )))))
+
+    (defun my/codic (str)
+      "STRの値をdeepLで翻訳する"
+      (interactive "smy/Codic: ")
+        (request
+          "https://api-free.deepl.com/v2/translate"
+          :type "GET"
+          :data `(("auth_key" . ,(url-hexify-string my/deepl-api-auth-key)) ("target_lang" . "EN-US") ("text" . ,str))
+          :parser 'json-read
+          :success (cl-function
+                    (lambda (&key data &allow-other-keys)
+                      (let ((text (downcase (decode-coding-string (url-unhex-string (assoc-default 'text (aref (assoc-default 'translations data) 0))) 'utf-8))))
+                        (kill-new text)
+                        (message "%s" text))
+                      )))))
+  )
 
 (provide 'my-functions)
 
