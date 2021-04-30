@@ -1228,6 +1228,10 @@
 
   (leaf csv-mode :ensure t)
 
+  (leaf jq-mode
+    :ensure t
+    :ensure-system-package jq)
+
   (leaf org
     :bind ((org-mode-map
             ("C-," . nil)))
