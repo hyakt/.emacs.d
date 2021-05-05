@@ -846,7 +846,9 @@
              (lsp-signature-auto-activate .t)
              (lsp-signature-render-documentation . t)
              (lsp-enable-snippet . nil)
-             (lsp-headerline-breadcrumb-enable . nil)))
+             (lsp-headerline-breadcrumb-enable . nil)
+             ;; deno
+             (lsp-clients-deno-import-map . "./import_map.json")))
 
   (leaf web
     :config
@@ -886,7 +888,8 @@
                     (set (make-local-variable 'company-backends)
                          '((company-tern :with company-dabbrev-code) company-yasnippet)))
                   (when (and (stringp buffer-file-name)
-                             (string-match "\\.tsx\\'" buffer-file-name))
+                             (string-match "\\.tsx\\'" buffer-file-name)
+                             (not (member (projectile-project-root) my/deno-project-list)))
                     (tide-setup)
                     (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
                     (set (make-local-variable 'company-backends)
@@ -903,6 +906,8 @@
                         (or (and (web-mode-is-css-string pos) "css")
                             (apply orig-fun args))))
                     (advice-add 'web-mode-language-at-pos :around #'web-mode-language-at-pos-advice))
+                  (when (member (projectile-project-root) my/deno-project-list)
+                    (lsp))
                   )))
 
     (leaf emmet-mode
@@ -926,12 +931,12 @@
     (leaf prettier-js
       :ensure (t projectile)
       :hook ((typescript-mode-hook
-             js2-mode-hook
-             web-mode-hook
-             css-mode-hook
-             scss-mode-hook
-             graphql-mode-hook
-             (prettier-js-mode-hook . my/prettier-js-ignore)))
+              js2-mode-hook
+              web-mode-hook
+              css-mode-hook
+              scss-mode-hook
+              graphql-mode-hook
+              (prettier-js-mode-hook . my/prettier-js-ignore)))
       :preface
       (defcustom my/prettier-js-ignore-project-list nil
         "Ignore prettier js project list"
@@ -942,7 +947,7 @@
         (when my/prettier-js-ignore-project-list
           (dolist (project (append my/prettier-js-ignore-project-list my/deno-project-list))
             (when (equal (projectile-project-root) project)
-                (remove-hook 'before-save-hook 'prettier-js 'local))))))
+              (remove-hook 'before-save-hook 'prettier-js 'local))))))
 
     (leaf html
       :config
@@ -1002,18 +1007,20 @@
         :ensure t
         :custom (typescript-indent-level . 2)
         :hook (typescript-mode-hook . (lambda ()
-                                        (tide-setup)
-                                        (tide-hl-identifier-mode)
-                                        (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)
-                                        (set (make-local-variable 'company-backends)
-                                             '((company-tide) company-yasnippet)))))
+                                        (when (not (member (projectile-project-root) my/deno-project-list))
+                                          (tide-setup)
+                                          (tide-hl-identifier-mode)
+                                          (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)
+                                          (set (make-local-variable 'company-backends)
+                                               '((company-tide) company-yasnippet)))
+                                        (when (member (projectile-project-root) my/deno-project-list)
+                                          (lsp)))))
 
       (leaf tide
         :ensure t typescript-mode company flycheck
         :bind (tide-mode-map
                ("M-." . nil)
                ("M-," . nil))
-        :hook (typescript-mode-hook)
         :config
         (defun my/remove-tide-format-before-save ()
           (interactive)
