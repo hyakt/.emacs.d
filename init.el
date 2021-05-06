@@ -838,7 +838,7 @@
   :config
   (leaf lsp-mode
     :ensure t
-    :commands lsp
+    :commands (lsp lsp-deferred)
     :bind ((lsp-mode-map
             ("C-c i" . lsp-execute-code-action)))
     :custom ((lsp-enable-indentation . nil)
@@ -846,7 +846,13 @@
              (lsp-signature-auto-activate .t)
              (lsp-signature-render-documentation . t)
              (lsp-enable-snippet . nil)
-             (lsp-headerline-breadcrumb-enable . nil)))
+             (lsp-enable-xref . t)
+             (lsp-headerline-breadcrumb-enable . nil)
+             (lsp-enable-file-watchers . nil)
+             (lsp-clients-deno-import-map . "./import_map.json"))
+    :config
+    (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
+    )
 
   (leaf web
     :config
@@ -887,7 +893,7 @@
                          '((company-tern :with company-dabbrev-code) company-yasnippet)))
                   (when (and (stringp buffer-file-name)
                              (string-match "\\.tsx\\'" buffer-file-name))
-                    (lsp))
+                    (lsp-deferred))
                   )))
 
     (leaf emmet-mode
@@ -974,7 +980,7 @@
       (leaf typescript-mode
         :ensure t
         :custom (typescript-indent-level . 2)
-        :hook (typescript-mode-hook . lsp))
+        :hook (typescript-mode-hook . lsp-deferred))
 
       (leaf ts-comint
         :ensure t typescript-mode
