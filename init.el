@@ -846,9 +846,7 @@
              (lsp-signature-auto-activate .t)
              (lsp-signature-render-documentation . t)
              (lsp-enable-snippet . nil)
-             (lsp-headerline-breadcrumb-enable . nil)
-             ;; deno
-             (lsp-clients-deno-import-map . "./import_map.json")))
+             (lsp-headerline-breadcrumb-enable . nil)))
 
   (leaf web
     :config
@@ -888,25 +886,7 @@
                     (set (make-local-variable 'company-backends)
                          '((company-tern :with company-dabbrev-code) company-yasnippet)))
                   (when (and (stringp buffer-file-name)
-                             (string-match "\\.tsx\\'" buffer-file-name)
-                             (not (member (projectile-project-root) my/deno-project-list)))
-                    (tide-setup)
-                    (flycheck-add-next-checker 'tsx-tide 'javascript-eslint 'append)
-                    (set (make-local-variable 'company-backends)
-                         '((company-tide) company-css company-yasnippet))
-
-                    (defun company-tide-advice (orig-fun &rest args)
-                      (if (and (eq (car args) 'prefix) (web-mode-is-css-string (point)))
-                          'nil
-                        (apply orig-fun args)))
-                    (advice-add 'company-tide :around #'company-tide-advice)
-
-                    (defun web-mode-language-at-pos-advice (orig-fun &rest args)
-                      (let ((pos (or (car args) (point))))
-                        (or (and (web-mode-is-css-string pos) "css")
-                            (apply orig-fun args))))
-                    (advice-add 'web-mode-language-at-pos :around #'web-mode-language-at-pos-advice))
-                  (when (member (projectile-project-root) my/deno-project-list)
+                             (string-match "\\.tsx\\'" buffer-file-name))
                     (lsp))
                   )))
 
@@ -929,25 +909,13 @@
               ts-comint-mode-hook) . add-node-modules-path))
 
     (leaf prettier-js
-      :ensure (t projectile)
+      :ensure t
       :hook ((typescript-mode-hook
               js2-mode-hook
               web-mode-hook
               css-mode-hook
               scss-mode-hook
-              graphql-mode-hook
-              (prettier-js-mode-hook . my/prettier-js-ignore)))
-      :preface
-      (defcustom my/prettier-js-ignore-project-list nil
-        "Ignore prettier js project list"
-        :type '(list string)
-        :group 'my/prettier-js-ignore-project-list)
-      (defun my/prettier-js-ignore ()
-        "特定のプロジェクトとDenoのプロジェクトではPrettier.jsを有効にしない"
-        (when my/prettier-js-ignore-project-list
-          (dolist (project (append my/prettier-js-ignore-project-list my/deno-project-list))
-            (when (equal (projectile-project-root) project)
-              (remove-hook 'before-save-hook 'prettier-js 'local))))))
+              graphql-mode-hook)))
 
     (leaf html
       :config
@@ -1006,35 +974,7 @@
       (leaf typescript-mode
         :ensure t
         :custom (typescript-indent-level . 2)
-        :hook (typescript-mode-hook . (lambda ()
-                                        (when (not (member (projectile-project-root) my/deno-project-list))
-                                          (tide-setup)
-                                          (tide-hl-identifier-mode)
-                                          (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)
-                                          (set (make-local-variable 'company-backends)
-                                               '((company-tide) company-yasnippet)))
-                                        (when (member (projectile-project-root) my/deno-project-list)
-                                          (lsp)))))
-
-      (leaf tide
-        :ensure t typescript-mode company flycheck
-        :bind (tide-mode-map
-               ("M-." . nil)
-               ("M-," . nil))
-        :config
-        (defun my/remove-tide-format-before-save ()
-          (interactive)
-          (remove-hook 'before-save-hook 'tide-format-before-save))
-        (defun my/add-tide-format-before-save ()
-          (interactive)
-          (add-hook 'before-save-hook 'tide-format-before-save))
-        (defun my/tide-copy-type ()
-          "Copy type to clipbord."
-          (interactive)
-          (tide-command:quickinfo
-           (tide-on-response-success-callback response (:ignore-empty t)
-             (kill-new (tide-annotate-display-parts
-                        (plist-get (plist-get response :body) :displayParts)))))))
+        :hook (typescript-mode-hook . lsp))
 
       (leaf ts-comint
         :ensure t typescript-mode
@@ -1047,20 +987,7 @@
                 ("C-c b" . ts-send-buffer)
                 ("C-c r" . ts-send-region))))
 
-      (leaf deno-fmt
-        :ensure (t projectile)
-        :hook (((typescript-mode-hook web-mode-hook) . my/deno-fmt-enable))
-        :preface
-        (defcustom my/deno-project-list nil
-          "List of projects to enable deno fmt."
-          :type '(list string)
-          :group 'my/deno-project-list)
-        (defun my/deno-fmt-enable ()
-          "deno-fmt-modeを有効にする"
-          (when my/deno-project-list
-            (dolist (project my/deno-project-list)
-              (when (equal (projectile-project-root) project)
-                (deno-fmt-mode))))))
+      (leaf deno-fmt :ensure t)
 
       (leaf coffee-mode
         :ensure t
