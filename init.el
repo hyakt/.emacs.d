@@ -40,22 +40,24 @@
   (custom-file . "~/.emacs.d/custom.el")
   :setq
   `(
-    (auto-coding-functions . nil)                  ;; 文字コードの自動変換保存をしない
-    (completion-ignore-case . t)                   ;; file名の補完で大文字小文字を区別しない
-    (auto-save-default . nil)                      ;; オートセーブのファイルを作らない
-    (make-backup-files . t)                        ;; Backup fileの場所指定
-    (gc-cons-threshold . ,(* 10 gc-cons-threshold)) ;; GCを減らして軽くする
-    (message-log-max . 10000)                      ;; ログの記録行数を増やす
-    (vc-follow-symlinks . t)                       ;; symlinkは必ず追いかける
-    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup"))) ;; バックアップ先
+    (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
+    (completion-ignore-case . t)                                                               ;; file名の補完で大文字小文字を区別しない
+    (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
+    (make-backup-files . t)                                                                    ;; Backup fileの場所指定
+    (gc-cons-threshold . ,(* 10 gc-cons-threshold))                                            ;; GCを減らして軽くする
+    (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
+    (vc-follow-symlinks . t)                                                                   ;; symlinkは必ず追いかける
+    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
     (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
-    (create-lockfiles . nil)                         ;; ロックファイル(.#filename)のファイルを作らない
+    (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
+    (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibufferをマウスカーソルで選択できないようにする
+    (enable-recursive-minibuffers . t)                                                         ;; minibufferの再帰的使用を許可する
     )
   :global-minor-mode global-auto-revert-mode
+  :hook (minibuffer-setup-hook . cursor-intangible-mode)                                       ;; minibufferをマウスカーソルで選択できないようにする
   :init
-  (fset 'yes-or-no-p 'y-or-n-p)                     ;; yes-noの選択肢をy-nにする
-  ;; デフォルトの shell を bashに変更
-  (setenv "SHELL" "/bin/bash")
+  (fset 'yes-or-no-p 'y-or-n-p)                                                                ;; yes-noの選択肢をy-nにする
+  (setenv "SHELL" "/bin/bash")                                                                 ;; デフォルトの shell を bashに変更
 
   (leaf custom-file
     :when (file-exists-p custom-file)
@@ -96,7 +98,11 @@
     :if (eq system-type 'darwin)
     :custom((exec-path-from-shell-variables '("PATH" "GOPATH")))
     :config
-    (exec-path-from-shell-initialize)))
+    (exec-path-from-shell-initialize))
+
+  (leaf savehist
+    :init
+    (savehist-mode)))
 
 
 ;;; ---------- 外観設定 ----------
@@ -365,8 +371,7 @@
                                xref-find-definitions xref-find-references
                                dump-jump-go
                                my/jump-to-match-parens
-                               swiper counsel-find-file counsel-switch-buffer
-                               counsel-rg counsel-projectile-switch-project counsel-git counsel-projectile counsel-ghq
+                               consult-line consult-ripgrep consult-find
                                end-of-buffer beginning-of-buffer))
      (jumplist-ex-mode . t)))
 
@@ -488,119 +493,97 @@
     :config
     (dashboard-setup-startup-hook))
 
-  (leaf counsel
-    :ensure t
-    :ensure-system-package (rg . ripgrep)
-    :bind (("C-s" . swiper)
-           ("M-x" . counsel-M-x)
-           ("M-y" . counsel-yank-pop)
-           ("C-x C-f" . my/find-file-and-create-directory)
-           ("C-x C-r" . counsel-recentf)
-           ( "C-x C-b" . switch-to-buffer)
-           ("<f1> f" . counsel-describe-function)
-           ("<f1> v" . counsel-describe-variable)
-           ("<f1> l" . counsel-find-library)
-           ("<f2> i" . counsel-info-lookup-symbol)
-           ("<f2> u" . counsel-unicode-char)
-           ("C-x f" . counsel-git)
-           ("C-x e" . counsel-rg)
-           ("C-c f" . counsel-flycheck)
-           ("C-x C-g" . counsel-git)
-           (read-expression-map
-            ("C-r" . counsel-expression-history)))
+  (leaf consult
+    :ensure t consult-flycheck
+    :bind (;; C-c bindings (mode-specific-map)
+           ("C-c h" . consult-history)
+           ("C-c m" . consult-mode-command)
+           ("C-c b" . consult-bookmark)
+           ("C-c k" . consult-kmacro)
+           ;; C-x bindings (ctl-x-map)
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x C-b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x f" . consult-find)
+           ("C-x e" . consult-ripgrep)
+           ("C-x C-r" . consult-recent-file)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ("<help> a" . consult-apropos)            ;; orig. apropos-command
+           ;; M-g bindings (goto-map)
+           ("C-s" . consult-line)
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flycheck)
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-project-imenu)
+           ;; M-s bindings (search-map)
+           ("M-s f" . consult-find)
+           ("M-s L" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s m" . consult-multi-occur)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch)
+           ("M-e" . consult-isearch)                 ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
+           ("M-s l" . consult-line))                 ;; required by consult-line to detect isearch
     :custom
-    (counsel-grep-base-command . "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
-    (ivy-height . 20)
-    (ivy-use-virtual-buffers . t)
-    (enable-recursive-minibuffers . t)
-    (ivy-count-format . "(%d/%d) ")
-    (ivy-extra-directories . nil)
-    (ivy-re-builders-alist . '((t . ivy--regex-plus) (read-file-name-internal . ivy--regex-fuzzy)))
-    (ivy-format-function . 'ivy-format-function-arrow)
-    (counsel-yank-pop-separator . "\n-------\n")
-    (ivy-sort-matches-functions-alist . '((t)
-                                          (ivy-completion-in-region . ivy--shorter-matches-first)
-                                          (ivy-switch-buffer . ivy-sort-function-buffer)))
-    (ivy-initial-inputs-alist . nil)
-    (counsel-find-file-ignore-regexp .(regexp-opt completion-ignored-extensions))
-    :global-minor-mode ivy-mode
+    ((xref-show-xrefs-function . 'consult-xref)
+     (xref-show-definitions-function . 'consult-xref))
     :config
-    ;; counsel-find-file
-    (defun reloading (cmd)
-      (lambda (x)
-        (funcall cmd x)
-        (ivy--reset-state ivy-last)))
+    (consult-customize
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-file consult--source-project-file consult--source-bookmark
+     :preview-key (kbd "M-.")))
 
-    (defun given-file (cmd prompt)
-      (lambda (source)
-        (let ((target (let ((enable-recursive-minibuffers t))
-                        (read-file-name
-                         (format "%s %s to:" prompt source)))))
-          (funcall cmd source target 1))))
+  (leaf vertico
+    :ensure t
+    :init
+    (vertico-mode))
 
-    (defun confirm-delete-file (x)
-      (dired-delete-file x 'confirm-each-subdirectory))
+  (leaf orderless
+    :ensure t
+    :custom
+    ((completion-styles . '(orderless))
+     (completion-category-defaults . nil)))
 
-    (ivy-set-actions
-     'my/find-file-and-create-directory
-     `(("b" counsel-find-file-cd-bookmark-action "cd bookmark")
-       ("c" ,(given-file #'copy-file "Copy") "copy")
-       ("d" ,(reloading #'confirm-delete-file) "delete")
-       ("m" ,(reloading (given-file #'rename-file "Move")) "move")
-       ("j" find-file-other-window "other window")))
+  (leaf marginalia
+    :ensure t
+    :bind (("M-A" . marginalia-cycle))
+    :init
+    (marginalia-mode))
 
-    ;; counsel-rg
-    (defun my/counsel-rg-with-extention-and-word (_)
-      "Execute counsel-rg with extention and _"
-      (let ((word (read-from-minibuffer "Search Word: "))
-            (extention (read-from-minibuffer "Extention: ")))
-        (counsel-rg (concat word " -- -g'*." extention "'"))))
+  (leaf embark
+    :ensure t
+    :bind
+    (("M-O" . embark-act))
+    :preface
+    (defun embark-action-indicator-which-key (map _target)
+      (which-key--show-keymap "Embark" map nil nil 'no-paging)
+      #'which-key--hide-popup-ignore-command)
+    :custom
+    ((embark-action-indicator . 'embark-action-indicator-which-key)
+     (embark-become-indicator . 'embark-action-indicator-which-key))
+    :config
+    ;; Hide the mode line of the Embark live/completions buffers
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
 
-    (defun my/counsel-rg-from-current-directory (_)
-      "Searched by current directory and subdirectories."
-      (if (buffer-file-name)
-          (counsel-rg nil (file-name-directory buffer-file-name))
-        (counsel-rg nil (dired-current-directory))))
-
-    (ivy-set-actions
-     'counsel-rg
-     '(("e" my/counsel-rg-with-extention-and-word "with-extention")
-       ("d" my/counsel-rg-from-current-directory "search-from-current-directroy")))
-
-    ;; counsel-fzf
-    (defun my/counsel-fzf-from-current-directory (_)
-      "Searched by current directory and subdirectories."
-      (if (buffer-file-name)
-          (counsel-fzf nil (file-name-directory buffer-file-name))
-        (counsel-fzf nil (dired-current-directory))))
-
-    (ivy-set-actions
-     'counsel-fzf
-     '(("d" my/counsel-fzf-from-current-directory "search-from-current-directroy")))
-
-    ;; geleral action
-    (defun my/ivy-yank-action (x) (kill-new x))
-    (ivy-set-actions t
-                     '(("y" my/ivy-yank-action "yank")))
-
-    (leaf counsel-ghq
-      :ensure-system-package ghq
-      :el-get (counsel-ghq :url "https://github.com/windymelt/counsel-ghq.git")
-      :bind (("C-x C-g" . counsel-ghq)))
-
-    (leaf counsel-tramp
-      :ensure t
-      :bind (("C-x C-t" . counsel-tramp)))
-
-    (leaf ivy-rich
-      :ensure t
-      :global-minor-mode ivy-rich-mode)
-
-    (leaf all-the-icons-ivy-rich
-      :ensure t
-      :global-minor-mode all-the-icons-ivy-rich)
-
-    (leaf ivy-hydra :ensure t))
+  (leaf embark-consult
+    :ensure t
+    :after (embark consult)
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
 
   (leaf avy
     :ensure t
