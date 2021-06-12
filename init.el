@@ -371,7 +371,7 @@
                                xref-find-definitions xref-find-references
                                dump-jump-go
                                my/jump-to-match-parens
-                               consult-line consult-ripgrep consult-find
+                               consult-line consult-ripgrep consult-find consult-ghq-find
                                end-of-buffer beginning-of-buffer))
      (jumplist-ex-mode . t)))
 
@@ -494,7 +494,7 @@
     (dashboard-setup-startup-hook))
 
   (leaf consult
-    :ensure t consult-flycheck
+    :ensure t consult-flycheck consult-ghq
     :bind (;; C-c bindings (mode-specific-map)
            ("C-c h" . consult-history)
            ("C-c m" . consult-mode-command)
@@ -506,6 +506,7 @@
            ("C-x f" . consult-find)
            ("C-x e" . consult-ripgrep)
            ("C-x C-r" . consult-recent-file)
+           ("C-x C-g" . consult-ghq-find)
            ;; Other custom bindings
            ("M-y" . consult-yank-pop)                ;; orig. yank-pop
            ("<help> a" . consult-apropos)            ;; orig. apropos-command
@@ -536,7 +537,8 @@
            ("M-s l" . consult-line))                 ;; required by consult-line to detect isearch
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
-     (xref-show-definitions-function . 'consult-xref))
+     (xref-show-definitions-function . 'consult-xref)
+     (consult-ghq-find-function .'consult-find))
     :config
     (consult-customize
      consult-ripgrep consult-git-grep consult-grep
