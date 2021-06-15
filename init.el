@@ -43,13 +43,12 @@
     (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
     (completion-ignore-case . t)                                                               ;; file名の補完で大文字小文字を区別しない
     (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
-    (make-backup-files . t)                                                                    ;; Backup fileの場所指定
+    (make-backup-files . nil)                                                                  ;; Backup fileを作らない
+    (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
     (gc-cons-threshold . ,(* 10 gc-cons-threshold))                                            ;; GCを減らして軽くする
     (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
     (vc-follow-symlinks . t)                                                                   ;; symlinkは必ず追いかける
-    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
     (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
-    (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
     (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibufferをマウスカーソルで選択できないようにする
     (enable-recursive-minibuffers . t)                                                         ;; minibufferの再帰的使用を許可する
     )
@@ -427,7 +426,6 @@
            ("C-<" . mc/mark-previous-like-this)))
 
   (leaf undo-fu
-
     :ensure t
     :bind (("C-/" . undo-fu-only-undo)
            ("M-/" . undo-fu-only-redo)))
