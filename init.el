@@ -536,7 +536,8 @@
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
      (xref-show-definitions-function . 'consult-xref)
-     (consult-ghq-find-function .'consult-find))
+     (consult-ghq-find-function .'consult-find)
+     (consult-project-root-function . #'projectile-project-root))
     :config
     (consult-customize
      consult-ripgrep consult-git-grep consult-grep
