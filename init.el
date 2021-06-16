@@ -590,8 +590,7 @@
   (leaf embark-consult
     :ensure t
     :after (embark consult)
-    :hook
-    (embark-collect-mode . consult-preview-at-point-mode))
+    :require t)
 
   (leaf avy
     :ensure t
@@ -1192,22 +1191,22 @@
       "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
       (interactive)
       (org-with-point-at pom
-        (let ((id (org-entry-get nil "CUSTOM_ID")))
-          (cond
-           ((and id
-                 (stringp id)
-                 (string-match "\\S-" id))
-            id)
-           (create
-            (setq id (my-get-custom-id))
-            (unless id
-              (error "Invalid ID"))
-            (org-entry-put pom "CUSTOM_ID" id)
-            (message "--- CUSTOM_ID assigned: %s" id)
-            (org-id-add-location id
-                                 (buffer-file-name
-                                  (buffer-base-buffer)))
-            id)))))
+                         (let ((id (org-entry-get nil "CUSTOM_ID")))
+                           (cond
+                            ((and id
+                                  (stringp id)
+                                  (string-match "\\S-" id))
+                             id)
+                            (create
+                             (setq id (my-get-custom-id))
+                             (unless id
+                               (error "Invalid ID"))
+                             (org-entry-put pom "CUSTOM_ID" id)
+                             (message "--- CUSTOM_ID assigned: %s" id)
+                             (org-id-add-location id
+                                                  (buffer-file-name
+                                                   (buffer-base-buffer)))
+                             id)))))
 
     (leaf ox-latex
       :custom
