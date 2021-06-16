@@ -501,7 +501,7 @@
            ;; C-x bindings (ctl-x-map)
            ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
            ("C-x C-b" . consult-buffer)                ;; orig. switch-to-buffer
-           ("C-x f" . consult-find)
+           ("C-x f" . consult-find-fd)
            ("C-x e" . consult-ripgrep)
            ("C-x C-r" . consult-recent-file)
            ("C-x C-g" . consult-ghq-find)
@@ -533,11 +533,17 @@
            ("M-e" . consult-isearch)                 ;; orig. isearch-edit-string
            ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
            ("M-s l" . consult-line))                 ;; required by consult-line to detect isearch
+    :preface
+    (defun consult-find-fd (&optional dir initial)
+      (interactive "P")
+      (let ((consult-find-command "fd --color=never --full-path ARG OPTS"))
+        (consult-find dir initial)))
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
      (xref-show-definitions-function . 'consult-xref)
      (consult-ghq-find-function .'consult-find)
-     (consult-project-root-function . #'projectile-project-root))
+     (consult-project-root-function . #'projectile-project-root)
+     (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
     :config
     (consult-customize
      consult-ripgrep consult-git-grep consult-grep
@@ -1186,22 +1192,22 @@
       "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
       (interactive)
       (org-with-point-at pom
-                         (let ((id (org-entry-get nil "CUSTOM_ID")))
-                           (cond
-                            ((and id
-                                  (stringp id)
-                                  (string-match "\\S-" id))
-                             id)
-                            (create
-                             (setq id (my-get-custom-id))
-                             (unless id
-                               (error "Invalid ID"))
-                             (org-entry-put pom "CUSTOM_ID" id)
-                             (message "--- CUSTOM_ID assigned: %s" id)
-                             (org-id-add-location id
-                                                  (buffer-file-name
-                                                   (buffer-base-buffer)))
-                             id)))))
+        (let ((id (org-entry-get nil "CUSTOM_ID")))
+          (cond
+           ((and id
+                 (stringp id)
+                 (string-match "\\S-" id))
+            id)
+           (create
+            (setq id (my-get-custom-id))
+            (unless id
+              (error "Invalid ID"))
+            (org-entry-put pom "CUSTOM_ID" id)
+            (message "--- CUSTOM_ID assigned: %s" id)
+            (org-id-add-location id
+                                 (buffer-file-name
+                                  (buffer-base-buffer)))
+            id)))))
 
     (leaf ox-latex
       :custom
