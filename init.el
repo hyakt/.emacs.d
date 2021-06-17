@@ -38,14 +38,16 @@
   (explicit-shell-file-name . "/bin/bash")
   :pre-setq
   (custom-file . "~/.emacs.d/custom.el")
-  :setq
-  `(
+  :custom
+  (
     (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
     (completion-ignore-case . t)                                                               ;; file名の補完で大文字小文字を区別しない
     (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
-    (make-backup-files . nil)                                                                  ;; Backup fileを作らない
+    (make-backup-files . t)                                                                    ;; Backup fileを作る
+    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
     (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
-    (gc-cons-threshold . ,(* 10 gc-cons-threshold))                                            ;; GCを減らして軽くする
+    (gc-cons-threshold . most-positive-fixnum)                                                 ;; GCを実行しない
+    (garbage-collection-messages . t)                                                          ;; GC実行のメッセージを表示する
     (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
     (vc-follow-symlinks . t)                                                                   ;; symlinkは必ず追いかける
     (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
@@ -57,6 +59,7 @@
   :init
   (fset 'yes-or-no-p 'y-or-n-p)                                                                ;; yes-noの選択肢をy-nにする
   (setenv "SHELL" "/bin/bash")                                                                 ;; デフォルトの shell を bashに変更
+  (run-with-idle-timer 60.0 t #'garbage-collect)                                                ;; Run GC every 60 seconds if emacs is idle.
 
   (leaf custom-file
     :when (file-exists-p custom-file)
