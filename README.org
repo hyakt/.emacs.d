@@ -4,7 +4,7 @@
 * .emacs.d
 ** Usage
    #+BEGIN_SRC sh
-   mkdir -r ~/repos/github.com/hyakt
+   mkdir -p ~/repos/github.com/hyakt
    cd  ~/repos/github.com/hyakt
    git clone https://github.com/hyakt/.emacs.d
    ln -sfv  ~/repos/github.com/hyakt/.emacs.d ~/
