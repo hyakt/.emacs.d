@@ -37,21 +37,3 @@
     #+BEGIN_SRC emacs-lisp
     M-x all-the-icons-install-fonts
     #+END_SRC
-
-*** [[https://github.com/emacs-lsp/lsp-mode][LSP]]
-    - golang: https://github.com/golang/tools/blob/master/gopls/doc/user.md
-    - Scala: Using [[https://github.com/tarao/scala-bootstrap-el][ScalaBootstrap]], so installed automatically.
-    - Rust: [[https://rust-analyzer.github.io/manual.html#installation][rust-analyzer]]
-    - [[https://github.com/theia-ide/typescript-language-server][TypeScript]](unused):
-    #+BEGIN_SRC sh
-    yarn global add typescript-language-server
-    #+END_SRC
-    - Ruby(unused):
-    #+BEGIN_SRC sh
-    gem install solargraph
-    yard gems
-    yard config --gem-install-yri
-    # If using anyenv or rbenv, exec the following command.
-    rbenv rehash
-    #+END_SRC
-    And other requirements package installed by ensure-system-package.
