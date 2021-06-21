@@ -30,7 +30,8 @@
     - Install fonts
     #+BEGIN_SRC sh
     brew tap homebrew/cask-fonts
-    brew cask install font-source-han-code-jp font-myrica
+    brew tap iandol/adobe-fonts
+    brew install --cask font-source-han-code-jp font-myrica
     #+END_SRC
     - Install [[https://github.com/domtronn/all-the-icons.el/tree/master/fonts][all-the-icons font]]
     #+BEGIN_SRC emacs-lisp
