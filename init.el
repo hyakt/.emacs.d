@@ -595,25 +595,6 @@
     :after (embark consult)
     :require t)
 
-  (leaf avy
-    :ensure t
-    :custom (avy-background . t)
-    :preface
-    (defun add-keys-to-avy (prefix c &optional mode)
-      (define-key global-map
-        (read-kbd-macro
-         (concat prefix
-                 (string c)))
-        `(lambda nil
-           (interactive)
-           (funcall
-            (if (eq ',mode 'word)
-                #'avy-goto-word-1 #'avy-goto-char)
-            ,c))))
-    :config
-    (loop for c from 33 to 126 do
-          (add-keys-to-avy "C-M-" c)))
-
   (leaf dired
     :ensure (wdired all-the-icons-dired)
     :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode)
