@@ -495,6 +495,8 @@
     (dashboard-setup-startup-hook))
 
   (leaf consult
+    :ensure-system-package (rg . ripgrep)
+    :ensure-system-package fd
     :ensure t consult-flycheck consult-ghq
     :bind (;; C-c bindings (mode-specific-map)
            ("C-c h" . consult-history)
