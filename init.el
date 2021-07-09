@@ -46,8 +46,8 @@
     (make-backup-files . t)                                                                    ;; Backup fileを作る
     (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
     (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
-    (gc-cons-threshold . 8000000)                                                              ;; GCの閾値を設定
-    (garbage-collection-messages . t)                                                          ;; GC実行のメッセージを表示する
+    (gc-cons-threshold . 1073741824)                                                           ;; GCの閾値を設定
+    (garbage-collection-messages . nil)                                                        ;; GC実行のメッセージを表示しない
     (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
     (vc-follow-symlinks . t)                                                                   ;; symlinkは必ず追いかける
     (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
