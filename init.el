@@ -546,7 +546,7 @@
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
      (xref-show-definitions-function . 'consult-xref)
-     (consult-ghq-find-function .'consult-find)
+     (consult-ghq-find-function . 'consult-find-fd)
      (consult-project-root-function . #'projectile-project-root)
      (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
     :config
