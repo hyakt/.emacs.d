@@ -40,20 +40,20 @@
   (custom-file . "~/.emacs.d/custom.el")
   :custom
   (
-    (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
-    (completion-ignore-case . t)                                                               ;; file名の補完で大文字小文字を区別しない
-    (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
-    (make-backup-files . t)                                                                    ;; Backup fileを作る
-    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
-    (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
-    (gc-cons-threshold . 1073741824)                                                           ;; GCの閾値を設定
-    (garbage-collection-messages . nil)                                                        ;; GC実行のメッセージを表示しない
-    (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
-    (vc-follow-symlinks . t)                                                                   ;; symlinkは必ず追いかける
-    (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
-    (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibufferをマウスカーソルで選択できないようにする
-    (enable-recursive-minibuffers . t)                                                         ;; minibufferの再帰的使用を許可する
-    )
+   (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
+   (completion-ignore-case . t)                                                               ;; file名の補完で大文字小文字を区別しない
+   (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
+   (make-backup-files . t)                                                                    ;; Backup fileを作る
+   (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
+   (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
+   (gc-cons-threshold . 1073741824)                                                           ;; GCの閾値を設定
+   (garbage-collection-messages . nil)                                                        ;; GC実行のメッセージを表示しない
+   (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
+   (vc-follow-symlinks . t)                                                                   ;; symlinkは必ず追いかける
+   (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
+   (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibufferをマウスカーソルで選択できないようにする
+   (enable-recursive-minibuffers . t)                                                         ;; minibufferの再帰的使用を許可する
+   )
   :global-minor-mode global-auto-revert-mode
   :hook (minibuffer-setup-hook . cursor-intangible-mode)                                       ;; minibufferをマウスカーソルで選択できないようにする
   :init
@@ -807,10 +807,40 @@
     :init
     (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
     :custom
-    (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S.")))
+    (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+
+  (leaf tree-sitter
+    :ensure (t tree-sitter-langs)
+    :require tree-sitter-langs
+    :config
+    (global-tree-sitter-mode)
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+    ;; TSXの対応
+    (tree-sitter-require 'tsx)
+    (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
+    ;; ハイライトの追加
+    (tree-sitter-hl-add-patterns 'tsx
+      [
+       ;; styled.div``
+       (call_expression
+        function: (member_expression
+                   object: (identifier) @function.call
+                   (.eq? @function.call "styled"))
+        arguments: ((template_string) @property.definition
+                    (.offset! @property.definition 0 1 0 -1)))
+       ;; styled(Component)``
+       (call_expression
+        function: (call_expression
+                   function: (identifier) @function.call
+                   (.eq? @function.call "styled"))
+        arguments: ((template_string) @property.definition
+                    (.offset! @property.definition 0 1 0 -1)))
+       ])
+    )
+  )
 
 
-;;; ---------- メジャーモード設定 ----------
+;;; ---------- メジャーモード設定 ----------n
 (leaf *major-mode
   :config
   (leaf lsp-mode
@@ -834,8 +864,8 @@
   (leaf web
     :config
     (leaf web-mode
-      :el-get (web-mode :url "https://github.com/hyakt/web-mode.git")
-      :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.[jt]sx\\'")
+      :ensure t
+      :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'")
       :custom
       ((web-mode-indent-style . 2)
        (web-mode-markup-indent-offset . 2)
@@ -861,17 +891,11 @@
                     (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
                     (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
                     (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
-                    (flycheck-add-mode 'javascript-eslint 'web-mode))
-                  (when (and (stringp buffer-file-name)
-                             (string-match "\\.jsx\\'" buffer-file-name))
+                    (flycheck-add-mode 'javascript-eslint 'web-mode)
                     (tern-mode)
                     (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
                     (set (make-local-variable 'company-backends)
-                         '((company-tern :with company-dabbrev-code) company-yasnippet)))
-                  (when (and (stringp buffer-file-name)
-                             (string-match "\\.tsx\\'" buffer-file-name))
-                    (lsp-deferred))
-                  )))
+                         '((company-tern :with company-dabbrev-code) company-yasnippet))))))
 
     (leaf emmet-mode
       :ensure t
@@ -957,7 +981,11 @@
       (leaf typescript-mode
         :ensure t
         :custom (typescript-indent-level . 2)
-        :hook (typescript-mode-hook . lsp-deferred))
+        :hook ((typescript-mode-hook . lsp-deferred)
+               (typescript-mode-hook . subword-mode))
+        :init
+        (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
+        (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
 
       (leaf ts-comint
         :ensure t typescript-mode
