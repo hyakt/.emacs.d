@@ -416,18 +416,59 @@ the folder if it doesn't exist."
     (defun my/codic (str)
       "STRの値をdeepLで翻訳する"
       (interactive "smy/Codic: ")
-        (request
-          "https://api-free.deepl.com/v2/translate"
-          :type "GET"
-          :data `(("auth_key" . ,(url-hexify-string my/deepl-api-auth-key)) ("target_lang" . "EN-US") ("text" . ,str))
-          :parser 'json-read
-          :success (cl-function
-                    (lambda (&key data &allow-other-keys)
-                      (let ((text (downcase (decode-coding-string (url-unhex-string (assoc-default 'text (aref (assoc-default 'translations data) 0))) 'utf-8))))
-                        (kill-new text)
-                        (message "%s" text))
-                      )))))
+      (request
+        "https://api-free.deepl.com/v2/translate"
+        :type "GET"
+        :data `(("auth_key" . ,(url-hexify-string my/deepl-api-auth-key)) ("target_lang" . "EN-US") ("text" . ,str))
+        :parser 'json-read
+        :success (cl-function
+                  (lambda (&key data &allow-other-keys)
+                    (let ((text (downcase (decode-coding-string (url-unhex-string (assoc-default 'text (aref (assoc-default 'translations data) 0))) 'utf-8))))
+                      (kill-new text)
+                      (message "%s" text))
+                    )))))
+
+  (defun eldoc-minibuffer-message-and-copy (format-string &rest args)
+    "Display messages in the mode-line when in the minibuffer.
+Otherwise work like `message'."
+    (kill-new eldoc-last-message)
+    (if (minibufferp)
+        (progn
+          (add-hook 'minibuffer-exit-hook
+                    (lambda () (setq eldoc-mode-line-string nil
+                                     ;; https://debbugs.gnu.org/16920
+                                     eldoc-last-message nil))
+                    nil t)
+          (with-current-buffer
+              (window-buffer
+               (or (window-in-direction 'above (minibuffer-window))
+                   (minibuffer-selected-window)
+                   (get-largest-window)))
+            (when mode-line-format
+              (unless (and (listp mode-line-format)
+                           (assq 'eldoc-mode-line-string mode-line-format))
+                (setq mode-line-format
+                      (list "" '(eldoc-mode-line-string
+                                 (" " eldoc-mode-line-string " "))
+                            mode-line-format))))
+            (setq eldoc-mode-line-string
+                  (when (stringp format-string)
+                    (apply #'format-message format-string args)))
+            (force-mode-line-update)))
+      (apply 'message format-string args)))
+
+  (defun my/copy-eldoc-mode ()
+    (interactive)
+    (if (eq eldoc-message-function #'eldoc-minibuffer-message-and-copy)
+        (progn
+          (setq eldoc-message-function #'eldoc-minibuffer-message)
+          (message "off"))
+      (progn
+        (setq eldoc-message-function #'eldoc-minibuffer-message-and-copy)
+        (message "on")
+        )))
   )
+
 
 (provide 'my-functions)
 
