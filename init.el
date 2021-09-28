@@ -841,7 +841,7 @@
   )
 
 
-;;; ---------- メジャーモード設定 ----------n
+;;; ---------- メジャーモード設定 ----------
 (leaf *major-mode
   :config
   (leaf lsp-mode
@@ -1055,8 +1055,7 @@
                           (setq-local company-box-doc-enable nil)
                           (company-box-mode nil)
                           (set (make-local-variable 'company-backends)
-                               '((company-robe)))
-                          (robe-start)))
+                               '((company-robe)))))
       :config
       (defun company-box-set-current-buffer (orig-fun &rest args)
         (let ((company-box-buffer (apply orig-fun args))
@@ -1270,7 +1269,15 @@
                           (lambda nil
                             (set
                              (make-local-variable 'whitespace-action)
-                             nil))))))
+                             nil)))))
+
+  (leaf plantuml-mode
+    :ensure t
+    ;; :ensure-system-package (plantuml graphviz)
+    :custom
+    ((plantuml-executable-path . "plantuml")
+     (plantuml-default-exec-mode . 'executable)))
+  )
 
 (provide 'init)
 
