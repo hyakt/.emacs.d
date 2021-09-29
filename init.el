@@ -914,7 +914,8 @@
               web-mode-hook
               scss-mode-hook
               graphql-mode-hook
-              ts-comint-mode-hook) . add-node-modules-path))
+              ts-comint-mode-hook
+              json-mode-hook) . add-node-modules-path))
 
     (leaf prettier-js
       :ensure t
