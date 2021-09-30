@@ -669,7 +669,7 @@
                        (direction . bottom)
                        (reusable-frames . visible)
                        (dedicated . t)
-                       (window-height . 0.4)))
+                       (window-height . 0.3)))
         ;; Above display config affects all vterm command, not only vterm-toggle
         (defun my/vterm-new-buffer-in-current-window()
           (interactive)
