@@ -1206,22 +1206,22 @@
       "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
       (interactive)
       (org-with-point-at pom
-                         (let ((id (org-entry-get nil "CUSTOM_ID")))
-                           (cond
-                            ((and id
-                                  (stringp id)
-                                  (string-match "\\S-" id))
-                             id)
-                            (create
-                             (setq id (my-get-custom-id))
-                             (unless id
-                               (error "Invalid ID"))
-                             (org-entry-put pom "CUSTOM_ID" id)
-                             (message "--- CUSTOM_ID assigned: %s" id)
-                             (org-id-add-location id
-                                                  (buffer-file-name
-                                                   (buffer-base-buffer)))
-                             id)))))
+        (let ((id (org-entry-get nil "CUSTOM_ID")))
+          (cond
+           ((and id
+                 (stringp id)
+                 (string-match "\\S-" id))
+            id)
+           (create
+            (setq id (my-get-custom-id))
+            (unless id
+              (error "Invalid ID"))
+            (org-entry-put pom "CUSTOM_ID" id)
+            (message "--- CUSTOM_ID assigned: %s" id)
+            (org-id-add-location id
+                                 (buffer-file-name
+                                  (buffer-base-buffer)))
+            id)))))
 
     (leaf ox-latex
       :custom
@@ -1229,7 +1229,38 @@
       (org-latex-pdf-process . '("latexmk %f"))
       (org-file-apps . '(("pdf" . "/usr/bin/open -a Preview.app %s")))
       (org-latex-with-hyperref . nil)
-      (org-latex-hyperref-template . nil))
+      (org-latex-hyperref-template . nil)
+      :defer-config
+      (add-to-list 'org-latex-classes
+                   '("cv"
+                     "\\documentclass[autodetect-engine,dvi=dvipdfmx,10pt,a4wide,ja=standard]{bxjsarticle}
+                      \\parindent = 0pt
+                      \\usepackage{typearea}
+                      \\typearea{18}
+                      \\usepackage{longtable}
+                      [NO-DEFAULT-PACKAGES]
+                      \\usepackage{amsmath}
+                      \\usepackage[dvipdfmx]{hyperref}
+                      \\usepackage{url}
+                      \\ifdefined\\kanjiskip
+                        \\usepackage{pxjahyper}
+                        \\hypersetup{colorlinks=true}
+                      \\else
+                        \\ifdefined\\XeTeXversion
+                            \\hypersetup{colorlinks=true}
+                        \\else
+                          \\ifdefined\\directlua
+                            \\hypersetup{pdfencoding=auto,colorlinks=true}
+                          \\else
+                            \\hypersetup{unicode,colorlinks=true}
+                          \\fi
+                        \\fi
+                      \\fi"
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
     (leaf htmlize :ensure t)
     (leaf ob-sql-mode :ensure t)
     (leaf ox-gfm :ensure t)
