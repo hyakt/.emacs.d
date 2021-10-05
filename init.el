@@ -53,6 +53,7 @@
    (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
    (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibufferをマウスカーソルで選択できないようにする
    (enable-recursive-minibuffers . t)                                                         ;; minibufferの再帰的使用を許可する
+   (enable-local-variables . :all)                                                            ;; local variableは全て使用する
    )
   :global-minor-mode global-auto-revert-mode
   :hook (minibuffer-setup-hook . cursor-intangible-mode)                                       ;; minibufferをマウスカーソルで選択できないようにする
