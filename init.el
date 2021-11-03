@@ -543,7 +543,7 @@
     :preface
     (defun consult-find-fd (&optional dir initial)
       (interactive "P")
-      (let ((consult-find-command "fd --color=never --full-path ARG OPTS"))
+      (let ((consult-find-command "fd -H --color=never --full-path ARG OPTS"))
         (consult-find dir initial)))
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
