@@ -462,7 +462,10 @@
 
   (leaf unicode-escape :ensure t :require t)
 
-  (leaf rg :ensure t))
+  (leaf rg
+    :ensure t
+    :custom ((rg-group-result . t)
+             (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql"))))))
 
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
