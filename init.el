@@ -460,7 +460,9 @@
     :ensure t
     :bind (("M-[" . string-inflection-all-cycle)))
 
-  (leaf unicode-escape :ensure t :require t))
+  (leaf unicode-escape :ensure t :require t)
+
+  (leaf rg :ensure t))
 
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
