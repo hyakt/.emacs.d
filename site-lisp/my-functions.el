@@ -336,6 +336,13 @@ the folder if it doesn't exist."
       (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
         (my/projectile-run-vterm-command-in-root jest-command)))
 
+    (defun my/tsc-error-find-file-buffer ()
+      "Display tsc error file with file fileon buffer."
+      (interactive)
+      (my/projectile-run-async-shell-command-in-root
+       "npx tsc --noEmit --pretty false | sed -E \"s/\\(.*//g\" | uniq | sed -E \"s/(.*)/\\(find-file-other-window \\\"\\1\\\")/g\""
+       "*My tsc Exec Command*"))
+
     (defun my/rspec-copy-command-current-buffer ()
       "Watch RSpec for current file for paste."
       (interactive)
