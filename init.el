@@ -953,11 +953,27 @@
       (leaf scss-mode
         :ensure t
         :custom (scss-indent-offset . 2)
+        :init
+        ;; see: https://github.com/flycheck/flycheck/issues/1912
+        (flycheck-define-checker general-stylelint
+          "A checker for CSS and related languages using Stylelint"
+          :command ("stylelint"
+                    (eval flycheck-stylelint-args)
+                    (option-flag "--quiet" flycheck-stylelint-quiet)
+                    (config-file "--config" flycheck-general-stylelintrc))
+          :standard-input t
+          :error-parser flycheck-parse-stylelint
+          :predicate flycheck-buffer-nonempty-p
+          :modes (scss-mode))
+        (flycheck-def-config-file-var flycheck-general-stylelintrc
+            (general-stylelint) nil)
+        (add-to-list 'flycheck-checkers 'general-stylelint)
         :hook
         (scss-mode-hook . (lambda ()
                             (set
                              (make-local-variable 'flycheck-checker)
-                             (setq flycheck-checker 'scss-stylelint))
+                             (setq flycheck-checker 'general-stylelint)
+                             )
                             (set
                              (make-local-variable 'company-backends)
                              '((company-css :with company-dabbrev) company-yasnippet)))))
@@ -1212,22 +1228,22 @@
       "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
       (interactive)
       (org-with-point-at pom
-        (let ((id (org-entry-get nil "CUSTOM_ID")))
-          (cond
-           ((and id
-                 (stringp id)
-                 (string-match "\\S-" id))
-            id)
-           (create
-            (setq id (my-get-custom-id))
-            (unless id
-              (error "Invalid ID"))
-            (org-entry-put pom "CUSTOM_ID" id)
-            (message "--- CUSTOM_ID assigned: %s" id)
-            (org-id-add-location id
-                                 (buffer-file-name
-                                  (buffer-base-buffer)))
-            id)))))
+                         (let ((id (org-entry-get nil "CUSTOM_ID")))
+                           (cond
+                            ((and id
+                                  (stringp id)
+                                  (string-match "\\S-" id))
+                             id)
+                            (create
+                             (setq id (my-get-custom-id))
+                             (unless id
+                               (error "Invalid ID"))
+                             (org-entry-put pom "CUSTOM_ID" id)
+                             (message "--- CUSTOM_ID assigned: %s" id)
+                             (org-id-add-location id
+                                                  (buffer-file-name
+                                                   (buffer-base-buffer)))
+                             id)))))
 
     (leaf ox-latex
       :custom
