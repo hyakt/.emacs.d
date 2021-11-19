@@ -337,11 +337,39 @@ the folder if it doesn't exist."
         (my/projectile-run-vterm-command-in-root jest-command)))
 
     (defun my/tsc-error-find-file-buffer ()
-      "Display tsc error file with file fileon buffer."
+      "Show tsc error on buffer."
       (interactive)
       (my/projectile-run-async-shell-command-in-root
        "npx tsc --noEmit --pretty false | sed -E \"s/\\(.*//g\" | uniq | sed -E \"s/(.*)/\\(find-file-other-window \\\"\\1\\\"\\)/g\""
-       "*My tsc Exec Command*"))
+       "*My TSC Errors*"))
+
+    (defun my/eslint-error-find-file-buffer ()
+      "Show eslint error on buffer."
+      (interactive)
+      (my/projectile-run-async-shell-command-in-root
+       "npx eslint --quiet --format compact . | sed -E 's/^([\\/\\._a-zA-Z0-9]+):.*\\((.*)\\)$/[\\2] (find-file-other-buffer \"\\1\")/g'"
+       "*My Eslint Errors*"))
+
+    (defun my/eslint-warning-sorted-by-error-find-file-buffer ()
+      "Show sorted eslint warning on buffer."
+      (interactive)
+      (my/projectile-run-async-shell-command-in-root
+       "npx eslint --format compact . | sort -k 2 -t \"(\" | sed -E 's/^([\\/\\._a-zA-Z0-9]+):.*\\((.*)\\)$/[\\2] (find-file-other-buffer \"\\1\")/g'"
+       "*My Eslint Errors*"))
+
+    (defun my/eslint-spefic-error-find-file-buffer (error-name)
+      "Show eslint ERROR-NAME error on buffer."
+      (interactive "sError name: ")
+      (my/projectile-run-async-shell-command-in-root
+       (concat
+        "echo Error: "
+        error-name
+        ";echo -----------------------------------------\n\n;"
+        "npx eslint --format json . | jq '.[] | {filePath: .filePath, ruleId: .messages[].ruleId}' | jq -s '.[] | select (.ruleId ==\""
+        error-name
+        "\")' | grep filePath | sed -E 's/ +\"filePath\": \"(.*)\".*/\\(find-file-other-window \\\"\\1\\\"\\)/g' | uniq"
+        )
+       "*My Eslint Specific Errors*"))
 
     (defun my/rspec-copy-command-current-buffer ()
       "Watch RSpec for current file for paste."
