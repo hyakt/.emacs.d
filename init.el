@@ -1047,6 +1047,7 @@
     :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
     :interpreter ("pry")
     :custom ((ruby-insert-encoding-magic-comment . nil))
+    :hook ((ruby-mode-hook . lsp-deferred))
     :config
     (leaf inf-ruby
       :ensure t
@@ -1064,32 +1065,7 @@
     (leaf rspec-mode
       :ensure t
       :bind ((rspec-mode-map
-              ("C-c C-c C-c" . rspec-verify-single))))
-
-    (leaf robe
-      :ensure t
-      :bind ((robe-mode-map
-              ("M-." . smart-jump-go)))
-      :hook
-      (ruby-mode-hook)
-      (robe-mode-hook . (lambda ()
-                          (advice-add 'company-box--get-buffer :around #'company-box-set-current-buffer)
-                          (advice-add 'company-box-doc :around #'hack-company-box-doc)
-                          (setq-local company-box-doc-enable nil)
-                          (company-box-mode nil)
-                          (set (make-local-variable 'company-backends)
-                               '((company-robe)))))
-      :config
-      (defun company-box-set-current-buffer (orig-fun &rest args)
-        (let ((company-box-buffer (apply orig-fun args))
-              (from-buffer (current-buffer)))
-          (with-current-buffer company-box-buffer
-            (setq-local company-box--from-buffer from-buffer))
-          company-box-buffer))
-
-      (defun hack-company-box-doc (orig-fun &rest args)
-        (with-current-buffer company-box--from-buffer
-          (apply orig-fun args)))))
+              ("C-c C-c C-c" . rspec-verify-single)))))
 
   (leaf swift-mode
     :ensure t
@@ -1285,7 +1261,7 @@
                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
     (leaf htmlize :ensure t)
     (leaf ob-sql-mode :ensure t)
-    (leaf ox-gfm :ensure t)
+    (leaf ox-gfm :ensure t :require t)
     (leaf org-bullets :ensure t
       :config
       (defun my/org-bullets-export (path)
