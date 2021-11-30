@@ -674,7 +674,8 @@
     (leaf magit
       :ensure (magit gh)
       :ensure-system-package git
-      :bind (("M-s" . magit-status)
+      :custom ((magit-save-repository-buffers . 'dontask))
+      :bind (("M-s" . magit-status-toggle)
              (magit-status-mode-map
               ("q" . my/magit-quit-session)
               ("C-o" . magit-diff-visit-file-other-window)))
@@ -682,7 +683,31 @@
       (defun my/magit-quit-session ()
         (interactive)
         (kill-buffer)
-        (delete-window)))
+        (delete-window))
+
+      (defun magit-status-toggle()
+        "magit toggle."
+        (interactive)
+         (if (or (derived-mode-p 'magit-status-mode)
+                 (magit-status-toggle--get-window))
+             (magit-status-toggle-hide)
+           (magit-status)))
+
+      (defun magit-status-toggle-hide ()
+        "Hide the magit-statsu buffer."
+        (interactive)
+        (or (derived-mode-p 'magit-mode)
+            (select-window (magit-status-toggle--get-window)))
+        (if (window-deletable-p)
+            (delete-window)))
+
+      (defun magit-status-toggle--get-window()
+        "Get the magit window which is visible (active or inactive)."
+        (cl-find-if #'(lambda(w)
+                        (provided-mode-derived-p
+                         (buffer-local-value 'major-mode (window-buffer w))
+                         'magit-mode))
+                    (window-list))))
 
     (leaf git-gutter
       :ensure t
