@@ -72,7 +72,7 @@
     :config
     (require 'my-util)
     (require 'my-prog)
-    (require 'my-translate))
+    (require 'my-git))
 
   (leaf server
     :require t
