@@ -211,6 +211,12 @@
       (interactive)
       (my/projectile-run-shell-command-in-root "gh repo view --web"))
 
+    (defun my/gh-co (target)
+      "gh open."
+      (interactive "sname/number: ")
+      (my/projectile-run-shell-command-in-root (concat "gh co " target))
+      (my/revert-buffer-no-confirm))
+
     (defun my/gh-pr-view ()
       "gh open."
       (interactive)
