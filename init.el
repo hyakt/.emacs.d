@@ -534,20 +534,7 @@
            ("M-g k" . consult-global-mark)
            ("M-g i" . consult-imenu)
            ("M-g I" . consult-project-imenu)
-           ;; M-s bindings (search-map)
-           ("M-s f" . consult-find)
-           ("M-s L" . consult-locate)
-           ("M-s g" . consult-grep)
-           ("M-s G" . consult-git-grep)
-           ("M-s r" . consult-ripgrep)
-           ("M-s m" . consult-multi-occur)
-           ("M-s k" . consult-keep-lines)
-           ("M-s u" . consult-focus-lines)
-           ;; Isearch integration
-           ("M-s e" . consult-isearch)
-           ("M-e" . consult-isearch)                 ;; orig. isearch-edit-string
-           ("M-s e" . consult-isearch)               ;; orig. isearch-edit-string
-           ("M-s l" . consult-line))                 ;; required by consult-line to detect isearch
+           ("M-e" . consult-isearch))
     :preface
     (defun consult-find-fd (&optional dir initial)
       (interactive "P")
@@ -675,6 +662,7 @@
   (leaf git
     :config
     (leaf magit
+      :require t
       :ensure (magit gh)
       :ensure-system-package git
       :custom ((magit-save-repository-buffers . 'dontask))
