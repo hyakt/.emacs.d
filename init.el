@@ -725,11 +725,7 @@
 
     (leaf git-link
       :ensure t
-      :custom (git-link-open-in-browser . t))
-
-    (leaf magit-gh-pulls
-      :el-get (magit-gh-pulls :url "https://github.com/hyakt/magit-gh-pulls.git")
-      :hook ((magit-mode-hook . turn-on-magit-gh-pulls))))
+      :custom (git-link-open-in-browser . t)))
 
   (leaf docker :ensure t
     :config
