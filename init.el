@@ -68,8 +68,11 @@
     :config (load custom-file))
 
   (leaf my-functions
-    :load-path "~/.emacs.d/site-lisp"
-    :require t)
+    :load-path "~/.emacs.d/site-lisp/my-functions/"
+    :config
+    (require 'my-util)
+    (require 'my-prog)
+    (require 'my-translate))
 
   (leaf server
     :require t
