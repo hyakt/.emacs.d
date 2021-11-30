@@ -701,6 +701,7 @@
                     (window-list))))
 
     (leaf magit-delta
+      :after magit
       :ensure t
       :ensure-system-package (delta . git-delta)
       :hook (magit-mode-hook . magit-delta-mode))
