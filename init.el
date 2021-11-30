@@ -555,7 +555,7 @@
 
   (leaf vertico
     :ensure t
-    :custom ((vertico-count . 20))
+    :custom ((vertico-count . 30))
     :init
     (vertico-mode))
 
