@@ -700,6 +700,11 @@
                          'magit-mode))
                     (window-list))))
 
+    (leaf magit-delta
+      :ensure t
+      :ensure-system-package (delta . git-delta)
+      :hook (magit-mode-hook . magit-delta-mode))
+
     (leaf git-gutter
       :ensure t
       :custom
