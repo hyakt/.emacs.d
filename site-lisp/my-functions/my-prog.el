@@ -14,6 +14,12 @@
   (defcustom my/mocha-config-path nil
     "Mocha config path")
 
+  (defun my/projectile-run-shell-command-in-root (command)
+    "Invoke `shell-command' COMMAND in the project's root."
+    (projectile-with-default-dir
+        (projectile-ensure-project (projectile-project-root))
+      (shell-command command)))
+
   (defun my/projectile-run-async-shell-command-in-root (command &optional output-buffer)
     "Invoke `async-shell-command' COMMAND in the project's root."
     (projectile-with-default-dir
@@ -195,7 +201,31 @@
     (call-process-shell-command
      (concat "npx eslint --fix " (buffer-file-name))
      nil "*Shell Command Output*" t)
-    (revert-buffer t t)))
+    (revert-buffer t t))
+
+  (leaf my/gh
+    :ensure-system-package gh
+    :config
+    (defun my/gh-repo-view ()
+      "gh open."
+      (interactive)
+      (my/projectile-run-shell-command-in-root "gh repo view --web"))
+
+    (defun my/gh-pr-view ()
+      "gh open."
+      (interactive)
+      (my/projectile-run-shell-command-in-root "gh pr view --web"))
+
+    (defun my/gh-pr-create ()
+      "gh open."
+      (interactive)
+      (my/projectile-run-shell-command-in-root "gh pr create --web"))
+
+    (defun my/gh-pr-list ()
+      "gh open."
+      (interactive)
+      (my/projectile-run-shell-command-in-root "gh pr list --web")))
+  )
 
 (provide 'my-prog)
 
