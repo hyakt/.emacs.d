@@ -3,7 +3,7 @@
 ;;; prog mode用のeslip
 
 ;;; Code:
-(leaf my-test
+(leaf my-prog
   :ensure (projectile vterm vterm-toggle)
   :config
   (defun my/copy-project-name-clipboard ()
@@ -219,7 +219,7 @@
     (defun my/gh-pr-create ()
       "gh open."
       (interactive)
-      (my/projectile-run-shell-command-in-root "gh pr create --web"))
+      (my/projectile-run-shell-command-in-root "gh pr create --web --base (git parent)"))
 
     (defun my/gh-pr-list ()
       "gh open."
