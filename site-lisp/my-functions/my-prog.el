@@ -1,6 +1,5 @@
-;;; my-prog.el --- prog mode用のeslip
+;;; my-prog.el --- prog mode用のユーティリティ
 ;;; Commentary:
-;;; prog mode用のeslip
 
 ;;; Code:
 (leaf my-prog
@@ -165,13 +164,6 @@
       )
      "*My Eslint Specific Errors*"))
 
-  (defun my/rspec-copy-command-current-buffer ()
-    "Watch RSpec for current file for paste."
-    (interactive)
-    (let ((rspec-command (concat "bundle exec rspec " (buffer-file-name))))
-      (kill-new (concat "cd " (projectile-project-root) "; " rspec-command "; "))
-      (message (concat "cd " (projectile-project-root) "; " rspec-command "; "))))
-
   (defun my/create-test-file-for-jest ()
     "Create test file for jest in test directory."
     (interactive)
@@ -201,37 +193,7 @@
     (call-process-shell-command
      (concat "npx eslint --fix " (buffer-file-name))
      nil "*Shell Command Output*" t)
-    (revert-buffer t t))
-
-  (leaf my/gh
-    :ensure-system-package gh
-    :config
-    (defun my/gh-repo-view ()
-      "gh open."
-      (interactive)
-      (my/projectile-run-shell-command-in-root "gh repo view --web"))
-
-    (defun my/gh-co (target)
-      "gh open."
-      (interactive "sname/number: ")
-      (my/projectile-run-shell-command-in-root (concat "gh co " target))
-      (my/revert-buffer-no-confirm))
-
-    (defun my/gh-pr-view ()
-      "gh open."
-      (interactive)
-      (my/projectile-run-shell-command-in-root "gh pr view --web"))
-
-    (defun my/gh-pr-create ()
-      "gh open."
-      (interactive)
-      (my/projectile-run-shell-command-in-root "gh pr create --web --base (git parent)"))
-
-    (defun my/gh-pr-list ()
-      "gh open."
-      (interactive)
-      (my/projectile-run-shell-command-in-root "gh pr list --web")))
-  )
+    (revert-buffer t t)))
 
 (provide 'my-prog)
 

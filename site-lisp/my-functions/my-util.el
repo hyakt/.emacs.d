@@ -1,6 +1,5 @@
-;;; my-util.el --- ユーティリティ
+;;; my-util.el --- 汎用的なのユーティリティ
 ;;; Commentary:
-;;; ユーティリティを集めた
 
 ;;; Code:
 (leaf my-util
@@ -106,17 +105,6 @@ BEG and END (region to sort)."
                  (format "^%s" (regexp-quote (car kill-ring))) nil t)
               (replace-match "" nil nil))
             (goto-char next-line))))))
-
-  (defvar sql-connection-alist)
-
-  (defun my/connect-db-via-ssh-tunneling(db host dbport)
-    "Connect DB:DBPORT@HOST via ssh tunneling."
-    (let ((port (car (cdr (assoc 'sql-port (assoc db sql-connection-alist)))))
-          (password (car (cdr (assoc 'sql-password (assoc db sql-connection-alist))))))
-      (start-process-shell-command "DBProxy" "*Proxy*" (concat "ssh -N -L " (number-to-string port) ":localhost:" dbport " " host))
-      (setenv "PGPASSWORD" password))
-    (sleep-for 1.5)
-    (sql-connect db))
 
   (defun my/reopen-with-sudo-tramp ()
     "Reopen current buffer-file with sudo using tramp."
