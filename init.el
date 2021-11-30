@@ -792,7 +792,7 @@
                         ("*quickrun*"               :align below :ratio 0.33)
                         ("*xref*"                   :align below :ratio 0.33)
                         ("*prettier errors*"        :align below :ratio 0.33)
-                        (magit-status-mode          :align below :ratio 0.4 :select t :inhibit-window-quit t)
+                        (magit-status-mode          :align below :ratio 0.6 :select t :inhibit-window-quit t)
                         ;; repl
                         ("*Python*"                 :align below :ratio 0.33 :select t)
                         ("*pry*"                    :align below :ratio 0.33 :select t)
@@ -805,7 +805,7 @@
                         ("*Shell Command Output*"   :align right)
                         ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
                         ("*jest*"                   :regexp t :align below :pratio 0.3)
-                        (vterm-mode                 :align below :ratio 0.4)
+                        (vterm-mode                 :align below :ratio 0.7)
                         ;; rust
                         ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
                         ("*rustfmt*"                :align below :ratio 0.33 :select nil)
