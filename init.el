@@ -666,21 +666,8 @@
         :ensure t
         :bind ("M-t" . vterm-toggle)
         :custom
-        (vterm-toggle-scope . 'project)
-        :config
-        ;; Show vterm buffer in the window located at bottom
-        (add-to-list 'display-buffer-alist
-                     '((lambda (bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
-                       (display-buffer-reuse-window display-buffer-in-direction)
-                       (direction . bottom)
-                       (reusable-frames . visible)
-                       (dedicated . t)
-                       (window-height . 0.3)))
-        ;; Above display config affects all vterm command, not only vterm-toggle
-        (defun my/vterm-new-buffer-in-current-window()
-          (interactive)
-          (let ((display-buffer-alist nil))
-            (vterm))))))
+        ((vterm-toggle-reset-window-configration-after-exit . t)
+         (vterm-toggle-scope . 'project)))))
 
   (leaf git
     :config
@@ -793,6 +780,7 @@
                         ("*Shell Command Output*"   :align right)
                         ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
                         ("*jest*"                   :regexp t :align below :pratio 0.3)
+                        (vterm-mode                 :align below :ratio 0.4)
                         ;; rust
                         ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
                         ("*rustfmt*"                :align below :ratio 0.33 :select nil)
