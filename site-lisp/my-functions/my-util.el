@@ -3,7 +3,7 @@
 ;;; ユーティリティを集めた
 
 ;;; Code:
-(leaf my/util
+(leaf my-util
   :config
   (defun my/set-alpha (alpha-num)
     "Set frame parameter ALPHA-NUM."
