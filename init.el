@@ -674,7 +674,7 @@
     (leaf magit
       :ensure (magit gh)
       :ensure-system-package git
-      :bind (("C-x g" . magit-status)
+      :bind (("M-s" . magit-status)
              (magit-status-mode-map
               ("q" . my/magit-quit-session)
               ("C-o" . magit-diff-visit-file-other-window)))
