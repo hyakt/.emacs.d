@@ -639,7 +639,7 @@
       (vterm-buffer-name-string . "vterm: %s")
       ;; delete "C-h", add <f1> and <f2>
       (vterm-keymap-exceptions
-       . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t"))
+       . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
       :config
       ;; Workaround of not working counsel-yank-pop
       ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
