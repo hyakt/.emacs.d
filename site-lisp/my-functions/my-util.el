@@ -1,4 +1,4 @@
-;;; my-util.el --- 汎用的なのユーティリティ
+;;; my-util.el --- 汎用的なユーティリティ
 ;;; Commentary:
 
 ;;; Code:
