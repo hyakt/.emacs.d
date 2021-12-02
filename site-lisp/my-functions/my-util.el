@@ -210,7 +210,48 @@ the folder if it doesn't exist."
     (let ((default-env-shell (getenv "SHELL")))
       (setenv "SHELL" "/usr/local/bin/fish")
       (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name)))
-      (setenv "SHELL" default-env-shell))))
+      (setenv "SHELL" default-env-shell)))
+
+  (defun eldoc-minibuffer-message-and-copy (format-string &rest args)
+    "Display messages in the mode-line when in the minibuffer.
+Otherwise work like `message'."
+    (kill-new eldoc-last-message)
+    (if (minibufferp)
+        (progn
+          (add-hook 'minibuffer-exit-hook
+                    (lambda () (setq eldoc-mode-line-string nil
+                                     ;; https://debbugs.gnu.org/16920
+                                     eldoc-last-message nil))
+                    nil t)
+          (with-current-buffer
+              (window-buffer
+               (or (window-in-direction 'above (minibuffer-window))
+                   (minibuffer-selected-window)
+                   (get-largest-window)))
+            (when mode-line-format
+              (unless (and (listp mode-line-format)
+                           (assq 'eldoc-mode-line-string mode-line-format))
+                (setq mode-line-format
+                      (list "" '(eldoc-mode-line-string
+                                 (" " eldoc-mode-line-string " "))
+                            mode-line-format))))
+            (setq eldoc-mode-line-string
+                  (when (stringp format-string)
+                    (apply #'format-message format-string args)))
+            (force-mode-line-update)))
+      (apply 'message format-string args)))
+
+  (defun my/copy-eldoc-mode ()
+    (interactive)
+    (if (eq eldoc-message-function #'eldoc-minibuffer-message-and-copy)
+        (progn
+          (setq eldoc-message-function #'eldoc-minibuffer-message)
+          (message "off"))
+      (progn
+        (setq eldoc-message-function #'eldoc-minibuffer-message-and-copy)
+        (message "on")
+        )))
+)
 
 (provide 'my-util)
 
