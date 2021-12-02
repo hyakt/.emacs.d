@@ -787,23 +787,23 @@
                         ("*prettier errors*"        :align below :ratio 0.33)
                         (magit-status-mode          :align below :ratio 0.7 :select t :inhibit-window-quit t)
                         ;; repl
-                        ("*Python*"                 :align below :ratio 0.33 :select t)
-                        ("*pry*"                    :align below :ratio 0.33 :select t)
-                        ("*ruby*"                   :align below :ratio 0.33 :select t)
-                        ("*nodejs*"                 :align below :ratio 0.33 :select t)
-                        ("*shell*"                  :align below :ratio 0.33 :select t)
-                        ("*Typescript*"             :align below :ratio 0.33)
+                        ("*Python*"                 :align below :ratio 0.5 :select t)
+                        ("*pry*"                    :align below :ratio 0.5 :select t)
+                        ("*ruby*"                   :align below :ratio 0.5 :select t)
+                        ("*nodejs*"                 :align below :ratio 0.5 :select t)
+                        ("*shell*"                  :align below :ratio 0.5 :select t)
+                        ("*Typescript*"             :align below :ratio 0.5)
                         ;; excute shell
                         ("*Async Shell Command*"    :align right)
                         ("*Shell Command Output*"   :align right)
-                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.3)
-                        ("*jest*"                   :regexp t :align below :pratio 0.3)
+                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
+                        ("*jest*"                   :regexp t :align below :pratio 0.5)
                         (vterm-mode                 :align below :ratio 0.7)
                         ;; rust
                         ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
                         ("*rustfmt*"                :align below :ratio 0.33 :select nil)
                         ;; ruby
-                        ("*rspec-compilation*"      :align below :ratio 0.33 :select nil)
+                        ("*rspec-compilation*"      :align below :ratio 0.5 :select nil)
                         )))
       :config
       (shackle-mode 1)))
