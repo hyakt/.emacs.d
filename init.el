@@ -679,10 +679,10 @@
       (defun magit-status-toggle()
         "magit toggle."
         (interactive)
-         (if (or (derived-mode-p 'magit-status-mode)
-                 (magit-status-toggle--get-window))
-             (magit-status-toggle-hide)
-           (magit-status)))
+        (if (or (derived-mode-p 'magit-status-mode)
+                (magit-status-toggle--get-window))
+            (magit-status-toggle-hide)
+          (magit-status)))
 
       (defun magit-status-toggle-hide ()
         "Hide the magit-statsu buffer."
@@ -704,7 +704,14 @@
       :after magit
       :ensure t
       :ensure-system-package (delta . git-delta)
-      :hook (magit-mode-hook . magit-delta-mode))
+      :hook (magit-mode-hook . magit-delta-mode)
+      :config
+      (defun my/magit-delta-toggle ()
+        "Toggle magit-delta-mode and refresh magit."
+        (interactive)
+        (progn
+          (call-interactively 'magit-delta-mode)
+          (magit-refresh))))
 
     (leaf git-gutter
       :ensure t
