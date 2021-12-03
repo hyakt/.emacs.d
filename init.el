@@ -378,7 +378,7 @@
                                xref-find-definitions xref-find-references
                                dump-jump-go
                                my/jump-to-match-parens
-                               consult-line consult-ripgrep consult-find consult-ghq-find
+                               consult-line consult-ripgrep consult-find consult-ghq-find consult-fd
                                end-of-buffer beginning-of-buffer))
      (jumplist-ex-mode . t)))
 
@@ -505,8 +505,7 @@
     (dashboard-setup-startup-hook))
 
   (leaf consult
-    :ensure-system-package (rg . ripgrep)
-    :ensure-system-package fd
+    :ensure-system-package ((rg . ripgrep) (fd))
     :ensure t consult-flycheck consult-ghq
     :bind (;; C-c bindings (mode-specific-map)
            ("C-c h" . consult-history)
@@ -516,7 +515,7 @@
            ;; C-x bindings (ctl-x-map)
            ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
            ("C-x C-b" . consult-buffer)                ;; orig. switch-to-buffer
-           ("C-x f" . consult-find-fd)
+           ("C-x f" . consult-fd)
            ("C-x e" . consult-ripgrep)
            ("C-x C-r" . consult-recent-file)
            ("C-x C-g" . consult-ghq-find)
@@ -535,11 +534,31 @@
            ("M-g i" . consult-imenu)
            ("M-g I" . consult-project-imenu)
            ("M-e" . consult-isearch))
-    :preface
-    (defun consult-find-fd (&optional dir initial)
+    :init
+    ;; see: https://github.com/minad/consult/wiki#find-files-using-fd
+    (defvar consult--fd-command "fd")
+    (defun consult--fd-builder (input)
+      (unless consult--fd-command
+        (setq consult--fd-command
+              (if (eq 0 (call-process-shell-command "fdfind"))
+                  "fdfind"
+                "fd")))
+      (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
+                   (`(,re . ,hl) (funcall consult--regexp-compiler
+                                          arg 'extended)))
+        (when re
+          (list :command (append
+                          (list consult--fd-command
+                                "--color=never" "--full-path"
+                                (consult--join-regexps re 'extended))
+                          opts)
+                :highlight hl))))
+
+    (defun consult-fd (&optional dir initial)
       (interactive "P")
-      (let ((consult-find-command "fd -H --color=never --full-path ARG OPTS"))
-        (consult-find dir initial)))
+      (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
+             (default-directory (cdr prompt-dir)))
+        (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
      (xref-show-definitions-function . 'consult-xref)
@@ -548,7 +567,7 @@
      (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
     :config
     (consult-customize
-     consult-ripgrep consult-git-grep consult-grep
+     consult-ripgrep consult-git-grep consult-grep consult-find consult-fd
      consult-bookmark consult-recent-file consult-xref
      consult--source-file consult--source-project-file consult--source-bookmark
      :preview-key (kbd "M-.")))
