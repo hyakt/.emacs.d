@@ -568,10 +568,11 @@
         (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
 
     (consult-customize
-     consult-ripgrep consult-git-grep consult-grep consult-find consult-fd
+     consult-ripgrep consult-git-grep consult-grep
      consult-bookmark consult-recent-file consult-xref
      consult--source-file consult--source-project-file consult--source-bookmark
-     :preview-key (kbd "M-.")))
+     :preview-key (list :debounce 0.8 'any))
+    )
 
   (leaf vertico
     :ensure t
@@ -724,7 +725,6 @@
       :after magit
       :ensure t
       :ensure-system-package (delta . git-delta)
-      :hook (magit-mode-hook . magit-delta-mode)
       :config
       (defun my/magit-delta-toggle ()
         "Toggle magit-delta-mode and refresh magit."
