@@ -534,9 +534,16 @@
            ("M-g i" . consult-imenu)
            ("M-g I" . consult-project-imenu)
            ("M-e" . consult-isearch))
-    :init
+    :custom
+    ((xref-show-xrefs-function . 'consult-xref)
+     (xref-show-definitions-function . 'consult-xref)
+     (consult-ghq-find-function . 'magit-status)
+     (consult-project-root-function . #'projectile-project-root)
+     (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
+    :config
     ;; see: https://github.com/minad/consult/wiki#find-files-using-fd
     (defvar consult--fd-command "fd")
+
     (defun consult--fd-builder (input)
       (unless consult--fd-command
         (setq consult--fd-command
@@ -559,13 +566,7 @@
       (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
              (default-directory (cdr prompt-dir)))
         (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
-    :custom
-    ((xref-show-xrefs-function . 'consult-xref)
-     (xref-show-definitions-function . 'consult-xref)
-     (consult-ghq-find-function . 'magit-status)
-     (consult-project-root-function . #'projectile-project-root)
-     (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
-    :config
+
     (consult-customize
      consult-ripgrep consult-git-grep consult-grep consult-find consult-fd
      consult-bookmark consult-recent-file consult-xref
