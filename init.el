@@ -202,10 +202,12 @@
     (doom-themes-org-config)
     (leaf doom-modeline
       :ensure t
-      :custom ((doom-modeline-buffer-encoding . t)
-               (doom-modeline-buffer-file-name-style . 'truncate-with-project)
+      :custom ((doom-modeline-buffer-encoding . nil)
+               (doom-modeline-buffer-file-name-style . 'auto)
                (doom-modeline-height . 32)
-               (doom-modeline-bar-width . 3))
+               (doom-modeline-bar-width . 3)
+               (doom-modeline-enable-word-count . 5)
+               (doom-modeline-vcs-max-length . 50))
       :config
       (doom-modeline-mode 1)))
 
