@@ -234,9 +234,9 @@
     :ensure t
     :global-minor-mode beacon-mode)
 
-  (leaf dimmer
-    :ensure t
-    :global-minor-mode dimmer-mode)
+  ;; (leaf dimmer
+  ;;   :ensure t
+  ;;   :global-minor-mode dimmer-mode)
 
   (leaf volatile-highlights
     :ensure t
