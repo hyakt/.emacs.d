@@ -619,12 +619,14 @@
 
   (leaf dired
     :ensure (wdired all-the-icons-dired)
+    :custom ((dired-dwim-target . t))
     :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode)
-                           ("C-t" . nil)))
+                           ("C-t" . nil)
+                           ("M-s" . nil)))
     :config
     (leaf dired-sidebar
       :ensure t
-      :bind (("C-x C-d" . dired-sidebar-toggle-sidebar)
+      :bind (("M-d" . dired-sidebar-toggle-sidebar)
              (dired-sidebar-mode-map
               ("o" . dired-sidebar-subtree-toggle)))
       :custom ((dired-sidebar-use-term-integration . t)
