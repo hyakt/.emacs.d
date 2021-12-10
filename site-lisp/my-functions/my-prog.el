@@ -133,7 +133,7 @@
     "Show tsc error on buffer."
     (interactive)
     (my/projectile-run-async-shell-command-in-root
-     "npx tsc --noEmit --pretty false | sed -E \"s/\\(.*//g\" | uniq | sed -E \"s/(.*)/\\(find-file-other-window \\\"\\1\\\"\\)/g\""
+     "npx tsc --noEmit --pretty false | sed -E \"s/\\([0-9]+,[0-9]+\\):.*//g\" | sort | uniq | sed -E \"s/(.*)/\\(find-file-other-window \\\"\\1\\\"\\)/g\""
      "*My TSC Errors*"))
 
   (defun my/eslint-error-find-file-buffer ()
