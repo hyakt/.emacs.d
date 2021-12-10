@@ -207,7 +207,7 @@
                (doom-modeline-height . 32)
                (doom-modeline-bar-width . 3)
                (doom-modeline-enable-word-count . 5)
-               (doom-modeline-vcs-max-length . 50))
+               (doom-modeline-vcs-max-length . 30))
       :config
       (doom-modeline-mode 1)))
 
@@ -900,6 +900,7 @@
              (lsp-enable-xref . t)
              (lsp-headerline-breadcrumb-enable . nil)
              (lsp-enable-file-watchers . nil)
+             (lsp-modeline-diagnostics-enable . nil)
              (lsp-clients-deno-import-map . "./import_map.json"))
     :config
     (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
