@@ -328,7 +328,8 @@
     :config
     (global-company-mode)
     (leaf company-box :ensure t :config (company-box-mode t))
-    (leaf company-quickhelp :ensure t :config (company-quickhelp-mode t)))
+    (leaf company-quickhelp :ensure t :config (company-quickhelp-mode t))
+    (leaf company-inf-ruby :ensure t :config (add-to-list 'company-backends 'company-inf-ruby)))
 
   (leaf flycheck
     :ensure t
