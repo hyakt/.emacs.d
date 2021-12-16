@@ -37,7 +37,12 @@
     "gh open."
     (interactive)
     (my/projectile-run-shell-command-in-root "gh pr list --web"))
-  )
+
+  (defun my/git-open-pr-from-commit-hash (hash)
+    "gh open."
+    (interactive "sHash: ")
+    (my/projectile-run-shell-command-in-root (concat "git openpr " hash))
+  ))
 
 (provide 'my-git)
 
