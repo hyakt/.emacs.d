@@ -382,6 +382,7 @@
                                dump-jump-go
                                my/jump-to-match-parens
                                consult-line consult-ripgrep consult-find consult-ghq-find consult-fd
+                               er/expand-region
                                end-of-buffer beginning-of-buffer))
      (jumplist-ex-mode . t)))
 
