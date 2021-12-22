@@ -507,6 +507,10 @@
     :config
     (dashboard-setup-startup-hook))
 
+  (leaf avy
+    :ensure t
+    :bind ("C-;" . avy-goto-char))
+
   (leaf consult
     :ensure-system-package ((rg . ripgrep) (fd))
     :ensure t consult-flycheck consult-ghq
