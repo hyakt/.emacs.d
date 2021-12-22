@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: my/eslint-disable-next-line
+# key: eslint
+# --
+// eslint-disable-next-line ${1:ignore error}

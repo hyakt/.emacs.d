@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: my/ts-expect-error
+# key: ts
+# --
+// @ts-expect-error ${1:comment}
