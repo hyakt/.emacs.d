@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: my/eslint-disable-line
+# key: eslint
+# --
+// eslint-disable-line ${1:ignore error}

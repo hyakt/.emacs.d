@@ -288,7 +288,6 @@
     ("C-x C-k" . my/close-and-kill-this-pane)
     ("C-x C-x" . my/kill-other-buffers)
     ("C-x i" . my/buffer-indent)
-    ("C-x d" . my/dired-this-buffer)
     :bind*
     ("M-c M-c M-c" . my/deepl-region)
     :init
@@ -621,6 +620,7 @@
 
   (leaf dired
     :ensure (wdired all-the-icons-dired)
+    :bind (("C-x C-d" . my/dired-this-buffer))
     :custom ((dired-dwim-target . t))
     :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode)
                            ("C-t" . nil)
