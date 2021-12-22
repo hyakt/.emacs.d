@@ -732,16 +732,10 @@
                     (window-list))))
 
     (leaf magit-delta
-      :after magit
       :ensure t
       :ensure-system-package (delta . git-delta)
-      :config
-      (defun my/magit-delta-toggle ()
-        "Toggle magit-delta-mode and refresh magit."
-        (interactive)
-        (progn
-          (call-interactively 'magit-delta-mode)
-          (magit-refresh))))
+      :after magit
+      :hook (magit-mode-hook))
 
     (leaf git-gutter
       :ensure t
