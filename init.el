@@ -1085,7 +1085,9 @@
     :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
     :interpreter ("pry")
     :custom ((ruby-insert-encoding-magic-comment . nil))
-    :hook ((ruby-mode-hook . lsp-deferred))
+    :hook ((ruby-mode-hook . lsp-deferred)
+           (ruby-mode-hook . inf-ruby-minor-mode)
+           (ruby-mode-hook . inf-ruby-switch-setup))
     :config
     (leaf inf-ruby
       :ensure t
