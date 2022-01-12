@@ -833,6 +833,7 @@
                         ;; rust
                         ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
                         ("*rustfmt*"                :align below :ratio 0.33 :select nil)
+                        ("*cargo-test*"             :align below :ratio 0.5 :select nil)
                         ;; ruby
                         ("*rspec-compilation*"      :align below :ratio 0.5 :select nil)
                         )))
