@@ -753,7 +753,8 @@
 
     (leaf git-link
       :ensure t
-      :custom (git-link-open-in-browser . t)))
+      :custom ((git-link-open-in-browser . t)
+               (git-link-use-commit . t))))
 
   (leaf docker :ensure t
     :config
