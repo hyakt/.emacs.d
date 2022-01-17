@@ -888,6 +888,7 @@
 
 ;;; ---------- メジャーモード設定 ----------
 (leaf *major-mode
+  :custom ((compilation-scroll-output . 'first-error))
   :config
   (leaf lsp-mode
     :ensure t
