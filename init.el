@@ -834,7 +834,7 @@
                         ;; rust
                         ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
                         ("*rustfmt*"                :align below :ratio 0.33 :select nil)
-                        ("*cargo-test*"             :align below :ratio 0.5 :select nil)
+                        ("*Cargo Test*"             :align below :ratio 0.5 :select nil)
                         ;; ruby
                         ("*rspec-compilation*"      :align below :ratio 0.5 :select nil)
                         )))
@@ -1205,11 +1205,17 @@
                                   (scala-bootstrap:with-bloop-server-started
                                    (lsp)))))))
 
-  (leaf rustic
-    :ensure t
-    :custom ((lsp-rust-analyzer-server-command . '("~/.cargo/bin/rust-analyzer"))
-             (rustic-format-display-method . 'display-buffer)
-             (rustic-format-trigger . 'on-compile)))
+  (leaf rust
+    :config
+    (leaf rust-mode
+      :ensure t
+      :hook ((rust-mode-hook . lsp))
+      :custom ((lsp-rust-server . 'rust-analyzer)
+               (rust-format-on-save . t)))
+
+    (leaf cargo
+      :ensure t
+      :hook (rust-mode-hook . cargo-minor-mode)))
 
   (leaf fish-mode :ensure t)
 
