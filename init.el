@@ -832,9 +832,7 @@
                         ("*jest*"                   :regexp t :align below :pratio 0.5)
                         (vterm-mode                 :align below :ratio 0.7)
                         ;; rust
-                        ("*rustic-compilation*"     :align below :ratio 0.33 :select nil)
-                        ("*rustfmt*"                :align below :ratio 0.33 :select nil)
-                        ("*Cargo Test*"             :align below :ratio 0.5 :select nil)
+                        ("\\`\\*Cargo .*?\\*\\'"   :regexp t :align below :ratio 0.5 :select nil)
                         ;; ruby
                         ("*rspec-compilation*"      :align below :ratio 0.5 :select nil)
                         )))
