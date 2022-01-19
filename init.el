@@ -801,41 +801,41 @@
 
     (leaf shackle
       :ensure t
-      :custom
-      ((shackle-default-size . 0.4)
-       (shackle-rules .
-                      '(("*Help*"                   :align right)
-                        ("*Messages*"               :align right)
-                        ("*Backtrace*"              :align right)
-                        ("*Completions*"            :align below :ratio 0.33)
-                        ("*compilation*"            :align below :ratio 0.33)
-                        ("*Compile-Log"             :align below :ratio 0.33)
-                        ("*Kill Ring*"              :align below :ratio 0.33)
-                        ("*Occur*"                  :align below :ratio 0.33)
-                        ("*Google Translate*"       :align below :ratio 0.33)
-                        ("*Codic Result*"           :align below :ratio 0.33)
-                        ("*quickrun*"               :align below :ratio 0.33)
-                        ("*xref*"                   :align below :ratio 0.33)
-                        ("*prettier errors*"        :align below :ratio 0.33)
-                        (magit-status-mode          :align below :ratio 0.7 :select t :inhibit-window-quit t)
-                        ;; repl
-                        ("*Python*"                 :align below :ratio 0.5 :select t)
-                        ("*pry*"                    :align below :ratio 0.5 :select t)
-                        ("*ruby*"                   :align below :ratio 0.5 :select t)
-                        ("*nodejs*"                 :align below :ratio 0.5 :select t)
-                        ("*shell*"                  :align below :ratio 0.5 :select t)
-                        ("*Typescript*"             :align below :ratio 0.5)
-                        ;; excute shell
-                        ("*Async Shell Command*"    :align right)
-                        ("*Shell Command Output*"   :align right)
-                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
-                        ("*jest*"                   :regexp t :align below :pratio 0.5)
-                        (vterm-mode                 :align below :ratio 0.7)
-                        ;; rust
-                        ("\\`\\*Cargo .*?\\*\\'"   :regexp t :align below :ratio 0.5 :select nil)
-                        ;; ruby
-                        ("*rspec-compilation*"      :align below :ratio 0.5 :select nil)
-                        )))
+      :custom((shackle-select-reused-windows . t)
+              (shackle-default-size . 0.5)
+              (shackle-rules .
+                             '(("*Help*"                   :align right)
+                               ("*Messages*"               :align right)
+                               ("*Backtrace*"              :align right)
+                               ("*Completions*"            :align below :ratio 0.33)
+                               ("*compilation*"            :align below :ratio 0.33)
+                               ("*Compile-Log"             :align below :ratio 0.33)
+                               ("*Kill Ring*"              :align below :ratio 0.33)
+                               ("*Occur*"                  :align below :ratio 0.33)
+                               ("*Google Translate*"       :align below :ratio 0.33)
+                               ("*Codic Result*"           :align below :ratio 0.33)
+                               ("*quickrun*"               :align below :ratio 0.33)
+                               ("*xref*"                   :align below :ratio 0.33)
+                               ("*prettier errors*"        :align below :ratio 0.33)
+                               (magit-status-mode          :align below :ratio 0.7 :select t)
+                               ;; repl
+                               ("*Python*"                 :align below :select t)
+                               ("*pry*"                    :align below :select t)
+                               ("*ruby*"                   :align below :select t)
+                               ("*nodejs*"                 :align below :select t)
+                               ("*shell*"                  :align below :select t)
+                               ("*Typescript*"             :align below :select t)
+                               ;; excute shell
+                               ("*Async Shell Command*"    :align right)
+                               ("*Shell Command Output*"   :align right)
+                               ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
+                               ("*jest*"                   :regexp t :align below :ratio 0.5)
+                               (vterm-mode                 :align below :ratio 0.7)
+                               ;; rust
+                               ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :select nil)
+                               ;; ruby
+                               ("*rspec-compilation*"      :align below :ratio 0.5 :select nil)
+                               )))
       :config
       (shackle-mode 1)))
 
@@ -1212,6 +1212,8 @@
                (rust-format-on-save . t)))
 
     (leaf cargo
+      :bind ((cargo-mode-map
+              ("C-c C-c C-c" . cargo-process-current-test)))
       :ensure t
       :hook (rust-mode-hook . cargo-minor-mode)))
 
