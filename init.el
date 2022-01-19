@@ -801,41 +801,56 @@
 
     (leaf shackle
       :ensure t
-      :custom((shackle-select-reused-windows . t)
-              (shackle-default-size . 0.5)
-              (shackle-rules .
-                             '(("*Help*"                   :align right)
-                               ("*Messages*"               :align right)
-                               ("*Backtrace*"              :align right)
-                               ("*Completions*"            :align below :ratio 0.33)
-                               ("*compilation*"            :align below :ratio 0.33)
-                               ("*Compile-Log"             :align below :ratio 0.33)
-                               ("*Kill Ring*"              :align below :ratio 0.33)
-                               ("*Occur*"                  :align below :ratio 0.33)
-                               ("*Google Translate*"       :align below :ratio 0.33)
-                               ("*Codic Result*"           :align below :ratio 0.33)
-                               ("*quickrun*"               :align below :ratio 0.33)
-                               ("*xref*"                   :align below :ratio 0.33)
-                               ("*prettier errors*"        :align below :ratio 0.33)
-                               (magit-status-mode          :align below :ratio 0.7 :select t)
-                               ;; repl
-                               ("*Python*"                 :align below :select t)
-                               ("*pry*"                    :align below :select t)
-                               ("*ruby*"                   :align below :select t)
-                               ("*nodejs*"                 :align below :select t)
-                               ("*shell*"                  :align below :select t)
-                               ("*Typescript*"             :align below :select t)
-                               ;; excute shell
-                               ("*Async Shell Command*"    :align right)
-                               ("*Shell Command Output*"   :align right)
-                               ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
-                               ("*jest*"                   :regexp t :align below :ratio 0.5)
-                               (vterm-mode                 :align below :ratio 0.7)
-                               ;; rust
-                               ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :select nil)
-                               ;; ruby
-                               ("*rspec-compilation*"      :align below :ratio 0.5 :select nil)
-                               )))
+      :preface
+      (defun my/shackle--get-cargo-window ()
+        (cl-find-if
+         (lambda (win)
+           (string-match "*Cargo .*?\\*" (buffer-name (window-buffer win))))
+         (window-list)))
+
+      (defun my/shackle-cargo-custom (buffer alist plist)
+        (and
+         (my/shackle--get-cargo-window)
+         (select-window (my/shackle--get-cargo-window))
+         (window-deletable-p)
+         (delete-window))
+        (display-buffer-below-selected buffer alist))
+      :custom
+      ((shackle-select-reused-windows . t)
+       (shackle-default-size . 0.5)
+       (shackle-rules .
+                      '(("*Help*"                   :align right)
+                        ("*Messages*"               :align right)
+                        ("*Backtrace*"              :align right)
+                        ("*Completions*"            :align below :ratio 0.33)
+                        ("*compilation*"            :align below :ratio 0.33)
+                        ("*Compile-Log"             :align below :ratio 0.33)
+                        ("*Kill Ring*"              :align below :ratio 0.33)
+                        ("*Occur*"                  :align below :ratio 0.33)
+                        ("*Google Translate*"       :align below :ratio 0.33)
+                        ("*Codic Result*"           :align below :ratio 0.33)
+                        ("*quickrun*"               :align below :ratio 0.33)
+                        ("*xref*"                   :align below :ratio 0.33)
+                        ("*prettier errors*"        :align below :ratio 0.33)
+                        (magit-status-mode          :align below :ratio 0.7 :select t)
+                        ;; repl
+                        ("*Python*"                 :align below :select t)
+                        ("*pry*"                    :align below :select t)
+                        ("*ruby*"                   :align below :select t)
+                        ("*nodejs*"                 :align below :select t)
+                        ("*shell*"                  :align below :select t)
+                        ("*Typescript*"             :align below :select t)
+                        ;; excute shell
+                        ("*Async Shell Command*"    :align right)
+                        ("*Shell Command Output*"   :align right)
+                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
+                        ("*jest*"                   :regexp t :align below :ratio 0.5)
+                        (vterm-mode                 :align below :ratio 0.7)
+                        ;; rust
+                        ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :custom my/shackle-cargo-custom)
+                        ;; ruby
+                        ("*rspec-compilation*"      :align below :ratio 0.5)
+                        )))
       :config
       (shackle-mode 1)))
 
@@ -886,7 +901,7 @@
 
 ;;; ---------- メジャーモード設定 ----------
 (leaf *major-mode
-  :custom ((compilation-scroll-output . 'first-error))
+  :custom ((compilation-scroll-output . t))
   :config
   (leaf lsp-mode
     :ensure t
