@@ -480,6 +480,10 @@
     :custom
     (ediff-split-window-function . 'split-window-horizontally))
 
+  (leaf smerge-mode
+    :custom
+    (smerge-command-prefix . "\C-c\C-m"))
+
   (leaf projectile
     :ensure t
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
