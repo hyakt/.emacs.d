@@ -1231,8 +1231,13 @@
                (rust-format-on-save . t)))
 
     (leaf cargo
+      :preface
+      (defun my/cargo-process-build-and-test ()
+        (interactive)
+        (cargo-process-build)
+        (cargo-process-current-file-tests))
       :bind ((cargo-mode-map
-              ("C-c C-c C-c" . cargo-process-current-test)))
+              ("C-c C-c C-c" . my/cargo-process-build-and-test)))
       :ensure t
       :hook (rust-mode-hook . cargo-minor-mode)))
 
