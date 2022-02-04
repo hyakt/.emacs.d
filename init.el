@@ -302,8 +302,7 @@
   (leaf yasnippet
     :ensure (yasnippet yasnippet-snippets)
     :custom (yas-snippet-dirs . '("~/.emacs.d/site-lisp/my-snippets"))
-    :config
-    (yas-global-mode 1))
+    :hook (prog-mode-hook . yas-minor-mode))
 
   (leaf company
     :ensure t
