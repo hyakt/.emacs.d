@@ -479,6 +479,7 @@
     :config
     (leaf major-mode-hydra
       :ensure t
+      :custom (major-mode-hydra-invisible-quit-key . "q")
       :bind ("M-q" . major-mode-hydra)))
 
   (leaf ediff
@@ -486,7 +487,6 @@
     (ediff-split-window-function . 'split-window-horizontally))
 
   (leaf smerge-mode
-    :after hydra
     :custom
     (smerge-command-prefix . "\C-c\C-m")
     :config
@@ -975,8 +975,28 @@ targets."
 
 ;;; ---------- メジャーモード設定 ----------
 (leaf *major-mode
+  :after major-mode-hydra
   :custom ((compilation-scroll-output . t))
   :config
+  (leaf emacs-lisp-mode
+    :config
+    (major-mode-hydra-define emacs-lisp-mode nil
+      ("Eval"
+       (("b" eval-buffer "buffer")
+        ("e" eval-defun "defun")
+        ("r" eval-region "region"))
+       "REPL"
+       (("I" ielm "ielm"))
+       "Test"
+       (("t" ert "prompt")
+        ("T" (ert t) "all")
+        ("F" (ert :failed) "failed"))
+       "Doc"
+       (("d" describe-foo-at-point "thing-at-pt")
+        ("f" describe-function "function")
+        ("v" describe-variable "variable")
+        ("i" info-lookup-symbol "info lookup")))))
+
   (leaf lsp-mode
     :ensure t
     :commands (lsp lsp-deferred)
