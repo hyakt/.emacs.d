@@ -345,8 +345,7 @@
     :ensure (smart-jump dumb-jump)
     :bind (("M-." . smart-jump-go)
            ("M-," . smart-jump-back)
-           ("M-'" . smart-jump-references)
-           ("M-P" . smart-jump-peek))
+           ("M-'" . smart-jump-references))
     :custom (smart-jump-bind-keys . nil)
     :config
     (smart-jump-setup-default-registers)
@@ -475,7 +474,12 @@
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
   :config
-  (leaf hydra :ensure t)
+  (leaf hydra
+    :ensure t
+    :config
+    (leaf major-mode-hydra
+      :ensure t
+      :bind ("M-q" . major-mode-hydra)))
 
   (leaf ediff
     :custom
@@ -646,7 +650,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (leaf embark
     :ensure t
     :bind
-    (("M-O" . embark-act))
+    (("M-e" . embark-act))
     :preface
     ;; https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
     (defun embark-which-key-indicator ()
