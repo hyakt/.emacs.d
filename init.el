@@ -968,7 +968,7 @@ targets."
     )
 
   (leaf paradox
-    :ensure t
+    :ensure t async
     :config
     (paradox-enable)))
 
@@ -980,6 +980,7 @@ targets."
   :config
   (leaf emacs-lisp-mode
     :config
+    (leaf macrostep :ensure t)
     (major-mode-hydra-define emacs-lisp-mode nil
       ("Eval"
        (("b" eval-buffer "buffer")
@@ -995,7 +996,10 @@ targets."
        (("d" describe-foo-at-point "thing-at-pt")
         ("f" describe-function "function")
         ("v" describe-variable "variable")
-        ("i" info-lookup-symbol "info lookup")))))
+        ("i" info-lookup-symbol "info lookup"))
+       "Macrostep"
+       (("m" macrostep-mode "macrostep-mode"))
+       )))
 
   (leaf lsp-mode
     :ensure t
