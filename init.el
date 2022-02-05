@@ -487,7 +487,7 @@
     (smerge-command-prefix . "\C-c\C-m")
     :config
     ;; https://github.com/alphapapa/unpackaged.el#smerge-mode
-    (defhydra unpackaged/smerge-hydra
+    (defhydra my/smerge-hydra
       (:color pink :hint nil :post (smerge-auto-leave))
       "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
@@ -520,9 +520,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               (bury-buffer))
        "Save and bury buffer" :color blue)
       ("q" nil "cancel" :color blue))
-    :hook (magit-diff-visit-file . (lambda ()
-                                     (when smerge-mode
-                                       (unpackaged/smerge-hydra/body)))))
+    :hook (magit-diff-visit-file-hook . (lambda ()
+                                          (when smerge-mode
+                                            (my/smerge-hydra/body)))))
 
   (leaf projectile
     :ensure t
