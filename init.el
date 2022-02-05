@@ -622,16 +622,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
              (default-directory (cdr prompt-dir)))
         (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
 
-    (defun my/consult-git-commit-messages (&optional dir initial)
-      (interactive)
-      (insert (consult--read
-               (split-string
-                (shell-command-to-string
-                 "git log --format=\"%s\"")
-                "\n" t)
-               :prompt "Commit message: "
-               :sort nil)))
-
     (consult-customize
      consult-ripgrep consult-git-grep consult-grep
      consult-bookmark consult-recent-file consult-xref

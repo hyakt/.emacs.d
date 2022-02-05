@@ -4,6 +4,7 @@
 ;;; Code:
 (leaf my-git
   :ensure-system-package gh
+  :after consult
   :ensure projectile
   :config
   (defun my/projectile-run-shell-command-in-root (command)
@@ -41,8 +42,19 @@
   (defun my/git-open-pr-from-commit-hash (hash)
     "gh open."
     (interactive "sHash: ")
-    (my/projectile-run-shell-command-in-root (concat "git openpr " hash))
-  ))
+    (my/projectile-run-shell-command-in-root (concat "git openpr " hash)))
+
+  (defun my/consult-git-commit-messages ()
+    (interactive)
+    (insert (consult--read
+             (split-string
+              (shell-command-to-string
+               "git log --format=\"%s\"")
+              "\n" t)
+             :require-match t
+             :prompt "Commit message: "
+             :sort nil)))
+  )
 
 (provide 'my-git)
 
