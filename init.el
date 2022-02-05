@@ -487,7 +487,7 @@
     (smerge-command-prefix . "\C-c\C-m")
     :config
     ;; https://github.com/alphapapa/unpackaged.el#smerge-mode
-    (defhydra my/smerge-hydra
+    (defhydra my/hydra-smerge
       (:color pink :hint nil :post (smerge-auto-leave))
       "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
@@ -522,7 +522,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("q" nil "cancel" :color blue))
     :hook (magit-diff-visit-file-hook . (lambda ()
                                           (when smerge-mode
-                                            (my/smerge-hydra/body)))))
+                                            (my/hydra-smerge/body)))))
 
   (leaf projectile
     :ensure t
