@@ -58,9 +58,9 @@
   :global-minor-mode global-auto-revert-mode
   :hook (minibuffer-setup-hook . cursor-intangible-mode)                                       ;; minibufferをマウスカーソルで選択できないようにする
   :init
-  (fset 'yes-or-no-p 'y-or-n-p)                                                                ;; yes-noの選択肢をy-nにする
+  (fset 'yes-or-no-p 'y-or-n-p)                                                                ;; yes-noの選択肢を y-nにする
   (setenv "SHELL" "/bin/bash")                                                                 ;; デフォルトの shell を bashに変更
-  (setenv "LANG" "ja_JP.UTF-8")                                                                ;; デフォルトのLANGをUTF-8に設定 ruby/flyceck対策
+  (setenv "LANG" "ja_JP.UTF-8")                                                                ;; デフォルトの LANGを UTF-8に設定 ruby/flyceck対策
   (run-with-idle-timer 60.0 t #'garbage-collect)                                                ;; Run GC every 60 seconds if emacs is idle.
 
   (leaf custom-file
@@ -469,7 +469,13 @@
   (leaf rg
     :ensure t
     :custom ((rg-group-result . t)
-             (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql"))))))
+             (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql")))))
+
+  (leaf pangu-spacing
+    :ensure t
+    :custom ((pangu-spacing-real-insert-separtor . t))
+    :hook ((prog-mode-hook markdown-mode-hook org-mode-hook) . pangu-spacing-mode)))
+
 
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
