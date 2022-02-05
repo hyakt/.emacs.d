@@ -779,7 +779,9 @@ targets."
       :bind (("M-s" . magit-status-toggle)
              (magit-status-mode-map
               ("q" . my/magit-quit-session)
-              ("C-o" . magit-diff-visit-file-other-window)))
+              ("C-o" . magit-diff-visit-file-other-window))
+             (git-commit-mode-map
+              ("M-i" . my/consult-git-commit-messages)))
       :preface
       (defun my/magit-quit-session ()
         (interactive)
