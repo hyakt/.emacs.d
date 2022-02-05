@@ -962,7 +962,11 @@ targets."
                     (.offset! @property.definition 0 1 0 -1)))
        ])
     )
-  )
+
+  (leaf paradox
+    :ensure t
+    :config
+    (paradox-enable)))
 
 
 ;;; ---------- メジャーモード設定 ----------
