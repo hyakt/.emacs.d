@@ -607,12 +607,33 @@
     :bind
     (("M-O" . embark-act))
     :preface
-    (defun embark-action-indicator-which-key (map _target)
-      (which-key--show-keymap "Embark" map nil nil 'no-paging)
-      #'which-key--hide-popup-ignore-command)
+    ;; https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
+    (defun embark-which-key-indicator ()
+      "An embark indicator that displays keymaps using which-key.
+The which-key help message will show the type and value of the
+current target followed by an ellipsis if there are further
+targets."
+      (lambda (&optional keymap targets prefix)
+        (if (null keymap)
+            (which-key--hide-popup-ignore-command)
+          (which-key--show-keymap
+           (if (eq (plist-get (car targets) :type) 'embark-become)
+               "Become"
+             (format "Act on %s '%s'%s"
+                     (plist-get (car targets) :type)
+                     (embark--truncate-target (plist-get (car targets) :target))
+                     (if (cdr targets) "…" "")))
+           (if prefix
+               (pcase (lookup-key keymap prefix 'accept-default)
+                 ((and (pred keymapp) km) km)
+                 (_ (key-binding prefix 'accept-default)))
+             keymap)
+           nil nil t (lambda (binding)
+                       (not (string-suffix-p "-argument" (cdr binding))))))))
     :custom
-    ((embark-action-indicator . 'embark-action-indicator-which-key)
-     (embark-become-indicator . 'embark-action-indicator-which-key))
+    ((embark-indicators . '(embark-which-key-indicator
+                            embark-highlight-indicator
+                            embark-isearch-highlight-indicator)))
     :config
     ;; Hide the mode line of the Embark live/completions buffers
     (add-to-list 'display-buffer-alist
@@ -622,6 +643,7 @@
 
   (leaf embark-consult
     :ensure t
+    :hook (embark-collect-mode-hook . consult-preview-at-point-mode)
     :after (embark consult)
     :require t)
 
