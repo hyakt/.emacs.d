@@ -41,27 +41,27 @@
   :custom
   (
    (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
-   (completion-ignore-case . t)                                                               ;; file名の補完で大文字小文字を区別しない
+   (completion-ignore-case . t)                                                               ;; file 名の補完で大文字小文字を区別しない
    (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
-   (make-backup-files . t)                                                                    ;; Backup fileを作る
+   (make-backup-files . t)                                                                    ;; Backup file を作る
    (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
    (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
-   (gc-cons-threshold . 1073741824)                                                           ;; GCの閾値を設定
-   (garbage-collection-messages . nil)                                                        ;; GC実行のメッセージを表示しない
+   (gc-cons-threshold . 1073741824)                                                           ;; GC の閾値を設定
+   (garbage-collection-messages . nil)                                                        ;; GC 実行のメッセージを表示しない
    (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
-   (vc-follow-symlinks . t)                                                                   ;; symlinkは必ず追いかける
+   (vc-follow-symlinks . t)                                                                   ;; symlink は必ず追いかける
    (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
-   (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibufferをマウスカーソルで選択できないようにする
-   (enable-recursive-minibuffers . t)                                                         ;; minibufferの再帰的使用を許可する
-   (enable-local-variables . :all)                                                            ;; local variableは全て使用する
+   (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibuffer をマウスカーソルで選択できないようにする
+   (enable-recursive-minibuffers . t)                                                         ;; minibuffer の再帰的使用を許可する
+   (enable-local-variables . :all)                                                            ;; local variable は全て使用する
    )
   :global-minor-mode global-auto-revert-mode
-  :hook (minibuffer-setup-hook . cursor-intangible-mode)                                       ;; minibufferをマウスカーソルで選択できないようにする
+  :hook (minibuffer-setup-hook . cursor-intangible-mode)                                      ;; minibuffer をマウスカーソルで選択できないようにする
   :init
-  (fset 'yes-or-no-p 'y-or-n-p)                                                                ;; yes-noの選択肢を y-nにする
-  (setenv "SHELL" "/bin/bash")                                                                 ;; デフォルトの shell を bashに変更
-  (setenv "LANG" "ja_JP.UTF-8")                                                                ;; デフォルトの LANGを UTF-8に設定 ruby/flyceck対策
-  (run-with-idle-timer 60.0 t #'garbage-collect)                                                ;; Run GC every 60 seconds if emacs is idle.
+  (fset 'yes-or-no-p 'y-or-n-p)                                                               ;; yes-no の選択肢を y-n にする
+  (setenv "SHELL" "/bin/bash")                                                                ;; デフォルトの shell を bash に変更
+  (setenv "LANG" "ja_JP.UTF-8")                                                               ;; デフォルトの LANG を UTF-8 に設定 ruby/flyceck 対策
+  (run-with-idle-timer 60.0 t #'garbage-collect)                                              ;; Run GC every 60 seconds if emacs is idle.
 
   (leaf custom-file
     :when (file-exists-p custom-file)
@@ -121,8 +121,8 @@
   (frame-title-format . "")                                   ;; タイトルバーに何も表示しない
   (indent-tabs-mode . nil)                                    ;; タブの変わりに半角スペースを使う
   (inhibit-startup-screen . 1)                                ;; スタートアップメッセージを非表示
-  (init-loader-show-log-after-init . 'error-only)             ;; init-loaderが失敗した時のみエラーメッセージを表示
-  (initial-scratch-message . "")                              ;; scratchの初期メッセージ消去
+  (init-loader-show-log-after-init . 'error-only)             ;; init-loader が失敗した時のみエラーメッセージを表示
+  (initial-scratch-message . "")                              ;; scratch の初期メッセージ消去
   (line-spacing . 0)                                          ;; 行間を無しに設定
   (scroll-conservatively . 35)                                ;; スクロールの設定
   (scroll-margin . 0)                                         ;; スクロールの設定
@@ -234,9 +234,9 @@
     :ensure t
     :global-minor-mode beacon-mode)
 
-  ;; (leaf dimmer
-  ;;   :ensure t
-  ;;   :global-minor-mode dimmer-mode)
+  (leaf dimmer
+    :ensure t
+    :global-minor-mode dimmer-mode)
 
   (leaf volatile-highlights
     :ensure t
@@ -951,7 +951,7 @@ targets."
     :config
     (global-tree-sitter-mode)
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-    ;; TSXの対応
+    ;; TSX の対応
     (tree-sitter-require 'tsx)
     (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
     ;; ハイライトの追加
