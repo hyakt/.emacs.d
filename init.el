@@ -22,6 +22,11 @@
       :ensure t
       :init
       (leaf el-get :ensure t)
+      (leaf hydra :ensure t)
+      (leaf major-mode-hydra
+        :ensure t
+        :custom (major-mode-hydra-invisible-quit-key . "q")
+        :bind ("M-q" . major-mode-hydra))
       (leaf system-packages :ensure t)
       :config
       ;; initialize leaf-keywords.el
@@ -497,9 +502,9 @@
   (leaf smerge-mode
     :custom
     (smerge-command-prefix . "\C-c\C-m")
-    :config
+    :hydra
     ;; https://github.com/alphapapa/unpackaged.el#smerge-mode
-    (defhydra my/hydra-smerge
+    (my/hydra-smerge
       (:color pink :hint nil :post (smerge-auto-leave))
       "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
@@ -540,14 +545,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
   :config
-  (leaf hydra
-    :ensure t
-    :config
-    (leaf major-mode-hydra
-      :ensure t
-      :custom (major-mode-hydra-invisible-quit-key . "q")
-      :bind ("M-q" . major-mode-hydra)))
-
   (leaf projectile
     :ensure t
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
