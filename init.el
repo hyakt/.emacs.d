@@ -109,7 +109,12 @@
 
   (leaf savehist
     :init
-    (savehist-mode)))
+    (savehist-mode))
+
+  (leaf paradox
+    :ensure t async
+    :config
+    (paradox-enable)))
 
 
 ;;; ---------- 外観設定 ----------
@@ -269,7 +274,16 @@
   (leaf indent-guide
     :ensure t
     :custom (indent-guide-char . ">")
-    :global-minor-mode indent-guide-global-mode))
+    :global-minor-mode indent-guide-global-mode)
+
+  (leaf dashboard
+    :ensure t
+    :custom
+    (dashboard-items . '((recents  . 10)
+                         (projects . 10)))
+    (dashboard-startup-banner . 'logo)
+    :config
+    (dashboard-setup-startup-hook)))
 
 
 ;;; ---------- 編集機能設定 ----------
@@ -474,19 +488,7 @@
   (leaf pangu-spacing
     :ensure t
     :custom ((pangu-spacing-real-insert-separtor . t))
-    :hook ((prog-mode-hook markdown-mode-hook org-mode-hook) . pangu-spacing-mode)))
-
-
-;;; ---------- インターフェース設定 ----------
-(leaf *interface
-  :config
-  (leaf hydra
-    :ensure t
-    :config
-    (leaf major-mode-hydra
-      :ensure t
-      :custom (major-mode-hydra-invisible-quit-key . "q")
-      :bind ("M-q" . major-mode-hydra)))
+    :hook ((prog-mode-hook markdown-mode-hook org-mode-hook) . pangu-spacing-mode))
 
   (leaf ediff
     :custom
@@ -532,7 +534,19 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("q" nil "cancel" :color blue))
     :hook (magit-diff-visit-file-hook . (lambda ()
                                           (when smerge-mode
-                                            (my/hydra-smerge/body)))))
+                                            (my/hydra-smerge/body))))))
+
+
+;;; ---------- インターフェース設定 ----------
+(leaf *interface
+  :config
+  (leaf hydra
+    :ensure t
+    :config
+    (leaf major-mode-hydra
+      :ensure t
+      :custom (major-mode-hydra-invisible-quit-key . "q")
+      :bind ("M-q" . major-mode-hydra)))
 
   (leaf projectile
     :ensure t
@@ -551,15 +565,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (leaf projectile-rails
       :ensure t
       :hook projectile-mode-hook))
-
-  (leaf dashboard
-    :ensure t
-    :custom
-    (dashboard-items . '((recents  . 10)
-                         (projects . 10)))
-    (dashboard-startup-banner . 'logo)
-    :config
-    (dashboard-setup-startup-hook))
 
   (leaf avy
     :ensure t
@@ -972,12 +977,7 @@ targets."
         arguments: ((template_string) @property.definition
                     (.offset! @property.definition 0 1 0 -1)))
        ])
-    )
-
-  (leaf paradox
-    :ensure t async
-    :config
-    (paradox-enable)))
+    ))
 
 
 ;;; ---------- メジャーモード設定 ----------
