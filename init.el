@@ -26,7 +26,7 @@
       (leaf major-mode-hydra
         :ensure t
         :custom (major-mode-hydra-invisible-quit-key . "q")
-        :bind ("M-q" . major-mode-hydra))
+        :bind ("M-a" . major-mode-hydra))
       (leaf system-packages :ensure t)
       :config
       ;; initialize leaf-keywords.el
@@ -760,13 +760,29 @@ targets."
          (vterm-toggle-scope . 'project)))))
 
   (leaf git
+    :pretty-hydra
+    ("Magit"
+     (("m" magit-status "status" :exit t)
+      ("b" magit-blame "blame" :exit t)))
+    ("Timemachine"
+     (("t" git-timemachine "timemachine" :exit t)))
+    ("Gutter"
+     (("p" git-gutter:previous-hunk "previous")
+      ("n" git-gutter:next-hunk "next")
+      ("s" git-gutter:stage-hunk "stage")
+      ("r" git-gutter:revert-hunk "revert")
+      ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk")))
+    ("Link"
+     (("l" git-link "link" :exit t)
+      ("h" git-link-homepage "homepage" :exit t)))
     :config
     (leaf magit
       :require t
       :ensure (magit gh)
       :ensure-system-package git
       :custom ((magit-save-repository-buffers . 'dontask))
-      :bind (("M-s" . magit-status-toggle)
+      :bind (("M-S" . git/body)
+             ("M-s" . magit-status-toggle)
              (magit-status-mode-map
               ("q" . my/magit-quit-session)
               ("C-o" . magit-diff-visit-file-other-window))
@@ -800,16 +816,23 @@ targets."
                         (provided-mode-derived-p
                          (buffer-local-value 'major-mode (window-buffer w))
                          'magit-mode))
-                    (window-list))))
-
-    (leaf magit-delta
-      :ensure t
-      :ensure-system-package (delta . git-delta)
-      :after magit
-      :hook (magit-mode-hook))
+                    (window-list)))
+      :config
+      (leaf magit-delta
+        :ensure t
+        :ensure-system-package (delta . git-delta)
+        :after magit
+        :hook (magit-mode-hook)))
 
     (leaf git-gutter
       :ensure t
+      :preface
+      (defun my/git-gutter:toggle-popup-hunk ()
+        "Toggle git-gutter hunk window."
+        (interactive)
+        (if (and (get-buffer git-gutter:popup-buffer) (git-gutter:popup-buffer-window))
+            (delete-window (git-gutter:popup-buffer-window))
+          (git-gutter:popup-hunk)))
       :custom
       (git-gutter:modified-sign . " ")
       (git-gutter:added-sign    . " ")
@@ -993,7 +1016,7 @@ targets."
       ("v" describe-variable "variable")
       ("i" info-lookup-symbol "info lookup"))
      "Macrostep"
-     (("m" macrostep-mode "macrostep-mode"))))
+     (("m" macrostep-mode "macrostep-mode"))))
 
   (leaf lsp-mode
     :ensure t
