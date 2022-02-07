@@ -119,7 +119,15 @@
   (leaf paradox
     :ensure t async
     :config
-    (paradox-enable)))
+    (paradox-enable))
+
+  (leaf recentf
+    :ensure t
+    :custom
+    (recentf-max-saved-items . 1000)
+    (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+    (recentf-auto-cleanup . 'never)
+    :global-minor-mode recentf-mode))
 
 
 ;;; ---------- 外観設定 ----------
@@ -276,11 +284,6 @@
      (whitespace-space-regexp . "\\(\u3000\\)"))
     :global-minor-mode global-whitespace-mode)
 
-  (leaf indent-guide
-    :ensure t
-    :custom (indent-guide-char . ">")
-    :global-minor-mode indent-guide-global-mode)
-
   (leaf dashboard
     :ensure t
     :custom
@@ -352,8 +355,8 @@
     :ensure t
     :custom
     (flycheck-disabled-checkers . '(slim-lint))
-    :config
-    (global-flycheck-mode t))
+    :hook
+    (after-init-hook . global-flycheck-mode))
 
   (leaf quickrun
     :ensure t
@@ -420,7 +423,7 @@
     :custom (rxt-global-mode . t))
 
   (leaf elec-pair
-    :init (electric-pair-mode)
+    :global-minor-mode electric-pair-mode
     :commands org-add-electric-pairs web-add-electric-pairs
     :hook ((org-mode-hook . org-add-electric-pairs)
            ((web-mode-hook typescript-mode-hook) . web-add-electric-pairs))
@@ -463,15 +466,6 @@
     :bind (("C-," . er/expand-region)
            ("C-M-," . er/contract-region)))
 
-  (leaf recentf
-    :ensure t
-    :custom
-    (recentf-max-saved-items . 1000)
-    (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-    (recentf-auto-cleanup . 'never)
-    :config
-    (recentf-mode 1))
-
   (leaf wgrep
     :ensure t
     :custom
@@ -492,8 +486,7 @@
 
   (leaf pangu-spacing
     :ensure t
-    :custom ((pangu-spacing-real-insert-separtor . t))
-    :hook ((prog-mode-hook markdown-mode-hook org-mode-hook) . pangu-spacing-mode))
+    :custom ((pangu-spacing-real-insert-separtor . t)))
 
   (leaf ediff
     :custom
@@ -505,8 +498,8 @@
     :hydra
     ;; https://github.com/alphapapa/unpackaged.el#smerge-mode
     (my/hydra-smerge
-      (:color pink :hint nil :post (smerge-auto-leave))
-      "
+     (:color pink :hint nil :post (smerge-auto-leave))
+     "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
 _n_ext       _b_ase               _<_: upper/base        _C_ombine
@@ -515,28 +508,28 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ^^           _a_ll                _R_efine
 ^^           _RET_: current       _E_diff
 "
-      ("n" smerge-next)
-      ("p" smerge-prev)
-      ("b" smerge-keep-base)
-      ("u" smerge-keep-upper)
-      ("l" smerge-keep-lower)
-      ("a" smerge-keep-all)
-      ("RET" smerge-keep-current)
-      ("\C-m" smerge-keep-current)
-      ("<" smerge-diff-base-upper)
-      ("=" smerge-diff-upper-lower)
-      (">" smerge-diff-base-lower)
-      ("R" smerge-refine)
-      ("E" smerge-ediff)
-      ("C" smerge-combine-with-next)
-      ("r" smerge-resolve)
-      ("k" smerge-kill-current)
-      ("ZZ" (lambda ()
-              (interactive)
-              (save-buffer)
-              (bury-buffer))
-       "Save and bury buffer" :color blue)
-      ("q" nil "cancel" :color blue))
+     ("n" smerge-next)
+     ("p" smerge-prev)
+     ("b" smerge-keep-base)
+     ("u" smerge-keep-upper)
+     ("l" smerge-keep-lower)
+     ("a" smerge-keep-all)
+     ("RET" smerge-keep-current)
+     ("\C-m" smerge-keep-current)
+     ("<" smerge-diff-base-upper)
+     ("=" smerge-diff-upper-lower)
+     (">" smerge-diff-base-lower)
+     ("R" smerge-refine)
+     ("E" smerge-ediff)
+     ("C" smerge-combine-with-next)
+     ("r" smerge-resolve)
+     ("k" smerge-kill-current)
+     ("ZZ" (lambda ()
+             (interactive)
+             (save-buffer)
+             (bury-buffer))
+      "Save and bury buffer" :color blue)
+     ("q" nil "cancel" :color blue))
     :hook (magit-diff-visit-file-hook . (lambda ()
                                           (when smerge-mode
                                             (my/hydra-smerge/body))))))
@@ -548,6 +541,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (leaf projectile
     :ensure t
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
+    :global-minor-mode projectile-mode
     :custom
     ((projectile-add-known-project . '("~/repos/")))
     :preface
@@ -557,8 +551,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       (find-file-other-window
        (projectile-find-implementation-or-test
         (buffer-file-name))))
-    :config
-    (projectile-mode 1)
     (leaf projectile-rails
       :ensure t
       :hook projectile-mode-hook))
@@ -983,27 +975,25 @@ targets."
   :custom ((compilation-scroll-output . t))
   :config
   (leaf emacs-lisp-mode
-    :config
-    (leaf macrostep :ensure t)
-    (major-mode-hydra-define emacs-lisp-mode nil
-      ("Eval"
-       (("b" eval-buffer "buffer")
-        ("e" eval-defun "defun")
-        ("r" eval-region "region"))
-       "REPL"
-       (("I" ielm "ielm"))
-       "Test"
-       (("t" ert "prompt")
-        ("T" (ert t) "all")
-        ("F" (ert :failed) "failed"))
-       "Doc"
-       (("d" describe-foo-at-point "thing-at-pt")
-        ("f" describe-function "function")
-        ("v" describe-variable "variable")
-        ("i" info-lookup-symbol "info lookup"))
-       "Macrostep"
-       (("m" macrostep-mode "macrostep-mode"))
-       )))
+    :ensure macrostep
+    :mode-hydra
+    ("Eval"
+     (("b" eval-buffer "buffer")
+      ("e" eval-defun "defun")
+      ("r" eval-region "region"))
+     "REPL"
+     (("I" ielm "ielm"))
+     "Test"
+     (("t" ert "prompt")
+      ("T" (ert t) "all")
+      ("F" (ert :failed) "failed"))
+     "Doc"
+     (("d" describe-foo-at-point "thing-at-pt")
+      ("f" describe-function "function")
+      ("v" describe-variable "variable")
+      ("i" info-lookup-symbol "info lookup"))
+     "Macrostep"
+     (("m" macrostep-mode "macrostep-mode"))))
 
   (leaf lsp-mode
     :ensure t
@@ -1356,82 +1346,13 @@ targets."
     (org-src-fontify-natively . t)
     (org-log-done . 'time)
     :config
-    (defun my-add-custom-id nil
-      "Add \"CUSTOM_ID\" to the current tree if not assigned yet."
-      (interactive)
-      (my-org-custom-id-get nil t))
-
-    (defun my-get-custom-id nil
-      "Return a part of UUID with an \"org\" prefix. e.g. \"org3ca6ef0c\"."
-      (let* ((id (org-id-new "")))
-        (when (org-uuidgen-p id)
-          (downcase
-           (concat "org"
-                   (substring
-                    (org-id-new "")
-                    0 8))))))
-
-    (defun my-org-custom-id-get (&optional pom create)
-      "See https://writequit.org/articles/emacs-org-mode-generate-ids.html"
-      (interactive)
-      (org-with-point-at pom
-                         (let ((id (org-entry-get nil "CUSTOM_ID")))
-                           (cond
-                            ((and id
-                                  (stringp id)
-                                  (string-match "\\S-" id))
-                             id)
-                            (create
-                             (setq id (my-get-custom-id))
-                             (unless id
-                               (error "Invalid ID"))
-                             (org-entry-put pom "CUSTOM_ID" id)
-                             (message "--- CUSTOM_ID assigned: %s" id)
-                             (org-id-add-location id
-                                                  (buffer-file-name
-                                                   (buffer-base-buffer)))
-                             id)))))
-
     (leaf ox-latex
       :custom
-      (org-latex-default-class . "cv")
       (org-latex-pdf-process . '("latexmk %f"))
       (org-file-apps . '(("pdf" . "/usr/bin/open -a Preview.app %s")))
       (org-latex-with-hyperref . nil)
-      (org-latex-hyperref-template . nil)
-      :defer-config
-      (add-to-list 'org-latex-classes
-                   '("cv"
-                     "\\documentclass[autodetect-engine,dvi=dvipdfmx,10pt,a4wide,ja=standard]{bxjsarticle}
-                      \\parindent = 0pt
-                      \\usepackage{typearea}
-                      \\typearea{18}
-                      \\usepackage{longtable}
-                      [NO-DEFAULT-PACKAGES]
-                      \\usepackage{amsmath}
-                      \\usepackage[dvipdfmx]{hyperref}
-                      \\usepackage{url}
-                      \\ifdefined\\kanjiskip
-                        \\usepackage{pxjahyper}
-                        \\hypersetup{colorlinks=true}
-                      \\else
-                        \\ifdefined\\XeTeXversion
-                            \\hypersetup{colorlinks=true}
-                        \\else
-                          \\ifdefined\\directlua
-                            \\hypersetup{pdfencoding=auto,colorlinks=true}
-                          \\else
-                            \\hypersetup{unicode,colorlinks=true}
-                          \\fi
-                        \\fi
-                      \\fi"
-                     ("\\section{%s}" . "\\section*{%s}")
-                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+      (org-latex-hyperref-template . nil))
     (leaf htmlize :ensure t)
-    (leaf ob-sql-mode :ensure t)
     (leaf ox-gfm :ensure t :require t)
     (leaf org-bullets :ensure t
       :config
@@ -1477,8 +1398,7 @@ targets."
     ;; :ensure-system-package (plantuml graphviz)
     :custom
     ((plantuml-executable-path . "plantuml")
-     (plantuml-default-exec-mode . 'executable)))
-  )
+     (plantuml-default-exec-mode . 'executable))))
 
 (provide 'init)
 
