@@ -545,7 +545,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     :custom
     ((projectile-add-known-project . '("~/repos/")))
     :preface
-    (defun my/projectile-toggle-between-implementation-and-test-other-window nil
+    (defun my/projectile-toggle-between-implementation-and-test-other-window ()
       "Toggle between an implementation file and its test file."
       (interactive)
       (find-file-other-window
@@ -562,13 +562,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (leaf consult
     :ensure-system-package ((rg . ripgrep) (fd))
     :ensure t consult-flycheck consult-ghq
-    :bind (;; C-c bindings (mode-specific-map)
-           ("C-c h" . consult-history)
-           ("C-c m" . consult-mode-command)
-           ("C-c b" . consult-bookmark)
-           ("C-c k" . consult-kmacro)
-           ;; C-x bindings (ctl-x-map)
-           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+    :bind (;; C-x bindings (ctl-x-map)
            ("C-x C-b" . consult-buffer)                ;; orig. switch-to-buffer
            ("C-x f" . consult-fd)
            ("C-x e" . consult-ripgrep)
@@ -576,7 +570,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
            ("C-x C-g" . consult-ghq-find)
            ;; Other custom bindings
            ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-           ("<help> a" . consult-apropos)            ;; orig. apropos-command
            ;; M-g bindings (goto-map)
            ("C-s" . consult-line)
            ("M-g e" . consult-compile-error)
@@ -584,11 +577,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
            ("M-g g" . consult-goto-line)             ;; orig. goto-line
            ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
            ("M-g o" . consult-outline)
-           ("M-g m" . consult-mark)
-           ("M-g k" . consult-global-mark)
-           ("M-g i" . consult-imenu)
-           ("M-g I" . consult-project-imenu)
-           ("M-e" . consult-isearch))
+           ("M-g i" . consult-imenu))
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
      (xref-show-definitions-function . 'consult-xref)
@@ -623,8 +612,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
         (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
 
     (consult-customize
-     consult-ripgrep consult-git-grep consult-grep
-     consult-bookmark consult-recent-file consult-xref
+     consult-ripgrep
+     consult-recent-file
      :preview-key (list :debounce 0.8 'any))
     )
 
