@@ -692,28 +692,62 @@ targets."
     :require t)
 
   (leaf dired
-    :ensure (wdired all-the-icons-dired)
-    :bind (("C-x C-d" . my/dired-this-buffer))
-    :custom ((dired-dwim-target . t))
-    :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode)
-                           ("C-t" . nil)
-                           ("M-s" . nil)))
+    :ensure all-the-icons-dired
+    :custom (dired-dwim-target . t)
+    :bind (("C-x C-d" . my/dired-this-buffer)
+           (dired-mode-map (("C-t" . nil)
+                            ("M-s" . nil))))
     :config
+    (leaf dired-mode
+      :preface
+      ;; https://y0m0r.hateblo.jp/entry/20120219/1329657774
+      (defun my/dired-view-file-other-window ()
+        (interactive)
+        (let ((file (dired-get-file-for-visit)))
+          (if (file-directory-p file)
+              (or (and (cdr dired-subdir-alist)
+                       (dired-goto-subdir file))
+                  (dired file))
+            (view-file-other-window file)
+            )))
+      :mode-hydra
+      ("Mark"
+       (("m" dired-mark)
+        ("t" dired-toggle-marks)
+        ("U" dired-unmark-all-marks)
+        ("u" dired-unmark)))
+      ("Manipulate"
+       (("+" dired-create-directory)
+        ("M" dired-do-chmod)
+        ("D" dired-do-delete)
+        ("C" dired-do-copy)
+        ("R" dired-do-rename)
+        ("e" wdired-change-to-wdired-mode :exit t)
+        ("w" dired-copy-filename-as-kill)
+        ("W" dired-get-fullpath-filename)))
+      ("Open"
+       (("o" dired-find-file-other-window :exit t)
+        ("v" dired-view-file :exit t)
+        ("V" dired-view-file-other-window :exit t)
+        ("s" dired-sort-toggle-or-edit)
+        ("g" revert-buffer))))
+
+    (leaf wdired
+      :require t
+      :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode))))
+
+    (leaf dired-x
+      :require t
+      :hook (dired-mode-hook . dired-omit-mode)
+      :custom (dired-omit-files . "^\\.DS_Store$"))
+
     (leaf dired-sidebar
       :ensure t
       :bind (("M-d" . dired-sidebar-toggle-sidebar)
              (dired-sidebar-mode-map
               ("o" . dired-sidebar-subtree-toggle)))
       :custom ((dired-sidebar-use-term-integration . t)
-               (dired-sidebar-use-custom-modeline . nil))
-      :config
-      (defcustom dired-sidebar-mode-line-format
-        '("%e" mode-line-front-space
-          mode-line-buffer-identification
-          " "  mode-line-end-spaces)
-        "Mode line format for `dired-sidebar'."
-        :type 'list
-        :group 'dired-sidebar)))
+               (dired-sidebar-use-custom-modeline . nil))))
 
   (leaf shell
     :config
