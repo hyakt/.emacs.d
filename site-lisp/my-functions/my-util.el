@@ -135,12 +135,6 @@ BEG and END (region to sort)."
       (move-file-to-trash current-file-name)
       (kill-buffer current-file-name)))
 
-  (defun my/dired-this-buffer ()
-    "Open dired in this buffer."
-    (interactive)
-    (dired
-     (file-name-directory (expand-file-name (buffer-name)))))
-
   (defun my/close-and-kill-this-pane ()
     "If there are multiple windows, then close this pane and kill the buffer in it also."
     (interactive)
