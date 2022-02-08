@@ -230,7 +230,7 @@
       (doom-modeline-mode 1)))
 
   (leaf paren
-    :after paren
+    :require t
     :bind (("M-o" . my/jump-to-match-parens))
     :custom((show-paren-style . 'mixed)
             (show-paren-when-point-inside-paren . t)
@@ -625,8 +625,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (consult-customize
      consult-ripgrep consult-git-grep consult-grep
      consult-bookmark consult-recent-file consult-xref
-     consult--source-file consult--source-project-file consult--source-bookmark
-     :preview-key (list :debounce 0.8 'any)))
+     :preview-key (list :debounce 0.8 'any))
+    )
 
   (leaf vertico
     :ensure t
