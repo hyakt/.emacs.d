@@ -696,10 +696,17 @@ targets."
     :custom (dired-dwim-target . t)
     :bind (("C-x C-d" . my/dired-this-buffer)
            (dired-mode-map (("C-t" . nil)
-                            ("M-s" . nil))))
+                            ("M-s" . nil)
+                            ("c" . my/dired-do-copy-with-filename))))
     :config
     (leaf dired-mode
+      :custom ((dired-dwim-target . t))
       :preface
+      (defun my/dired-this-buffer ()
+        "Open dired in this buffer."
+        (interactive)
+        (dired
+         (file-name-directory (expand-file-name (buffer-name)))))
       ;; https://y0m0r.hateblo.jp/entry/20120219/1329657774
       (defun my/dired-view-file-other-window ()
         (interactive)
@@ -710,6 +717,24 @@ targets."
                   (dired file))
             (view-file-other-window file)
             )))
+      (defun my/dired-do-copy-with-filename (&optional arg)
+        (interactive "P")
+        (let* ((filename
+               (or (dired-get-subdir)
+                   (mapconcat #'identity
+                              (if arg
+                                  (cond ((zerop (prefix-numeric-value arg))
+                                         (dired-get-marked-files))
+                                        ((consp arg)
+                                         (dired-get-marked-files t))
+                                        (t
+                                         (dired-get-marked-files
+                                          'no-dir (prefix-numeric-value arg))))
+                                (dired-get-marked-files 'no-dir))
+                              " ")))
+              (new-filename (read-string (format "Copy %s to: " filename) (dired-get-filename))))
+          (copy-file (dired-get-filename) new-filename))
+        (revert-buffer))
       :mode-hydra
       ("Mark"
        (("m" dired-mark)
