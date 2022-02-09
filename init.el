@@ -25,7 +25,14 @@
       (leaf hydra :ensure t)
       (leaf major-mode-hydra
         :ensure t
-        :custom (major-mode-hydra-invisible-quit-key . "q")
+        :custom
+        ((major-mode-hydra-title-generator
+          . '(lambda (mode)
+               (s-concat (all-the-icons-icon-for-mode mode :v-adjust 0.05)
+                         " "
+                         (symbol-name mode)
+                         " commands")))
+         (major-mode-hydra-invisible-quit-key . "q"))
         :bind ("M-a" . major-mode-hydra))
       (leaf system-packages :ensure t)
       :config
@@ -703,19 +710,19 @@ targets."
       (defun my/dired-do-copy-with-filename (&optional arg)
         (interactive "P")
         (let* ((filename
-               (or (dired-get-subdir)
-                   (mapconcat #'identity
-                              (if arg
-                                  (cond ((zerop (prefix-numeric-value arg))
-                                         (dired-get-marked-files))
-                                        ((consp arg)
-                                         (dired-get-marked-files t))
-                                        (t
-                                         (dired-get-marked-files
-                                          'no-dir (prefix-numeric-value arg))))
-                                (dired-get-marked-files 'no-dir))
-                              " ")))
-              (new-filename (read-string (format "Copy %s to: " filename) (dired-get-filename))))
+                (or (dired-get-subdir)
+                    (mapconcat #'identity
+                               (if arg
+                                   (cond ((zerop (prefix-numeric-value arg))
+                                          (dired-get-marked-files))
+                                         ((consp arg)
+                                          (dired-get-marked-files t))
+                                         (t
+                                          (dired-get-marked-files
+                                           'no-dir (prefix-numeric-value arg))))
+                                 (dired-get-marked-files 'no-dir))
+                               " ")))
+               (new-filename (read-string (format "Copy %s to: " filename) (dired-get-filename))))
           (copy-file (dired-get-filename) new-filename))
         (revert-buffer))
       :mode-hydra
@@ -1125,25 +1132,6 @@ targets."
              css-mode-hook
              scss-mode-hook))
 
-    (leaf add-node-modules-path
-      :ensure t
-      :hook ((typescript-mode-hook
-              js2-mode-hook
-              web-mode-hook
-              scss-mode-hook
-              graphql-mode-hook
-              ts-comint-mode-hook
-              json-mode-hook) . add-node-modules-path))
-
-    (leaf prettier-js
-      :ensure t
-      :hook ((typescript-mode-hook
-              js2-mode-hook
-              web-mode-hook
-              css-mode-hook
-              scss-mode-hook
-              graphql-mode-hook)))
-
     (leaf html
       :config
       (leaf slim-mode :ensure t)
@@ -1190,69 +1178,92 @@ targets."
                              (make-local-variable 'company-backends)
                              '((company-css :with company-dabbrev) company-yasnippet)))))
       (leaf sass-mode :ensure t)
-      (leaf sws-mode :ensure t))
+      (leaf sws-mode :ensure t)))
 
-    (leaf javascript
-      :config
-      (leaf js2-mode
-        :mode (("\\.js$"))
-        :ensure (js2-mode tern xref-js2)
-        :el-get (company-tern :url "https://github.com/emacsattic/company-tern.git")
-        :ensure-system-package (tern . "npm i -g tern")
-        :custom
-        ((js-indent-level . 2)
-         (js-switch-indent-offset . 2)
-         (js2-basic-offset . 2)
-         (js2-strict-missing-semi-warning . nil)
-         (xref-js2-search-program . 'rg))
-        :hook
-        (js2-mode-hook . (lambda ()
-                           (tern-mode)
-                           (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
-                           (set
-                            (make-local-variable 'company-backends)
-                            '((company-tern :with company-dabbrev-code)
-                              company-yasnippet)))))
+  (leaf javascript
+    :config
+    (leaf js2-mode
+      :mode (("\\.js$"))
+      :hook ((js2-mode-hook . lsp-deferred)
+             (js2-mode-hook . subword-mode))
+      :ensure (js2-mode xref-js2)
+      :custom
+      ((js-indent-level . 2)
+       (js-switch-indent-offset . 2)
+       (js2-basic-offset . 2)
+       (js2-strict-missing-semi-warning . nil)
+       (xref-js2-search-program . 'rg)))
 
-      (leaf typescript-mode
-        :ensure t
-        :custom (typescript-indent-level . 2)
-        :hook ((typescript-mode-hook . lsp-deferred)
-               (typescript-mode-hook . subword-mode))
-        :init
-        (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
-        (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
+    (leaf typescript-mode
+      :ensure t
+      :mode-hydra
+      ("Repl"
+       (("n" nodejs-repl "node")
+        ("t" run-ts "ts-node"))
+       "Format"
+       (("p" prettier-js)
+        ("d" deno-fmt))
+       "Test"
+       (("jf" jest-file)
+        ("jp" jest-popup)
+        ("jb" my/jest-current-buffer)
+        ("jw" my/jest-watch-current-buffer)
+        ("jcb" my/jest-copy-command-current-buffer)
+        ("jcw" my/jest-copy-command-watch-current-buffer))
+       "Util"
+       (("c" my/copy-eldoc-mode)))
+      :custom (typescript-indent-level . 2)
+      :hook ((typescript-mode-hook . lsp-deferred)
+             (typescript-mode-hook . subword-mode))
+      :init
+      (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
+      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
 
-      (leaf ts-comint
-        :ensure t typescript-mode
-        :after typescript-mode
-        :ensure-system-package (ts-node . "npm i -g ts-node")
-        :commands (run-ts)
-        :custom (ts-comint-program-command . "ts-node")
-        :bind (typescript-mode-map
-               (("C-x C-e" . ts-send-last-sexp)
-                ("C-c b" . ts-send-buffer)
-                ("C-c r" . ts-send-region))))
+    (leaf add-node-modules-path
+      :ensure t
+      :hook ((typescript-mode-hook
+              js2-mode-hook
+              web-mode-hook
+              scss-mode-hook
+              graphql-mode-hook
+              ts-comint-mode-hook
+              json-mode-hook) . add-node-modules-path))
 
-      (leaf deno-fmt :ensure t)
+    (leaf nodejs-repl :ensure t)
 
-      (leaf coffee-mode
-        :ensure t
-        :custom (coffee-tab-width . 2))
+    (leaf ts-comint
+      :ensure t typescript-mode
+      :after typescript-mode
+      :ensure-system-package (ts-node . "npm i -g ts-node")
+      :commands (run-ts)
+      :custom (ts-comint-program-command . "ts-node")
+      :bind (typescript-mode-map
+             (("C-x C-e" . ts-send-last-sexp)
+              ("C-c b" . ts-send-buffer)
+              ("C-c r" . ts-send-region))))
 
-      (leaf nodejs-repl :ensure t)
+    (leaf npm-mode
+      :ensure t
+      :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook))
 
-      (leaf npm-mode
-        :ensure t
-        :hook (typescript-mode-hook js2-mode-hook web-mode-hook scss-mode-hook))
+    (leaf jest
+      :ensure t
+      :bind ((jest-minor-mode-map
+              ("C-c C-c C-c" . jest-file-dwim)))
+      :hook ((typescript-mode-hook . jest-minor-mode)
+             (js2-mode-hook . jest-minor-mode)
+             (web-mode-hook . jest-minor-mode)))
 
-      (leaf jest
-        :ensure t
-        :bind ((jest-minor-mode-map
-                ("C-c C-c C-c" . jest-file-dwim)))
-        :hook ((typescript-mode-hook . jest-minor-mode)
-               (js2-mode-hook . jest-minor-mode)
-               (web-mode-hook . jest-minor-mode)))))
+    (leaf prettier-js
+      :ensure t
+      :hook ((typescript-mode-hook
+              js2-mode-hook
+              web-mode-hook
+              css-mode-hook
+              scss-mode-hook
+              graphql-mode-hook)))
+
+    (leaf deno-fmt :require t :ensure t))
 
   (leaf ruby-mode
     :ensure t
