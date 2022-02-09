@@ -734,6 +734,7 @@ targets."
        (("+" dired-create-directory)
         ("M" dired-do-chmod)
         ("D" dired-do-delete)
+        ("c" my/dired-do-copy-with-filename)
         ("C" dired-do-copy)
         ("R" dired-do-rename)
         ("e" wdired-change-to-wdired-mode :exit t)
@@ -742,7 +743,7 @@ targets."
       ("Open"
        (("o" dired-find-file-other-window :exit t)
         ("v" dired-view-file :exit t)
-        ("V" dired-view-file-other-window :exit t)
+        ("V" my/dired-view-file-other-window :exit t)
         ("s" dired-sort-toggle-or-edit)
         ("g" revert-buffer))))
 
