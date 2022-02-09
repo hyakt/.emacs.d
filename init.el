@@ -348,8 +348,7 @@
     :config
     (global-company-mode)
     (leaf company-box :ensure t :config (company-box-mode t))
-    (leaf company-quickhelp :ensure t :config (company-quickhelp-mode t))
-    (leaf company-inf-ruby :ensure t :config (add-to-list 'company-backends 'company-inf-ruby)))
+    (leaf company-quickhelp :ensure t :config (company-quickhelp-mode t)))
 
   (leaf flycheck
     :ensure t
@@ -357,11 +356,6 @@
     (flycheck-disabled-checkers . '(slim-lint))
     :hook
     (after-init-hook . global-flycheck-mode))
-
-  (leaf quickrun
-    :ensure t
-    :bind (("C-x q" . quickrun)
-           ("C-x a" . quickrun-with-arg)))
 
   (leaf smart-jump
     :ensure (smart-jump dumb-jump)
