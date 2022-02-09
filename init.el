@@ -1091,7 +1091,8 @@ targets."
     :config
     (leaf web-mode
       :ensure t
-      :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'")
+      :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
+             "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'")
       :custom
       ((web-mode-indent-style . 2)
        (web-mode-markup-indent-offset . 2)
@@ -1197,12 +1198,9 @@ targets."
     (leaf typescript-mode
       :ensure t
       :mode-hydra
-      ("Repl"
+      ("REPL"
        (("n" nodejs-repl "node")
         ("t" run-ts "ts-node"))
-       "Format"
-       (("p" prettier-js)
-        ("d" deno-fmt))
        "Test"
        (("jf" jest-file)
         ("jp" jest-popup)
@@ -1210,7 +1208,10 @@ targets."
         ("jw" my/jest-watch-current-buffer)
         ("jcb" my/jest-copy-command-current-buffer)
         ("jcw" my/jest-copy-command-watch-current-buffer))
-       "Util"
+       "Format"
+       (("p" prettier-js)
+        ("d" deno-fmt))
+       "Doc"
        (("c" my/copy-eldoc-mode)))
       :custom (typescript-indent-level . 2)
       :hook ((typescript-mode-hook . lsp-deferred)
@@ -1292,28 +1293,6 @@ targets."
       :bind ((rspec-mode-map
               ("C-c C-c C-c" . rspec-verify-single)))))
 
-  (leaf swift-mode
-    :ensure t
-    :hook (swift-mode-hook . (lambda ()
-                               (add-to-list 'flycheck-checkers 'swift)
-                               (set
-                                (make-local-variable 'company-backends)
-                                '((company-sourcekit)))))
-    :config
-    (leaf company-sourcekit :ensure t))
-
-  (leaf dart-mode
-    :ensure t
-    :custom
-    (dart-format-on-save . nil)
-    (dart-enable-analysis-server . nil)
-    (dart-sdk-path . "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
-
-  (leaf flutter
-    :ensure t
-    :custom
-    (flutter-sdk-path . "~/repos/github.com/flutter/flutter/"))
-
   (leaf sql
     :ensure t
     :mode (".sql$")
@@ -1338,8 +1317,6 @@ targets."
             (narrow-to-region beg end)
             (sql-indent-buffer))))))
 
-  (leaf python :ensure t)
-
   (leaf php-mode :ensure t)
 
   (leaf haskell-mode :ensure t)
@@ -1352,6 +1329,28 @@ targets."
                         (setq tab-width 4)
                         (setq indent-tabs-mode t)
                         (setq c-basic-offset 4))))
+
+  (leaf swift-mode
+    :ensure t
+    :hook (swift-mode-hook . (lambda ()
+                               (add-to-list 'flycheck-checkers 'swift)
+                               (set
+                                (make-local-variable 'company-backends)
+                                '((company-sourcekit)))))
+    :config
+    (leaf company-sourcekit :ensure t))
+
+  (leaf dart-mode
+    :ensure t
+    :custom
+    (dart-format-on-save . nil)
+    (dart-enable-analysis-server . nil)
+    (dart-sdk-path . "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
+
+  (leaf flutter
+    :ensure t
+    :custom
+    (flutter-sdk-path . "~/repos/github.com/flutter/flutter/"))
 
   (leaf dockerfile-mode :ensure t)
 
@@ -1387,14 +1386,31 @@ targets."
                                   (scala-bootstrap:with-bloop-server-started
                                    (lsp)))))))
 
-  (leaf rust
+  (leaf rust-mode
+    :ensure t
+    :hook ((rust-mode-hook . lsp))
+    :custom ((lsp-rust-server . 'rust-analyzer)
+             (rust-format-on-save . t))
+    :preface
+    (defun my/evcxr ()
+      "Run evcxr."
+      (interactive)
+      (with-current-buffer (vterm-toggle)
+        (vterm-send-string "evcxr")))
+    :mode-hydra
+    ("REPL"
+     (("e" my/evcxr))
+     "Build"
+     (("b" cargo-process-buid))
+     "Test"
+     (("t" my/cargo-process-build-and-test "build and test")
+      ("f" cargo-process-current-test "current")
+      ("c" cargo-process-current-file-tests "file"))
+     "Format"
+     (("f" cargo-process-fmt "fmt"))
+     "Doc"
+     (("d" cargo-process-doc "doc")))
     :config
-    (leaf rust-mode
-      :ensure t
-      :hook ((rust-mode-hook . lsp))
-      :custom ((lsp-rust-server . 'rust-analyzer)
-               (rust-format-on-save . t)))
-
     (leaf cargo
       :preface
       (defun my/cargo-process-build-and-test ()
