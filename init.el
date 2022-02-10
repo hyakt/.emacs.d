@@ -1401,7 +1401,7 @@ targets."
     ("REPL"
      (("e" my/evcxr))
      "Build"
-     (("b" cargo-process-buid))
+     (("b" cargo-process-buid "build"))
      "Test"
      (("t" my/cargo-process-build-and-test "build and test")
       ("f" cargo-process-current-test "current")
