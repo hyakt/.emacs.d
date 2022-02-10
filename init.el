@@ -941,10 +941,44 @@ targets."
     (leaf docker-tramp :ensure t))
 
   (leaf window
+    :hydra
+    (my/hydra-window
+     (:color blue :hint nil)
+     "
+
+   Window commands
+
+  Move to^^^^^^^       Size^^^^          Scroll     Split
+  ───────────────────────────────────────────
+        ^_k_^             ^_K_^           ^_p_^     _v_ertical
+        ^^↑^^            ^^↑^^           ^^↑^^    _s_tack
+    _h_ ←  → _l_     _H_ ←  → _L_       ^^  ^^    _b_alance
+        ^^↓^^            ^^↓^^           ^^↓^^    _z_oom
+        ^_j_^             ^_J_^           ^_n_^
+
+"
+     ("q" nil "quit")
+     ("n" scroll-other-window :color red)
+     ("p" scroll-other-window-down :color red)
+     ("b" balance-windows)
+     ("d" delete-window)
+     ("H" shrink-window-horizontally :color red)
+     ("h" windmove-left :color red)
+     ("J" shrink-window :color red)
+     ("j" windmove-down :color red)
+     ("K" enlarge-window :color red)
+     ("k" windmove-up :color red)
+     ("L" enlarge-window-horizontally :color red)
+     ("l" windmove-right :color red)
+     ("s" split-window-vertically :color red)
+     ("v" split-window-horizontally :color red)
+     ("w" other-window)
+     ("z" delete-other-windows))
     :config
     (leaf swap-buffers
       :ensure t
-      :bind ("C-x C-o" . swap-buffers))
+      :bind (("M-u" . my/hydra-window/body)
+             ("C-x C-o" . swap-buffers)))
 
     (leaf other-window-or-split
       :el-get (other-window-or-split :url "https://github.com/conao/other-window-or-split.git")
