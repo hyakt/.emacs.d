@@ -308,18 +308,22 @@
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
   :pretty-hydra
   ((:title (with-faicon "code" "Edit commands" 1 -0.05) :quit-key "q")
-   ("Align"
+   ("Case"
+    (("c" string-inflection-lower-camelcase "camelCase")
+     ("k" string-inflection-kebab-case "kebab-case")
+     ("s" string-inflection-underscore "snake_case")
+     ("u" string-inflection-upcase "UP_CASE"))
+    "Align"
     (("a" align "align")
      ("r" align-regexp "align regex" :exit t)
-     ("s" sort-lines "sort")
      ("l" my/uniq-lines "unique")
      ("i" my/buffer-indent "indent"))
     "Convert"
     (("p"  my/pangu-spacing-region "spacing jp")
-     ("ure" my/url-encode-region "url encode")
-     ("urd" my/url-decode-region "url decode")
-     ("une" unicode-escape-region "unicode escape")
-     ("unu" unicode-unescape-region "unicode unescape"))
+     ("tue" my/url-encode-region "url encode")
+     ("tud" my/url-decode-region "url decode")
+     ("tne" unicode-escape-region "unicode escape")
+     ("tnd" unicode-unescape-region "unicode unescape"))
     "Browse"
     (("o" (call-process-shell-command "open .") "open finder" :exit t)
      ("b" browse-url "browse url" :exit t))
