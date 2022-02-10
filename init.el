@@ -303,6 +303,32 @@
 
 ;;; ---------- 編集機能設定 ----------
 (leaf *edit
+  :preface
+  (defun with-faicon (icon str &optional height v-adjust)
+    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+  :pretty-hydra
+  ((:title (with-faicon "code" "Edit commands" 1 -0.05))
+   ("Align"
+    (("a" align "align")
+     ("r" align-regexp "align regex" :exit t)
+     ("s" sort-lines "sort")
+     ("l" my/uniq-lines "unique")
+     ("i" my/buffer-indent "indent"))
+    "Convert"
+    (("p"  my/pangu-spacing-region "spacing jp")
+     ("ure" my/url-encode-region "url encode")
+     ("urd" my/url-decode-region "url decode")
+     ("une" unicode-escape-region "unicode escape")
+     ("unu" unicode-unescape-region "unicode unescape"))
+    "Browse"
+    (("o" (call-process-shell-command "open .") "open finder" :exit t)
+     ("b" browse-url "browse url" :exit t))
+    "Yafolding"
+    (("t" yafolding-toggle-element "toggle")
+     ("ya" yafolding-show-all "show all")
+     ("yh" yafolding-hide-all "hide all"))
+    "Symbol"
+    (("U" symbol-overlay-remove-all "remove all"))))
   :config
   (leaf keybind
     :bind
@@ -317,8 +343,7 @@
     ("C-x C-k" . my/close-and-kill-this-pane)
     ("C-x C-x" . my/kill-other-buffers)
     ("C-x i" . my/buffer-indent)
-    :bind*
-    ("M-c M-c M-c" . my/deepl-region)
+    ("M-e" . *edit/body)
     :init
     (keyboard-translate ?\C-h ?\C-?)
     (global-unset-key (kbd "C-z")))
@@ -486,7 +511,14 @@
              (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql")))))
 
   (leaf pangu-spacing
+    :require t
     :ensure t
+    :config
+    (defun my/pangu-spacing-region (beg end)
+      "Replace regexp with match in region."
+      (interactive "r")
+      (pangu-spacing-search-buffer
+       pangu-spacing-include-regexp beg (+ end 8) (replace-match "\\1 \\2" nil nil)))
     :custom ((pangu-spacing-real-insert-separtor . t)))
 
   (leaf ediff
@@ -639,7 +671,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (leaf embark
     :ensure t
     :bind
-    (("M-e" . embark-act))
+    (("M-q" . embark-act))
     :preface
     ;; https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
     (defun embark-which-key-indicator ()
@@ -730,18 +762,18 @@ targets."
        (("m" dired-mark)
         ("t" dired-toggle-marks)
         ("U" dired-unmark-all-marks)
-        ("u" dired-unmark)))
-      ("Manipulate"
-       (("+" dired-create-directory)
-        ("M" dired-do-chmod)
-        ("D" dired-do-delete)
-        ("c" my/dired-do-copy-with-filename)
-        ("C" dired-do-copy)
-        ("R" dired-do-rename)
+        ("u" dired-unmark))
+       "Manipulate"
+       (("+" dired-create-directory :exit t)
+        ("M" dired-do-chmod :exit t)
+        ("D" dired-do-delete :exit t)
+        ("c" my/dired-do-copy-with-filename :exit t)
+        ("C" dired-do-copy :exit t)
+        ("R" dired-do-rename :exit t)
         ("e" wdired-change-to-wdired-mode :exit t)
-        ("w" dired-copy-filename-as-kill)
-        ("W" dired-get-fullpath-filename)))
-      ("Open"
+        ("w" dired-copy-filename-as-kill :exit t)
+        ("W" dired-get-fullpath-filename :exit t))
+       "Open"
        (("o" dired-find-file-other-window :exit t)
         ("v" dired-view-file :exit t)
         ("V" my/dired-view-file-other-window :exit t)
@@ -811,28 +843,32 @@ targets."
 
   (leaf git
     :pretty-hydra
-    ("Magit"
-     (("m" magit-status "status" :exit t)
-      ("b" magit-blame "blame" :exit t)))
-    ("Timemachine"
-     (("t" git-timemachine "timemachine" :exit t)))
-    ("Gutter"
-     (("p" git-gutter:previous-hunk "previous")
-      ("n" git-gutter:next-hunk "next")
-      ("s" git-gutter:stage-hunk "stage")
-      ("r" git-gutter:revert-hunk "revert")
-      ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk")))
-    ("Link"
-     (("l" git-link "link" :exit t)
-      ("h" git-link-homepage "homepage" :exit t)))
+    ((:title (with-faicon "git" "Git commands" 1 -0.05))
+     ("Magit"
+      (("m" magit-status "status" :exit t)
+       ("b" magit-blame "blame" :exit t))
+      "Timemachine"
+      (("t" git-timemachine "timemachine" :exit t))
+      "Gutter"
+      (("p" git-gutter:previous-hunk "previous")
+       ("n" git-gutter:next-hunk "next")
+       ("s" git-gutter:stage-hunk "stage")
+       ("r" git-gutter:revert-hunk "revert")
+       ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk"))
+      "Browse"
+      (("l" git-link "link" :exit t)
+       ("h" git-link-homepage "homepage" :exit t)
+       ("v" my/gh-pr-view "view pr" :exit t)
+       ("o" my/gh-pr-create "open pr" :exit t)
+       ("c" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
     :config
     (leaf magit
       :require t
       :ensure (magit gh)
       :ensure-system-package git
       :custom ((magit-save-repository-buffers . 'dontask))
-      :bind (("M-S" . git/body)
-             ("M-s" . magit-status-toggle)
+      :bind (("M-s" . magit-status-toggle)
+             ("M-S" . git/body)
              (magit-status-mode-map
               ("q" . my/magit-quit-session)
               ("C-o" . magit-diff-visit-file-other-window))
