@@ -307,7 +307,7 @@
   (defun with-faicon (icon str &optional height v-adjust)
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
   :pretty-hydra
-  ((:title (with-faicon "code" "Edit commands" 1 -0.05))
+  ((:title (with-faicon "code" "Edit commands" 1 -0.05) :quit-key "q")
    ("Align"
     (("a" align "align")
      ("r" align-regexp "align regex" :exit t)
@@ -843,7 +843,7 @@ targets."
 
   (leaf git
     :pretty-hydra
-    ((:title (with-faicon "git" "Git commands" 1 -0.05))
+    ((:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
      ("Magit"
       (("m" magit-status "status" :exit t)
        ("b" magit-blame "blame" :exit t))
