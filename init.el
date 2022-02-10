@@ -309,10 +309,10 @@
   :pretty-hydra
   ((:title (with-faicon "code" "Edit commands" 1 -0.05) :quit-key "q")
    ("Case"
-    (("c" string-inflection-lower-camelcase "camelCase")
-     ("k" string-inflection-kebab-case "kebab-case")
-     ("s" string-inflection-underscore "snake_case")
-     ("u" string-inflection-upcase "UP_CASE"))
+    (("c" string-inflection-lower-camelcase "camel")
+     ("k" string-inflection-kebab-case "kebab")
+     ("s" string-inflection-underscore "snake")
+     ("u" string-inflection-upcase "up"))
     "Align"
     (("a" align "align")
      ("r" align-regexp "align regex" :exit t)
