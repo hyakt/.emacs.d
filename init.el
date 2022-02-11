@@ -1475,13 +1475,13 @@ targets."
     ("REPL"
      (("e" my/evcxr))
      "Build"
-     (("b" cargo-process-buid "build"))
+     (("b" cargo-process-build "build"))
      "Test"
      (("t" my/cargo-process-build-and-test "build and test")
       ("f" cargo-process-current-test "current")
-      ("c" cargo-process-current-file-tests "file"))
+      ("o" cargo-process-current-file-tests "file"))
      "Format"
-     (("f" cargo-process-fmt "fmt"))
+     (("<RET>" cargo-process-fmt "fmt"))
      "Doc"
      (("d" cargo-process-doc "doc")))
     :config
