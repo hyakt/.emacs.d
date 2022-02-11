@@ -326,7 +326,7 @@
      ("tnd" unicode-unescape-region "unicode unescape"))
     "Browse"
     (("o" (call-process-shell-command "open .") "open finder" :exit t)
-     ("b" browse-url "browse url" :exit t))
+     ("b" browse-url-at-point "browse url" :exit t))
     "Yafolding"
     (("t" yafolding-toggle-element "toggle")
      ("ya" yafolding-show-all "show all")
