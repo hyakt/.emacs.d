@@ -128,6 +128,15 @@ BEG and END (region to sort)."
       (find-file newfile)
       (kill-buffer current-file-name)))
 
+  (defun my/copy-this-file ()
+    "Copy current buffer file to new file."
+    (interactive)
+    (let* ((current-file-name (buffer-name))
+           (new-filename (read-string (format "Copy %s to: " current-file-name) current-file-name)))
+      (copy-file current-file-name new-filename)
+      (find-file new-filename)
+      (kill-buffer current-file-name)))
+
   (defun my/delete-or-remove-this-file ()
     "Delete current buffer file."
     (interactive)
