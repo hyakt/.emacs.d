@@ -1468,23 +1468,22 @@ targets."
              (rust-format-on-save . t))
     :mode-hydra
     ("REPL"
-     (("ev" evcxr "evcxr" :color pink)
-      ("er" evcxr-eval-region "region" :color pink))
+     (("e" evcxr "evcxr")
+      ("v" evcxr-eval-region "region"))
      "Build/Run"
      (("b" cargo-process-build "build")
       ("l" cargo-process-clean "clean")
       ("i" cargo-process-init "init")
       ("r" cargo-process-run "run")
       ("u" cargo-process-update "update"))
-     "Test/Lint"
+     "Test"
      (("t" my/cargo-process-build-and-test "build and test")
       ("f" cargo-process-current-test "current")
-      ("o" cargo-process-current-file-tests "file")
-      ("<RET>" cargo-process-fmt "fmt")
-      ("k" cargo-process-check :color red)
-      ("q" cargo-process-clippy :color blue))
-     "Format"
-     (("<RET>" cargo-process-fmt "fmt"))
+      ("o" cargo-process-current-file-tests "file"))
+     "Lint/Format"
+     (("k" cargo-process-check "check")
+      ("q" cargo-process-clippy "clippy")
+      ("<RET>" cargo-process-fmt "fmt"))
      "Doc"
      (("d" cargo-process-doc "doc")))
     :config
