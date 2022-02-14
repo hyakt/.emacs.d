@@ -985,7 +985,7 @@ targets."
              ("C-x C-o" . swap-buffers)))
 
     (leaf other-window-or-split
-      :el-get (other-window-or-split :url "https://github.com/conao/other-window-or-split.git")
+      :el-get (other-window-or-split :url "https://github.com/conao3/other-window-or-split.git")
       :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
              ("C-S-t" . ws-previous-other-window-or-split))
       :custom (ws-split-window-width-with-em . 130)
@@ -1066,6 +1066,7 @@ targets."
                         (vterm-mode                 :align below :ratio 0.7)
                         ;; rust
                         ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :custom my/shackle-cargo-custom)
+                        ("*Evcxr*"                  :align below :select t)
                         ;; ruby
                         ("*rspec-compilation*"      :align below :ratio 0.5)
                         )))
@@ -1465,21 +1466,23 @@ targets."
     :hook ((rust-mode-hook . lsp))
     :custom ((lsp-rust-server . 'rust-analyzer)
              (rust-format-on-save . t))
-    :preface
-    (defun my/evcxr ()
-      "Run evcxr."
-      (interactive)
-      (with-current-buffer (vterm-toggle)
-        (vterm-send-string "evcxr")))
     :mode-hydra
     ("REPL"
-     (("e" my/evcxr))
-     "Build"
-     (("b" cargo-process-build "build"))
-     "Test"
+     (("ev" evcxr "evcxr" :color pink)
+      ("er" evcxr-eval-region "region" :color pink))
+     "Build/Run"
+     (("b" cargo-process-build "build")
+      ("l" cargo-process-clean "clean")
+      ("i" cargo-process-init "init")
+      ("r" cargo-process-run "run")
+      ("u" cargo-process-update "update"))
+     "Test/Lint"
      (("t" my/cargo-process-build-and-test "build and test")
       ("f" cargo-process-current-test "current")
-      ("o" cargo-process-current-file-tests "file"))
+      ("o" cargo-process-current-file-tests "file")
+      ("<RET>" cargo-process-fmt "fmt")
+      ("k" cargo-process-check :color red)
+      ("q" cargo-process-clippy :color blue))
      "Format"
      (("<RET>" cargo-process-fmt "fmt"))
      "Doc"
@@ -1494,7 +1497,13 @@ targets."
       :bind ((cargo-mode-map
               ("C-c C-c C-c" . my/cargo-process-build-and-test)))
       :ensure t
-      :hook (rust-mode-hook . cargo-minor-mode)))
+      :hook (rust-mode-hook . cargo-minor-mode))
+
+    (leaf evcxr
+      :custom (evcxr-shell-enable-font-lock . nil)
+      :el-get (evcxr :url "https://github.com/hyakt/evcxr-mode.git")
+      :hook (rust-mode-hook . evcxr-minor-mode))
+    )
 
   (leaf fish-mode :ensure t)
 
