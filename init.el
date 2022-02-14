@@ -1469,7 +1469,8 @@ targets."
     :mode-hydra
     ("REPL"
      (("e" evcxr "evcxr")
-      ("v" evcxr-eval-region "region"))
+      ("v" evcxr-eval-region "region")
+      ("a" evcxr-eval-buffer "buffer"))
      "Build/Run"
      (("b" cargo-process-build "build")
       ("l" cargo-process-clean "clean")
@@ -1500,8 +1501,7 @@ targets."
 
     (leaf evcxr
       :custom (evcxr-shell-enable-font-lock . nil)
-      :el-get (evcxr :url "https://github.com/hyakt/evcxr-mode.git")
-      :hook (rust-mode-hook . evcxr-minor-mode))
+      :el-get (evcxr :url "https://github.com/hyakt/evcxr-mode.git"))
     )
 
   (leaf fish-mode :ensure t)
