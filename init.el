@@ -1476,6 +1476,7 @@ targets."
       ("l" cargo-process-clean "clean")
       ("i" cargo-process-init "init")
       ("r" cargo-process-run "run")
+      ("c" my/cargo-process-build-and-run-current-bin "run current bin")
       ("u" cargo-process-update "update"))
      "Test"
      (("t" my/cargo-process-build-and-test "build and test")
@@ -1494,6 +1495,17 @@ targets."
         (interactive)
         (cargo-process-build)
         (cargo-process-current-file-tests))
+
+      (defun my/cargo-process-run-bin-current-buffer ()
+        (interactive)
+        (let ((command (file-name-sans-extension (buffer-name))))
+          (cargo-process--start (concat "Run " command)
+                                (concat cargo-process--command-run-bin " " command))))
+
+      (defun my/cargo-process-build-and-run-current-bin ()
+        (interactive)
+        (cargo-process-build)
+        (my/cargo-process-run-bin-current-buffer))
       :bind ((cargo-mode-map
               ("C-c C-c C-c" . my/cargo-process-build-and-test)))
       :ensure t
