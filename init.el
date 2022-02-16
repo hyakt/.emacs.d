@@ -1422,10 +1422,6 @@ targets."
 
   (leaf nginx-mode :ensure t)
 
-  (leaf gitconfig-mode :ensure t)
-
-  (leaf gitignore-mode :ensure t)
-
   (leaf go-mode
     :ensure t
     :hook ((go-mode-hook . lsp)))
