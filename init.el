@@ -353,8 +353,9 @@
     :global-minor-mode global-disable-mouse-mode)
 
   (leaf tempel
-    :bind ("<tab>" . my/tempel-maybe-expand)
     :ensure t
+    :bind ("<tab>" . my/tempel-maybe-expand)
+    :custom (tempel-file . "~/.emacs.d/site-lisp/templates")
     :config
     (defun my/tempel-maybe-expand ()
       (interactive)
