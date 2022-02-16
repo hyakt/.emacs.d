@@ -325,7 +325,7 @@
     "Browse"
     (("o" (call-process-shell-command "open .") "open finder" :exit t)
      ("b" browse-url-at-point "browse url" :exit t)
-     ("g" google-this "google this" :exit t))
+     ("g" google-this-symbol "google this" :exit t))
     "File"
     (("fc" my/copy-this-file "copy" :exit t)
      ("fr" my/move-or-rename-this-file "rename" :exit t)
