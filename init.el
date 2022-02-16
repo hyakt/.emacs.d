@@ -311,12 +311,13 @@
    ("Align"
     (("a" align "align")
      ("r" align-regexp "align regex" :exit t)
-     ("l" my/uniq-lines "unique")
-     ("i" my/buffer-indent "indent"))
+     ("l" my/uniq-lines "unique"))
     "Convert"
     (("p"  my/pangu-spacing-region "spacing jp")
      ("tu" my/url-decode-region "url decode")
      ("tn" unicode-unescape-region "unicode unescape"))
+    "Template"
+    (("i" tempel-insert :exit t))
     "Yafolding"
     (("ya" yafolding-show-all "show all")
      ("yh" yafolding-hide-all "hide all"))
@@ -327,9 +328,9 @@
      ("b" browse-url-at-point "browse url" :exit t)
      ("g" google-this-symbol "google this" :exit t))
     "File"
-    (("fc" my/copy-this-file "copy" :exit t)
-     ("fr" my/move-or-rename-this-file "rename" :exit t)
-     ("fd" my/delete-or-remove-this-file "delete" :exit t))))
+    (("c" my/copy-this-file "copy" :exit t)
+     ("m" my/move-or-rename-this-file "rename" :exit t)
+     ("d" my/delete-or-remove-this-file "delete" :exit t))))
   :config
   (leaf keybind
     :bind
