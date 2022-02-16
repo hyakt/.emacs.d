@@ -11,13 +11,6 @@ prog-mode
 (bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
 (hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
 
-latex-mode
-
-(begin "\\begin{" (s env) "}" > n> r> "\\end{" (s env) "}")
-(frac "\\frac{" p "}{" p "}")
-(enumerate "\\begin{enumerate}\n\\item " r> n> "\\end{enumerate}")
-(itemize "\\begin{itemize}\n\\item " r> n> "\\end{itemize}")
-
 lisp-mode emacs-lisp-mode ;; Specify multiple modes
 
 (lambda "(lambda (" p ")" n> r> ")")
@@ -37,15 +30,30 @@ emacs-lisp-mode
 (rec "(letrec (" p ")" n> r> ")")
 (command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive)" n> r> ")")
 
-eshell-mode
+js-mode js2-mode typescript-mode
 
-(for "for " (p "i") " in " p " { " p " }")
-(while "while { " p " } { " p " }")
-(until "until { " p " } { " p " }")
-(if "if { " p " } { " p " }")
-(if-else "if { " p " } { " p " } { " p " }")
-(unless "unless { " p " } { " p " }")
-(unless-else "unless { " p " } { " p " } { " p " }")
+(cl "console.log(\"" (s variable) "\", " (s variable) ");")
+(sleep "await new Promise(resolve => setTimeout(resolve, " (p "1000") "));")
+(ed "/* eslint-disable " p " */")
+(edl "// eslint-disable-line " p)
+(edn "// eslint-disable-next-line " p)
+
+typescript-mode
+
+(tse "// @ts-expect-error " p)
+
+rust-mode
+
+(p "println!(\"" (s variable) ": {:?}\", " (s variable) ");")
+(dd "#[derive(Debug)]")
+
+java-mode
+
+(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+
+rst-mode
+
+(title (make-string (length title) ?=) n (p "Title: " title) n (make-string (length title) ?=) n)
 
 text-mode
 
@@ -54,16 +62,17 @@ text-mode
 (asciibox "+-" (make-string (length str) ?-) "-+" n
           "| " (s str)                       " |" n
           "+-" (make-string (length str) ?-) "-+" n)
-(rot13 (p "plain text" text) n "----" n (rot13 text))
-(calc (p "taylor(sin(x),x=0,3)" formula) n "----" n (format "%s" (calc-eval formula)))
 
-java-mode
+latex-mode
 
-(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+(begin "\\begin{" (s env) "}" > n> r> "\\end{" (s env) "}")
+(frac "\\frac{" p "}{" p "}")
+(enumerate "\\begin{enumerate}\n\\item " r> n> "\\end{enumerate}")
+(itemize "\\begin{itemize}\n\\item " r> n> "\\end{itemize}")
 
 org-mode
 
-(title "#+title: " p n "#+author: Daniel Mendler" n "#+language: en" n n)
+(title "#+title: " p n "#+author: Hayato Kajiyama" n "#+language: en" n n)
 (quote "#+begin_quote" n> r> n> "#+end_quote")
 (example "#+begin_example" n> r> n> "#+end_example")
 (center "#+begin_center" n> r> n> "#+end_center")
