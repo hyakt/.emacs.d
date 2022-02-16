@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: catch
-# key: .catch
-# --
-.catch((err): void => { console.warn(\`${1:Exception}: \$\{err\}\`) })$2

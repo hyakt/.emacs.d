@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: my/console.log
-# key: cl
-# --
-console.log("log: ", ${1:message});
