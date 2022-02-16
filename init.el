@@ -1498,6 +1498,7 @@ targets."
       :hook (rust-mode-hook . cargo-minor-mode))
 
     (leaf evcxr
+      :ensure (parsec)
       :custom (evcxr-shell-enable-font-lock . nil)
       :el-get (evcxr :url "https://github.com/hyakt/evcxr-mode.git"))
     )
