@@ -308,31 +308,27 @@
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
   :pretty-hydra
   ((:title (with-faicon "code" "Edit commands" 1 -0.05) :quit-key "q")
-   ("Case"
-    (("c" string-inflection-lower-camelcase "camel")
-     ("k" string-inflection-kebab-case "kebab")
-     ("s" string-inflection-underscore "snake")
-     ("u" string-inflection-upcase "up"))
-    "Align"
+   ("Align"
     (("a" align "align")
      ("r" align-regexp "align regex" :exit t)
      ("l" my/uniq-lines "unique")
      ("i" my/buffer-indent "indent"))
     "Convert"
     (("p"  my/pangu-spacing-region "spacing jp")
-     ("tue" my/url-encode-region "url encode")
-     ("tud" my/url-decode-region "url decode")
-     ("tne" unicode-escape-region "unicode escape")
-     ("tnd" unicode-unescape-region "unicode unescape"))
+     ("tu" my/url-decode-region "url decode")
+     ("tn" unicode-unescape-region "unicode unescape"))
+    "Yafolding"
+    (("ya" yafolding-show-all "show all")
+     ("yh" yafolding-hide-all "hide all"))
+    "Symbol"
+    (("sr" symbol-overlay-remove-all "remove all" :exit t)))
     "Browse"
     (("o" (call-process-shell-command "open .") "open finder" :exit t)
      ("b" browse-url-at-point "browse url" :exit t))
-    "Yafolding"
-    (("t" yafolding-toggle-element "toggle")
-     ("ya" yafolding-show-all "show all")
-     ("yh" yafolding-hide-all "hide all"))
-    "Symbol"
-    (("U" symbol-overlay-remove-all "remove all"))))
+    "File"
+    (("fc" my/copy-this-file "copy" :exit t)
+     ("fr" my/move-or-rename-this-file "rename" :exit t)
+     ("fd" my/delete-or-remove-this-file "delete" :exit t)))
   :config
   (leaf keybind
     :bind
@@ -357,19 +353,13 @@
     :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right"))
     :global-minor-mode global-disable-mouse-mode)
 
-  (leaf yasnippet
-    :ensure (yasnippet yasnippet-snippets)
-    :custom (yas-snippet-dirs . '("~/.emacs.d/site-lisp/my-snippets"))
-    :hook (prog-mode-hook . yas-minor-mode))
-
   (leaf company
     :ensure t
     :custom ((company-dabbrev-downcase . nil)
              (company-dabbrev-ignore-case . nil)
              (company-dabbrev-other-buffers . t)
              (company-dabbrev-code-other-buffers . t)
-             (company-backends . '((company-elisp)
-                                   (company-yasnippet)))
+             (company-backends . '((company-elisp)))
              (company-transformers .'(company-sort-by-backend-importance))
              (company-idle-delay . 0.1)
              (company-minimum-prefix-length . 2)
@@ -1183,21 +1173,7 @@ targets."
        (web-mode-comment-formats .
                                  '(("javascript" . "//")
                                    ("jsx" .  "//")
-                                   ("php" . "/*"))))
-      :config
-      (add-hook 'web-mode-hook
-                (lambda ()
-                  (when (equal web-mode-content-type "jsx")
-                    (setq emmet-expand-jsx-className? t)
-                    (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
-                    (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
-                    (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
-                    (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
-                    (flycheck-add-mode 'javascript-eslint 'web-mode)
-                    (tern-mode)
-                    (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
-                    (set (make-local-variable 'company-backends)
-                         '((company-tern :with company-dabbrev-code) company-yasnippet))))))
+                                   ("php" . "/*")))))
 
     (leaf emmet-mode
       :ensure t
@@ -1224,8 +1200,7 @@ targets."
                             (setq flycheck-checker 'css-stylelint))
                            (set
                             (make-local-variable 'company-backends)
-                            '((company-css :with company-dabbrev)
-                              company-yasnippet)))))
+                            '((company-css :with company-dabbrev))))))
       (leaf scss-mode
         :ensure t
         :custom (scss-indent-offset . 2)
@@ -1252,7 +1227,7 @@ targets."
                              )
                             (set
                              (make-local-variable 'company-backends)
-                             '((company-css :with company-dabbrev) company-yasnippet)))))
+                             '((company-css :with company-dabbrev))))))
       (leaf sass-mode :ensure t)
       (leaf sws-mode :ensure t)))
 
