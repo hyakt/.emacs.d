@@ -306,19 +306,6 @@
   :preface
   (defun with-faicon (icon str &optional height v-adjust)
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
-  :bind
-  (("C-h" . nil)
-   ("C-m" . newline-and-indent) ; リターンで改行とインデント
-   ("C-0" . delete-frame)
-   ;; my/function keybinding
-   ("C-g" . my/keyboard-quit)
-   ("<f5>" . my/revert-buffer-no-confirm)
-   ("M-r" . my/revert-buffer-no-confirm)
-   ("C-x k" . kill-this-buffer)
-   ("C-x C-k" . my/close-and-kill-this-pane)
-   ("C-x C-x" . my/kill-other-buffers)
-   ("C-x i" . my/buffer-indent)
-   ("M-e" . *edit/body))
   :pretty-hydra
   ((:title (with-faicon "code" "Edit commands" 1 -0.05) :quit-key "q")
    ("Align"
@@ -343,10 +330,25 @@
     (("fc" my/copy-this-file "copy" :exit t)
      ("fr" my/move-or-rename-this-file "rename" :exit t)
      ("fd" my/delete-or-remove-this-file "delete" :exit t))))
-  :init
-  (keyboard-translate ?\C-h ?\C-?)
-  (global-unset-key (kbd "C-z"))
   :config
+  (leaf keybind
+    :bind
+    (("C-h" . nil)
+     ("C-m" . newline-and-indent) ; リターンで改行とインデント
+     ("C-0" . delete-frame)
+     ;; my/function keybinding
+     ("C-g" . my/keyboard-quit)
+     ("<f5>" . my/revert-buffer-no-confirm)
+     ("M-r" . my/revert-buffer-no-confirm)
+     ("C-x k" . kill-this-buffer)
+     ("C-x C-k" . my/close-and-kill-this-pane)
+     ("C-x C-x" . my/kill-other-buffers)
+     ("C-x i" . my/buffer-indent)
+     ("M-e" . *edit/body))
+    :init
+    (keyboard-translate ?\C-h ?\C-?)
+    (global-unset-key (kbd "C-z")))
+
   (leaf disable-mouse
     :ensure t
     :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right"))
