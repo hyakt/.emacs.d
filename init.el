@@ -321,14 +321,14 @@
     (("ya" yafolding-show-all "show all")
      ("yh" yafolding-hide-all "hide all"))
     "Symbol"
-    (("sr" symbol-overlay-remove-all "remove all" :exit t)))
+    (("sr" symbol-overlay-remove-all "remove all" :exit t))
     "Browse"
     (("o" (call-process-shell-command "open .") "open finder" :exit t)
      ("b" browse-url-at-point "browse url" :exit t))
     "File"
     (("fc" my/copy-this-file "copy" :exit t)
      ("fr" my/move-or-rename-this-file "rename" :exit t)
-     ("fd" my/delete-or-remove-this-file "delete" :exit t)))
+     ("fd" my/delete-or-remove-this-file "delete" :exit t))))
   :config
   (leaf keybind
     :bind
@@ -352,6 +352,29 @@
     :ensure t
     :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right"))
     :global-minor-mode global-disable-mouse-mode)
+
+  (leaf tempel
+    :ensure t
+    :bind (("<tab>" . tempel-complete))
+    :hook (prog-mode-hook . tempel-setup-capf)
+    :init
+    ;; Setup completion at point
+    (defun tempel-setup-capf ()
+      ;; Add the Tempel Capf to `completion-at-point-functions'.
+      ;; The depth is set to -1, such that `tempel-expand' is tried *before* the
+      ;; programming mode Capf. If a template name can be completed it takes
+      ;; precedence over the programming mode completion. `tempel-expand' only
+      ;; triggers on exact matches. Alternatively use `tempel-complete' if you
+      ;; want to see all matches, but then Tempel will probably trigger too
+      ;; often when you don't expect it.
+      (add-hook 'completion-at-point-functions #'tempel-expand -1 'local))
+    )
+
+  ;; Optional: Use the Corfu completion UI
+  (leaf corfu
+    :ensure t
+    :init
+    (corfu-global-mode))
 
   (leaf company
     :ensure t
