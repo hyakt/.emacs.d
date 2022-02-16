@@ -354,27 +354,14 @@
     :global-minor-mode global-disable-mouse-mode)
 
   (leaf tempel
+    :bind ("<tab>" . my/tempel-maybe-expand)
     :ensure t
-    :bind (("<tab>" . tempel-complete))
-    :hook (prog-mode-hook . tempel-setup-capf)
-    :init
-    ;; Setup completion at point
-    (defun tempel-setup-capf ()
-      ;; Add the Tempel Capf to `completion-at-point-functions'.
-      ;; The depth is set to -1, such that `tempel-expand' is tried *before* the
-      ;; programming mode Capf. If a template name can be completed it takes
-      ;; precedence over the programming mode completion. `tempel-expand' only
-      ;; triggers on exact matches. Alternatively use `tempel-complete' if you
-      ;; want to see all matches, but then Tempel will probably trigger too
-      ;; often when you don't expect it.
-      (add-hook 'completion-at-point-functions #'tempel-expand -1 'local))
-    )
-
-  ;; Optional: Use the Corfu completion UI
-  (leaf corfu
-    :ensure t
-    :init
-    (corfu-global-mode))
+    :config
+    (defun my/tempel-maybe-expand ()
+      (interactive)
+      (if (tempel-expand)
+          (tempel-expand t)
+        (indent-for-tab-command))))
 
   (leaf company
     :ensure t
