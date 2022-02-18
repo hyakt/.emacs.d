@@ -66,6 +66,7 @@
    (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibuffer をマウスカーソルで選択できないようにする
    (enable-recursive-minibuffers . t)                                                         ;; minibuffer の再帰的使用を許可する
    (enable-local-variables . :all)                                                            ;; local variable は全て使用する
+   (display-warning-minimum-level . :error)                                                   ;; init.el読み込み時のWarningを抑制
    )
   :global-minor-mode global-auto-revert-mode
   :hook (minibuffer-setup-hook . cursor-intangible-mode)                                      ;; minibuffer をマウスカーソルで選択できないようにする
