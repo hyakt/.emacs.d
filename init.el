@@ -698,6 +698,41 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       :config
       (shackle-mode 1)))
 
+  (leaf eldoc
+    :preface
+    (defvar eldoc-buffer-name "*ElDoc*")
+    (defun eldoc-buffer-message (format-string &rest args)
+      "Display messages in the mode-line when in the ElDoc buffer."
+      (when (and (stringp format-string) (not (equal format-string "")))
+        (display-buffer
+         (with-current-buffer (get-buffer-create eldoc-buffer-name)
+           (erase-buffer)
+           (insert (apply #'format format-string args))
+           (goto-char (point-min))
+           (setq-local kill-buffer-hook 'delete-window)
+           (current-buffer))
+         )))
+
+    (defun my/switch-eldoc-display-mode ()
+      (interactive)
+      (if (eq eldoc-message-function #'eldoc-buffer-message)
+          (progn
+            (setq eldoc-message-function #'eldoc-minibuffer-message)
+            (message "minibuffer mode")
+            (when-let
+                ((eldoc-window
+                  (cl-find-if
+                   (lambda (win)
+                     (string-match eldoc-buffer-name (buffer-name (window-buffer win))))
+                   (window-list))))
+              (and
+               (select-window eldoc-window)
+               (window-deletable-p)
+               (delete-window))))
+        (progn
+          (setq eldoc-message-function #'eldoc-buffer-message)
+          (message "buffer mode")))))
+
   (leaf projectile
     :ensure t
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
