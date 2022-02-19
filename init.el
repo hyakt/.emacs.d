@@ -450,7 +450,7 @@
   (leaf symbol-overlay
     :ensure t
     :hook (prog-mode-hook markdown-mode-hook)
-    :bind (("M-i" . symbol-overlay-put)))
+    :bind (("C-." . symbol-overlay-put)))
 
   (leaf pcre2el
     :ensure t
