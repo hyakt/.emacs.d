@@ -531,6 +531,10 @@
       (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
       (setq-local electric-pair-text-pairs electric-pair-pairs)))
 
+  (leaf avy
+    :ensure t
+    :bind ("C-;" . avy-goto-char))
+
   (leaf ediff
     :custom
     (ediff-split-window-function . 'split-window-horizontally))
@@ -581,6 +585,119 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ;;; ---------- インターフェース設定 ----------
 (leaf *interface
   :config
+  (leaf window
+    :hydra
+    (my/hydra-window
+     (:color blue :hint nil)
+     "
+
+  Window commands
+
+   Move to^^^    Size^^^^^^^    Scroll^^  Split         Eldoc
+  ──────────────────────────────────────────────────
+      ^_k_^        ^_K_^       ^_p_^     _v_ertical     _e_ldoc display
+    _h_   _l_    _H_   _L_     ^^ ^^     _s_tack
+      ^_j_^        ^_J_^       ^_n_^     _b_alance
+         ^^^^^^^     ^^^^^               _z_oom
+"
+     ("q" nil "quit")
+     ("n" scroll-other-window :color red)
+     ("p" scroll-other-window-down :color red)
+     ("b" balance-windows)
+     ("d" delete-window)
+     ("H" shrink-window-horizontally :color red)
+     ("h" windmove-left :color red)
+     ("J" shrink-window :color red)
+     ("j" windmove-down :color red)
+     ("K" enlarge-window :color red)
+     ("k" windmove-up :color red)
+     ("L" enlarge-window-horizontally :color red)
+     ("l" windmove-right :color red)
+     ("s" split-window-vertically :color red)
+     ("v" split-window-horizontally :color red)
+     ("w" other-window)
+     ("z" delete-other-windows)
+     ("e" my/switch-eldoc-display-mode))
+    :config
+    (leaf swap-buffers
+      :ensure t
+      :bind (("M-u" . my/hydra-window/body)
+             ("C-x C-o" . swap-buffers)))
+
+    (leaf other-window-or-split
+      :el-get (other-window-or-split :url "https://github.com/conao3/other-window-or-split.git")
+      :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
+             ("C-S-t" . ws-previous-other-window-or-split))
+      :custom (ws-split-window-width-with-em . 130)
+      :config
+      (defun my/ws-other-window-or-split-and-kill-minibuffer ()
+        (interactive)
+        (if (active-minibuffer-window)
+            (progn
+              (minibuffer-keyboard-quit)
+              (ws-other-window-or-split))
+          (ws-other-window-or-split))))
+
+    (leaf eyebrowse
+      :ensure t
+      :custom
+      (eyebrowse-new-workspace . t)
+      (eyebrowse-keymap-prefix . "\C-z")
+      :global-minor-mode eyebrowse-mode)
+
+    (leaf shackle
+      :ensure t
+      :preface
+      (defun my/shackle--get-cargo-window ()
+        (cl-find-if
+         (lambda (win)
+           (string-match "*Cargo .*?\\*" (buffer-name (window-buffer win))))
+         (window-list)))
+
+      (defun my/shackle-cargo-custom (buffer alist plist)
+        (and
+         (my/shackle--get-cargo-window)
+         (select-window (my/shackle--get-cargo-window))
+         (window-deletable-p)
+         (delete-window))
+        (display-buffer-below-selected buffer alist))
+      :custom
+      ((shackle-select-reused-windows . t)
+       (shackle-default-size . 0.5)
+       (shackle-rules .
+                      '(("*Help*"                   :align right)
+                        ("*Messages*"               :align right)
+                        ("*Backtrace*"              :align right)
+                        ("*Completions*"            :align below :ratio 0.33)
+                        ("*compilation*"            :align below :ratio 0.33)
+                        ("*Compile-Log"             :align below :ratio 0.33)
+                        ("*Kill Ring*"              :align below :ratio 0.33)
+                        ("*Occur*"                  :align below :ratio 0.33)
+                        ("*xref*"                   :align below :ratio 0.33)
+                        ("*prettier errors*"        :align below :ratio 0.33)
+                        (magit-status-mode          :align below :ratio 0.7 :select t)
+                        ;; repl
+                        ("*Python*"                 :align below :select t)
+                        ("*pry*"                    :align below :select t)
+                        ("*ruby*"                   :align below :select t)
+                        ("*nodejs*"                 :align below :select t)
+                        ("*shell*"                  :align below :select t)
+                        ("*Typescript*"             :align below :select t)
+                        ;; excute shell
+                        ("*Async Shell Command*"    :align right)
+                        ("*Shell Command Output*"   :align right)
+                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
+                        ("*jest*"                   :regexp t :align below :ratio 0.5)
+                        (vterm-mode                 :align below :ratio 0.7)
+                        ;; rust
+                        ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :custom my/shackle-cargo-custom)
+                        ("*Evcxr*"                  :align below :select t)
+                        ;; ruby
+                        ("*rspec-compilation*"      :align below :ratio 0.5)
+                        )))
+      :config
+      (shackle-mode 1)))
+
   (leaf projectile
     :ensure t
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
@@ -597,10 +714,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (leaf projectile-rails
       :ensure t
       :hook projectile-mode-hook))
-
-  (leaf avy
-    :ensure t
-    :bind ("C-;" . avy-goto-char))
 
   (leaf consult
     :ensure-system-package ((rg . ripgrep) (fd))
@@ -949,133 +1062,6 @@ targets."
   (leaf docker :ensure t
     :config
     (leaf docker-tramp :ensure t))
-
-  (leaf window
-    :hydra
-    (my/hydra-window
-     (:color blue :hint nil)
-     "
-
-   Window commands
-
-  Move to^^^^^^^       Size^^^^          Scroll     Split
-  ───────────────────────────────────────────
-        ^_k_^             ^_K_^           ^_p_^     _v_ertical
-        ^^↑^^            ^^↑^^           ^^↑^^    _s_tack
-    _h_ ←  → _l_     _H_ ←  → _L_       ^^  ^^    _b_alance
-        ^^↓^^            ^^↓^^           ^^↓^^    _z_oom
-        ^_j_^             ^_J_^           ^_n_^
-
-"
-     ("q" nil "quit")
-     ("n" scroll-other-window :color red)
-     ("p" scroll-other-window-down :color red)
-     ("b" balance-windows)
-     ("d" delete-window)
-     ("H" shrink-window-horizontally :color red)
-     ("h" windmove-left :color red)
-     ("J" shrink-window :color red)
-     ("j" windmove-down :color red)
-     ("K" enlarge-window :color red)
-     ("k" windmove-up :color red)
-     ("L" enlarge-window-horizontally :color red)
-     ("l" windmove-right :color red)
-     ("s" split-window-vertically :color red)
-     ("v" split-window-horizontally :color red)
-     ("w" other-window)
-     ("z" delete-other-windows))
-    :config
-    (leaf swap-buffers
-      :ensure t
-      :bind (("M-u" . my/hydra-window/body)
-             ("C-x C-o" . swap-buffers)))
-
-    (leaf other-window-or-split
-      :el-get (other-window-or-split :url "https://github.com/conao3/other-window-or-split.git")
-      :bind (("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
-             ("C-S-t" . ws-previous-other-window-or-split))
-      :custom (ws-split-window-width-with-em . 130)
-      :config
-      (require 'dired-sidebar)
-      (defun my/ws-other-window-or-split ()
-        (interactive)
-        (when (one-window-p)
-          (ws-split-window-dwim))
-        (when (and (and
-                    (eq (length (window-list)) 2)
-                    (dired-sidebar-showing-sidebar-p))
-                   (not (eq (current-buffer)
-                            (dired-sidebar-buffer (selected-frame)))))
-          (ws-split-window-dwim))
-        (other-window 1))
-      (defun my/ws-other-window-or-split-and-kill-minibuffer ()
-        (interactive)
-        (if (active-minibuffer-window)
-            (progn
-              (minibuffer-keyboard-quit)
-              (my/ws-other-window-or-split))
-          (my/ws-other-window-or-split))))
-
-    (leaf eyebrowse
-      :ensure t
-      :custom
-      (eyebrowse-new-workspace . t)
-      (eyebrowse-keymap-prefix . "\C-z")
-      :global-minor-mode eyebrowse-mode)
-
-    (leaf shackle
-      :ensure t
-      :preface
-      (defun my/shackle--get-cargo-window ()
-        (cl-find-if
-         (lambda (win)
-           (string-match "*Cargo .*?\\*" (buffer-name (window-buffer win))))
-         (window-list)))
-
-      (defun my/shackle-cargo-custom (buffer alist plist)
-        (and
-         (my/shackle--get-cargo-window)
-         (select-window (my/shackle--get-cargo-window))
-         (window-deletable-p)
-         (delete-window))
-        (display-buffer-below-selected buffer alist))
-      :custom
-      ((shackle-select-reused-windows . t)
-       (shackle-default-size . 0.5)
-       (shackle-rules .
-                      '(("*Help*"                   :align right)
-                        ("*Messages*"               :align right)
-                        ("*Backtrace*"              :align right)
-                        ("*Completions*"            :align below :ratio 0.33)
-                        ("*compilation*"            :align below :ratio 0.33)
-                        ("*Compile-Log"             :align below :ratio 0.33)
-                        ("*Kill Ring*"              :align below :ratio 0.33)
-                        ("*Occur*"                  :align below :ratio 0.33)
-                        ("*xref*"                   :align below :ratio 0.33)
-                        ("*prettier errors*"        :align below :ratio 0.33)
-                        (magit-status-mode          :align below :ratio 0.7 :select t)
-                        ;; repl
-                        ("*Python*"                 :align below :select t)
-                        ("*pry*"                    :align below :select t)
-                        ("*ruby*"                   :align below :select t)
-                        ("*nodejs*"                 :align below :select t)
-                        ("*shell*"                  :align below :select t)
-                        ("*Typescript*"             :align below :select t)
-                        ;; excute shell
-                        ("*Async Shell Command*"    :align right)
-                        ("*Shell Command Output*"   :align right)
-                        ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
-                        ("*jest*"                   :regexp t :align below :ratio 0.5)
-                        (vterm-mode                 :align below :ratio 0.7)
-                        ;; rust
-                        ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :custom my/shackle-cargo-custom)
-                        ("*Evcxr*"                  :align below :select t)
-                        ;; ruby
-                        ("*rspec-compilation*"      :align below :ratio 0.5)
-                        )))
-      :config
-      (shackle-mode 1)))
-
 
   (leaf which-key
     :ensure t
