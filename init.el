@@ -701,6 +701,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (leaf eldoc
     :preface
     (defvar eldoc-buffer-name "*ElDoc*")
+
     (defun eldoc-buffer-message (format-string &rest args)
       "Display messages in the mode-line when in the ElDoc buffer."
       (when (and (stringp format-string) (not (equal format-string "")))
@@ -715,6 +716,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
     (defun my/switch-eldoc-display-mode ()
       (interactive)
+      "Switch eldoc mode between minibuffer and buffer."
       (if (eq eldoc-message-function #'eldoc-buffer-message)
           (progn
             (setq eldoc-message-function #'eldoc-minibuffer-message)
