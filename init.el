@@ -1051,9 +1051,6 @@ targets."
                         ("*Compile-Log"             :align below :ratio 0.33)
                         ("*Kill Ring*"              :align below :ratio 0.33)
                         ("*Occur*"                  :align below :ratio 0.33)
-                        ("*Google Translate*"       :align below :ratio 0.33)
-                        ("*Codic Result*"           :align below :ratio 0.33)
-                        ("*quickrun*"               :align below :ratio 0.33)
                         ("*xref*"                   :align below :ratio 0.33)
                         ("*prettier errors*"        :align below :ratio 0.33)
                         (magit-status-mode          :align below :ratio 0.7 :select t)
@@ -1078,6 +1075,7 @@ targets."
                         )))
       :config
       (shackle-mode 1)))
+
 
   (leaf which-key
     :ensure t
@@ -1276,9 +1274,7 @@ targets."
         ("jcw" my/jest-copy-command-watch-current-buffer))
        "Format"
        (("p" prettier-js)
-        ("d" deno-fmt))
-       "Doc"
-       (("c" my/copy-eldoc-mode)))
+        ("d" deno-fmt)))
       :custom (typescript-indent-level . 2)
       :hook ((typescript-mode-hook . lsp-deferred)
              (typescript-mode-hook . subword-mode))

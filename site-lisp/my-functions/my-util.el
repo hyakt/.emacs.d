@@ -4,6 +4,8 @@
 ;;; Code:
 (leaf my-util
   :config
+  (defvar eldoc-buffer-name "*ElDoc*")
+
   (defun my/set-alpha (alpha-num)
     "Set frame parameter ALPHA-NUM."
     (interactive "nAlpha: ")
@@ -215,46 +217,38 @@ the folder if it doesn't exist."
       (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name)))
       (setenv "SHELL" default-env-shell)))
 
-  (defun eldoc-minibuffer-message-and-copy (format-string &rest args)
-    "Display messages in the mode-line when in the minibuffer.
-Otherwise work like `message'."
-    (kill-new eldoc-last-message)
-    (if (minibufferp)
-        (progn
-          (add-hook 'minibuffer-exit-hook
-                    (lambda () (setq eldoc-mode-line-string nil
-                                     ;; https://debbugs.gnu.org/16920
-                                     eldoc-last-message nil))
-                    nil t)
-          (with-current-buffer
-              (window-buffer
-               (or (window-in-direction 'above (minibuffer-window))
-                   (minibuffer-selected-window)
-                   (get-largest-window)))
-            (when mode-line-format
-              (unless (and (listp mode-line-format)
-                           (assq 'eldoc-mode-line-string mode-line-format))
-                (setq mode-line-format
-                      (list "" '(eldoc-mode-line-string
-                                 (" " eldoc-mode-line-string " "))
-                            mode-line-format))))
-            (setq eldoc-mode-line-string
-                  (when (stringp format-string)
-                    (apply #'format-message format-string args)))
-            (force-mode-line-update)))
-      (apply 'message format-string args)))
+  (defun eldoc-buffer-message (format-string &rest args)
+    "Display messages in the mode-line when in the ElDoc buffer."
+    (when (and (stringp format-string) (not (equal format-string "")))
+      (display-buffer
+       (with-current-buffer (get-buffer-create eldoc-buffer-name)
+         (erase-buffer)
+         (insert (apply #'format format-string args))
+         (goto-char (point-min))
+         (setq-local kill-buffer-hook 'delete-window)
+         (current-buffer))
+       )))
 
-  (defun my/copy-eldoc-mode ()
+  (defun my/switch-eldoc-display-mode ()
     (interactive)
-    (if (eq eldoc-message-function #'eldoc-minibuffer-message-and-copy)
+    (if (eq eldoc-message-function #'eldoc-buffer-message)
         (progn
           (setq eldoc-message-function #'eldoc-minibuffer-message)
-          (message "off"))
+          (message "minibuffer mode")
+          (when-let
+              ((eldoc-window
+                (cl-find-if
+                 (lambda (win)
+                   (string-match eldoc-buffer-name (buffer-name (window-buffer win))))
+                 (window-list))))
+            (and
+             (select-window eldoc-window)
+             (window-deletable-p)
+             (delete-window))))
       (progn
-        (setq eldoc-message-function #'eldoc-minibuffer-message-and-copy)
-        (message "on")
-        )))
-)
+        (setq eldoc-message-function #'eldoc-buffer-message)
+        (message "buffer mode"))))
+  )
 
 (provide 'my-util)
 
