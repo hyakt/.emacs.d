@@ -707,10 +707,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       (when (and (stringp format-string) (not (equal format-string "")))
         (display-buffer
          (with-current-buffer (get-buffer-create eldoc-buffer-name)
+           (view-mode -1)
            (erase-buffer)
            (insert (apply #'format format-string args))
            (goto-char (point-min))
            (setq-local kill-buffer-hook 'delete-window)
+           (view-mode t)
            (current-buffer))
          )))
 
