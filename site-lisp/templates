@@ -46,6 +46,9 @@ rust-mode
 
 (p "println!(\"" (s variable) ": {:?}\", " (s variable) ");")
 (dd "#[derive(Debug)]")
+(at "#[test]")
+(ai "#[ignore = \"not yet implemented\"]")
+(strjoin p ".iter().map(|x| x.to_string()).collect::<Vec<String>>().join(\" \");")
 
 java-mode
 
