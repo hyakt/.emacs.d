@@ -1196,7 +1196,7 @@ targets."
     (leaf web-mode
       :ensure t
       :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-             "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'")
+             "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue")
       :custom
       ((web-mode-indent-style . 2)
        (web-mode-markup-indent-offset . 2)
@@ -1212,7 +1212,14 @@ targets."
        (web-mode-comment-formats .
                                  '(("javascript" . "//")
                                    ("jsx" .  "//")
-                                   ("php" . "/*")))))
+                                   ("php" . "/*"))))
+      :config
+      (add-hook 'web-mode-hook
+                (lambda ()
+                  (when (equal web-mode-engine "vue")
+                    (lsp-deferred)))
+                ))
+
 
     (leaf emmet-mode
       :ensure t
