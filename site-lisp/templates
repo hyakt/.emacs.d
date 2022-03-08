@@ -30,7 +30,7 @@ emacs-lisp-mode
 (rec "(letrec (" p ")" n> r> ")")
 (command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive)" n> r> ")")
 
-js-mode js2-mode typescript-mode
+js-mode js2-mode typescript-mode web-mode
 
 (cl "console.log(\"" (s variable) "\", " (s variable) ");")
 (sleep "await new Promise(resolve => setTimeout(resolve, " (p "1000") "));")
