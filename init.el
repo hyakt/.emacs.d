@@ -361,6 +361,7 @@
     :bind ("<tab>" . my/tempel-maybe-expand)
     :custom (tempel-file . "~/.emacs.d/site-lisp/templates")
     :config
+    (define-key tempel-map [remap my/tempel-maybe-expand] #'tempel-next)
     (define-key tempel-map "\C-g" #'tempel-done)
     (defun my/tempel-maybe-expand ()
       (interactive)

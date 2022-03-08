@@ -37,6 +37,7 @@ js-mode js2-mode typescript-mode web-mode
 (ed "/* eslint-disable " p " */")
 (edl "// eslint-disable-line " p)
 (edn "// eslint-disable-next-line " p)
+(imp "import " p " from '" p "'; ")
 
 typescript-mode
 
