@@ -54,6 +54,25 @@
              :require-match t
              :prompt "Commit message: "
              :sort nil)))
+
+  (defun my/consult-git-commit-prefix ()
+    (interactive)
+    (insert (consult--read
+             (list
+              "feat: "
+              "fix: "
+              "test: "
+              "build: "
+              "chore: "
+              "ci: "
+              "docs: "
+              "perf: "
+              "refactor: "
+              "revert: "
+              "style: ")
+             :require-match t
+             :prompt "prefix: "
+             :sort nil)))
   )
 
 (provide 'my-git)

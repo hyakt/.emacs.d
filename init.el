@@ -1036,7 +1036,8 @@ targets."
               ("q" . my/magit-quit-session)
               ("C-o" . magit-diff-visit-file-other-window))
              (git-commit-mode-map
-              ("M-i" . my/consult-git-commit-messages)))
+              ("M-i" . my/consult-git-commit-messages)
+              ("M-p" . my/consult-git-commit-prefix)))
       :preface
       (defun my/magit-quit-session ()
         (interactive)
