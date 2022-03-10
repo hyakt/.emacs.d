@@ -757,11 +757,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       :hook projectile-mode-hook))
 
   (leaf consult
-    :ensure-system-package ((rg . ripgrep) (fd))
+    :ensure-system-package ((rg . ripgrep))
     :ensure t consult-flycheck consult-ghq
     :bind (;; C-x bindings (ctl-x-map)
            ("C-x C-b" . consult-buffer)                ;; orig. switch-to-buffer
-           ("C-x f" . consult-fd)
+           ("C-x f" . consult-find)
            ("C-x e" . consult-ripgrep)
            ("C-x C-r" . consult-recent-file)
            ("C-x C-g" . consult-ghq-find)
@@ -782,35 +782,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
      (consult-project-root-function . #'projectile-project-root)
      (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
     :config
-    ;; see: https://github.com/minad/consult/wiki#find-files-using-fd
-    (defvar consult--fd-command "fd")
-
-    (defun consult--fd-builder (input)
-      (unless consult--fd-command
-        (setq consult--fd-command
-              (if (eq 0 (call-process-shell-command "fdfind"))
-                  "fdfind"
-                "fd")))
-      (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
-                   (`(,re . ,hl) (funcall consult--regexp-compiler
-                                          arg 'extended)))
-        (when re
-          (list :command (append
-                          (list consult--fd-command
-                                "--color=never" "--full-path"
-                                (consult--join-regexps re 'extended))
-                          opts)
-                :highlight hl))))
-
-    (defun consult-fd (&optional dir initial)
-      (interactive "P")
-      (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
-             (default-directory (cdr prompt-dir)))
-        (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
-
     (consult-customize
      consult-ripgrep
-     consult-recent-file
      :preview-key (list :debounce 0.8 'any))
     )
 
@@ -1189,7 +1162,9 @@ targets."
              (lsp-headerline-breadcrumb-enable . nil)
              (lsp-enable-file-watchers . nil)
              (lsp-modeline-diagnostics-enable . nil)
-             (lsp-clients-deno-import-map . "./import_map.json"))
+             (lsp-clients-deno-import-map . "./import_map.json")
+             ;; https://github.com/johnsoncodehk/volar/discussions/471
+             (lsp-volar-take-over-mode . nil)))
     :config
     (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
     )
