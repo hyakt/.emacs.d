@@ -1567,6 +1567,8 @@ targets."
 
     (leaf markdown-mode
       :ensure t
+      :setq
+      (markdown-command . "marked")
       :mode (("\\.markdown\\'" . gfm-mode)
              ("\\.md\\'" . gfm-mode)
              ("\\.mdown\\'" . gfm-mode))
@@ -1575,7 +1577,7 @@ targets."
                           (lambda nil
                             (set
                              (make-local-variable 'whitespace-action)
-                             nil)))))
+                             nil))))
 
   (leaf plantuml-mode
     :ensure t
