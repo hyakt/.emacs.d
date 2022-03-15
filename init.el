@@ -784,7 +784,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     :config
     (consult-customize
      consult-ripgrep
-     :preview-key (list :debounce 0.8 'any))
+     consult-recent-file
+     :preview-key (kbd "C-."))
     )
 
   (leaf vertico
