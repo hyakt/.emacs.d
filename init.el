@@ -1519,6 +1519,8 @@ targets."
     :ensure t
     :ensure-system-package jq)
 
+  (leaf protobuf-mode :ensure t)
+
   (leaf org
     :bind ((org-mode-map
             ("C-," . nil)))
