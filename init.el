@@ -1165,7 +1165,7 @@ targets."
              (lsp-modeline-diagnostics-enable . nil)
              (lsp-clients-deno-import-map . "./import_map.json")
              ;; https://github.com/johnsoncodehk/volar/discussions/471
-             (lsp-volar-take-over-mode . nil)))
+             (lsp-volar-take-over-mode . t)))
     :config
     (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
     )
