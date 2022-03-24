@@ -810,7 +810,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       (interactive "P")
       (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
              (default-directory (cdr prompt-dir)))
-        (call-interactively #'find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
+        (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
 
     (consult-customize
      consult-ripgrep
