@@ -516,6 +516,11 @@
        pangu-spacing-include-regexp beg (+ end 8) (replace-match "\\1 \\2" nil nil)))
     :custom ((pangu-spacing-real-insert-separtor . t)))
 
+  (leaf emojify
+    :ensure t
+    :if (display-graphic-p)
+    :hook (after-init . global-emojify-mode))
+
   (leaf google-this :ensure t)
 
   (leaf elec-pair
@@ -757,11 +762,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       :hook projectile-mode-hook))
 
   (leaf consult
-    :ensure-system-package ((rg . ripgrep))
+    :ensure-system-package ((rg . ripgrep) (fd))
     :ensure t consult-flycheck consult-ghq
     :bind (;; C-x bindings (ctl-x-map)
            ("C-x C-b" . consult-buffer)                ;; orig. switch-to-buffer
-           ("C-x f" . consult-find)
+           ("C-x f" . consult-fd)
            ("C-x e" . consult-ripgrep)
            ("C-x C-r" . consult-recent-file)
            ("C-x C-g" . consult-ghq-find)
@@ -782,6 +787,31 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
      (consult-project-root-function . #'projectile-project-root)
      (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
     :config
+    ;; https://github.com/minad/consult/wiki#find-files-using-fd
+    (defvar consult--fd-command nil)
+    (defun consult--fd-builder (input)
+      (unless consult--fd-command
+        (setq consult--fd-command
+              (if (eq 0 (call-process-shell-command "fdfind"))
+                  "fdfind"
+                "fd")))
+      (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
+                   (`(,re . ,hl) (funcall consult--regexp-compiler
+                                          arg 'extended t)))
+        (when re
+          (list :command (append
+                          (list consult--fd-command
+                                "--color=never" "--full-path"
+                                (consult--join-regexps re 'extended))
+                          opts)
+                :highlight hl))))
+
+    (defun consult-fd (&optional dir initial)
+      (interactive "P")
+      (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
+             (default-directory (cdr prompt-dir)))
+        (call-interactively #'find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
+
     (consult-customize
      consult-ripgrep
      consult-recent-file
