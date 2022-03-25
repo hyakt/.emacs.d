@@ -519,7 +519,8 @@
   (leaf emojify
     :ensure t
     :if (display-graphic-p)
-    :hook (after-init . global-emojify-mode))
+    :hook (after-init-hook . global-emojify-mode)
+    :custom  (emojify-emoji-styles . '(github unicode)))
 
   (leaf google-this :ensure t)
 
