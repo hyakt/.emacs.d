@@ -38,6 +38,7 @@ js-mode js2-mode typescript-mode web-mode
 (edl "// eslint-disable-line " p)
 (edn "// eslint-disable-next-line " p)
 (imp "import " p " from '" p "'; ")
+(kiritori "console.log(\"------------------------------\");")
 
 typescript-mode
 
