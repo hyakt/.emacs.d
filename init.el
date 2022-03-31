@@ -260,10 +260,6 @@
     :ensure t
     :global-minor-mode beacon-mode)
 
-  (leaf dimmer
-    :ensure t
-    :global-minor-mode dimmer-mode)
-
   (leaf volatile-highlights
     :ensure t
     :global-minor-mode volatile-highlights-mode)
@@ -1128,6 +1124,8 @@ targets."
     :ensure (t tree-sitter-langs)
     :require tree-sitter-langs
     :config
+    (tree-sitter-load 'vue "vue")
+    (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . vue))
     (global-tree-sitter-mode)
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
     ;; TSX の対応
