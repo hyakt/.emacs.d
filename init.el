@@ -380,6 +380,7 @@
     (corfu-auto . t)
     (corfu-preview-current . nil)
     (corfu-scroll-margin . 0)
+    (corfu-quit-at-boundary . nil)
     :init
     (corfu-global-mode)
     :config
