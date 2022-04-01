@@ -357,8 +357,7 @@
 
   (leaf disable-mouse
     :ensure t
-    :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right"))
-    :global-minor-mode global-disable-mouse-mode)
+    :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right")))
 
   (leaf tempel
     :ensure t
