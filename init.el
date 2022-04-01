@@ -378,7 +378,8 @@
     :custom
     (corfu-min-width . 30)
     (corfu-auto . t)
-    (corfu-scroll-margin . 5)
+    (corfu-preview-current . nil)
+    (corfu-scroll-margin . 0)
     :init
     (corfu-global-mode)
     :config

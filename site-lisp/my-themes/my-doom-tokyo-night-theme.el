@@ -144,16 +144,12 @@ determine the exact padding."
    (org-hide :foreground hidden)
    (org-block :background base2)
    (org-block-begin-line :background base2 :foreground comments)
-   (solaire-org-hide-face :foreground hidden)
 
    ;; --- extra variables ---------------------
    (paren-face-match  :foreground yellow   :background (doom-darken bg 0.2) :weight 'ultra-bold)
-   (ivy-current-match :background base7 :distant-foreground nil)
    (tooltip           :background bg-alt :foreground fg)
-   (company-box-background :foreground fg :background bg-alt)
    (whitespace-indentation :foreground cyan  :underline t)
    (whitespace-trailing :background orange)
-   (indent-guide-face :foreground base7)
    (rainbow-delimiters-depth-1-face :foreground "#3d59a1")
    (rainbow-delimiters-depth-2-face :foreground "#6183bb")
    (rainbow-delimiters-depth-3-face :foreground "#6d91de")
@@ -163,6 +159,11 @@ determine the exact padding."
    (rainbow-delimiters-depth-7-face :foreground "#c0cefc")
 
    (centaur-tabs-unselected :foreground fg-alt :background bg)
-   (centaur-tabs-unselected-modified :foreground fg-alt :background bg)))
+   (centaur-tabs-unselected-modified :foreground fg-alt :background bg)
+
+   (corfu-default :background bg-alt :foreground fg)
+   (corfu-current :background dark-cyan :foreground fg)
+   )
+  )
 
 ;;; my-doom-tokyo-night-theme.el ends here
