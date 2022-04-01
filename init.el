@@ -304,15 +304,23 @@
   (defun with-faicon (icon str &optional height v-adjust)
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
   :pretty-hydra
-  ((:title (with-faicon "code" "Edit commands" 1 -0.05) :quit-key "q")
-   ("Align"
+  ((:title (with-faicon "code" "Window & Edit" 1 -0.05) :quit-key "q")
+   (
+    "Resize"
+    (("j" shrink-window "  ↑  ")
+     ("k" enlarge-window "  ↓  ")
+     ("l" enlarge-window-horizontally "  →  ")
+     ("h" shrink-window-horizontally "  ←  "))
+    "Font"
+    (("+" text-scale-increase "increase")
+     ("-" text-scale-decrease "decrease"))
+    "Align"
     (("a" align "align")
-     ("r" align-regexp "align regex" :exit t)
-     ("l" my/uniq-lines "unique"))
+     ("r" align-regexp "regex" :exit t))
     "Convert"
     (("p"  my/pangu-spacing-region "spacing jp")
      ("tu" my/url-decode-region "url decode")
-     ("tn" unicode-unescape-region "unicode unescape"))
+     ("tn" unicode-unescape-region "unicode decode"))
     "Template"
     (("i" tempel-insert :exit t))
     "Yafolding"
@@ -590,38 +598,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (leaf *interface
   :config
   (leaf window
-    :hydra
-    (my/hydra-window
-     (:color blue :hint nil)
-     "
-
-  Window commands
-
-   Move to^^^    Size^^^^^^^    Scroll^^  Split         Eldoc
-  ──────────────────────────────────────────────────
-      ^_k_^        ^_K_^       ^_p_^     _v_ertical     _e_ldoc display
-    _h_   _l_    _H_   _L_     ^^ ^^     _s_tack
-      ^_j_^        ^_J_^       ^_n_^     _b_alance
-         ^^^^^^^     ^^^^^               _z_oom
-"
-     ("q" nil "quit")
-     ("n" scroll-other-window :color red)
-     ("p" scroll-other-window-down :color red)
-     ("b" balance-windows)
-     ("d" delete-window)
-     ("H" shrink-window-horizontally :color red)
-     ("h" windmove-left :color red)
-     ("J" shrink-window :color red)
-     ("j" windmove-down :color red)
-     ("K" enlarge-window :color red)
-     ("k" windmove-up :color red)
-     ("L" enlarge-window-horizontally :color red)
-     ("l" windmove-right :color red)
-     ("s" split-window-vertically :color red)
-     ("v" split-window-horizontally :color red)
-     ("w" other-window)
-     ("z" delete-other-windows)
-     ("e" my/switch-eldoc-display-mode))
     :config
     (leaf swap-buffers
       :ensure t
@@ -1194,10 +1170,11 @@ targets."
              (lsp-modeline-diagnostics-enable . nil)
              (lsp-clients-deno-import-map . "./import_map.json")
              ;; https://github.com/johnsoncodehk/volar/discussions/471
-             (lsp-volar-take-over-mode . t)))
+             (lsp-volar-take-over-mode . t))
     :config
     (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
     )
+
 
   (leaf web
     :config
@@ -1592,21 +1569,21 @@ targets."
               (let ((level (- (match-end 0) (match-beginning 0))))
                 (replace-match
                  (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
-            (clipboard-kill-ring-save (point-min) (point-max))))))
+            (clipboard-kill-ring-save (point-min) (point-max)))))))
 
-    (leaf markdown-mode
-      :ensure t
-      :setq
-      (markdown-command . "marked")
-      :mode (("\\.markdown\\'" . gfm-mode)
-             ("\\.md\\'" . gfm-mode)
-             ("\\.mdown\\'" . gfm-mode))
-      :hook
-      (markdown-mode-hook .
-                          (lambda nil
-                            (set
-                             (make-local-variable 'whitespace-action)
-                             nil))))
+  (leaf markdown-mode
+    :ensure t
+    :setq
+    (markdown-command . "marked")
+    :mode (("\\.markdown\\'" . gfm-mode)
+           ("\\.md\\'" . gfm-mode)
+           ("\\.mdown\\'" . gfm-mode))
+    :hook
+    (markdown-mode-hook .
+                        (lambda nil
+                          (set
+                           (make-local-variable 'whitespace-action)
+                           nil))))
 
   (leaf plantuml-mode
     :ensure t
