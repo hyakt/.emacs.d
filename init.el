@@ -372,28 +372,32 @@
           (tempel-expand t)
         (indent-for-tab-command))))
 
-  (leaf company
+  (leaf corfu
     :ensure t
-    :custom ((company-dabbrev-downcase . nil)
-             (company-dabbrev-ignore-case . nil)
-             (company-dabbrev-other-buffers . t)
-             (company-dabbrev-code-other-buffers . t)
-             (company-backends . '((company-elisp)))
-             (company-transformers .'(company-sort-by-backend-importance))
-             (company-idle-delay . 0.1)
-             (company-minimum-prefix-length . 2)
-             (company-selection-wrap-around . t)
-             (company-tooltip-align-annotations . t))
-    :bind (("C-j" . company-complete)
-           (company-active-map
-            ("C-n" . company-select-next)
-            ("C-p" . company-select-previous)
-            ("C-d" . company-show-doc-buffer)
-            ("C-o" . company-other-backend)))
+    :bind ("C-j" . completion-at-point)
+    :custom
+    (corfu-min-width . 30)
+    (corfu-auto . t)
+    (corfu-scroll-margin . 5)
+    :init
+    (corfu-global-mode)
     :config
-    (global-company-mode)
-    (leaf company-box :ensure t :config (company-box-mode t))
-    (leaf company-quickhelp :ensure t :config (company-quickhelp-mode t)))
+    (leaf cape
+      :ensure t
+      :init
+      (add-to-list 'completion-at-point-functions #'cape-file)
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+      (add-to-list 'completion-at-point-functions #'cape-keyword))
+    (leaf corfu-doc
+      :ensure t
+      :hook (corfu-mode-hook))
+    (leaf kind-icon
+      :require t
+      :ensure t
+      :custom
+      (kind-icon-default-face . 'corfu-default) ; to compute blended backgrounds correctly)
+      :config
+      (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)))
 
   (leaf flycheck
     :ensure t
@@ -1208,7 +1212,7 @@ targets."
     (leaf emmet-mode
       :ensure t
       :bind ((emmet-mode-keymap
-              ("C-j" . company-complete)))
+              ("C-j" . completion-at-point)))
       :hook (html-mode-hook
              web-mode-hook
              css-mode-hook
@@ -1222,15 +1226,7 @@ targets."
     (leaf css
       :config
       (leaf css-mode
-        :custom (css-indent-offset . 2)
-        :hook
-        (css-mode-hook . (lambda ()
-                           (set
-                            (make-local-variable 'flycheck-checker)
-                            (setq flycheck-checker 'css-stylelint))
-                           (set
-                            (make-local-variable 'company-backends)
-                            '((company-css :with company-dabbrev))))))
+        :custom (css-indent-offset . 2))
       (leaf scss-mode
         :ensure t
         :custom (scss-indent-offset . 2)
@@ -1254,10 +1250,7 @@ targets."
                             (set
                              (make-local-variable 'flycheck-checker)
                              (setq flycheck-checker 'general-stylelint)
-                             )
-                            (set
-                             (make-local-variable 'company-backends)
-                             '((company-css :with company-dabbrev))))))
+                             ))))
       (leaf sass-mode :ensure t)
       (leaf sws-mode :ensure t)))
 
@@ -1411,12 +1404,7 @@ targets."
   (leaf swift-mode
     :ensure t
     :hook (swift-mode-hook . (lambda ()
-                               (add-to-list 'flycheck-checkers 'swift)
-                               (set
-                                (make-local-variable 'company-backends)
-                                '((company-sourcekit)))))
-    :config
-    (leaf company-sourcekit :ensure t))
+                               (add-to-list 'flycheck-checkers 'swift))))
 
   (leaf dart-mode
     :ensure t
