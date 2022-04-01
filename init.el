@@ -451,7 +451,7 @@
 
   (leaf rainbow-mode
     :ensure t
-    :hook (js2-mode-hook css-mode-hook html-mode-hook web-mode-hook typescript-mode-hook))
+    :hook (js2-mode-hook css-mode-hook html-mode-hook typescript-mode-hook))
 
   (leaf symbol-overlay
     :ensure t
