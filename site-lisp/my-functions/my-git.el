@@ -32,7 +32,7 @@
   (defun my/gh-pr-create ()
     "gh open."
     (interactive)
-    (my/projectile-run-shell-command-in-root "gh pr create --web --base (git parent)"))
+    (my/projectile-run-shell-command-in-root "gh pr create --web --base $(git parent)"))
 
   (defun my/gh-pr-list ()
     "gh open."
