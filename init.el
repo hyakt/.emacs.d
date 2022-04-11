@@ -606,8 +606,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     :config
     (leaf swap-buffers
       :ensure t
-      :bind (("M-u" . my/hydra-window/body)
-             ("C-x C-o" . swap-buffers)))
+      :bind (("C-x C-o" . swap-buffers)))
 
     (leaf other-window-or-split
       :el-get (other-window-or-split :url "https://github.com/conao3/other-window-or-split.git")
