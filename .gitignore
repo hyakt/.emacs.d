@@ -42,3 +42,5 @@ el-get/
 /.lsp-eslint-choices
 /history
 /emojis/
+/eln-cache/
+/projects
