@@ -1329,7 +1329,7 @@ targets."
 
     (leaf prettier-js
       :ensure t
-      :custom ((prettier-js-show-errors . 'echo))
+      :custom ((prettier-js-show-errors . nil))
       :hook ((typescript-mode-hook
               js2-mode-hook
               web-mode-hook
