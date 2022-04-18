@@ -372,6 +372,11 @@
           (tempel-expand t)
         (indent-for-tab-command))))
 
+  ;; for lsp-mode
+  (leaf yasnippet
+    :ensure t
+    :hook (lsp-mode-hook . (lambda () (yas-minor-mode t))))
+
   (leaf corfu
     :ensure t
     :bind ("C-j" . completion-at-point)
