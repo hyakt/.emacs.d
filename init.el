@@ -677,7 +677,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                         ("*Shell Command Output*"   :align right)
                         ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
                         ("*jest*"                   :regexp t :align below :ratio 0.5)
-                        (vterm-mode                 :align below :ratio 0.7)
                         ;; rust
                         ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :custom my/shackle-cargo-custom)
                         ("*Evcxr*"                  :align below :select t)
@@ -973,23 +972,21 @@ targets."
       (vterm-keymap-exceptions
        . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
       :config
-      ;; Workaround of not working counsel-yank-pop
-      ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
-      (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
-        (if (equal major-mode 'vterm-mode)
-            (let ((inhibit-read-only t)
-                  (yank-undo-function (lambda (_start _end) (vterm-undo))))
-              (cl-letf (((symbol-function 'insert-for-yank)
-                         (lambda (str) (vterm-send-string str t))))
-                (apply orig-fun args)))
-          (apply orig-fun args)))
-      (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)
       (leaf vterm-toggle
         :ensure t
         :bind ("M-t" . vterm-toggle)
         :custom
         ((vterm-toggle-reset-window-configration-after-exit . t)
-         (vterm-toggle-scope . 'project)))))
+         (vterm-toggle-scope . 'project)
+         (vterm-toggle-fullscreen-p . nil))
+        :config
+        (add-to-list 'display-buffer-alist
+                     '((lambda(bufname _) (with-current-buffer bufname
+                                            (or (equal major-mode 'vterm-mode)
+                                                (string-prefix-p vterm-buffer-name bufname))))
+                       (display-buffer-reuse-window display-buffer-at-bottom)
+                       (reusable-frames . visible)
+                       (window-height . 0.4))))))
 
   (leaf git
     :pretty-hydra
