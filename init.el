@@ -664,7 +664,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                         ("*Occur*"                  :align below :ratio 0.33)
                         ("*xref*"                   :align below :ratio 0.33)
                         ("*prettier errors*"        :align below :ratio 0.33)
-                        (magit-status-mode          :align below :ratio 0.7 :select t)
+                        (magit-status-mode          :align below :ratio 0.6 :select t)
                         ;; repl
                         ("*Python*"                 :align below :select t)
                         ("*pry*"                    :align below :select t)
