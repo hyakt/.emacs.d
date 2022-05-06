@@ -764,7 +764,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     :custom
     ((xref-show-xrefs-function . 'consult-xref)
      (xref-show-definitions-function . 'consult-xref)
-     (consult-ghq-find-function . 'magit-status)
+     (consult-ghq-find-function . 'find-file)
      (consult-project-root-function . #'projectile-project-root)
      (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
     :config
@@ -1569,12 +1569,48 @@ targets."
     :mode (("\\.markdown\\'" . gfm-mode)
            ("\\.md\\'" . gfm-mode)
            ("\\.mdown\\'" . gfm-mode))
+    :custom
+    (markdown-hide-urls . nil)
+    (markdown-hide-markup . nil)
+    (markdown-fontify-code-block-natively . t)
+    (markdown-gfm-additional-languages . '("Mermaid"))
+    (markdown-css-paths . '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
+                            "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"))
+    (markdown-live-preview-window-function . 'markdown-live-preview-window-xwidget-webkit)
+    (markdown-xhtml-body-preamble . "<article class='markdown-body'>")
+    (markdown-xhtml-body-epilogue . "</article>")
+    (markdown-xhtml-header-content . "
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<style>
+	.markdown-body {
+		box-sizing: border-box;
+		min-width: 200px;
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 45px;
+	}
+</style>
+<script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js'></script>
+<script>
+mermaid.initialize({startOnLoad:true});
+hljs.highlightAll();
+</script>
+")
     :hook
     (markdown-mode-hook .
                         (lambda nil
                           (set
                            (make-local-variable 'whitespace-action)
-                           nil))))
+                           nil)))
+    :preface
+    (defun markdown-live-preview-window-xwidget-webkit (file)
+      "Preview FILE with xwidget-webkit.
+To be used with `markdown-live-preview-window-function'."
+      (let ((uri (format "file://%s" file)))
+        (xwidget-webkit-browse-url uri)
+        xwidget-webkit-last-session-buffer))
+    )
 
   (leaf plantuml-mode
     :ensure t
