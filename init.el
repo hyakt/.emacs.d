@@ -744,13 +744,14 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
   (leaf consult
     :ensure-system-package ((rg . ripgrep) (fd))
-    :ensure t consult-flycheck consult-ghq
+    :ensure t consult-flycheck consult-ghq consult-ls-git
     :bind (;; C-x bindings (ctl-x-map)
            ("C-x C-b" . consult-buffer)                ;; orig. switch-to-buffer
            ("C-x f" . consult-fd)
            ("C-x e" . consult-ripgrep)
            ("C-x C-r" . consult-recent-file)
            ("C-x C-g" . consult-ghq-find)
+           ("C-x g" . consult-ls-git)
            ;; Other custom bindings
            ("M-y" . consult-yank-pop)                ;; orig. yank-pop
            ;; M-g bindings (goto-map)
@@ -796,8 +797,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (consult-customize
      consult-ripgrep
      consult-recent-file
-     :preview-key (kbd "C-."))
-    )
+     consult-ls-git
+     :preview-key (kbd "C-.")))
 
   (leaf vertico
     :ensure t
