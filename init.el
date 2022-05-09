@@ -83,6 +83,7 @@
   (leaf my-functions
     :load-path "~/.emacs.d/site-lisp/my-functions/"
     :config
+    (native-compile-async (file-truename "~/.emacs.d/site-lisp/my-functions/") 'recursively)
     (require 'my-util)
     (require 'my-prog)
     (require 'my-git))
