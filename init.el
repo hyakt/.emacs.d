@@ -1262,7 +1262,7 @@ targets."
   (leaf javascript
     :config
     (leaf js2-mode
-      :mode (("\\.js$"))
+      :mode (("\\.[mc]?js$" ))
       :hook ((js2-mode-hook . lsp-deferred)
              (js2-mode-hook . subword-mode))
       :ensure (js2-mode xref-js2)
