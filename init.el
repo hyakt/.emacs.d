@@ -398,7 +398,9 @@
       (add-to-list 'completion-at-point-functions #'cape-keyword))
     (leaf corfu-doc
       :ensure t
-      :hook (corfu-mode-hook))
+      :hook (corfu-mode-hook)
+      :custom ((corfu-doc-auto . t)
+               (corfu-doc-delay . 5)))
     (leaf kind-icon
       :require t
       :ensure t
