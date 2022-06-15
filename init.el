@@ -533,12 +533,6 @@
        pangu-spacing-include-regexp beg (+ end 8) (replace-match "\\1 \\2" nil nil)))
     :custom ((pangu-spacing-real-insert-separtor . t)))
 
-  (leaf emojify
-    :ensure t
-    :if (display-graphic-p)
-    :hook (after-init-hook . global-emojify-mode)
-    :custom  (emojify-emoji-styles . '(github unicode)))
-
   (leaf google-this :ensure t)
 
   (leaf elec-pair
