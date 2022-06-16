@@ -1,11 +1,10 @@
-;;; init.el --- My emacs settings. -*- coding: utf-8 ; lexical-binding: t -*-
+;;; init.el --- My emacs settings. -*- coding: utf-8; lexical-binding: t -*-
 ;; Author: hyakt <https://github.com/hyakt/.emacs.d>
 
 ;;; Commentary:
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-;; leaf-install-code
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("org" . "https://orgmode.org/elpa/")
@@ -37,11 +36,7 @@
       (leaf system-packages :ensure t)
       :config
       ;; initialize leaf-keywords.el
-      (leaf-keywords-init))
-    (leaf leaf-tree
-      :ensure t
-      :custom ((imenu-list-size . 30)
-               (imenu-list-position . 'left)))))
+      (leaf-keywords-init))))
 
 ;;; ---------- 初期設定 ----------
 (leaf *basic
@@ -83,7 +78,7 @@
   (leaf my-functions
     :load-path "~/.emacs.d/site-lisp/my-functions/"
     :config
-    (native-compile-async (file-truename "~/.emacs.d/site-lisp/my-functions/") 'recursively)
+    ;; (native-compile-async (file-truename "~/.emacs.d/site-lisp/my-functions/") 'recursively)
     (require 'my-util)
     (require 'my-prog)
     (require 'my-git))
@@ -124,11 +119,6 @@
   (leaf savehist
     :init
     (savehist-mode))
-
-  (leaf paradox
-    :ensure t async
-    :config
-    (paradox-enable))
 
   (leaf recentf
     :ensure t
