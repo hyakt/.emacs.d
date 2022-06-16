@@ -1169,13 +1169,12 @@ targets."
     (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
     )
 
-
   (leaf web
     :config
     (leaf web-mode
       :ensure t
       :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-             "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue")
+             "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue" "\\.astro")
       :custom
       ((web-mode-indent-style . 2)
        (web-mode-markup-indent-offset . 2)
