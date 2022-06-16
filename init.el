@@ -378,7 +378,7 @@
     (corfu-scroll-margin . 0)
     (corfu-quit-at-boundary . nil)
     :init
-    (corfu-global-mode)
+    (global-corfu-mode)
     :config
     (leaf cape
       :ensure t
