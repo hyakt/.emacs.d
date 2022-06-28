@@ -945,10 +945,7 @@ targets."
         :ensure t
         :custom
         (eshell-highlight-prompt . nil)
-        (eshell-prompt-function . 'epe-theme-lambda))
-      (leaf esh-autosuggest
-        :ensure t
-        :hook (eshell-mode-hook)))
+        (eshell-prompt-function . 'epe-theme-lambda)))
 
     (leaf vterm
       :ensure t
