@@ -795,9 +795,18 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
   (leaf orderless
     :ensure t
-    :custom
-    ((completion-styles . '(orderless))
-     (completion-category-defaults . nil)))
+    :commands (orderless-filter))
+
+  (leaf fussy
+    :ensure t
+    :el-get (fzf-native :url "https://github.com/dangduc/fzf-native.git")
+    :setq ((completion-styles . '(fussy))
+           (completion-category-defaults . nil)
+           (completion-category-overrides . nil)
+           (fussy-filter-fn . 'fussy-filter-orderless)
+           (fussy-score-fn . 'fussy-fzf-native-score))
+    :config
+    (fzf-native-load-dyn))
 
   (leaf marginalia
     :ensure t
