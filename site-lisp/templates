@@ -44,6 +44,11 @@ typescript-mode
 
 (tse "// @ts-expect-error " p)
 
+web-mode css-mode
+
+(med "@media (" p ") {" n> p n> "}")
+(pc "@media (--viewport-pc) {" n> p n> "}")
+
 rust-mode
 
 (p "println!(\"" (s variable) ": {:?}\", " (s variable) ");")
