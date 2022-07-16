@@ -25,13 +25,7 @@
       (leaf major-mode-hydra
         :ensure t
         :custom
-        ((major-mode-hydra-title-generator
-          . '(lambda (mode)
-               (s-concat (all-the-icons-icon-for-mode mode :v-adjust 0.05)
-                         " "
-                         (symbol-name mode)
-                         " commands")))
-         (major-mode-hydra-invisible-quit-key . "q"))
+        (major-mode-hydra-invisible-quit-key . "q")
         :bind ("M-a" . major-mode-hydra))
       (leaf system-packages :ensure t)
       :config
@@ -1180,6 +1174,35 @@ targets."
     :config
     (leaf web-mode
       :ensure t
+      :mode-hydra
+      ("Navigation"
+       (("m" web-mode-navigate "navigate" :color red)
+        ("h" web-mode-element-beginning "beginning" :color red)
+        (";" web-mode-element-end "end" :color red)
+        ("j" web-mode-element-next "next" :color red)
+        ("k" web-mode-element-previous "previous" :color red)
+        ("l" web-mode-element-child "child" :color red)
+        ("h" web-mode-element-parent "parent" :color red))
+       "Editing"
+       (("w" web-mode-element-wrap "wrap")
+        ("c" web-mode-element-clone "clone")
+        ("i" web-mode-element-insert "insert")
+        ("r" web-mode-element-rename "rename")
+        ("s" web-mode-element-select "select")
+        ("v" web-mode-element-vanish "vanish"))
+       "Test"
+       (("tf" jest-file)
+        ("tp" jest-popup)
+        ("tb" my/jest-current-buffer)
+        ("tw" my/jest-watch-current-buffer)
+        ("tcb" my/jest-copy-command-current-buffer)
+        ("tcw" my/jest-copy-command-watch-current-buffer))
+       "Format"
+       (("p" prettier-js)
+        ("d" deno-fmt))
+       "Misc"
+       (("e" my/emmet-change-at-point))
+       )
       :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
              "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue" "\\.astro")
       :custom
@@ -1202,9 +1225,21 @@ targets."
       (add-hook 'web-mode-hook
                 (lambda ()
                   (when (equal web-mode-engine "vue")
-                    (lsp-deferred)))
-                ))
+                    (lsp-deferred))))
 
+      (defun my/emmet-change-at-point ()
+        (interactive)
+        (let ((web-mode-cur-language
+               (web-mode-language-at-pos)))
+          (if (string= web-mode-cur-language "css")
+              (and
+               (setq emmet-use-css-transform t)
+               (message "css transform"))
+            (progn
+             (setq emmet-use-css-transform nil)
+             (message "html transform")
+             ))))
+      )
 
     (leaf emmet-mode
       :ensure t
