@@ -4,6 +4,9 @@
 ;;; Commentary:
 ;; This is hyakt's init.el of Emacs.
 
+(require 'profiler)
+(profiler-start 'cpu)
+
 ;;; Code:
 (eval-and-compile
   (customize-set-variable
@@ -55,7 +58,7 @@
    (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibuffer をマウスカーソルで選択できないようにする
    (enable-recursive-minibuffers . t)                                                         ;; minibuffer の再帰的使用を許可する
    (enable-local-variables . :all)                                                            ;; local variable は全て使用する
-   (display-warning-minimum-level . :error)                                                   ;; init.el読み込み時のWarningを抑制
+   (display-warning-minimum-level . :error)                                                   ;; init.el 読み込み時の Warning を抑制
    )
   :global-minor-mode global-auto-revert-mode
   :hook (minibuffer-setup-hook . cursor-intangible-mode)                                      ;; minibuffer をマウスカーソルで選択できないようにする
@@ -223,7 +226,6 @@
       (doom-modeline-mode 1)))
 
   (leaf paren
-    :require t
     :bind (("M-o" . my/jump-to-match-parens))
     :custom((show-paren-style . 'mixed)
             (show-paren-when-point-inside-paren . t)
@@ -386,7 +388,6 @@
       :custom ((corfu-doc-auto . t)
                (corfu-doc-delay . 5)))
     (leaf kind-icon
-      :require t
       :ensure t
       :custom
       (kind-icon-default-face . 'corfu-default) ; to compute blended backgrounds correctly)
@@ -424,7 +425,6 @@
                          :async t))
 
   (leaf jumplist
-    :require t
     :ensure t
     :bind (("M-p" . jumplist-previous)
            ("M-n" . jumplist-next))
@@ -464,14 +464,10 @@
     :hook prog-mode-hook)
 
   (leaf visual-regexp
-    :ensure t
+    :ensure (t visual-regexp-steroids)
     :bind (("C-r" . vr/query-replace))
-    :custom ((case-fold-search . nil))
-    :config
-    (leaf visual-regexp-steroids
-      :ensure t
-      :require t
-      :custom (vr/engine . 'pcre2el)))
+    :custom ((case-fold-search . nil)
+             (vr/engine . 'pcre2el)))
 
   (leaf multiple-cursors
     :ensure t
@@ -499,7 +495,7 @@
     :ensure t
     :bind (("M-[" . string-inflection-all-cycle)))
 
-  (leaf unicode-escape :ensure t :require t)
+  (leaf unicode-escape :ensure t)
 
   (leaf rg
     :ensure t
@@ -507,7 +503,6 @@
              (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql")))))
 
   (leaf pangu-spacing
-    :require t
     :ensure t
     :config
     (defun my/pangu-spacing-region (beg end)
@@ -850,12 +845,10 @@ targets."
   (leaf embark-consult
     :ensure t
     :hook (embark-collect-mode-hook . consult-preview-at-point-mode)
-    :after (embark consult)
-    :require t)
+    :after (embark consult))
 
   (leaf dired
     :ensure all-the-icons-dired
-    :custom (dired-dwim-target . t)
     :bind (("C-x C-d" . my/dired-this-buffer)
            (dired-mode-map (("C-t" . nil)
                             ("M-s" . nil)
@@ -921,11 +914,10 @@ targets."
         ("g" revert-buffer))))
 
     (leaf wdired
-      :require t
+      :hook (dired-mode-hook . (lambda () (require 'wdired)))
       :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode))))
 
     (leaf dired-x
-      :require t
       :hook (dired-mode-hook . dired-omit-mode)
       :custom (dired-omit-files . "^\\.DS_Store$"))
 
@@ -998,7 +990,6 @@ targets."
        ("c" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
     :config
     (leaf magit
-      :require t
       :ensure (magit gh)
       :ensure-system-package git
       :custom ((magit-save-repository-buffers . 'dontask))
@@ -1091,11 +1082,9 @@ targets."
     (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
   (leaf tree-sitter
+    :hook (prog-mode-hook . (lambda () (require 'tree-sitter)))
     :ensure (t tree-sitter-langs)
-    :require tree-sitter-langs
     :config
-    (tree-sitter-load 'vue "vue")
-    (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . vue))
     (global-tree-sitter-mode)
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
     ;; TSX の対応
@@ -1236,10 +1225,9 @@ targets."
                (setq emmet-use-css-transform t)
                (message "css transform"))
             (progn
-             (setq emmet-use-css-transform nil)
-             (message "html transform")
-             ))))
-      )
+              (setq emmet-use-css-transform nil)
+              (message "html transform")
+              )))))
 
     (leaf emmet-mode
       :ensure t
@@ -1354,6 +1342,7 @@ targets."
       :ensure t
       :bind ((jest-minor-mode-map
               ("C-c C-c C-c" . jest-file-dwim)))
+      :custom ((jest-executable . "npx jest"))
       :hook ((typescript-mode-hook . jest-minor-mode)
              (js2-mode-hook . jest-minor-mode)
              (web-mode-hook . jest-minor-mode)))
@@ -1368,7 +1357,7 @@ targets."
               scss-mode-hook
               graphql-mode-hook)))
 
-    (leaf deno-fmt :require t :ensure t))
+    (leaf deno-fmt :ensure t))
 
   (leaf ruby-mode
     :ensure t
@@ -1563,7 +1552,7 @@ targets."
       (org-latex-with-hyperref . nil)
       (org-latex-hyperref-template . nil))
     (leaf htmlize :ensure t)
-    (leaf ox-gfm :ensure t :require t)
+    (leaf ox-gfm :ensure t)
     (leaf org-bullets :ensure t
       :config
       (defun my/org-bullets-export (path)
@@ -1656,3 +1645,6 @@ To be used with `markdown-live-preview-window-function'."
 ;; End:
 
 ;;; init.el ends here
+
+(profiler-report)
+(profiler-stop)
