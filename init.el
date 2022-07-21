@@ -4,9 +4,6 @@
 ;;; Commentary:
 ;; This is hyakt's init.el of Emacs.
 
-(require 'profiler)
-(profiler-start 'cpu)
-
 ;;; Code:
 (eval-and-compile
   (customize-set-variable
@@ -1645,6 +1642,3 @@ To be used with `markdown-live-preview-window-function'."
 ;; End:
 
 ;;; init.el ends here
-
-(profiler-report)
-(profiler-stop)
