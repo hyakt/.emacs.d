@@ -4,6 +4,9 @@
 ;;; Commentary:
 ;; This is hyakt's init.el of Emacs.
 
+(require 'profiler)
+(profiler-start 'cpu)
+
 ;;; Code:
 (eval-and-compile
   (customize-set-variable
@@ -57,8 +60,8 @@
    (enable-local-variables . :all)                                                            ;; local variable は全て使用する
    (display-warning-minimum-level . :error)                                                   ;; init.el 読み込み時の Warning を抑制
    )
-  :global-minor-mode global-auto-revert-mode
-  :hook (minibuffer-setup-hook . cursor-intangible-mode)                                      ;; minibuffer をマウスカーソルで選択できないようにする
+  :hook ((minibuffer-setup-hook . cursor-intangible-mode)
+         (after-init-hook . global-auto-revert-mode))                                      ;; minibuffer をマウスカーソルで選択できないようにする
   :init
   (fset 'yes-or-no-p 'y-or-n-p)                                                               ;; yes-no の選択肢を y-n にする
   (setenv "SHELL" "/bin/bash")                                                                ;; デフォルトの shell を bash に変更
@@ -79,16 +82,15 @@
 
   (leaf server
     :require t
-    :config
-    (unless (server-running-p) (server-start)))
+    :hook (emacs-init-hook . (lambda () (unless (server-running-p) (server-start)))))
 
   (leaf for-macos
     :require (ucs-normalize)
     :when (eq system-type 'darwin)
+    :hook (after-init-hook . mac-auto-ascii-mode)
     :setq
     (file-name-coding-system . 'utf-8-hfs)
     (locale-coding-system . 'utf-8-hfs)
-    :global-minor-mode mac-auto-ascii-mode
     :config
     (prefer-coding-system 'utf-8))
 
@@ -120,7 +122,7 @@
     (recentf-max-saved-items . 1000)
     (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
     (recentf-auto-cleanup . 'never)
-    :global-minor-mode recentf-mode))
+    ))
 
 
 ;;; ---------- 外観設定 ----------
@@ -242,13 +244,14 @@
 
   (leaf beacon
     :ensure t
-    :global-minor-mode beacon-mode)
+    :hook after-init-hook)
 
   (leaf volatile-highlights
     :ensure t
-    :global-minor-mode volatile-highlights-mode)
+    :hook after-init-hook)
 
   (leaf whitespace
+    :hook after-init-hook
     :custom
     ((whitespace-style . '(
                            face
@@ -269,8 +272,7 @@
                                       (tab-mark     ?\t    [?» ?\t] [?\\ ?\t])        ; tab - right guillemet
                                       ))
      (whitespace-action . '(auto-cleanup))
-     (whitespace-space-regexp . "\\(\u3000\\)"))
-    :global-minor-mode global-whitespace-mode)
+     (whitespace-space-regexp . "\\(\u3000\\)")))
 
   (leaf dashboard
     :ensure t
@@ -363,6 +365,7 @@
 
   (leaf corfu
     :ensure t
+    :hook prog-mode-hook
     :bind ("C-j" . completion-at-point)
     :custom
     (corfu-min-width . 30)
@@ -370,8 +373,6 @@
     (corfu-preview-current . nil)
     (corfu-scroll-margin . 0)
     (corfu-quit-at-boundary . nil)
-    :init
-    (global-corfu-mode)
     :config
     (leaf cape
       :ensure t
@@ -381,7 +382,7 @@
       (add-to-list 'completion-at-point-functions #'cape-keyword))
     (leaf corfu-doc
       :ensure t
-      :hook (corfu-mode-hook)
+      :hook corfu-mode-hook
       :custom ((corfu-doc-auto . t)
                (corfu-doc-delay . 5)))
     (leaf kind-icon
@@ -393,10 +394,10 @@
 
   (leaf flycheck
     :ensure t
+    :hook prog-mode-hook
     :custom
-    (flycheck-disabled-checkers . '(slim-lint))
-    :hook
-    (after-init-hook . global-flycheck-mode))
+    (flycheck-disabled-checkers . '(slim-lint)))
+
 
   (leaf smart-jump
     :ensure (smart-jump dumb-jump)
@@ -512,7 +513,7 @@
   (leaf google-this :ensure t)
 
   (leaf elec-pair
-    :global-minor-mode electric-pair-mode
+    :hook (prog-mode-hook . electric-pair-mode)
     :commands org-add-electric-pairs web-add-electric-pairs
     :hook ((org-mode-hook . org-add-electric-pairs)
            ((web-mode-hook typescript-mode-hook) . web-add-electric-pairs))
@@ -602,10 +603,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
     (leaf eyebrowse
       :ensure t
+      :hook prog-mode-hook
       :custom
       (eyebrowse-new-workspace . t)
-      (eyebrowse-keymap-prefix . "\C-z")
-      :global-minor-mode eyebrowse-mode)
+      (eyebrowse-keymap-prefix . "\C-z"))
 
     (leaf shackle
       :ensure t
@@ -700,8 +701,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
   (leaf projectile
     :ensure t
+    :hook prog-mode-hook
     :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
-    :global-minor-mode projectile-mode
     :custom
     ((projectile-add-known-project . '("~/repos/")))
     :preface
@@ -1036,6 +1037,7 @@ targets."
 
     (leaf git-gutter
       :ensure t
+      :hook prog-mode-hook
       :preface
       (defun my/git-gutter:toggle-popup-hunk ()
         "Toggle git-gutter hunk window."
@@ -1050,8 +1052,7 @@ targets."
       :custom-face
       (git-gutter:modified . '((t (:background "#B4DCE7"))))
       (git-gutter:added    . '((t (:background "#74DFC4"))))
-      (git-gutter:deleted  . '((t (:background "#964C7B"))))
-      :global-minor-mode global-git-gutter-mode)
+      (git-gutter:deleted  . '((t (:background "#964C7B")))))
 
     (leaf git-timemachine :ensure t)
 
@@ -1066,7 +1067,7 @@ targets."
 
   (leaf which-key
     :ensure t
-    :global-minor-mode which-key-mode)
+    :hook prog-mode-hook)
 
   (leaf amx :ensure t)
 
@@ -1079,10 +1080,8 @@ targets."
     (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
   (leaf tree-sitter
-    :hook (prog-mode-hook . (lambda () (require 'tree-sitter)))
     :ensure (t tree-sitter-langs)
     :config
-    (global-tree-sitter-mode)
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
     ;; TSX の対応
     (tree-sitter-require 'tsx)
@@ -1105,7 +1104,8 @@ targets."
         arguments: ((template_string) @property.definition
                     (.offset! @property.definition 0 1 0 -1)))
        ])
-    ))
+    )
+  )
 
 
 ;;; ---------- メジャーモード設定 ----------
@@ -1303,7 +1303,8 @@ targets."
         ("d" deno-fmt)))
       :custom (typescript-indent-level . 2)
       :hook ((typescript-mode-hook . lsp-deferred)
-             (typescript-mode-hook . subword-mode))
+             (typescript-mode-hook . subword-mode)
+             (typescript-mode-hook . tree-sitter-mode))
       :init
       (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
       (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
@@ -1634,11 +1635,11 @@ To be used with `markdown-live-preview-window-function'."
     ((plantuml-executable-path . "plantuml")
      (plantuml-default-exec-mode . 'executable))))
 
-(provide 'init)
-
 ;; Local Variables:
 ;; indent-tabs-mode: nil
 ;; byte-compile-warnings: (not cl-functions obsolete)
 ;; End:
 
 ;;; init.el ends here
+(profiler-report)
+(profiler-stop)
