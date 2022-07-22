@@ -67,22 +67,21 @@
   (setenv "SHELL" "/bin/bash")                                                                ;; デフォルトの shell を bash に変更
   (setenv "LANG" "ja_JP.UTF-8")                                                               ;; デフォルトの LANG を UTF-8 に設定 ruby/flyceck 対策
   (run-with-idle-timer 60.0 t #'garbage-collect)                                              ;; Run GC every 60 seconds if emacs is idle.
-
-  (leaf custom-file
-    :when (file-exists-p custom-file)
-    :config (load custom-file))
-
+  :init
   (leaf my-functions
     :load-path "~/.emacs.d/site-lisp/my-functions/"
     :config
-    ;; (native-compile-async (file-truename "~/.emacs.d/site-lisp/my-functions/") 'recursively)
     (require 'my-util)
     (require 'my-prog)
-    (require 'my-git))
+    (require 'my-git)
+    (defun my/native-comp-packages ()
+      (interactive)
+      (native-compile-async "~/.emacs.d/init.el")
+      (native-compile-async "~/.emacs.d/site-lisp" 'recursively)))
 
   (leaf server
     :require t
-    :hook (emacs-init-hook . (lambda () (unless (server-running-p) (server-start)))))
+    :hook (emacs-startup-hook . (lambda () (unless (server-running-p) (server-start)))))
 
   (leaf for-macos
     :require (ucs-normalize)
@@ -108,7 +107,8 @@
   (leaf exec-path-from-shell
     :ensure t
     :if (eq system-type 'darwin)
-    :custom((exec-path-from-shell-variables '("PATH" "GOPATH")))
+    :custom((exec-path-from-shell-variables '("PATH" "GOPATH"))
+            (exec-path-from-shell-arguments . nil))
     :config
     (exec-path-from-shell-initialize))
 
@@ -117,12 +117,11 @@
     (savehist-mode))
 
   (leaf recentf
-    :ensure t
+    :hook (after-init-hook . recentf-mode)
     :custom
     (recentf-max-saved-items . 1000)
     (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-    (recentf-auto-cleanup . 'never)
-    ))
+    (recentf-auto-cleanup . 'never)))
 
 
 ;;; ---------- 外観設定 ----------
@@ -142,7 +141,6 @@
   (scroll-step . 1)
   (scroll-bar-mode . nil)                                     ;; スクロールバーを使わない
   (tab-width . 2)                                             ;; タブの幅は半角スペース 2
-  (tool-bar-mode . nil)                                       ;; ツールバーを利用しない
   (truncate-lines . nil)                                      ;; 画面端まで来たら折り返す
   (truncate-partial-width-windows . nil)
   (uniquify-buffer-name-style . 'post-forward-angle-brackets) ;; 同じ名前のバッファを開いたときの設定
@@ -229,7 +227,7 @@
     :custom((show-paren-style . 'mixed)
             (show-paren-when-point-inside-paren . t)
             (show-paren-when-point-in-periphery . t))
-    :config
+    :defer-config
     (defun my/jump-to-match-parens nil
       "対応する括弧に移動"
       (interactive)
@@ -349,7 +347,7 @@
     :ensure t
     :bind ("<tab>" . my/tempel-maybe-expand)
     :custom (tempel-path . "~/.emacs.d/site-lisp/templates")
-    :config
+    :defer-config
     (define-key tempel-map [remap my/tempel-maybe-expand] #'tempel-next)
     (define-key tempel-map "\C-g" #'tempel-done)
     (defun my/tempel-maybe-expand ()
@@ -394,10 +392,7 @@
 
   (leaf flycheck
     :ensure t
-    :hook prog-mode-hook
-    :custom
-    (flycheck-disabled-checkers . '(slim-lint)))
-
+    :hook prog-mode-hook)
 
   (leaf smart-jump
     :ensure (smart-jump dumb-jump)
@@ -454,8 +449,7 @@
     :bind (("C-." . symbol-overlay-put)))
 
   (leaf pcre2el
-    :ensure t
-    :custom (rxt-global-mode . t))
+    :ensure t)
 
   (leaf yafolding
     :ensure t
@@ -502,7 +496,7 @@
 
   (leaf pangu-spacing
     :ensure t
-    :config
+    :defer-config
     (defun my/pangu-spacing-region (beg end)
       "Replace regexp with match in region."
       (interactive "r")
@@ -517,7 +511,7 @@
     :commands org-add-electric-pairs web-add-electric-pairs
     :hook ((org-mode-hook . org-add-electric-pairs)
            ((web-mode-hook typescript-mode-hook) . web-add-electric-pairs))
-    :config
+    :defer-config
     (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
     (defun org-add-electric-pairs ()
       (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
@@ -656,9 +650,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                         ("*Evcxr*"                  :align below :select t)
                         ;; ruby
                         ("*rspec-compilation*"      :align below :ratio 0.5)
-                        )))
-      :config
-      (shackle-mode 1)))
+                        )))))
 
   (leaf eldoc
     :preface
@@ -742,7 +734,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
      (consult-ghq-find-function . 'find-file)
      (consult-project-root-function . #'projectile-project-root)
      (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS"))
-    :config
+    :defer-config
     ;; https://github.com/minad/consult/wiki#find-files-using-fd
     (defvar consult--fd-command nil)
     (defun consult--fd-builder (input)
@@ -792,7 +784,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
            (completion-category-overrides . nil)
            (fussy-filter-fn . 'fussy-filter-orderless)
            (fussy-score-fn . 'fussy-fzf-native-score))
-    :config
+    :defer-config
     (fzf-native-load-dyn))
 
   (leaf marginalia
@@ -932,13 +924,7 @@ targets."
     (leaf eshell
       :custom
       (eshell-cmpl-ignore-case . t)
-      (eshell-ask-to-save-history . 'always)
-      :config
-      (leaf eshell-prompt-extras
-        :ensure t
-        :custom
-        (eshell-highlight-prompt . nil)
-        (eshell-prompt-function . 'epe-theme-lambda)))
+      (eshell-ask-to-save-history . 'always))
 
     (leaf vterm
       :ensure t
@@ -1081,7 +1067,7 @@ targets."
 
   (leaf tree-sitter
     :ensure (t tree-sitter-langs)
-    :config
+    :defer-config
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
     ;; TSX の対応
     (tree-sitter-require 'tsx)
@@ -1153,8 +1139,7 @@ targets."
              (lsp-volar-take-over-mode . t)
              (lsp-completion-provider . :none))
     :config
-    (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
-    )
+    (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'"))
 
   (leaf web
     :config
@@ -1244,10 +1229,11 @@ targets."
       :config
       (leaf css-mode
         :custom (css-indent-offset . 2))
+      
       (leaf scss-mode
         :ensure t
         :custom (scss-indent-offset . 2)
-        :init
+        :defer-config
         ;; see: https://github.com/flycheck/flycheck/issues/1912
         (flycheck-define-checker general-stylelint
           "A checker for CSS and related languages using Stylelint"
@@ -1365,7 +1351,7 @@ targets."
     :hook ((ruby-mode-hook . lsp-deferred)
            (ruby-mode-hook . inf-ruby-minor-mode)
            (ruby-mode-hook . inf-ruby-switch-setup))
-    :config
+    :defer-config
     (leaf inf-ruby
       :ensure t
       :bind ((inf-ruby-minor-mode-map
@@ -1392,7 +1378,7 @@ targets."
                                (lambda ()
                                  (buffer-face-set 'variable-pitch)
                                  (toggle-truncate-lines t)))
-    :config
+    :defer-config
     (leaf sqlup-mode
       :ensure t
       :hook (sql-mode-hook sql-interactive-mode-hook))
@@ -1450,14 +1436,14 @@ targets."
 
   (leaf elixir-mode
     :ensure t
-    :config
+    :defer-config
     (leaf alchemist :ensure t)
     (leaf flycheck-elixir :ensure t))
 
   (leaf scala-mode
     :ensure t
     :interpreter ("scala")
-    :config
+    :defer-config
     (leaf sbt-mode
       :ensure t
       :commands sbt-start sbt-command)
@@ -1495,7 +1481,7 @@ targets."
       ("<RET>" cargo-process-fmt "fmt"))
      "Doc"
      (("d" cargo-process-doc "doc")))
-    :config
+    :defer-config
     (leaf cargo
       :preface
       (defun my/cargo-process-build-and-test ()
@@ -1542,7 +1528,7 @@ targets."
     (org-startup-truncated . nil)
     (org-src-fontify-natively . t)
     (org-log-done . 'time)
-    :config
+    :defer-config
     (leaf ox-latex
       :custom
       (org-latex-pdf-process . '("latexmk %f"))
@@ -1552,7 +1538,7 @@ targets."
     (leaf htmlize :ensure t)
     (leaf ox-gfm :ensure t)
     (leaf org-bullets :ensure t
-      :config
+      :defer-config
       (defun my/org-bullets-export (path)
         "Export to bullets style text file into PATH."
         (interactive "FExport file: ")
