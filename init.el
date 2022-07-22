@@ -35,15 +35,11 @@
       ;; initialize leaf-keywords.el
       (leaf-keywords-init))))
 
-;;; ---------- 初期設定 ----------
-(leaf *basic
-  :setq-default
-  (shell-file-name . "/bin/bash")
-  (explicit-shell-file-name . "/bin/bash")
-  :pre-setq
-  (custom-file . "~/.emacs.d/custom.el")
-  :custom
-  (
+(leaf cus-edit
+  :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
+
+(leaf cus-start
+  :custom '(
    (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
    (completion-ignore-case . t)                                                               ;; file 名の補完で大文字小文字を区別しない
    (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
