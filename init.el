@@ -5,7 +5,7 @@
 ;; This is hyakt's init.el of Emacs.
 
 (require 'profiler)
-(profiler-start 'cpu)
+(profiler-start 'cpu+mem)
 
 ;;; Code:
 (eval-and-compile
@@ -55,11 +55,30 @@
    (enable-recursive-minibuffers . t)                                                         ;; minibuffer の再帰的使用を許可する
    (enable-local-variables . :all)                                                            ;; local variable は全て使用する
    (display-warning-minimum-level . :error)                                                   ;; init.el 読み込み時の Warning を抑制
-   )
+   (debug-on-error . t)
+   (init-file-debug . t)
+   (frame-resize-pixelwise . t)
+   (history-length . 3000)
+   (history-delete-duplicates . t)
+   (scroll-preserve-screen-position . t)
+   (scroll-conservatively . 100)
+   (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
+   (ring-bell-function . 'ignore)
+   (text-quoting-style . 'straight)
+   (scroll-bar-mode . nil)
+   (indent-tabs-mode . nil))
+  :config
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (keyboard-translate ?\C-h ?\C-?))
+
+;;; ---------- 初期設定 ----------
+(leaf *basic
+  :setq-default
+  (shell-file-name . "/bin/bash")
+  (explicit-shell-file-name . "/bin/bash")
   :hook ((minibuffer-setup-hook . cursor-intangible-mode)
          (after-init-hook . global-auto-revert-mode))                                      ;; minibuffer をマウスカーソルで選択できないようにする
   :init
-  (fset 'yes-or-no-p 'y-or-n-p)                                                               ;; yes-no の選択肢を y-n にする
   (setenv "SHELL" "/bin/bash")                                                                ;; デフォルトの shell を bash に変更
   (setenv "LANG" "ja_JP.UTF-8")                                                               ;; デフォルトの LANG を UTF-8 に設定 ruby/flyceck 対策
   (run-with-idle-timer 60.0 t #'garbage-collect)                                              ;; Run GC every 60 seconds if emacs is idle.
@@ -332,7 +351,6 @@
      ("C-x i" . my/buffer-indent)
      ("M-e" . *edit/body))
     :init
-    (keyboard-translate ?\C-h ?\C-?)
     (global-unset-key (kbd "C-z")))
 
   (leaf disable-mouse
