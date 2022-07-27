@@ -32,13 +32,15 @@
         :setq
         (major-mode-hydra-invisible-quit-key . "q")
         :bind ("M-a" . major-mode-hydra))
-      (leaf system-packages :ensure t)
+      (leaf system-packages :ensure t)  
       :config
       ;; initialize leaf-keywords.el
       (leaf-keywords-init))))
 
 ;;; ---------- 初期設定 ----------
 (leaf *basic
+  :leaf-defer nil
+  :leaf-autoload nil
   :hook ((minibuffer-setup-hook . cursor-intangible-mode)
          (after-init-hook . global-auto-revert-mode))                                        ;; minibuffer をマウスカーソルで選択できないようにする
   :setq-default
@@ -139,6 +141,8 @@
 
 ;;; ---------- 外観設定 ----------
 (leaf *appearance
+  :leaf-defer nil
+  :leaf-autoload nil
   :hook
   (window-setup-hook . frame-size-resume)
   (kill-emacs-hook . frame-size-save)
@@ -304,6 +308,8 @@
 
 ;;; ---------- 編集機能設定 ----------
 (leaf *edit
+  :leaf-defer nil
+  :leaf-autoload nil
   :ensure unicode-escape
   :pretty-hydra
   ((:title (with-faicon "code" "Window & Edit" 1 -0.05) :quit-key "q")
