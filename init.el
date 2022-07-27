@@ -27,7 +27,7 @@
       (leaf hydra :ensure t)
       (leaf major-mode-hydra
         :ensure t
-        :custom
+        :setq
         (major-mode-hydra-invisible-quit-key . "q")
         :bind ("M-a" . major-mode-hydra))
       (leaf system-packages :ensure t)
@@ -42,7 +42,7 @@
   :setq-default
   (shell-file-name . "/bin/bash")
   (explicit-shell-file-name . "/bin/bash")
-  :custom
+  :setq
   (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
   (completion-ignore-case . t)                                                               ;; file 名の補完で大文字小文字を区別しない
   (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
@@ -80,10 +80,12 @@
 
 (leaf my-functions
   :load-path "~/.emacs.d/site-lisp/my-functions/"
+  :hook (after-init-hook
+         . (lambda ()
+             (require 'my-util)
+             (require 'my-prog)
+             (require 'my-git)))
   :config
-  (leaf my-util :require t)
-  (leaf my-prog :require t)
-  (leaf my-git :require t)
   (defun my/native-comp-packages ()
     (interactive)
     (native-compile-async "~/.emacs.d/init.el")
@@ -109,7 +111,6 @@
   :setq
   (file-name-coding-system . 'utf-8)
   (locale-coding-system . 'utf-8)
-  :custom
   (x-alt-keysym . 'meta)
   (x-super-keysym . 'meta)
   :config
@@ -118,7 +119,7 @@
 (leaf exec-path-from-shell
   :ensure t
   :if (eq system-type 'darwin)
-  :custom
+  :setq
   (exec-path-from-shell-variables '("PATH" "GOPATH"))
   (exec-path-from-shell-arguments . nil)
   :config
@@ -130,7 +131,7 @@
 
 (leaf recentf
   :hook (after-init-hook . recentf-mode)
-  :custom
+  :setq
   (recentf-max-saved-items . 1000)
   (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
   (recentf-auto-cleanup . 'never))
@@ -140,7 +141,7 @@
   :hook
   (window-setup-hook . frame-size-resume)
   (kill-emacs-hook . frame-size-save)
-  :custom
+  :setq
   (cursor-type .'box)
   (echo-keystrokes . 0.1)                                     ;; キーストロークをエコーエリアに早く表示する
   (frame-title-format . "")                                   ;; タイトルバーに何も表示しない
@@ -216,7 +217,7 @@
 (leaf paren
   :hook (after-init . show-paren-mode)
   :bind ("M-o" . my/jump-to-match-parens)
-  :custom
+  :setq
   (show-paren-style . 'mixed)
   (show-paren-when-point-inside-paren . t)
   (show-paren-when-point-in-periphery . t)
@@ -235,7 +236,7 @@
 
 (leaf whitespace
   :hook after-init-hook
-  :custom
+  :setq
   (whitespace-style
    . '(face
        spaces
@@ -273,7 +274,7 @@
 
 (leaf doom-modeline
   :ensure t
-  :custom
+  :setq
   (doom-modeline-buffer-encoding . nil)
   (doom-modeline-buffer-file-name-style . 'auto)
   (doom-modeline-height . 32)
@@ -293,7 +294,7 @@
 
 (leaf dashboard
   :ensure t
-  :custom
+  :setq
   (dashboard-items . '((recents  . 10)
                        (projects . 10)))
   (dashboard-startup-banner . 'logo)
@@ -374,11 +375,11 @@
     (setq-local electric-pair-text-pairs electric-pair-pairs)))
 
 (leaf ediff
-  :custom
+  :setq
   (ediff-split-window-function . 'split-window-horizontally))
 
 (leaf smerge-mode
-  :custom
+  :setq
   (smerge-command-prefix . "\C-c\C-m")
   :hydra
   ;; https://github.com/alphapapa/unpackaged.el#smerge-mode
@@ -421,12 +422,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf disable-mouse
   :ensure t
-  :custom (disable-mouse-wheel-events . '("wheel-left" "wheel-right")))
+  :setq (disable-mouse-wheel-events . '("wheel-left" "wheel-right")))
 
 (leaf tempel
   :ensure t
   :bind ("<tab>" . my/tempel-maybe-expand)
-  :custom (tempel-path . "~/.emacs.d/site-lisp/templates")
+  :setq (tempel-path . "~/.emacs.d/site-lisp/templates")
   :defer-config
   (define-key tempel-map [remap my/tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
@@ -445,7 +446,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :hook prog-mode-hook
   :bind ("C-j" . completion-at-point)
-  :custom
+  :setq
   (corfu-min-width . 30)
   (corfu-auto . t)
   (corfu-preview-current . nil)
@@ -454,6 +455,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf cape
   :ensure t
+  :after corfu
   :init
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -461,14 +463,16 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf corfu-doc
   :ensure t
+  :after corfu
   :hook corfu-mode-hook
-  :custom
+  :setq
   (corfu-doc-auto . t)
   (corfu-doc-delay . 5))
 
 (leaf kind-icon
   :ensure t
-  :custom
+  :after corfu
+  :setq
   (kind-icon-default-face . 'corfu-default) ; to compute blended backgrounds correctly)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
@@ -483,7 +487,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ("M-." . smart-jump-go)
   ("M-," . smart-jump-back)
   ("M-'" . smart-jump-references)
-  :custom (smart-jump-bind-keys . nil)
+  :setq (smart-jump-bind-keys . nil)
   :config
   (smart-jump-setup-default-registers)
   (smart-jump-register :modes 'js2-mode
@@ -506,7 +510,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind
   ("M-p" . jumplist-previous)
   ("M-n" . jumplist-next)
-  :custom
+  :setq
   (jumplist-hook-commands
    . '(avy-goto-char
        mouse-set-point
@@ -540,7 +544,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (leaf visual-regexp
   :ensure (t visual-regexp-steroids pcre2el)
   :bind ("C-r" . vr/query-replace)
-  :custom
+  :setq
   (case-fold-search . nil)
   (vr/engine . 'pcre2el))
 
@@ -564,7 +568,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf wgrep
   :ensure t
-  :custom
+  :setq
   (wgrep-enable-key . "e")
   (wgrep-auto-save-buffer . t)
   (wgrep-change-readonly-file . t))
@@ -575,13 +579,13 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf rg
   :ensure t
-  :custom
+  :setq
   (rg-group-result . t)
   (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql"))))
 
 (leaf pangu-spacing
   :ensure t
-  :custom (pangu-spacing-real-insert-separtor . t)
+  :setq (pangu-spacing-real-insert-separtor . t)
   :config
   (defun my/pangu-spacing-region (beg end)
     "Replace regexp with match in region."
@@ -641,7 +645,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                           ("M-s" . nil)
                           ("c" . my/dired-do-copy-with-filename))))
   :ensure all-the-icons-dired
-  :custom ((dired-dwim-target . t))
+  :setq ((dired-dwim-target . t))
   :preface
   (defun my/dired-this-buffer ()
     "Open dired in this buffer."
@@ -705,7 +709,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf dired-x
   :hook (dired-mode-hook . dired-omit-mode)
-  :custom (dired-omit-files . "^\\.DS_Store$"))
+  :setq (dired-omit-files . "^\\.DS_Store$"))
 
 (leaf dired-sidebar
   :ensure t
@@ -713,7 +717,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ("M-d" . dired-sidebar-toggle-sidebar)
   (dired-sidebar-mode-map
    ("o" . dired-sidebar-subtree-toggle))
-  :custom
+  :setq
   (dired-sidebar-use-term-integration . t)
   (dired-sidebar-use-custom-modeline . nil))
 
@@ -731,7 +735,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind
   ("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
   ("C-S-t" . ws-previous-other-window-or-split)
-  :custom (ws-split-window-width-with-em . 130)
+  :setq (ws-split-window-width-with-em . 130)
   :config
   (defun my/ws-other-window-or-split-and-kill-minibuffer ()
     (interactive)
@@ -744,7 +748,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (leaf eyebrowse
   :ensure t
   :hook prog-mode-hook
-  :custom
+  :setq
   (eyebrowse-new-workspace . t)
   (eyebrowse-keymap-prefix . "\C-z"))
 
@@ -764,46 +768,46 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
      (window-deletable-p)
      (delete-window))
     (display-buffer-below-selected buffer alist))
-  :custom
-  ((shackle-select-reused-windows . t)
-   (shackle-default-size . 0.5)
-   (shackle-rules .
-                  '(("*Help*"                   :align right)
-                    ("*Messages*"               :align right)
-                    ("*Backtrace*"              :align right)
-                    ("*Completions*"            :align below :ratio 0.33)
-                    ("*compilation*"            :align below :ratio 0.33)
-                    ("*Compile-Log"             :align below :ratio 0.33)
-                    ("*Kill Ring*"              :align below :ratio 0.33)
-                    ("*Occur*"                  :align below :ratio 0.33)
-                    ("*xref*"                   :align below :ratio 0.33)
-                    ("*prettier errors*"        :align below :ratio 0.33)
-                    (magit-status-mode          :align below :ratio 0.6 :select t)
-                    ;; repl
-                    ("*Python*"                 :align below :select t)
-                    ("*pry*"                    :align below :select t)
-                    ("*ruby*"                   :align below :select t)
-                    ("*nodejs*"                 :align below :select t)
-                    ("*shell*"                  :align below :select t)
-                    ("*Typescript*"             :align below :select t)
-                    ;; excute shell
-                    ("*Async Shell Command*"    :align right)
-                    ("*Shell Command Output*"   :align right)
-                    ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
-                    ("*jest*"                   :regexp t :align below :ratio 0.5)
-                    ;; rust
-                    ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :custom my/shackle-cargo-custom)
-                    ("*Evcxr*"                  :align below :select t)
-                    ;; ruby
-                    ("*rspec-compilation*"      :align below :ratio 0.5)
-                    ))))
+  :setq
+  (shackle-select-reused-windows . t)
+  (shackle-default-size . 0.5)
+  (shackle-rules .
+                 '(("*Help*"                   :align right)
+                   ("*Messages*"               :align right)
+                   ("*Backtrace*"              :align right)
+                   ("*Completions*"            :align below :ratio 0.33)
+                   ("*compilation*"            :align below :ratio 0.33)
+                   ("*Compile-Log"             :align below :ratio 0.33)
+                   ("*Kill Ring*"              :align below :ratio 0.33)
+                   ("*Occur*"                  :align below :ratio 0.33)
+                   ("*xref*"                   :align below :ratio 0.33)
+                   ("*prettier errors*"        :align below :ratio 0.33)
+                   (magit-status-mode          :align below :ratio 0.6 :select t)
+                   ;; repl
+                   ("*Python*"                 :align below :select t)
+                   ("*pry*"                    :align below :select t)
+                   ("*ruby*"                   :align below :select t)
+                   ("*nodejs*"                 :align below :select t)
+                   ("*shell*"                  :align below :select t)
+                   ("*Typescript*"             :align below :select t)
+                   ;; excute shell
+                   ("*Async Shell Command*"    :align right)
+                   ("*Shell Command Output*"   :align right)
+                   ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
+                   ("*jest*"                   :regexp t :align below :ratio 0.5)
+                   ;; rust
+                   ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :setq my/shackle-cargo-custom)
+                   ("*Evcxr*"                  :align below :select t)
+                   ;; ruby
+                   ("*rspec-compilation*"      :align below :ratio 0.5)
+                   )))
 
 (leaf projectile
   :ensure t
   :hook prog-mode-hook
   :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
-  :custom
-  ((projectile-add-known-project . '("~/repos/")))
+  :setq
+  (projectile-add-known-project . '("~/repos/"))
   :preface
   (defun my/projectile-toggle-between-implementation-and-test-other-window ()
     "Toggle between an implementation file and its test file."
@@ -832,7 +836,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
          ("M-g M-g" . consult-goto-line)
          ("M-g o" . consult-outline)
          ("M-g i" . consult-imenu))
-  :custom
+  :setq
   (xref-show-xrefs-function . 'consult-xref)
   (xref-show-definitions-function . 'consult-xref)
   (consult-ghq-find-function . 'find-file)
@@ -872,7 +876,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf vertico
   :ensure t
-  :custom (vertico-count . 30)
+  :setq (vertico-count . 30)
   :init
   (vertico-mode))
 
@@ -901,7 +905,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :bind
   ("M-q" . embark-act)
-  :custom
+  :setq
   (embark-indicators
    . '(embark-which-key-indicatora
        embark-highlight-indicator
@@ -943,7 +947,7 @@ targets."
   :after (embark consult))
 
 (leaf eshell
-  :custom
+  :setq
   (eshell-cmpl-ignore-case . t)
   (eshell-ask-to-save-history . 'always))
 
@@ -951,7 +955,7 @@ targets."
   :ensure (t vterm-toggle)
   :ensure-system-package (cmake libtool)
   :bind ("M-t" . vterm-toggle)
-  :custom
+  :setq
   (vterm-max-scrollback . 10000)
   (vterm-buffer-name-string . "vterm: %s")
   ;; delete "C-h", add <f1> and <f2>
@@ -993,7 +997,7 @@ targets."
 
 (leaf magit
   :ensure (magit gh)
-  :custom ((magit-save-repository-buffers . 'dontask))
+  :setq ((magit-save-repository-buffers . 'dontask))
   :bind (("M-s" . magit-status-toggle)
          ("M-S" . git/body)
          (magit-status-mode-map
@@ -1048,7 +1052,7 @@ targets."
     (if (and (get-buffer git-gutter:popup-buffer) (git-gutter:popup-buffer-window))
         (delete-window (git-gutter:popup-buffer-window))
       (git-gutter:popup-hunk)))
-  :custom
+  :setq
   (git-gutter:modified-sign . " ")
   (git-gutter:added-sign    . " ")
   (git-gutter:deleted-sign  . " ")
@@ -1061,7 +1065,7 @@ targets."
 
 (leaf git-link
   :ensure t
-  :custom
+  :setq
   (git-link-open-in-browser . t)
   (git-link-use-commit . t))
 
@@ -1073,7 +1077,7 @@ targets."
   :bind (("C-`" . open-junk-file))
   :init
   (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
-  :custom
+  :setq
   (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
 (leaf tree-sitter
@@ -1109,7 +1113,7 @@ targets."
   :bind
   (lsp-mode-map
    ("C-c i" . lsp-execute-code-action))
-  :custom
+  :setq
   (lsp-enable-indentation . nil)
   (lsp-eldoc-render-all . t)
   (lsp-signature-auto-activate .t)
@@ -1152,7 +1156,7 @@ targets."
   :ensure t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue" "\\.astro")
-  :custom
+  :setq
   (web-mode-indent-style . 2)
   (web-mode-markup-indent-offset . 2)
   (web-mode-css-indent-offset . 2)
@@ -1229,7 +1233,7 @@ targets."
 (leaf haml-mode :ensure t)
 
 (leaf css-mode
-  :custom (css-indent-offset . 2))
+  :setq (css-indent-offset . 2))
 
 (leaf scss-mode
   :ensure t
@@ -1240,7 +1244,7 @@ targets."
         (make-local-variable 'flycheck-checker)
         (setq flycheck-checker 'general-stylelint)
         )))
-  :custom (scss-indent-offset . 2)
+  :setq (scss-indent-offset . 2)
   :defer-config
   ;; see: https://github.com/flycheck/flycheck/issues/1912
   (flycheck-define-checker general-stylelint
@@ -1267,7 +1271,7 @@ targets."
   :hook
   (js2-mode-hook . lsp-deferred)
   (js2-mode-hook . subword-mode)
-  :custom
+  :setq
   (js-indent-level . 2)
   (js-switch-indent-offset . 2)
   (js2-basic-offset . 2)
@@ -1278,7 +1282,7 @@ targets."
   :ensure t
   :hook
   (typescript-mode-hook . (lsp-deferred subword-mode tree-sitter-mode))
-  :custom (typescript-indent-level . 2)
+  :setq (typescript-indent-level . 2)
   :mode-hydra
   ("REPL"
    (("n" nodejs-repl "node")
@@ -1319,7 +1323,7 @@ targets."
           ("C-c r" . ts-send-region)))
   :ensure-system-package (ts-node . "npm i -g ts-node")
   :commands (run-ts)
-  :custom (ts-comint-program-command . "ts-node"))
+  :setq (ts-comint-program-command . "ts-node"))
 
 (leaf jest
   :ensure t
@@ -1330,7 +1334,7 @@ targets."
   (typescript-mode-hook . jest-minor-mode)
   (js2-mode-hook . jest-minor-mode)
   (web-mode-hook . jest-minor-mode)
-  :custom (jest-executable . "npx jest"))
+  :setq (jest-executable . "npx jest"))
 
 (leaf prettier-js
   :ensure t
@@ -1341,7 +1345,7 @@ targets."
    css-mode-hook
    scss-mode-hook
    graphql-mode-hook)
-  :custom (prettier-js-show-errors . nil))
+  :setq (prettier-js-show-errors . nil))
 
 (leaf deno-fmt :ensure t)
 
@@ -1353,7 +1357,7 @@ targets."
   (ruby-mode-hook . inf-ruby-minor-mode)
   (ruby-mode-hook . inf-ruby-switch-setup)
   :interpreter ("pry")
-  :custom ((ruby-insert-encoding-magic-comment . nil)))
+  :setq ((ruby-insert-encoding-magic-comment . nil)))
 
 (leaf inf-ruby
   :ensure t
@@ -1363,7 +1367,7 @@ targets."
    ("C-c C-l" . ruby-send-line))
   :init
   (defalias 'pry 'inf-ruby)
-  :custom
+  :setq
   (inf-ruby-default-implementation . "pry")
   (inf-ruby-eval-binding . "Pry.toplevel_binding"))
 
@@ -1393,14 +1397,14 @@ targets."
 
 (leaf dart-mode
   :ensure t
-  :custom
+  :setq
   (dart-format-on-save . nil)
   (dart-enable-analysis-server . nil)
   (dart-sdk-path . "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
 
 (leaf flutter
   :ensure t
-  :custom
+  :setq
   (flutter-sdk-path . "~/repos/github.com/flutter/flutter/"))
 
 (leaf go-mode
@@ -1417,7 +1421,7 @@ targets."
 (leaf rust-mode
   :ensure t
   :hook (rust-mode-hook . lsp)
-  :custom
+  :setq
   (lsp-rust-server . 'rust-analyzer)
   (rust-format-on-save . t)
   :mode-hydra
@@ -1468,7 +1472,7 @@ targets."
 (leaf evcxr
   :ensure (parsec)
   :el-get (evcxr :url "https://github.com/hyakt/evcxr-mode.git")
-  :custom (evcxr-shell-enable-font-lock . nil))
+  :setq (evcxr-shell-enable-font-lock . nil))
 
 (leaf sql-mode
   :ensure (sqlup-mode sqlformat)
@@ -1508,13 +1512,13 @@ targets."
   :bind ((org-mode-map
           ("C-," . nil)))
   :mode ("\\.txt$")
-  :custom
+  :setq
   (org-startup-truncated . nil)
   (org-src-fontify-natively . t)
   (org-log-done . 'time))
 
 (leaf ox-latex
-  :custom
+  :setq
   (org-latex-pdf-process . '("latexmk %f"))
   (org-file-apps . '(("pdf" . "/usr/bin/open -a Preview.app %s")))
   (org-latex-with-hyperref . nil)
@@ -1565,7 +1569,7 @@ targets."
   ("\\.markdown\\'" . gfm-mode)
   ("\\.md\\'" . gfm-mode)
   ("\\.mdown\\'" . gfm-mode)
-  :custom
+  :setq
   (markdown-hide-urls . nil)
   (markdown-hide-markup . nil)
   (markdown-fontify-code-block-natively . t)
@@ -1603,9 +1607,9 @@ To be used with `markdown-live-preview-window-function'."
 
 (leaf plantuml-mode
   :ensure t
-  :custom
-  ((plantuml-executable-path . "plantuml")
-   (plantuml-default-exec-mode . 'executable)))
+  :setq
+  (plantuml-executable-path . "plantuml")
+  (plantuml-default-exec-mode . 'executable))
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil
