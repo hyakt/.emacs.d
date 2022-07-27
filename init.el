@@ -8,6 +8,8 @@
 (profiler-start 'cpu+mem)
 
 ;;; Code:
+(setq gc-cons-threshold most-positive-fixnum)
+
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("org" . "https://orgmode.org/elpa/")
@@ -49,7 +51,6 @@
   (make-backup-files . t)                                                                    ;; Backup file を作る
   (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
   (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
-  (gc-cons-threshold . 1073741824)                                                           ;; GC の閾値を設定
   (garbage-collection-messages . nil)                                                        ;; GC 実行のメッセージを表示しない
   (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
   (vc-follow-symlinks . t)                                                                   ;; symlink は必ず追いかける
@@ -1611,6 +1612,7 @@ To be used with `markdown-live-preview-window-function'."
   (plantuml-executable-path . "plantuml")
   (plantuml-default-exec-mode . 'executable))
 
+(setq gc-cons-threshold 1073741824)
 ;; Local Variables:
 ;; indent-tabs-mode: nil
 ;; byte-compile-warnings: (not cl-functions obsolete)
