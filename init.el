@@ -4,38 +4,20 @@
 ;;; Commentary:
 ;; This is hyakt's init.el of Emacs.
 
-(require 'profiler)
-(profiler-start 'cpu+mem)
-
 ;;; Code:
 (setq gc-cons-threshold most-positive-fixnum)
 
 (eval-and-compile
-  (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("gnu" . "https://elpa.gnu.org/packages/")))
+  (setq package-archives
+        '(("org" . "https://orgmode.org/elpa/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
   (unless (package-installed-p 'leaf)
     (package-refresh-contents)
     (package-install 'leaf))
-
-  (leaf leaf
-    :config
-    (leaf leaf-keywords
-      :ensure t
-      :init
-      (leaf el-get :ensure t)
-      (leaf hydra :ensure t)
-      (leaf major-mode-hydra
-        :ensure t
-        :setq
-        (major-mode-hydra-invisible-quit-key . "q")
-        :bind ("M-a" . major-mode-hydra))
-      (leaf system-packages :ensure t)  
-      :config
-      ;; initialize leaf-keywords.el
-      (leaf-keywords-init))))
+  
+  (leaf el-get :ensure t))
 
 ;;; ---------- 初期設定 ----------
 (leaf *basic
@@ -279,15 +261,14 @@
 
 (leaf doom-modeline
   :ensure t
+  :hook (after-init-hook . doom-modeline-mode)
   :setq
   (doom-modeline-buffer-encoding . nil)
   (doom-modeline-buffer-file-name-style . 'auto)
   (doom-modeline-height . 32)
   (doom-modeline-bar-width . 3)
   (doom-modeline-enable-word-count . 5)
-  (doom-modeline-vcs-max-length . 30)
-  :config
-  (doom-modeline-mode 1))
+  (doom-modeline-vcs-max-length . 30))
 
 (leaf beacon
   :ensure t
@@ -311,42 +292,45 @@
   :leaf-defer nil
   :leaf-autoload nil
   :ensure unicode-escape
-  :pretty-hydra
-  ((:title (with-faicon "code" "Window & Edit" 1 -0.05) :quit-key "q")
-   (
-    "Resize"
-    (("j" shrink-window "  ↑  ")
-     ("k" enlarge-window "  ↓  ")
-     ("l" enlarge-window-horizontally "  →  ")
-     ("h" shrink-window-horizontally "  ←  "))
-    "Font"
-    (("+" text-scale-increase "increase")
-     ("-" text-scale-decrease "decrease"))
-    "Align"
-    (("a" align "align")
-     ("r" align-regexp "regex" :exit t))
-    "Convert"
-    (("p"  my/pangu-spacing-region "spacing jp")
-     ("tu" my/url-decode-region "url decode")
-     ("tn" unicode-unescape-region "unicode decode"))
-    "Template"
-    (("i" tempel-insert :exit t))
-    "Yafolding"
-    (("ya" yafolding-show-all "show all")
-     ("yh" yafolding-hide-all "hide all"))
-    "Symbol"
-    (("sr" symbol-overlay-remove-all "remove all" :exit t))
-    "Browse"
-    (("o" (call-process-shell-command "open .") "open finder" :exit t)
-     ("b" browse-url-at-point "browse url" :exit t)
-     ("g" google-this-symbol "google this" :exit t))
-    "File"
-    (("c" my/copy-this-file "copy" :exit t)
-     ("m" my/move-or-rename-this-file "rename" :exit t)
-     ("d" my/delete-or-remove-this-file "delete" :exit t))))
+  :bind ("M-e" . *edit/body)
   :config
   (defun with-faicon (icon str &optional height v-adjust)
-    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)))
+    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+  
+  (pretty-hydra-define
+    "edit"
+    (:title (with-faicon "code" "Window & Edit" 1 -0.05) :quit-key "q")
+    (
+     "Resize"
+     (("j" shrink-window "  ↑  ")
+      ("k" enlarge-window "  ↓  ")
+      ("l" enlarge-window-horizontally "  →  ")
+      ("h" shrink-window-horizontally "  ←  "))
+     "Font"
+     (("+" text-scale-increase "increase")
+      ("-" text-scale-decrease "decrease"))
+     "Align"
+     (("a" align "align")
+      ("r" align-regexp "regex" :exit t))
+     "Convert"
+     (("p"  my/pangu-spacing-region "spacing jp")
+      ("tu" my/url-decode-region "url decode")
+      ("tn" unicode-unescape-region "unicode decode"))
+     "Template"
+     (("i" tempel-insert :exit t))
+     "Yafolding"
+     (("ya" yafolding-show-all "show all")
+      ("yh" yafolding-hide-all "hide all"))
+     "Symbol"
+     (("sr" symbol-overlay-remove-all "remove all" :exit t))
+     "Browse"
+     (("o" (call-process-shell-command "open .") "open finder" :exit t)
+      ("b" browse-url-at-point "browse url" :exit t)
+      ("g" google-this-symbol "google this" :exit t))
+     "File"
+     (("c" my/copy-this-file "copy" :exit t)
+      ("m" my/move-or-rename-this-file "rename" :exit t)
+      ("d" my/delete-or-remove-this-file "delete" :exit t)))))
 
 (leaf keybind
   :bind
@@ -361,7 +345,6 @@
   ("C-x C-k" . my/close-and-kill-this-pane)
   ("C-x C-x" . my/kill-other-buffers)
   ("C-x i" . my/buffer-indent)
-  ("M-e" . *edit/body)
   :init
   (global-unset-key (kbd "C-z")))
 
@@ -388,11 +371,14 @@
 (leaf smerge-mode
   :setq
   (smerge-command-prefix . "\C-c\C-m")
-  :hydra
+  :hook (magit-diff-visit-file-hook . (lambda ()
+                                        (when smerge-mode
+                                          (my/hydra-smerge/body))))
+  :config
   ;; https://github.com/alphapapa/unpackaged.el#smerge-mode
-  (my/hydra-smerge
-   (:color pink :hint nil :post (smerge-auto-leave))
-   "
+  (defhydra unpackaged/smerge-hydra
+    (:color pink :hint nil :post (smerge-auto-leave))
+    "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
 _n_ext       _b_ase               _<_: upper/base        _C_ombine
@@ -401,31 +387,31 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ^^           _a_ll                _R_efine
 ^^           _RET_: current       _E_diff
 "
-   ("n" smerge-next)
-   ("p" smerge-prev)
-   ("b" smerge-keep-base)
-   ("u" smerge-keep-upper)
-   ("l" smerge-keep-lower)
-   ("a" smerge-keep-all)
-   ("RET" smerge-keep-current)
-   ("\C-m" smerge-keep-current)
-   ("<" smerge-diff-base-upper)
-   ("=" smerge-diff-upper-lower)
-   (">" smerge-diff-base-lower)
-   ("R" smerge-refine)
-   ("E" smerge-ediff)
-   ("C" smerge-combine-with-next)
-   ("r" smerge-resolve)
-   ("k" smerge-kill-current)
-   ("ZZ" (lambda ()
-           (interactive)
-           (save-buffer)
-           (bury-buffer))
-    "Save and bury buffer" :color blue)
-   ("q" nil "cancel" :color blue))
-  :hook (magit-diff-visit-file-hook . (lambda ()
-                                        (when smerge-mode
-                                          (my/hydra-smerge/body)))))
+    ("n" smerge-next)
+    ("p" smerge-prev)
+    ("b" smerge-keep-base)
+    ("u" smerge-keep-upper)
+    ("l" smerge-keep-lower)
+    ("a" smerge-keep-all)
+    ("RET" smerge-keep-current)
+    ("\C-m" smerge-keep-current)
+    ("<" smerge-diff-base-upper)
+    ("=" smerge-diff-upper-lower)
+    (">" smerge-diff-base-lower)
+    ("R" smerge-refine)
+    ("E" smerge-ediff)
+    ("C" smerge-combine-with-next)
+    ("r" smerge-resolve)
+    ("k" smerge-kill-current)
+    ("ZZ" (lambda ()
+            (interactive)
+            (save-buffer)
+            (bury-buffer))
+     "Save and bury buffer" :color blue)
+    ("q" nil "cancel" :color blue))
+  :hook (magit-diff-visit-file . (lambda ()
+                                   (when smerge-mode
+                                     (unpackaged/smerge-hydra/body)))))
 
 (leaf disable-mouse
   :ensure t
@@ -607,6 +593,14 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (leaf google-this :ensure t)
 
 ;;; ---------- インターフェース設定 ----------
+(leaf hydra :ensure t)
+
+(leaf major-mode-hydra
+  :ensure t
+  :setq
+  (major-mode-hydra-invisible-quit-key . "q")
+  :bind ("M-a" . major-mode-hydra))
+
 (leaf eldoc
   :config
   (defvar eldoc-buffer-name "*ElDoc*")
@@ -653,7 +647,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                           ("c" . my/dired-do-copy-with-filename))))
   :ensure all-the-icons-dired
   :setq ((dired-dwim-target . t))
-  :preface
+  :config
   (defun my/dired-this-buffer ()
     "Open dired in this buffer."
     (interactive)
@@ -687,28 +681,29 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
            (new-filename (read-string (format "Copy %s to: " filename) (dired-get-filename))))
       (copy-file (dired-get-filename) new-filename))
     (revert-buffer))
-  :mode-hydra
-  ("Mark"
-   (("m" dired-mark)
-    ("t" dired-toggle-marks)
-    ("U" dired-unmark-all-marks)
-    ("u" dired-unmark))
-   "Manipulate"
-   (("+" dired-create-directory :exit t)
-    ("M" dired-do-chmod :exit t)
-    ("D" dired-do-delete :exit t)
-    ("c" my/dired-do-copy-with-filename :exit t)
-    ("C" dired-do-copy :exit t)
-    ("R" dired-do-rename :exit t)
-    ("e" wdired-change-to-wdired-mode :exit t)
-    ("w" dired-copy-filename-as-kill :exit t)
-    ("W" dired-get-fullpath-filename :exit t))
-   "Open"
-   (("o" dired-find-file-other-window :exit t)
-    ("v" dired-view-file :exit t)
-    ("V" my/dired-view-file-other-window :exit t)
-    ("s" dired-sort-toggle-or-edit)
-    ("g" revert-buffer))))
+  
+  (major-mode-hydra-define dired-mode ()
+    ("Mark"
+     (("m" dired-mark)
+      ("t" dired-toggle-marks)
+      ("U" dired-unmark-all-marks)
+      ("u" dired-unmark))
+     "Manipulate"
+     (("+" dired-create-directory :exit t)
+      ("M" dired-do-chmod :exit t)
+      ("D" dired-do-delete :exit t)
+      ("c" my/dired-do-copy-with-filename :exit t)
+      ("C" dired-do-copy :exit t)
+      ("R" dired-do-rename :exit t)
+      ("e" wdired-change-to-wdired-mode :exit t)
+      ("w" dired-copy-filename-as-kill :exit t)
+      ("W" dired-get-fullpath-filename :exit t))
+     "Open"
+     (("o" dired-find-file-other-window :exit t)
+      ("v" dired-view-file :exit t)
+      ("V" my/dired-view-file-other-window :exit t)
+      ("s" dired-sort-toggle-or-edit)
+      ("g" revert-buffer)))))
 
 (leaf wdired
   :hook (dired-mode-hook . (lambda () (require 'wdired)))
@@ -737,8 +732,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind ("C-x C-o" . swap-buffers))
 
 (leaf other-window-or-split
-  :el-get
-  (other-window-or-split :url "https://github.com/conao3/other-window-or-split.git")
+  :init
+  (el-get-bundle other-window-or-split
+    :url "https://github.com/conao3/other-window-or-split.git")
   :bind
   ("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
   ("C-S-t" . ws-previous-other-window-or-split)
@@ -825,7 +821,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf consult
   :ensure t consult-flycheck consult-ghq consult-ls-git
-  :ensure-system-package ((rg . ripgrep) fd)
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
          ("C-x f" . consult-fd)
@@ -893,13 +888,15 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf fussy
   :ensure t
-  :el-get (fzf-native :url "https://github.com/dangduc/fzf-native.git")
   :setq
   (completion-styles . '(fussy))
   (completion-category-defaults . nil)
   (completion-category-overrides . nil)
   (fussy-filter-fn . 'fussy-filter-orderless)
   (fussy-score-fn . 'fussy-fzf-native-score)
+  :config
+  (el-get-bundle fzf-native
+    :url "https://github.com/dangduc/fzf-native.git")
   :defer-config
   (fzf-native-load-dyn))
 
@@ -914,7 +911,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ("M-q" . embark-act)
   :setq
   (embark-indicators
-   . '(embark-which-key-indicatora
+   . '(embark-which-key-indicator
        embark-highlight-indicator
        embark-isearch-highlight-indicator))
   :config
@@ -960,7 +957,6 @@ targets."
 
 (leaf vterm
   :ensure (t vterm-toggle)
-  :ensure-system-package (cmake libtool)
   :bind ("M-t" . vterm-toggle)
   :setq
   (vterm-max-scrollback . 10000)
@@ -981,32 +977,33 @@ targets."
                  (window-height . 0.4))))
 
 (leaf git
-  :ensure-system-package git
-  :pretty-hydra
-  ((:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
-   ("Magit"
-    (("m" magit-status "status" :exit t)
-     ("b" magit-blame "blame" :exit t))
-    "Timemachine"
-    (("t" git-timemachine "timemachine" :exit t))
-    "Gutter"
-    (("p" git-gutter:previous-hunk "previous")
-     ("n" git-gutter:next-hunk "next")
-     ("s" git-gutter:stage-hunk "stage")
-     ("r" git-gutter:revert-hunk "revert")
-     ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk"))
-    "Browse"
-    (("l" git-link "link" :exit t)
-     ("h" git-link-homepage "homepage" :exit t)
-     ("v" my/gh-pr-view "view pr" :exit t)
-     ("o" my/gh-pr-create "open pr" :exit t)
-     ("c" my/git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
+  :bind ("M-S" . git/body)
+  :config
+  (pretty-hydra-define
+    "git"
+    (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
+    ("Magit"
+     (("m" magit-status "status" :exit t)
+      ("b" magit-blame "blame" :exit t))
+     "Timemachine"
+     (("t" git-timemachine "timemachine" :exit t))
+     "Gutter"
+     (("p" git-gutter:previous-hunk "previous")
+      ("n" git-gutter:next-hunk "next")
+      ("s" git-gutter:stage-hunk "stage")
+      ("r" git-gutter:revert-hunk "revert")
+      ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk"))
+     "Browse"
+     (("l" git-link "link" :exit t)
+      ("h" git-link-homepage "homepage" :exit t)
+      ("v" my/gh-pr-view "view pr" :exit t)
+      ("o" my/gh-pr-create "open pr" :exit t)
+      ("c" my/git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
 
 (leaf magit
   :ensure (magit gh)
   :setq ((magit-save-repository-buffers . 'dontask))
   :bind (("M-s" . magit-status-toggle)
-         ("M-S" . git/body)
          (magit-status-mode-map
           ("q" . my/magit-quit-session)
           ("C-o" . magit-diff-visit-file-other-window))
@@ -1045,7 +1042,6 @@ targets."
 
 (leaf magit-delta
   :ensure t
-  :ensure-system-package (delta . git-delta)
   :after magit
   :hook (magit-mode-hook))
 
@@ -1139,25 +1135,27 @@ targets."
 
 (leaf emacs-lisp-mode
   :ensure macrostep
-  :mode-hydra
-  ("Eval"
-   (("b" eval-buffer "buffer")
-    ("e" eval-defun "defun")
-    ("r" eval-region "region"))
-   "REPL"
-   (("I" ielm "ielm"))
-   "Test"
-   (("t" ert "prompt")
-    ("T" (ert t)
-     "all")
-    ("F" (ert :failed) "failed"))
-   "Doc"
-   (("d" describe-foo-at-point "thing-at-pt")
-    ("f" describe-function "function")
-    ("v" describe-variable "variable")
-    ("i" info-lookup-symbol "info lookup"))
-   "Macrostep"
-   (("m" macrostep-mode "macrostep-mode"))))
+  :config
+  (major-mode-hydra-define emacs-lisp-mode
+    (:quit-key "q" :title (concat (all-the-icons-fileicon "elisp") " Emacs Lisp"))
+    ("Eval"
+     (("b" eval-buffer "buffer")
+      ("e" eval-defun "defun")
+      ("r" eval-region "region"))
+     "REPL"
+     (("I" ielm "ielm"))
+     "Test"
+     (("t" ert "prompt")
+      ("T" (ert t)
+       "all")
+      ("F" (ert :failed) "failed"))
+     "Doc"
+     (("d" describe-foo-at-point "thing-at-pt")
+      ("f" describe-function "function")
+      ("v" describe-variable "variable")
+      ("i" info-lookup-symbol "info lookup"))
+     "Macrostep"
+     (("m" macrostep-mode "macrostep-mode")))))
 
 (leaf web-mode
   :ensure t
@@ -1179,34 +1177,6 @@ targets."
                             '(("javascript" . "//")
                               ("jsx" .  "//")
                               ("php" . "/*")))
-  :mode-hydra
-  ("Navigation"
-   (("m" web-mode-navigate "navigate" :color red)
-    ("h" web-mode-element-beginning "beginning" :color red)
-    (";" web-mode-element-end "end" :color red)
-    ("j" web-mode-element-next "next" :color red)
-    ("k" web-mode-element-previous "previous" :color red)
-    ("l" web-mode-element-child "child" :color red)
-    ("h" web-mode-element-parent "parent" :color red))
-   "Editing"
-   (("w" web-mode-element-wrap "wrap")
-    ("c" web-mode-element-clone "clone")
-    ("i" web-mode-element-insert "insert")
-    ("r" web-mode-element-rename "rename")
-    ("s" web-mode-element-select "select")
-    ("v" web-mode-element-vanish "vanish"))
-   "Test"
-   (("tf" jest-file)
-    ("tp" jest-popup)
-    ("tb" my/jest-current-buffer)
-    ("tw" my/jest-watch-current-buffer)
-    ("tcb" my/jest-copy-command-current-buffer)
-    ("tcw" my/jest-copy-command-watch-current-buffer))
-   "Format"
-   (("p" prettier-js)
-    ("d" deno-fmt))
-   "Misc"
-   (("e" my/emmet-change-at-point)))
   :config
   (add-hook 'web-mode-hook
             (lambda ()
@@ -1224,7 +1194,38 @@ targets."
         (progn
           (setq emmet-use-css-transform nil)
           (message "html transform")
-          )))))
+          ))))
+
+  (major-mode-hydra-define web-mode
+    (:quit-key "q" :title (concat (all-the-icons-alltheicon "html5") " Web mode"))
+    ("Navigation"
+     (("m" web-mode-navigate "navigate" :color red)
+      ("h" web-mode-element-beginning "beginning" :color red)
+      (";" web-mode-element-end "end" :color red)
+      ("j" web-mode-element-next "next" :color red)
+      ("k" web-mode-element-previous "previous" :color red)
+      ("l" web-mode-element-child "child" :color red)
+      ("h" web-mode-element-parent "parent" :color red))
+     "Editing"
+     (("w" web-mode-element-wrap "wrap")
+      ("c" web-mode-element-clone "clone")
+      ("i" web-mode-element-insert "insert")
+      ("r" web-mode-element-rename "rename")
+      ("s" web-mode-element-select "select")
+      ("v" web-mode-element-vanish "vanish"))
+     "Test"
+     (("tf" jest-file)
+      ("tp" jest-popup)
+      ("tb" my/jest-current-buffer)
+      ("tw" my/jest-watch-current-buffer)
+      ("tcb" my/jest-copy-command-current-buffer)
+      ("tcw" my/jest-copy-command-watch-current-buffer))
+     "Format"
+     (("p" prettier-js)
+      ("d" deno-fmt))
+     "Misc"
+     (("e" my/emmet-change-at-point)))
+    ))
 
 (leaf emmet-mode
   :ensure t
@@ -1290,23 +1291,25 @@ targets."
   :hook
   (typescript-mode-hook . (lsp-deferred subword-mode tree-sitter-mode))
   :setq (typescript-indent-level . 2)
-  :mode-hydra
-  ("REPL"
-   (("n" nodejs-repl "node")
-    ("t" run-ts "ts-node"))
-   "Test"
-   (("jf" jest-file)
-    ("jp" jest-popup)
-    ("jb" my/jest-current-buffer)
-    ("jw" my/jest-watch-current-buffer)
-    ("jcb" my/jest-copy-command-current-buffer)
-    ("jcw" my/jest-copy-command-watch-current-buffer))
-   "Format"
-   (("p" prettier-js)
-    ("d" deno-fmt)))
   :init
   (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
+  :config
+  (major-mode-hydra-define typescript-mode
+    (:quit-key "q" :title (concat (all-the-icons-fileicon "typescript") " TypeScript"))
+    ("REPL"
+     (("n" nodejs-repl "node")
+      ("t" run-ts "ts-node"))
+     "Test"
+     (("jf" jest-file)
+      ("jp" jest-popup)
+      ("jb" my/jest-current-buffer)
+      ("jw" my/jest-watch-current-buffer)
+      ("jcb" my/jest-copy-command-current-buffer)
+      ("jcw" my/jest-copy-command-watch-current-buffer))
+     "Format"
+     (("p" prettier-js)
+      ("d" deno-fmt)))))
 
 (leaf add-node-modules-path
   :ensure t
@@ -1328,7 +1331,6 @@ targets."
          (("C-x C-e" . ts-send-last-sexp)
           ("C-c b" . ts-send-buffer)
           ("C-c r" . ts-send-region)))
-  :ensure-system-package (ts-node . "npm i -g ts-node")
   :commands (run-ts)
   :setq (ts-comint-program-command . "ts-node"))
 
@@ -1431,28 +1433,26 @@ targets."
   :setq
   (lsp-rust-server . 'rust-analyzer)
   (rust-format-on-save . t)
-  :mode-hydra
-  ("REPL"
-   (("e" evcxr "evcxr")
-    ("v" evcxr-eval-region "region")
-    ("a" evcxr-eval-buffer "buffer"))
-   "Build/Run"
-   (("b" cargo-process-build "build")
-    ("l" cargo-process-clean "clean")
-    ("i" cargo-process-init "init")
-    ("r" cargo-process-run "run")
-    ("c" my/cargo-process-build-and-run-current-bin "run current bin")
-    ("u" cargo-process-update "update"))
-   "Test"
-   (("t" my/cargo-process-build-and-test "build and test")
-    ("f" cargo-process-current-test "current")
-    ("o" cargo-process-current-file-tests "file"))
-   "Lint/Format"
-   (("k" cargo-process-check "check")
-    ("q" cargo-process-clippy "clippy")
-    ("<RET>" cargo-process-fmt "fmt"))
-   "Doc"
-   (("d" cargo-process-doc "doc"))))
+  :config
+  (major-mode-hydra-define rust-mode
+    (:quit-key "q" :title (concat (all-the-icons-alltheicon "rust") "Rust"))
+    ("Build/Run"
+     (("b" cargo-process-build "build")
+      ("l" cargo-process-clean "clean")
+      ("i" cargo-process-init "init")
+      ("r" cargo-process-run "run")
+      ("c" my/cargo-process-build-and-run-current-bin "run current bin")
+      ("u" cargo-process-update "update"))
+     "Test"
+     (("t" my/cargo-process-build-and-test "build and test")
+      ("f" cargo-process-current-test "current")
+      ("o" cargo-process-current-file-tests "file"))
+     "Lint/Format"
+     (("k" cargo-process-check "check")
+      ("q" cargo-process-clippy "clippy")
+      ("<RET>" cargo-process-fmt "fmt"))
+     "Doc"
+     (("d" cargo-process-doc "doc")))))
 
 (leaf cargo
   :preface
@@ -1475,11 +1475,6 @@ targets."
           ("C-c C-c C-c" . my/cargo-process-build-and-test)))
   :ensure t
   :hook (rust-mode-hook . cargo-minor-mode))
-
-(leaf evcxr
-  :ensure (parsec)
-  :el-get (evcxr :url "https://github.com/hyakt/evcxr-mode.git")
-  :setq (evcxr-shell-enable-font-lock . nil))
 
 (leaf sql-mode
   :ensure (sqlup-mode sqlformat)
@@ -1510,8 +1505,7 @@ targets."
 (leaf csv-mode :ensure t)
 
 (leaf jq-mode
-  :ensure t
-  :ensure-system-package jq)
+  :ensure t)
 
 (leaf protobuf-mode :ensure t)
 
@@ -1625,5 +1619,3 @@ To be used with `markdown-live-preview-window-function'."
 ;; End:
 
 ;;; init.el ends here
-(profiler-report)
-(profiler-stop)
