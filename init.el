@@ -180,9 +180,8 @@
   (defun frame-size-resume ()
     "Load the saved frame size."
     (let* ((file "~/.emacs.d/.framesize"))
-      (if (file-exists-p file) (load-file file)))))
-
-(leaf font
+      (if (file-exists-p file) (load-file file))))
+  
   :config
   (set-face-attribute 'default nil
                       :family "Source Han Code JP"
@@ -193,13 +192,15 @@
   (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))
 
 (leaf cursor
+  :leaf-autoload nil
   :when (eq system-type 'darwin)
   :hook (mac-selected-keyboard-input-source-change-hook
          . mac-selected-keyboard-input-source-change-hook-func)
-  :config
+  :init
   (defun mac-selected-keyboard-input-source-change-hook-func ()
     ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
     (set-cursor-color (if (or
+                           (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-input-source))
                            (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
                            (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
                           "#FF5996" "#51AFEF"))))
