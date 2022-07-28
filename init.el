@@ -296,13 +296,13 @@
   :leaf-defer nil
   :leaf-autoload nil
   :ensure unicode-escape
-  :bind ("M-e" . *edit/body)
+  :bind ("M-e" . edit/body)
   :config
   (defun with-faicon (icon str &optional height v-adjust)
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
   
   (pretty-hydra-define
-    "edit"
+    edit
     (:title (with-faicon "code" "Window & Edit" 1 -0.05) :quit-key "q")
     (
      "Resize"
@@ -984,7 +984,7 @@ targets."
   :bind ("M-S" . git/body)
   :config
   (pretty-hydra-define
-    "git"
+    git
     (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
     ("Magit"
      (("m" magit-status "status" :exit t)
