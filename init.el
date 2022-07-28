@@ -5,6 +5,10 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
+
+;; (require 'profiler)
+;; (profiler-start 'cpu)
+
 (setq gc-cons-threshold most-positive-fixnum)
 
 (eval-and-compile
@@ -23,8 +27,9 @@
 (leaf *basic
   :leaf-defer nil
   :leaf-autoload nil
-  :hook ((minibuffer-setup-hook . cursor-intangible-mode)
-         (after-init-hook . global-auto-revert-mode))                                        ;; minibuffer をマウスカーソルで選択できないようにする
+  :hook
+  (minibuffer-setup-hook . cursor-intangible-mode)
+  (after-init-hook . global-auto-revert-mode)  ;; minibuffer をマウスカーソルで選択できないようにする
   :setq-default
   (shell-file-name . "/bin/bash")
   (explicit-shell-file-name . "/bin/bash")
@@ -53,8 +58,6 @@
   (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
   (ring-bell-function . 'ignore)
   (text-quoting-style . 'straight)
-  (scroll-bar-mode . nil)
-  (indent-tabs-mode . nil)
   (custom-file . "~/emacs.d/custom.el")
   :init
   (setenv "SHELL" "/bin/bash")                                                               ;; デフォルトの shell を bash に変更
@@ -139,8 +142,6 @@
   (line-spacing . 0)                                          ;; 行間を無しに設定
   (scroll-conservatively . 35)                                ;; スクロールの設定
   (scroll-margin . 0)                                         ;; スクロールの設定
-  (scroll-step . 1)
-  (scroll-bar-mode . nil)                                     ;; スクロールバーを使わない
   (compilation-scroll-output . t)
   (tab-width . 2)                                             ;; タブの幅は半角スペース 2
   (truncate-lines . nil)                                      ;; 画面端まで来たら折り返す
@@ -160,6 +161,8 @@
   line-number-mode                                            ;; 行番号を表示
   column-number-mode                                          ;; 列番号を表示
   :init
+  (set-scroll-bar-mode nil)                                   ;; スクロールバーを使わない
+  
   (defun frame-size-save ()
     "Save current the frame size and postion."
     (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
@@ -1613,6 +1616,10 @@ To be used with `markdown-live-preview-window-function'."
   (plantuml-default-exec-mode . 'executable))
 
 (setq gc-cons-threshold 1073741824)
+
+;; (profiler-report)
+;; (profiler-stop)
+
 ;; Local Variables:
 ;; indent-tabs-mode: nil
 ;; byte-compile-warnings: (not cl-functions obsolete)
