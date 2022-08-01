@@ -48,7 +48,6 @@
   (enable-recursive-minibuffers . t)                                                         ;; minibuffer の再帰的使用を許可する
   (enable-local-variables . :all)                                                            ;; local variable は全て使用する
   (display-warning-minimum-level . :error)                                                   ;; init.el 読み込み時の Warning を抑制
-  (debug-on-error . t)
   (init-file-debug . t)
   (frame-resize-pixelwise . t)
   (history-length . 3000)
@@ -1293,7 +1292,9 @@ targets."
 (leaf typescript-mode
   :ensure t
   :hook
-  (typescript-mode-hook . (lsp-deferred subword-mode tree-sitter-mode))
+  (typescript-mode-hook . lsp-deferred)
+  (typescript-mode-hook . subword-mode)
+  (typescript-mode-hook . tree-sitter-mode)
   :setq (typescript-indent-level . 2)
   :init
   (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
