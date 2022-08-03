@@ -643,7 +643,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
         (setq eldoc-message-function #'eldoc-buffer-message)
         (message "buffer mode")))))
 
-(leaf dired-mode
+(leaf dired
   :bind (("C-x C-d" . my/dired-this-buffer)
          (dired-mode-map (("C-t" . nil)
                           ("M-s" . nil)
@@ -874,6 +874,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
 
   (consult-customize
+   find-file
    consult-ripgrep
    consult-recent-file
    consult-ls-git
