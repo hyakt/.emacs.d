@@ -961,7 +961,8 @@ targets."
 
 (leaf vterm
   :ensure (t vterm-toggle)
-  :bind ("M-t" . vterm-toggle)
+  :bind (("M-t" . vterm-toggle)
+         (vterm-mode-map (("C-t" . nil))))
   :setq
   (vterm-max-scrollback . 10000)
   (vterm-buffer-name-string . "vterm: %s")
