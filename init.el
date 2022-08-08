@@ -365,7 +365,12 @@
   (defvar web-electric-pairs '((?< . ?>) (?' . ?') (?` . ?`)) "Electric pairs for web-mode.")
   (defun web-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
-    (setq-local electric-pair-text-pairs electric-pair-pairs)))
+    (setq-local electric-pair-text-pairs electric-pair-pairs))
+
+  (defun my/inhibit-electric-pair-mode (char)
+    (minibufferp))
+
+  (setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair-mode))
 
 (leaf ediff
   :setq
@@ -538,6 +543,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook prog-mode-hook)
 
 (leaf visual-regexp
+  :hook (visual-regexp-mode-hook . (lambda () (require 'visual-regexp-steroids)))
   :ensure (t visual-regexp-steroids pcre2el)
   :bind ("C-r" . vr/query-replace)
   :setq
