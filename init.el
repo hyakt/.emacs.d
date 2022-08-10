@@ -1223,7 +1223,8 @@ targets."
       ("i" web-mode-element-insert "insert")
       ("r" web-mode-element-rename "rename")
       ("s" web-mode-element-select "select")
-      ("v" web-mode-element-vanish "vanish"))
+      ("v" web-mode-element-vanish "vanish")
+      ("r" lsp-rename "rename"))
      "Test"
      (("tf" jest-file)
       ("tp" jest-popup)
@@ -1313,6 +1314,8 @@ targets."
     ("REPL"
      (("n" nodejs-repl "node")
       ("t" run-ts "ts-node"))
+     "Editing"
+     (("r" lsp-rename "rename"))
      "Test"
      (("jf" jest-file)
       ("jp" jest-popup)
