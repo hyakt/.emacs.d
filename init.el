@@ -957,6 +957,7 @@ targets."
 
 (leaf embark-consult
   :ensure t
+  :require t
   :hook (embark-collect-mode-hook . consult-preview-at-point-mode)
   :after (embark consult))
 
