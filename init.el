@@ -998,34 +998,11 @@ targets."
                  (reusable-frames . visible)
                  (window-height . 0.4))))
 
-(leaf git
-  :bind ("M-S" . git/body)
-  :config
-  (pretty-hydra-define
-    git
-    (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
-    ("Magit"
-     (("m" magit-status "status" :exit t)
-      ("b" magit-blame "blame" :exit t))
-     "Timemachine"
-     (("t" git-timemachine "timemachine" :exit t))
-     "Gutter"
-     (("p" git-gutter:previous-hunk "previous")
-      ("n" git-gutter:next-hunk "next")
-      ("s" git-gutter:stage-hunk "stage")
-      ("r" git-gutter:revert-hunk "revert")
-      ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk"))
-     "Browse"
-     (("l" git-link "link" :exit t)
-      ("h" git-link-homepage "homepage" :exit t)
-      ("v" my/gh-pr-view "view pr" :exit t)
-      ("o" my/gh-pr-create "open pr" :exit t)
-      ("c" my/git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
-
 (leaf magit
   :ensure (magit gh)
   :setq ((magit-save-repository-buffers . 'dontask))
-  :bind (("M-s" . magit-status-toggle)
+  :bind (("M-S" . git/body)
+         ("M-s" . magit-status-toggle)
          (magit-status-mode-map
           ("q" . my/magit-quit-session)
           ("C-o" . magit-diff-visit-file-other-window))
@@ -1060,7 +1037,29 @@ targets."
                     (provided-mode-derived-p
                      (buffer-local-value 'major-mode (window-buffer w))
                      'magit-mode))
-                (window-list))))
+                (window-list)))
+  :config
+  (pretty-hydra-define
+    git
+    (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
+    ("Magit"
+     (("m" magit-status "status" :exit t)
+      ("b" magit-blame "blame" :exit t))
+     "Timemachine"
+     (("t" git-timemachine "timemachine" :exit t))
+     "Gutter"
+     (("p" git-gutter:previous-hunk "previous")
+      ("n" git-gutter:next-hunk "next")
+      ("s" git-gutter:stage-hunk "stage")
+      ("r" git-gutter:revert-hunk "revert")
+      ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk"))
+     "Browse"
+     (("l" git-link "link" :exit t)
+      ("h" git-link-homepage "homepage" :exit t)
+      ("v" my/gh-pr-view "view pr" :exit t)
+      ("o" my/gh-pr-create "open pr" :exit t)
+      ("c" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
+  )
 
 (leaf magit-delta
   :ensure t
