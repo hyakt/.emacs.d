@@ -1053,10 +1053,11 @@ targets."
       ("s" git-gutter:stage-hunk "stage")
       ("r" git-gutter:revert-hunk "revert")
       ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk"))
-     "Browse"
+     "Link"
      (("l" git-link "link" :exit t)
-      ("h" git-link-homepage "homepage" :exit t)
-      ("v" my/gh-pr-view "view pr" :exit t)
+      ("h" git-link-homepage "homepage" :exit t))
+     "GH"
+     (("v" my/gh-pr-view "view pr" :exit t)
       ("o" my/gh-pr-create "open pr" :exit t)
       ("c" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
   )
