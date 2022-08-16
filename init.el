@@ -749,6 +749,16 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ("C-S-t" . ws-previous-other-window-or-split)
   :setq (ws-split-window-width-with-em . 130)
   :config
+  (defun minibuffer-keyboard-quit () ;; esc quits
+    "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+    (interactive)
+    (if (and delete-selection-mode transient-mark-mode mark-active)
+        (setq deactivate-mark  t)
+      (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+      (abort-recursive-edit)))
+  
   (defun my/ws-other-window-or-split-and-kill-minibuffer ()
     (interactive)
     (if (active-minibuffer-window)
