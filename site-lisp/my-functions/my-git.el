@@ -29,9 +29,9 @@
   (my/projectile-run-shell-command-in-root "gh pr view --web"))
 
 (defun my/gh-pr-create ()
-  "gh open."
+  "gh pr create."
   (interactive)
-  (my/projectile-run-shell-command-in-root "gh pr create --web --base $(git parent)"))
+  (my/projectile-run-shell-command-in-root "git push -u origin HEAD; gh pr create --web --fill"))
 
 (defun my/gh-pr-list ()
   "gh open."
