@@ -586,6 +586,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql"))))
 
 (leaf pangu-spacing
+  :hook (after-init-hook . (lambda () (require 'pangu-spacing)))
   :ensure t
   :setq (pangu-spacing-real-insert-separtor . t)
   :config
