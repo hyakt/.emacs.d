@@ -1059,7 +1059,7 @@ targets."
       ("h" git-link-homepage "homepage" :exit t))
      "GH"
      (("v" my/gh-pr-view "view pr" :exit t)
-      ("c" my/gh-pr-create "open pr" :exit t)
+      ("c" my/gh-pr-create "create pr" :exit t)
       ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
   )
 
