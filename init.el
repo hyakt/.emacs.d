@@ -1504,6 +1504,15 @@ targets."
   :ensure t
   :hook (rust-mode-hook . cargo-minor-mode))
 
+(leaf csharp-mode
+  :ensure t
+  :hook
+  (csharp-mode-hook . lsp-deferred)
+  (csharp-mode-hook . unity-mode)
+  :config
+  (el-get-bundle unity
+    :url "https://github.com/elizagamedev/unity.el.git"))
+
 (leaf sql-mode
   :ensure (sqlup-mode sqlformat)
   :hook
