@@ -922,7 +922,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (leaf fussy
   :ensure t
   :setq
-  (completion-styles . '(fussy))
+  (completion-styles . '(orderless fussy))
   (completion-category-defaults . nil)
   (completion-category-overrides . nil)
   (fussy-filter-fn . 'fussy-filter-orderless)
@@ -988,6 +988,10 @@ targets."
   :ensure t
   :require t
   :setq
+  (migemo-command . "cmigemo")
+  (migemo-options . '("-q" "--emacs" "-i" "\a"))
+  (migemo-user-dictionary . nil)
+  (migemo-regex-dictionary . nil)
   (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict")
   :config
   (migemo-init))
