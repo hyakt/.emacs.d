@@ -1200,6 +1200,7 @@ targets."
                             '(("javascript" . "//")
                               ("jsx" .  "//")
                               ("php" . "/*")))
+  (web-mode-enable-front-matter-block . t) ;ignore Front Matter Data
   :config
   (add-hook 'web-mode-hook
             (lambda ()
