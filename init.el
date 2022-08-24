@@ -926,7 +926,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (leaf fussy
   :ensure t
   :setq
-  (completion-styles . '(orderless fussy))
+  (completion-styles . '(fussy))
   (completion-category-defaults . nil)
   (completion-category-overrides . nil)
   (fussy-filter-fn . 'fussy-filter-orderless)
