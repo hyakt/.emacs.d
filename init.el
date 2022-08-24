@@ -215,14 +215,18 @@
   (defun my/jump-to-match-parens nil
     "対応する括弧に移動"
     (interactive)
-    (let ((paren-point (show-paren--default)))
-      (let ((beg (nth 1 paren-point))
-            (end (nth 3 paren-point)))
-        (if (>=
-             (point)
-             beg)
-            (goto-char end)
-          (goto-char beg))))))
+    (if (and (eq major-mode 'web-mode)
+             (string= (web-mode-language-at-pos) "html"))
+        (web-mode-navigate)
+      (ignore-errors
+        (let ((paren-point (show-paren--default)))
+          (let ((beg (nth 1 paren-point))
+                (end (nth 3 paren-point)))
+            (if (>=
+                 (point)
+                 beg)
+                (goto-char end)
+              (goto-char beg)))) t))))
 
 (leaf whitespace
   :hook after-init-hook
@@ -1248,7 +1252,7 @@ targets."
     (:quit-key "q" :title (concat (all-the-icons-alltheicon "html5") " Web mode"))
     ("Navigation"
      (("m" web-mode-navigate "navigate" :color red)
-      ("h" web-mode-element-beginning "beginning" :color red)
+      ("g" web-mode-element-beginning "beginning" :color red)
       (";" web-mode-element-end "end" :color red)
       ("j" web-mode-element-next "next" :color red)
       ("k" web-mode-element-previous "previous" :color red)
