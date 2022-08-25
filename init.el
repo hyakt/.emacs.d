@@ -547,7 +547,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook prog-mode-hook)
 
 (leaf visual-regexp
-  :hook (visual-regexp-mode-hook . (lambda () (require 'visual-regexp-steroids)))
+  :hook (after-init-hook . (lambda () (require 'visual-regexp-steroids)))
   :ensure (t visual-regexp-steroids pcre2el)
   :bind ("C-r" . vr/query-replace)
   :setq
