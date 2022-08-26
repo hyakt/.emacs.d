@@ -57,13 +57,15 @@
   (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
   (ring-bell-function . 'ignore)
   (text-quoting-style . 'straight)
-  (custom-file . "~/emacs.d/custom.el")
+  (custom-file . "~/.emacs.d/custom.el")
   :init
   (setenv "SHELL" "/bin/bash")                                                               ;; デフォルトの shell を bash に変更
   (setenv "LANG" "ja_JP.UTF-8")                                                              ;; デフォルトの LANG を UTF-8 に設定 ruby/flyceck 対策
   (run-with-idle-timer 60.0 t #'garbage-collect)                                             ;; Run GC every 60 seconds if emacs is idle.
   (defalias 'yes-or-no-p 'y-or-n-p)
-  (keyboard-translate ?\C-h ?\C-?))
+  (keyboard-translate ?\C-h ?\C-?)
+  :config
+  (load custom-file))
 
 (leaf my-functions
   :load-path "~/.emacs.d/site-lisp/my-functions/"
