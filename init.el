@@ -912,18 +912,19 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (leaf orderless
   :ensure t
   :commands (orderless-filter)
-  :config
-  (if (fboundp #'migemo-get-pattern)
-      (defun orderless-migemo (component)
-        "Match COMPONENT as `migemo'."
-        (let ((pattern (migemo-get-pattern component)))
-          (condition-case nil
-              (progn (string-match-p pattern "") pattern)
-            (invalid-regexp nil)))))
+  ;; :config
+  ;; (if (fboundp #'migemo-get-pattern)
+  ;;     (defun orderless-migemo (component)
+  ;;       "Match COMPONENT as `migemo'."
+  ;;       (let ((pattern (migemo-get-pattern component)))
+  ;;         (condition-case nil
+  ;;             (progn (string-match-p pattern "") pattern)
+  ;;           (invalid-regexp nil)))))
 
-  (if (and (boundp 'orderless-matching-styles)
-           (fboundp #'orderless-migemo))
-      (add-to-list 'orderless-matching-styles #'orderless-migemo t)))
+  ;; (if (and (boundp 'orderless-matching-styles)
+  ;;          (fboundp #'orderless-migemo))
+  ;;     (add-to-list 'orderless-matching-styles #'orderless-migemo t))
+  )
 
 (leaf fussy
   :ensure t
@@ -990,17 +991,17 @@ targets."
   :hook (embark-collect-mode-hook . consult-preview-at-point-mode)
   :after (embark consult))
 
-(leaf migemo
-  :ensure t
-  :require t
-  :setq
-  (migemo-command . "cmigemo")
-  (migemo-options . '("-q" "--emacs" "-i" "\a"))
-  (migemo-user-dictionary . nil)
-  (migemo-regex-dictionary . nil)
-  (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict")
-  :config
-  (migemo-init))
+;; (leaf migemo
+;;   :ensure t
+;;   :require t
+;;   :setq
+;;   (migemo-command . "cmigemo")
+;;   (migemo-options . '("-q" "--emacs" "-i" "\a"))
+;;   (migemo-user-dictionary . nil)
+;;   (migemo-regex-dictionary . nil)
+;;   (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict")
+;;   :config
+;;   (migemo-init))
 
 (leaf eshell
   :setq
