@@ -1071,12 +1071,22 @@ targets."
                      'magit-mode))
                 (window-list)))
   :config
+  (defun my/magit-find-file-current ()
+    (interactive)
+    (let ((rev (consult--read
+                (magit-list-refnames nil t)
+                :require-match t
+                :prompt "branch: "
+                :sort nil)))
+      (magit-find-file-other-window rev (expand-file-name (buffer-name)))))
+  
   (pretty-hydra-define
     git
     (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
     ("Magit"
      (("m" magit-status "status" :exit t)
-      ("b" magit-blame "blame" :exit t))
+      ("b" magit-blame "blame" :exit t)
+      ("f" my/magit-find-file-current "view another branch" :exit t))
      "Timemachine"
      (("t" git-timemachine "timemachine" :exit t))
      "Gutter"
@@ -1091,8 +1101,7 @@ targets."
      "GH"
      (("v" my/gh-pr-view "view pr" :exit t)
       ("c" my/gh-pr-create "create pr" :exit t)
-      ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
-  )
+      ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
 
 (leaf magit-delta
   :ensure t
