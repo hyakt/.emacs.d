@@ -781,56 +781,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (eyebrowse-new-workspace . t)
   (eyebrowse-keymap-prefix . "\C-z"))
 
-(leaf shackle
-  :ensure t
-  :config
-  (defun my/shackle--get-cargo-window ()
-    (cl-find-if
-     (lambda (win)
-       (string-match "*Cargo .*?\\*" (buffer-name (window-buffer win))))
-     (window-list)))
-
-  (defun my/shackle-cargo-custom (buffer alist plist)
-    (and
-     (my/shackle--get-cargo-window)
-     (select-window (my/shackle--get-cargo-window))
-     (window-deletable-p)
-     (delete-window))
-    (display-buffer-below-selected buffer alist))
-  :setq
-  (shackle-select-reused-windows . t)
-  (shackle-default-size . 0.5)
-  (shackle-rules .
-                 '(("*Help*"                   :align right)
-                   ("*Messages*"               :align right)
-                   ("*Backtrace*"              :align right)
-                   ("*Completions*"            :align below :ratio 0.33)
-                   ("*compilation*"            :align below :ratio 0.33)
-                   ("*Compile-Log"             :align below :ratio 0.33)
-                   ("*Kill Ring*"              :align below :ratio 0.33)
-                   ("*Occur*"                  :align below :ratio 0.33)
-                   ("*xref*"                   :align below :ratio 0.33)
-                   ("*prettier errors*"        :align below :ratio 0.33)
-                   (magit-status-mode          :align below :ratio 0.6 :select t)
-                   ;; repl
-                   ("*Python*"                 :align below :select t)
-                   ("*pry*"                    :align below :select t)
-                   ("*ruby*"                   :align below :select t)
-                   ("*nodejs*"                 :align below :select t)
-                   ("*shell*"                  :align below :select t)
-                   ("*Typescript*"             :align below :select t)
-                   ;; excute shell
-                   ("*Async Shell Command*"    :align right)
-                   ("*Shell Command Output*"   :align right)
-                   ("\\`\\*My Mocha .*?\\*\\'" :regexp t :align below :ratio 0.5)
-                   ("*jest*"                   :regexp t :align below :ratio 0.5)
-                   ;; rust
-                   ("\\`\\*Cargo .*?\\*\\'"    :align below :regexp t :setq my/shackle-cargo-custom)
-                   ("*Evcxr*"                  :align below :select t)
-                   ;; ruby
-                   ("*rspec-compilation*"      :align below :ratio 0.5)
-                   )))
-
 (leaf projectile
   :ensure t
   :hook prog-mode-hook
@@ -1101,7 +1051,14 @@ targets."
      "GH"
      (("v" my/gh-pr-view "view pr" :exit t)
       ("c" my/gh-pr-create "create pr" :exit t)
-      ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
+      ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
+
+  (add-to-list 'display-buffer-alist
+               '((lambda(bufname _) (with-current-buffer bufname
+                                      (equal major-mode 'magit-status-mode)))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.6))))
 
 (leaf magit-delta
   :ensure t
