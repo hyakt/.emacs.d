@@ -491,6 +491,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (leaf flycheck-grammarly
   :ensure t
   :after flycheck
+  :setq (flycheck-grammarly--avoidance-rule . '((":" . "\n")
+                                                ("#" . "\n")))
   :config (flycheck-grammarly-setup))
 
 (leaf smart-jump
