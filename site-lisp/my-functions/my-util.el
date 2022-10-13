@@ -1,4 +1,4 @@
-;;; my-util.el --- 汎用的なユーティリティ
+;;; my-util.el --- 汎用的なユーティリティ -*- coding: utf-8; lexical-binding: t -*-
 ;;; Commentary:
 
 ;;; Code:
