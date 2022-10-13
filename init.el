@@ -486,7 +486,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf flycheck
   :ensure t
-  :hook prog-mode-hook)
+  :hook prog-mode-hook text-mode)
+
+(leaf flycheck-grammarly
+  :ensure t
+  :after flycheck
+  :config (flycheck-grammarly-setup))
 
 (leaf smart-jump
   :ensure (t dumb-jump)
@@ -1547,7 +1552,6 @@ targets."
 (leaf org
   :bind ((org-mode-map
           ("C-," . nil)))
-  :mode ("\\.txt$")
   :setq
   (org-startup-truncated . nil)
   (org-src-fontify-natively . t)
