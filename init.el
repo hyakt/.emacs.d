@@ -784,7 +784,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (leaf eyebrowse
   :ensure t
   :hook prog-mode-hook
-  :setq
+  :custom
   (eyebrowse-new-workspace . t)
   (eyebrowse-keymap-prefix . "\C-z"))
 
