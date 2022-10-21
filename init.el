@@ -354,6 +354,10 @@
   ("C-x C-k" . my/close-and-kill-this-pane)
   ("C-x C-x" . my/kill-other-buffers)
   ("C-x i" . my/buffer-indent)
+  ("M-<up>" . windmove-up)
+  ("M-<down>" . windmove-down)
+  ("M-<left>" . windmove-left)
+  ("M-<right>" . windmove-right)
   :init
   (global-unset-key (kbd "C-z")))
 
@@ -486,7 +490,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf flycheck
   :ensure t
-  :hook prog-mode-hook text-mode)
+  :hook prog-mode-hook text-mode-hook)
 
 (leaf flycheck-grammarly
   :ensure t
@@ -667,7 +671,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind (("C-x C-d" . my/dired-this-buffer)
          (dired-mode-map (("C-t" . nil)
                           ("M-s" . nil)
-                          ("c" . my/dired-do-copy-with-filename))))
+                          ("c" . my/dired-do-copy-with-filename)
+                          ("M-<up>" . nil)
+                          ("M-<down>" . nil)
+                          ("M-<left>" . nil)
+                          ("M-<right>" . nil))))
   :ensure all-the-icons-dired
   :setq ((dired-dwim-target . t))
   :config
@@ -968,7 +976,11 @@ targets."
 (leaf vterm
   :ensure (t vterm-toggle)
   :bind (("M-t" . vterm-toggle)
-         (vterm-mode-map (("C-t" . nil))))
+         (vterm-mode-map (("C-t" . nil)
+                          ("M-<up>" . nil)
+                          ("M-<down>" . nil)
+                          ("M-<left>" . nil)
+                          ("M-<right>" . nil))))
   :setq
   (vterm-max-scrollback . 10000)
   (vterm-buffer-name-string . "vterm: %s")
