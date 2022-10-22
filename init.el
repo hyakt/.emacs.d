@@ -9,8 +9,6 @@
 ;; (require 'profiler)
 ;; (profiler-start 'cpu)
 
-(setq gc-cons-threshold most-positive-fixnum)
-
 (eval-and-compile
   (setq package-archives
         '(("org" . "https://orgmode.org/elpa/")
@@ -65,65 +63,70 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
   (keyboard-translate ?\C-h ?\C-?)
   :config
-  (load custom-file))
+  (load custom-file)
 
-(leaf my-functions
-  :load-path "~/.emacs.d/site-lisp/my-functions/"
-  :hook (after-init-hook
-         . (lambda ()
-             (require 'my-util)
-             (require 'my-prog)
-             (require 'my-git)))
-  :config
-  (defun my/native-comp-packages ()
-    (interactive)
-    (native-compile-async "~/.emacs.d/init.el")
-    (native-compile-async "~/.emacs.d/site-lisp" 'recursively)))
+  (leaf my-functions
+    :load-path "~/.emacs.d/site-lisp/my-functions/"
+    :hook (after-init-hook
+           . (lambda ()
+               (require 'my-util)
+               (require 'my-prog)
+               (require 'my-git)))
+    :config
+    (defun my/native-comp-packages ()
+      (interactive)
+      (native-compile-async "~/.emacs.d/init.el")
+      (native-compile-async "~/.emacs.d/site-lisp" 'recursively)))
 
-(leaf server
-  :require t
-  :hook (emacs-startup-hook
-         . (lambda () (unless (server-running-p) (server-start)))))
+  (leaf server
+    :require t
+    :hook (emacs-startup-hook
+           . (lambda () (unless (server-running-p) (server-start)))))
 
-(leaf for-macos
-  :require ucs-normalize
-  :when (eq system-type 'darwin)
-  :hook (after-init-hook . mac-auto-ascii-mode)
-  :setq
-  (file-name-coding-system . 'utf-8-hfs)
-  (locale-coding-system . 'utf-8-hfs)
-  :config
-  (prefer-coding-system 'utf-8))
+  (leaf for-macos
+    :require ucs-normalize
+    :when (eq system-type 'darwin)
+    :hook (after-init-hook . mac-auto-ascii-mode)
+    :setq
+    (file-name-coding-system . 'utf-8-hfs)
+    (locale-coding-system . 'utf-8-hfs)
+    :config
+    (prefer-coding-system 'utf-8))
 
-(leaf for-linux
-  :when (eq system-type 'gnu/linux)
-  :setq
-  (file-name-coding-system . 'utf-8)
-  (locale-coding-system . 'utf-8)
-  (x-alt-keysym . 'meta)
-  (x-super-keysym . 'meta)
-  :config
-  (prefer-coding-system 'utf-8))
+  (leaf for-linux
+    :when (eq system-type 'gnu/linux)
+    :setq
+    (file-name-coding-system . 'utf-8)
+    (locale-coding-system . 'utf-8)
+    (x-alt-keysym . 'meta)
+    (x-super-keysym . 'meta)
+    :config
+    (prefer-coding-system 'utf-8))
 
-(leaf exec-path-from-shell
-  :ensure t
-  :if (eq system-type 'darwin)
-  :setq
-  (exec-path-from-shell-variables '("PATH" "GOPATH"))
-  (exec-path-from-shell-arguments . nil)
-  :config
-  (exec-path-from-shell-initialize))
+  (leaf exec-path-from-shell
+    :ensure t
+    :if (eq system-type 'darwin)
+    :setq
+    (exec-path-from-shell-variables '("PATH" "GOPATH"))
+    (exec-path-from-shell-arguments . nil)
+    :config
+    (exec-path-from-shell-initialize))
 
-(leaf savehist
-  :init
-  (savehist-mode))
+  (leaf savehist
+    :init
+    (savehist-mode))
 
-(leaf recentf
-  :hook (after-init-hook . recentf-mode)
-  :setq
-  (recentf-max-saved-items . 1000)
-  (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-  (recentf-auto-cleanup . 'never))
+  (leaf recentf
+    :hook (after-init-hook . recentf-mode)
+    :setq
+    (recentf-max-saved-items . 1000)
+    (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+    (recentf-auto-cleanup . 'never))
+
+  (leaf gcmh
+    :ensure t
+    :config
+    (gcmh-mode t)))
 
 ;;; ---------- 外観設定 ----------
 (leaf *appearance
@@ -1665,7 +1668,6 @@ To be used with `markdown-live-preview-window-function'."
   (plantuml-executable-path . "plantuml")
   (plantuml-default-exec-mode . 'executable))
 
-(setq gc-cons-threshold 1073741824)
 
 ;; (profiler-report)
 ;; (profiler-stop)
