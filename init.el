@@ -9,6 +9,8 @@
 ;; (require 'profiler)
 ;; (profiler-start 'cpu)
 
+(setq gc-cons-threshold most-positive-fixnum)
+
 (eval-and-compile
   (setq package-archives
         '(("org" . "https://orgmode.org/elpa/")
@@ -125,8 +127,28 @@
 
   (leaf gcmh
     :ensure t
+    :setq
+    (gcmh-verbose . t)
     :config
-    (gcmh-mode t)))
+    (gcmh-mode t)
+
+    (defvar my/gcmh-status nil)
+
+    (advice-add #'garbage-collect
+                :before
+                (defun my/gcmh-log-start (&rest _)
+                  (when gcmh-verbose
+                    (setq my/gcmh-status "Running GC..."))))
+
+    (advice-add #'gcmh-message
+                :override
+                (defun my/gcmh-message (format-string &rest args)
+                  (setq my/gcmh-status
+                        (apply #'format-message format-string args))
+                  (run-with-timer 2 nil
+                                  (lambda ()
+                                    (setq my/gcmh-status nil))))))
+  )
 
 ;;; ---------- 外観設定 ----------
 (leaf *appearance
@@ -1004,7 +1026,12 @@ targets."
 
 (leaf magit
   :ensure (magit gh)
-  :setq ((magit-save-repository-buffers . 'dontask))
+  :setq ((magit-save-repository-buffers . 'dontask)
+         (magit-diff-highlight-indentation . nil)
+         (magit-diff-highlight-trailing . nil)
+         (magit-diff-paint-whitespace . nil)
+         (magit-diff-highlight-hunk-body . nil)
+         (magit-diff-refine-hunk . nil))
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
          (magit-status-mode-map
@@ -1668,6 +1695,7 @@ To be used with `markdown-live-preview-window-function'."
   (plantuml-executable-path . "plantuml")
   (plantuml-default-exec-mode . 'executable))
 
+(setq gc-cons-threshold 1073741824)
 
 ;; (profiler-report)
 ;; (profiler-stop)
