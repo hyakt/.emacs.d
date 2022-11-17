@@ -290,7 +290,6 @@
   (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
   :config
   (load-theme 'my-doom-tokyo-night t)
-  (doom-themes-neotree-config)
   (doom-themes-org-config))
 
 (leaf doom-modeline
