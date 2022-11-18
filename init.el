@@ -1006,6 +1006,7 @@ targets."
                           ("M-<left>" . nil)
                           ("M-<right>" . nil))))
   :setq
+  (vterm-shell . "fish")
   (vterm-max-scrollback . 10000)
   (vterm-buffer-name-string . "vterm: %s")
   ;; delete "C-h", add <f1> and <f2>
