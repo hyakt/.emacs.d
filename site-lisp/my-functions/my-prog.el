@@ -171,28 +171,6 @@
     )
    "*My Eslint Specific Errors*"))
 
-(defun my/create-test-file-for-jest ()
-  "Create test file for jest in test directory."
-  (interactive)
-  (let* ((test-file (replace-regexp-in-string "\\." ".test." (file-name-nondirectory (buffer-file-name))))
-         (test-dir (replace-regexp-in-string "src/" "__tests__/" (file-name-directory (buffer-file-name)))))
-    (unless (file-exists-p (expand-file-name test-file test-dir))
-      (progn (unless (file-exists-p test-dir)
-               (make-directory test-dir :create-parents))
-             (find-file-other-window (concat test-dir test-file))
-             (save-buffer)))))
-
-(defun my/create-test-file-for-rspec ()
-  "Create test file for RSpec in test directory."
-  (interactive)
-  (let* ((test-file (replace-regexp-in-string "\\." "_spec." (file-name-nondirectory (buffer-file-name))))
-         (test-dir (replace-regexp-in-string "app/" "spec/" (file-name-directory (buffer-file-name)))))
-    (unless (file-exists-p (expand-file-name test-file test-dir))
-      (progn (unless (file-exists-p test-dir)
-               (make-directory test-dir :create-parents))
-             (find-file-other-window (concat test-dir test-file))
-             (save-buffer)))))
-
 (defun my/eslint-fix-file ()
   "Run eslint for current file."
   (interactive)
