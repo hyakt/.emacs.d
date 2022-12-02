@@ -325,6 +325,7 @@
   :leaf-defer nil
   :leaf-autoload nil
   :ensure unicode-escape
+  :hook (prog-mode-hook . which-func-mode)
   :bind ("M-e" . edit/body)
   :config
   (defun with-faicon (icon str &optional height v-adjust)
@@ -405,6 +406,10 @@
     (minibufferp))
 
   (setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair-mode))
+
+(leaf goto-address
+  :hook
+  (after-init-hook . global-goto-address-mode))
 
 (leaf ediff
   :setq
@@ -1177,6 +1182,7 @@ targets."
       arguments: ((template_string) @property.definition
                   (.offset! @property.definition 0 1 0 -1)))
      ]))
+
 
 ;;; ---------- メジャーモード設定 ----------
 (leaf lsp-mode
