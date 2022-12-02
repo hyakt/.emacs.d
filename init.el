@@ -325,7 +325,6 @@
   :leaf-defer nil
   :leaf-autoload nil
   :ensure unicode-escape
-  :hook (prog-mode-hook . which-func-mode)
   :bind ("M-e" . edit/body)
   :config
   (defun with-faicon (icon str &optional height v-adjust)
@@ -410,6 +409,28 @@
 (leaf goto-address
   :hook
   (after-init-hook . global-goto-address-mode))
+
+(leaf which-func-mode
+  :hook
+  (prog-mode-hook . which-func-mode)
+  :custom (which-func-format
+         . '(:propertize
+             (:eval
+              (and (gethash (selected-window) which-func-table)
+                   (concat (doom-modeline-icon 'octicon "code" "" "" :height 1.0 :v-adjust 0)
+                           (gethash (selected-window) which-func-table))))
+	       local-map
+               (keymap
+	        (mode-line keymap
+			   (mouse-3 . end-of-defun)
+			   (mouse-2 .
+				    #[0 "e\300=\203	 \301 \207~\207"
+				        [1 narrow-to-defun]
+				        2 nil nil])
+			   (mouse-1 . beginning-of-defun)))
+	       face which-func
+	       mouse-face mode-line-highlight
+               help-echo "Current function\nmouse-1: go to beginning\nmouse-2: toggle rest visibility\nmouse-3: go to end")))
 
 (leaf ediff
   :setq
