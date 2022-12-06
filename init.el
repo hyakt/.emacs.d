@@ -65,7 +65,8 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
   (keyboard-translate ?\C-h ?\C-?)
   :config
-  (load custom-file)
+  (when (file-exists-p custom-file)
+    (load custom-file))
 
   (leaf my-functions
     :load-path "~/.emacs.d/site-lisp/my-functions/"
@@ -413,24 +414,24 @@
 (leaf which-func-mode
   :hook
   (prog-mode-hook . which-func-mode)
-  :custom (which-func-format
-         . '(:propertize
-             (:eval
-              (and (gethash (selected-window) which-func-table)
-                   (concat (doom-modeline-icon 'octicon "code" "" "" :height 1.0 :v-adjust 0)
-                           (gethash (selected-window) which-func-table))))
-	       local-map
-               (keymap
-	        (mode-line keymap
-			   (mouse-3 . end-of-defun)
-			   (mouse-2 .
-				    #[0 "e\300=\203	 \301 \207~\207"
-				        [1 narrow-to-defun]
-				        2 nil nil])
-			   (mouse-1 . beginning-of-defun)))
-	       face which-func
-	       mouse-face mode-line-highlight
-               help-echo "Current function\nmouse-1: go to beginning\nmouse-2: toggle rest visibility\nmouse-3: go to end")))
+  (prog-mode-hook . (lambda ()
+                      (setq which-func-format '(:propertize
+                                                (:eval
+                                                 (and (gethash (selected-window) which-func-table)
+                                                      (concat (doom-modeline-icon 'octicon "code" "" "" :height 1.0 :v-adjust 0)
+                                                              (gethash (selected-window) which-func-table))))
+	                                        local-map
+                                                (keymap
+	                                         (mode-line keymap
+			                                    (mouse-3 . end-of-defun)
+			                                    (mouse-2 .
+				                                     #[0 "e\300=\203	 \301 \207~\207"
+				                                         [1 narrow-to-defun]
+				                                         2 nil nil])
+			                                    (mouse-1 . beginning-of-defun)))
+	                                        face which-func
+	                                        mouse-face mode-line-highlight
+                                                help-echo "Current function\nmouse-1: go to beginning\nmouse-2: toggle rest visibility\nmouse-3: go to end")))))
 
 (leaf ediff
   :setq
