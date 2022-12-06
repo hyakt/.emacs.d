@@ -1414,6 +1414,11 @@ targets."
      (("p" prettier-js)
       ("d" deno-fmt)))))
 
+(leaf json-mode
+  :mode
+  ("\\.jsonc\\'" . json-mode)
+  :ensure t)
+
 (leaf add-node-modules-path
   :ensure t
   :hook
