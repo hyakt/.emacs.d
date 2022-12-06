@@ -539,17 +539,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-(leaf flycheck
-  :ensure t
-  :hook prog-mode-hook text-mode-hook)
-
-(leaf flycheck-grammarly
-  :ensure t
-  :after flycheck
-  :setq (flycheck-grammarly--avoidance-rule . '((":" . "\n")
-                                                ("#" . "\n")))
-  :config (flycheck-grammarly-setup))
-
 (leaf smart-jump
   :ensure (t dumb-jump)
   :bind
@@ -862,7 +851,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (buffer-file-name)))))
 
 (leaf consult
-  :ensure t consult-flycheck consult-ghq consult-ls-git
+  :ensure t consult-ghq consult-ls-git
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
          ("C-x f" . consult-fd)
@@ -875,7 +864,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
          ;; M-g bindings (goto-map)
          ("C-s" . consult-line)
          ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flycheck)
+         ("M-g f" . consult-flymake)
          ("M-g g" . consult-goto-line)
          ("M-g M-g" . consult-goto-line)
          ("M-g o" . consult-outline)
@@ -1207,28 +1196,41 @@ targets."
 
 
 ;;; ---------- メジャーモード設定 ----------
-(leaf lsp-mode
+;; (leaf lsp-mode
+;;   :ensure t
+;;   :commands (lsp lsp-deferred)
+;;   :bind
+;;   (lsp-mode-map
+;;    ("C-c i" . lsp-execute-code-action))
+;;   :setq
+;;   (lsp-enable-indentation . nil)
+;;   (lsp-eldoc-render-all . t)
+;;   (lsp-signature-auto-activate .t)
+;;   (lsp-signature-render-documentation . t)
+;;   (lsp-enable-snippet . nil)
+;;   (lsp-enable-xref . t)
+;;   (lsp-headerline-breadcrumb-enable . nil)
+;;   (lsp-enable-file-watchers . nil)
+;;   (lsp-modeline-diagnostics-enable . nil)
+;;   ;; (lsp-clients-deno-import-map . "./import_map.json")
+;;   ;; https://github.com/johnsoncodehk/volar/discussions/471
+;;   (lsp-volar-take-over-mode . t)
+;;   (lsp-completion-provider . :none)
+;;   :config
+;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'"))
+
+(leaf eglot
   :ensure t
-  :commands (lsp lsp-deferred)
-  :bind
-  (lsp-mode-map
-   ("C-c i" . lsp-execute-code-action))
-  :setq
-  (lsp-enable-indentation . nil)
-  (lsp-eldoc-render-all . t)
-  (lsp-signature-auto-activate .t)
-  (lsp-signature-render-documentation . t)
-  (lsp-enable-snippet . nil)
-  (lsp-enable-xref . t)
-  (lsp-headerline-breadcrumb-enable . nil)
-  (lsp-enable-file-watchers . nil)
-  (lsp-modeline-diagnostics-enable . nil)
-  (lsp-clients-deno-import-map . "./import_map.json")
-  ;; https://github.com/johnsoncodehk/volar/discussions/471
-  (lsp-volar-take-over-mode . t)
-  (lsp-completion-provider . :none)
-  :config
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'"))
+  :init
+  (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . (eglot-deno "deno" "lsp")))
+
+  (defclass eglot-deno (eglot-lsp-server) ()
+    :documentation "A custom class for deno lsp.")
+
+  (cl-defmethod eglot-initialization-options ((server eglot-deno))
+    "Passes through required deno initialization options"
+    (list :enable t
+    :lint t)))
 
 (leaf emacs-lisp-mode
   :ensure macrostep
@@ -1344,29 +1346,7 @@ targets."
 
 (leaf scss-mode
   :ensure t
-  :hook
-  (scss-mode-hook
-   . (lambda ()
-       (set
-        (make-local-variable 'flycheck-checker)
-        (setq flycheck-checker 'general-stylelint)
-        )))
-  :setq (scss-indent-offset . 2)
-  :defer-config
-  ;; see: https://github.com/flycheck/flycheck/issues/1912
-  (flycheck-define-checker general-stylelint
-    "A checker for CSS and related languages using Stylelint"
-    :command ("stylelint"
-              (eval flycheck-stylelint-args)
-              (option-flag "--quiet" flycheck-stylelint-quiet)
-              (config-file "--config" flycheck-general-stylelintrc))
-    :standard-input t
-    :error-parser flycheck-parse-stylelint
-    :predicate flycheck-buffer-nonempty-p
-    :modes (scss-mode))
-  (flycheck-def-config-file-var flycheck-general-stylelintrc
-      (general-stylelint) nil)
-  (add-to-list 'flycheck-checkers 'general-stylelint))
+  :setq (scss-indent-offset . 2))
 
 (leaf sass-mode :ensure t)
 
@@ -1388,7 +1368,7 @@ targets."
 (leaf typescript-mode
   :ensure t
   :hook
-  (typescript-mode-hook . lsp-deferred)
+  (typescript-mode-hook . eglot-ensure)
   (typescript-mode-hook . subword-mode)
   (typescript-mode-hook . tree-sitter-mode)
   :setq (typescript-indent-level . 2)
