@@ -1471,18 +1471,19 @@ targets."
 (leaf prettier-js
   :ensure t
   :hook
-  (typescript-mode-hook
-   js2-mode-hook
-   web-mode-hook
-   css-mode-hook
-   scss-mode-hook
-   graphql-mode-hook)
+  (typescript-mode-hook . (lambda ()
+                            (when (my/node-project-p) (prettier-js-mode))))
+  js2-mode-hook
+  web-mode-hook
+  css-mode-hook
+  scss-mode-hook
+  graphql-mode-hook
   :setq (prettier-js-show-errors . nil))
 
 (leaf deno-fmt :ensure t
-  :config
-  (when (my/deno-project-p)
-    (add-hook 'typescript-mode deno-fmt-mode))
+  :hook
+  (typescript-mode-hook . (lambda ()
+                            (when (my/deno-project-p) (deno-fmt-mode)))))
 
 (leaf ruby-mode
   :ensure t
