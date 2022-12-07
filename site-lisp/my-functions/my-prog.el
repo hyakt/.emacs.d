@@ -180,5 +180,17 @@
    nil "*Shell Command Output*" t)
   (revert-buffer t t))
 
+(defun my/deno-project-p ()
+  "Predicate for determining if the open project is a Deno one."
+  (let ((p-root (cdr (project-current))))
+    (or
+     (file-exists-p (concat p-root "deno.json"))
+     (file-exists-p (concat p-root "deno.jsonc")))))
+
+(defun my/node-project-p ()
+  "Predicate for determining if the open project is a Node one."
+  (let ((p-root (cdr (project-current))))
+    (file-exists-p (concat p-root "package.json"))))
+
 (provide 'my-prog)
 ;;; my-prog.el ends here
