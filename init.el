@@ -539,6 +539,16 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
+(leaf flymake
+  :hook emacs-lisp-mode-hook
+  :setq
+  (flymake-fringe-indicator-position . nil))
+
+(leaf flymake-diagnostic-at-point
+  :ensure t
+  :hook
+  (flymake-mode-hook . flymake-diagnostic-at-point-mode))
+
 (leaf smart-jump
   :ensure (t dumb-jump)
   :bind
