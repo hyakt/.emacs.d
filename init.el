@@ -1196,41 +1196,73 @@ targets."
 
 
 ;;; ---------- メジャーモード設定 ----------
-;; (leaf lsp-mode
-;;   :ensure t
-;;   :commands (lsp lsp-deferred)
-;;   :bind
-;;   (lsp-mode-map
-;;    ("C-c i" . lsp-execute-code-action))
-;;   :setq
-;;   (lsp-enable-indentation . nil)
-;;   (lsp-eldoc-render-all . t)
-;;   (lsp-signature-auto-activate .t)
-;;   (lsp-signature-render-documentation . t)
-;;   (lsp-enable-snippet . nil)
-;;   (lsp-enable-xref . t)
-;;   (lsp-headerline-breadcrumb-enable . nil)
-;;   (lsp-enable-file-watchers . nil)
-;;   (lsp-modeline-diagnostics-enable . nil)
-;;   ;; (lsp-clients-deno-import-map . "./import_map.json")
-;;   ;; https://github.com/johnsoncodehk/volar/discussions/471
-;;   (lsp-volar-take-over-mode . t)
-;;   (lsp-completion-provider . :none)
-;;   :config
-;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'"))
-
 (leaf eglot
   :ensure t
-  :init
-  (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . (eglot-deno "deno" "lsp")))
-
+  :setq
+  (eglot-sync-connect . nil)
+  (eglot-confirm-server-initiated-edits . nil)
+  (eglot-extend-to-xref . t)
+  :defer-config
+  ;; https://github.com/joaotavora/eglot/discussions/999
+  ;; brew install deno
   (defclass eglot-deno (eglot-lsp-server) ()
     :documentation "A custom class for deno lsp.")
 
   (cl-defmethod eglot-initialization-options ((server eglot-deno))
     "Passes through required deno initialization options"
     (list :enable t
-    :lint t)))
+          :lint t)) 
+
+  (defun es-server-program (_)
+    "Decide which server to use for ECMA Script based on project characteristics."
+    (cond ((my/deno-project-p) '(eglot-deno "deno" "lsp"))
+	  ((my/node-project-p) '("typescript-language-server" "--stdio"))
+	  (t                nil)))
+
+  (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
+
+  ;; npm i -g @volar/vue-language-server
+  (add-to-list 'eglot-server-programs '(vue-mode . (eglot-volar "vue-language-server" "--stdio")))
+
+
+  (defclass eglot-volar (eglot-lsp-server) ()
+    :documentation "A custom class for volar lsp.")
+
+  (cl-defmethod eglot-initialization-options ((server eglot-volar))
+    "Passes through required volar initialization options"
+    `(
+      ;; Absolute path to node_modules/typescript/lib
+      :typescript (:tsdk ,(concat (projectile-project-root) "node_modules/typescript/lib"))
+      :languageFeatures (
+                         :references t
+                         :implementation t
+                         :definition t
+                         :typeDefinition t
+                         :rename t
+                         :renameFileRefactoring t
+                         :signatureHelp t
+                         :codeAction t
+                         :workspaceSymbol t
+                         :completion (
+                                      :defaultTagNameCase ""
+                                      :defaultAttrNameCase ""
+                                      :getDocumentNameCasesRequest :json-false
+                                      :getDocumentSelectionRequest :json-false)
+                         )
+      :documentFeatures (
+                         :selectionRange t,
+                         :foldingRange :json-false,
+                         :linkedEditingRange t,
+                         :documentSymbol t,
+                         :documentColor t,
+                         :documentFormatting (
+                                              :defaultPrintWidth 100
+                                              :getDocumentPrintWidthRequest :json-false)
+                         :defaultPrintWidth 100
+                         :getDocumentPrintWidthRequest :json-false
+                         )))
+  )
+
 
 (leaf emacs-lisp-mode
   :ensure macrostep
@@ -1260,6 +1292,9 @@ targets."
   :ensure t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue" "\\.astro")
+  :init
+  (define-derived-mode vue-mode web-mode "vue")
+  (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
   :setq
   (web-mode-indent-style . 2)
   (web-mode-markup-indent-offset . 2)
@@ -1281,7 +1316,7 @@ targets."
   (add-hook 'web-mode-hook
             (lambda ()
               (when (equal web-mode-engine "vue")
-                (lsp-deferred))))
+                (eglot-ensure))))
 
   (defun my/emmet-change-at-point ()
     (interactive)
@@ -1356,7 +1391,7 @@ targets."
   :ensure (js2-mode xref-js2)
   :mode ("\\.[mc]?js$" )
   :hook
-  (js2-mode-hook . lsp-deferred)
+  (js2-mode-hook . eglot-ensure)
   (js2-mode-hook . subword-mode)
   :setq
   (js-indent-level . 2)
@@ -1444,13 +1479,16 @@ targets."
    graphql-mode-hook)
   :setq (prettier-js-show-errors . nil))
 
-(leaf deno-fmt :ensure t)
+(leaf deno-fmt :ensure t
+  :config
+  (when (my/deno-project-p)
+    (add-hook 'typescript-mode deno-fmt-mode))
 
 (leaf ruby-mode
   :ensure t
   :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
   :hook
-  (ruby-mode-hook . lsp-deferred)
+  (ruby-mode-hook . eglot-ensure)
   (ruby-mode-hook . inf-ruby-minor-mode)
   (ruby-mode-hook . inf-ruby-switch-setup)
   :interpreter ("pry")
@@ -1506,7 +1544,7 @@ targets."
 
 (leaf go-mode
   :ensure t
-  :hook (go-mode-hook . lsp-deferred))
+  :hook (go-mode-hook . eglot-ensure))
 
 (leaf elixir-mode
   :ensure t)
@@ -1517,7 +1555,7 @@ targets."
 
 (leaf rust-mode
   :ensure t
-  :hook (rust-mode-hook . lsp)
+  :hook (rust-mode-hook . eglot-ensure)
   :setq
   (lsp-rust-server . 'rust-analyzer)
   (rust-format-on-save . t)
@@ -1567,7 +1605,7 @@ targets."
 (leaf csharp-mode
   :ensure t
   :hook
-  (csharp-mode-hook . lsp-deferred)
+  (csharp-mode-hook . eglot-ensure)
   (csharp-mode-hook . unity-mode)
   :config
   (el-get-bundle unity
