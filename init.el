@@ -495,11 +495,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
         (tempel-expand t)
       (indent-for-tab-command))))
 
-;; for lsp-mode
-(leaf yasnippet
-  :ensure t
-  :hook (lsp-mode-hook . (lambda () (yas-minor-mode t))))
-
 (leaf corfu
   :ensure t
   :hook prog-mode-hook
@@ -586,11 +581,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
    . '(avy-goto-char
        mouse-set-point
        smart-jump-go smart-jump-ref
-       lsp-ui-peek-find-definitions lsp-ui-peek-find-references
        xref-find-definitions xref-find-references
        dump-jump-go
        my/jump-to-match-parens
-       consult-line consult-ripgrep consult-find consult-ghq-find consult-fd
+       consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
        er/expand-region
        end-of-buffer beginning-of-buffer))
   (jumplist-ex-mode . t))
@@ -1315,7 +1309,6 @@ targets."
       ("r" web-mode-element-rename "rename")
       ("s" web-mode-element-select "select")
       ("v" web-mode-element-vanish "vanish")
-      ("r" lsp-rename "rename"))
      "Test"
      (("tf" jest-file)
       ("tp" jest-popup)
@@ -1383,8 +1376,6 @@ targets."
     ("REPL"
      (("n" nodejs-repl "node")
       ("t" run-ts "ts-node"))
-     "Editing"
-     (("r" lsp-rename "rename"))
      "Test"
      (("jf" jest-file)
       ("jp" jest-popup)
@@ -1525,7 +1516,6 @@ targets."
   :ensure t
   :hook (rust-mode-hook . eglot-ensure)
   :setq
-  (lsp-rust-server . 'rust-analyzer)
   (rust-format-on-save . t)
   :config
   (major-mode-hydra-define rust-mode
