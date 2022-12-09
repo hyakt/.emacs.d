@@ -407,10 +407,6 @@
 
   (setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair-mode))
 
-(leaf goto-address
-  :hook
-  (after-init-hook . global-goto-address-mode))
-
 (leaf which-func-mode
   :hook
   (prog-mode-hook . which-func-mode)
@@ -551,8 +547,15 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (leaf smart-jump
   :ensure (t dumb-jump)
+  :preface
+  (defun my/goto-address-or-smart-jump ()
+    (interactive)
+    (let ((url (thing-at-point 'url)))
+      (if url
+          (browse-url url)
+        (smart-jump-go))))
   :bind
-  ("M-." . smart-jump-go)
+  ("M-." . my/goto-address-or-smart-jump)
   ("M-," . smart-jump-back)
   ("M-'" . smart-jump-references)
   :setq (smart-jump-bind-keys . nil)
