@@ -1214,63 +1214,17 @@ targets."
   (eglot-extend-to-xref . t)
   :defer-config
   ;; https://github.com/joaotavora/eglot/discussions/999
-  ;; brew install deno
-  (defclass eglot-deno (eglot-lsp-server) ()
-    :documentation "A custom class for deno lsp.")
-
-  (cl-defmethod eglot-initialization-options ((server eglot-deno))
-    "Passes through required deno initialization options"
-    (list :enable t
-          :lint t)) 
-
   (defun es-server-program (_)
     "Decide which server to use for ECMA Script based on project characteristics."
-    (cond ((my/deno-project-p) '(eglot-deno "deno" "lsp"))
-	  ((my/node-project-p) '("typescript-language-server" "--stdio"))
-	  (t                nil)))
+    (cond ((my/deno-project-p) '("deno" "lsp" :initializationOptions (:enable t :lint t)))
+          ((my/node-project-p) '("typescript-language-server" "--stdio"))
+          (t                nil)))
 
   (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
-
   ;; npm i -g @volar/vue-language-server
-  (add-to-list 'eglot-server-programs '(vue-mode . (eglot-volar "vue-language-server" "--stdio")))
-
-
-  (defclass eglot-volar (eglot-lsp-server) ()
-    :documentation "A custom class for volar lsp.")
-
-  (cl-defmethod eglot-initialization-options ((server eglot-volar))
-    "Passes through required volar initialization options"
-    `(
-      ;; Absolute path to node_modules/typescript/lib
-      :typescript (:tsdk ,(concat (projectile-project-root) "node_modules/typescript/lib"))
-      :languageFeatures (
-                         :references t
-                         :implementation t
-                         :definition t
-                         :typeDefinition t
-                         :rename t
-                         :renameFileRefactoring t
-                         :signatureHelp t
-                         :codeAction t
-                         :workspaceSymbol t
-                         :completion (
-                                      :defaultTagNameCase ""
-                                      :defaultAttrNameCase ""
-                                      :getDocumentNameCasesRequest :json-false
-                                      :getDocumentSelectionRequest :json-false)
-                         )
-      :documentFeatures (
-                         :selectionRange t,
-                         :foldingRange :json-false,
-                         :linkedEditingRange t,
-                         :documentSymbol t,
-                         :documentColor t,
-                         :documentFormatting (
-                                              :defaultPrintWidth 100
-                                              :getDocumentPrintWidthRequest :json-false)
-                         :defaultPrintWidth 100
-                         :getDocumentPrintWidthRequest :json-false
-                         )))
+  (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
+                                                    :initializationOptions
+                                                    (:typescript (:tsdk "node_modules/typescript/lib")))))
   )
 
 
