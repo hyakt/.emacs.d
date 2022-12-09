@@ -548,7 +548,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (let ((url (thing-at-point 'url)))
       (if url
           (browse-url url)
-        (smart-jump-go))))
+        (call-interactivety 'smart-jump-go))))
   :bind
   ("M-." . my/goto-address-or-smart-jump)
   ("M-," . smart-jump-back)
