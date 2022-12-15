@@ -548,7 +548,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (let ((url (thing-at-point 'url)))
       (if url
           (browse-url url)
-        (call-interactivety 'smart-jump-go))))
+        (smart-jump-go))))
   :bind
   ("M-." . my/goto-address-or-smart-jump)
   ("M-," . smart-jump-back)
@@ -1206,7 +1206,6 @@ targets."
 (leaf eglot
   :ensure t
   :setq
-  (eglot-sync-connect . nil)
   (eglot-confirm-server-initiated-edits . nil)
   (eglot-extend-to-xref . t)
   :defer-config
@@ -1221,9 +1220,7 @@ targets."
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
-                                                    (:typescript (:tsdk "node_modules/typescript/lib")))))
-  )
-
+                                                    (:typescript (:tsdk "node_modules/typescript/lib"))))))
 
 (leaf emacs-lisp-mode
   :ensure macrostep
@@ -1308,7 +1305,7 @@ targets."
       ("i" web-mode-element-insert "insert")
       ("r" web-mode-element-rename "rename")
       ("s" web-mode-element-select "select")
-      ("v" web-mode-element-vanish "vanish")
+      ("v" web-mode-element-vanish "vanish"))
      "Test"
      (("tf" jest-file)
       ("tp" jest-popup)
