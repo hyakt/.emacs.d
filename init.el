@@ -580,7 +580,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (jumplist-hook-commands
    . '(avy-goto-char
        mouse-set-point
-       smart-jump-go smart-jump-ref
+       my/goto-address-or-smart-jump smart-jump-go smart-jump-ref
        xref-find-definitions xref-find-references
        dump-jump-go
        my/jump-to-match-parens
@@ -1209,6 +1209,21 @@ targets."
   (eglot-confirm-server-initiated-edits . nil)
   (eglot-extend-to-xref . t)
   :defer-config
+  (advice-add 'eglot--xref-make-match
+              :around
+              (lambda (old-fn name uri range)
+                (cond
+                 ((string-prefix-p "deno:/" uri)
+                  (let* ((contents (jsonrpc-request (eglot--current-server-or-lose)
+                                                    :deno/virtualTextDocument
+                                                    (list :textDocument (list :uri uri))))
+                         (cleaned-uri (string-trim-left uri "deno://?"))
+                         (temp-uri (make-temp-file (file-name-base cleaned-uri) nil ".ts" contents)))
+                    (apply old-fn (list name temp-uri range))))
+                 (t
+                  (apply old-fn (list name uri range))))
+                ))
+
   ;; https://github.com/joaotavora/eglot/discussions/999
   (defun es-server-program (_)
     "Decide which server to use for ECMA Script based on project characteristics."
