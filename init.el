@@ -1209,7 +1209,7 @@ targets."
   (eglot-confirm-server-initiated-edits . nil)
   (eglot-extend-to-xref . t)
   :defer-config
-  (defun deno-virtual-text-document-file (old-fn name uri range)
+  (defun advice-eglot--xref-make-match (old-fn name uri range)
     (cond
      ((string-prefix-p "deno:/" uri)
       (let ((contents (jsonrpc-request (eglot--current-server-or-lose)
@@ -1224,7 +1224,7 @@ targets."
      (t
       (apply old-fn (list name uri range)))))
 
-  (advice-add 'eglot--xref-make-match :around #'deno-virtual-text-document-file)
+  (advice-add 'eglot--xref-make-match :around #'pre-processing-eglot--xref-make-match)
 
   ;; https://github.com/joaotavora/eglot/discussions/999
   (defun es-server-program (_)
