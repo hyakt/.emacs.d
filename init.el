@@ -1209,20 +1209,22 @@ targets."
   (eglot-confirm-server-initiated-edits . nil)
   (eglot-extend-to-xref . t)
   :defer-config
-  (advice-add 'eglot--xref-make-match
-              :around
-              (lambda (old-fn name uri range)
-                (cond
-                 ((string-prefix-p "deno:/" uri)
-                  (let* ((contents (jsonrpc-request (eglot--current-server-or-lose)
-                                                    :deno/virtualTextDocument
-                                                    (list :textDocument (list :uri uri))))
-                         (cleaned-uri (string-trim-left uri "deno://?"))
-                         (temp-uri (make-temp-file (file-name-base cleaned-uri) nil ".ts" contents)))
-                    (apply old-fn (list name temp-uri range))))
-                 (t
-                  (apply old-fn (list name uri range))))
-                ))
+  (defun deno-virtual-text-document-file (old-fn name uri range)
+    (cond
+     ((string-prefix-p "deno:/" uri)
+      (let ((contents (jsonrpc-request (eglot--current-server-or-lose)
+                                       :deno/virtualTextDocument
+                                       (list :textDocument (list :uri uri))))
+            (filepath (concat (temporary-file-directory)
+                              (replace-regexp-in-string "^deno:/\\(.*\\)$" "\\1" (url-unhex-string uri)))))
+        (unless (file-exists-p filepath)
+          (make-empty-file filepath 't)
+          (write-region contents nil filepath nil 'silent nil nil))
+        (apply old-fn (list name filepath range))))
+     (t
+      (apply old-fn (list name uri range)))))
+
+  (advice-add 'eglot--xref-make-match :around #'deno-virtual-text-document-file)
 
   ;; https://github.com/joaotavora/eglot/discussions/999
   (defun es-server-program (_)
@@ -1232,6 +1234,7 @@ targets."
           (t                nil)))
 
   (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
+  
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
