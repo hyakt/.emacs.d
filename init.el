@@ -1224,7 +1224,7 @@ targets."
      (t
       (apply old-fn (list name uri range)))))
 
-  (advice-add 'eglot--xref-make-match :around #'pre-processing-eglot--xref-make-match)
+  (advice-add 'eglot--xref-make-match :around #'advice-eglot--xref-make-match)
 
   ;; https://github.com/joaotavora/eglot/discussions/999
   (defun es-server-program (_)
