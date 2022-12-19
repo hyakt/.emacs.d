@@ -1167,7 +1167,7 @@ targets."
 (leaf blamer
   :ensure t
   :setq
-  (blamer-type . 'selected)
+  (blamer-type . 'visual)
   :config
   (global-blamer-mode 1))
 
