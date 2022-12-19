@@ -1164,6 +1164,13 @@ targets."
   (git-link-open-in-browser . t)
   (git-link-use-commit . t))
 
+(leaf blamer
+  :ensure t
+  :setq
+  (blamer-type . 'selected)
+  :config
+  (global-blamer-mode 1))
+
 (leaf docker
   :ensure (t docker-tramp))
 
