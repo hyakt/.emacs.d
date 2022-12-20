@@ -5,17 +5,12 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-(defconst my/loading-profile-p nil
+(defconst my/enable-profile nil
   "If non-nil, use built-in profiler.el.")
-
-(setq user-full-name "hyakt")
-(setq user-mail-address "hyakt0@gmail.com")
 
 (when my/enable-profile
   (require 'profiler)
   (profiler-start 'cpu))
-
-(setq gc-cons-threshold most-positive-fixnum)
 
 (eval-and-compile
   (setq package-archives
@@ -29,124 +24,165 @@
   
   (leaf el-get :ensure t))
 
-;;; ---------- 初期設定 ----------
-(leaf *basic
-  :leaf-defer nil
-  :leaf-autoload nil
-  :hook
-  (minibuffer-setup-hook . cursor-intangible-mode)
-  (after-init-hook . global-auto-revert-mode)  ;; minibuffer をマウスカーソルで選択できないようにする
-  :setq-default
-  (shell-file-name . "/bin/bash")
-  (explicit-shell-file-name . "/bin/bash")
-  :setq
-  (auto-coding-functions . nil)                                                              ;; 文字コードの自動変換保存をしない
-  (completion-ignore-case . t)                                                               ;; file 名の補完で大文字小文字を区別しない
-  (auto-save-default . nil)                                                                  ;; オートセーブのファイルを作らない
-  (make-backup-files . t)                                                                    ;; Backup file を作る
-  (backup-directory-alist . '(("\\.*$" . "~/.emacs.d/.backup")))                             ;; バックアップ先
-  (create-lockfiles . nil)                                                                   ;; ロックファイル(.#filename)のファイルを作らない
-  (garbage-collection-messages . nil)                                                        ;; GC 実行のメッセージを表示しない
-  (message-log-max . 10000)                                                                  ;; ログの記録行数を増やす
-  (vc-follow-symlinks . t)                                                                   ;; symlink は必ず追いかける
-  (completion-ignored-extensions . '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
-  (minibuffer-prompt-properties . '(read-only t cursor-intangible t face minibuffer-prompt)) ;; minibuffer をマウスカーソルで選択できないようにする
-  (enable-recursive-minibuffers . t)                                                         ;; minibuffer の再帰的使用を許可する
-  (enable-local-variables . :all)                                                            ;; local variable は全て使用する
-  (display-warning-minimum-level . :error)                                                   ;; init.el 読み込み時の Warning を抑制
-  (init-file-debug . t)
-  (frame-resize-pixelwise . t)
-  (history-length . 3000)
-  (history-delete-duplicates . t)
-  (scroll-preserve-screen-position . t)
-  (scroll-conservatively . 100)
-  (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
-  (ring-bell-function . 'ignore)
-  (text-quoting-style . 'straight)
-  (custom-file . "~/.emacs.d/custom.el")
-  :init
-  (setenv "SHELL" "/bin/bash")                                                               ;; デフォルトの shell を bash に変更
-  (setenv "LANG" "ja_JP.UTF-8")                                                              ;; デフォルトの LANG を UTF-8 に設定 ruby/flyceck 対策
-  (run-with-idle-timer 60.0 t #'garbage-collect)                                             ;; Run GC every 60 seconds if emacs is idle.
-  (defalias 'yes-or-no-p 'y-or-n-p)
-  (keyboard-translate ?\C-h ?\C-?)
-  :config
-  (when (file-exists-p custom-file)
-    (load custom-file))
+(defvar my-delayed-configurations nil)
 
-  (leaf my-functions
-    :load-path "~/.emacs.d/site-lisp/my-functions/"
-    :hook (after-init-hook
-           . (lambda ()
-               (require 'my-util)
-               (require 'my-prog)
-               (require 'my-git)))
-    :config
-    (defun my/native-comp-packages ()
-      (interactive)
-      (native-compile-async "~/.emacs.d/init.el")
-      (native-compile-async "~/.emacs.d/site-lisp" 'recursively)))
+(defvar my-delayed-configuration-timer nil)
 
-  (leaf server
-    :require t
-    :hook (emacs-startup-hook
-           . (lambda () (unless (server-running-p) (server-start)))))
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq my-delayed-configuration-timer
+                  (run-with-timer
+                   0.1 0.1
+                   (lambda ()
+                     (if my-delayed-configurations
+                         (eval (pop my-delayed-configurations))
+                       (cancel-timer my-delayed-configuration-timer)))))))
 
-  (leaf for-macos
-    :require ucs-normalize
-    :when (eq system-type 'darwin)
-    :hook (after-init-hook . mac-auto-ascii-mode)
-    :setq
-    (file-name-coding-system . 'utf-8-hfs)
-    (locale-coding-system . 'utf-8-hfs)
-    :config
-    (prefer-coding-system 'utf-8))
+(defmacro with-delayed-execution (&rest body)
+  (declare (indent 0))
+  `(push ',(cons 'progn body) my-delayed-configurations))
 
-  (leaf for-linux
-    :when (eq system-type 'gnu/linux)
-    :setq
-    (file-name-coding-system . 'utf-8)
-    (locale-coding-system . 'utf-8)
-    (x-alt-keysym . 'meta)
-    (x-super-keysym . 'meta)
-    :config
-    (prefer-coding-system 'utf-8))
+(defmacro !if (test then &rest else)
+  (declare (indent 2))
+  (when (eval test) then `(progn ,@else)))
 
-  (leaf exec-path-from-shell
-    :ensure t
-    :if (eq system-type 'darwin)
-    :setq
-    (exec-path-from-shell-variables '("PATH" "GOPATH"))
-    (exec-path-from-shell-arguments . nil)
-    :config
-    (exec-path-from-shell-initialize))
+(defun my/native-comp-packages ()
+  (interactive)
+  (native-compile-async "~/.emacs.d/init.el")
+  (native-compile-async "~/.emacs.d/site-lisp" 'recursively))
 
-  (leaf savehist
-    :init
-    (savehist-mode))
+;;; ---------- basic ----------
+(setq user-full-name "hyakt")
+(setq user-mail-address "hyakt0@gmail.com")
 
-  (leaf recentf
-    :hook (after-init-hook . recentf-mode)
-    :setq
-    (recentf-max-saved-items . 1000)
-    (recentf-exclude . '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-    (recentf-auto-cleanup . 'never))
+(setq make-backup-files t)                                      ;; Backup file を作る
+(setq backup-directory-alist '(("\\.*$" "~/.emacs.d/.backup"))) ;; バックアップ先
+(setq cursor-type 'box)
+(setq completion-ignored-extensions '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
+(setq ring-bell-function 'ignore)
+(setq mouse-wheel-scroll-amount '(1 ((control). 5)))
+(setq text-quoting-style 'straight)
+(setq echo-keystrokes 0.1)                                      ;; キーストロークをエコーエリアに早く表示する
+(setq indent-tabs-mode nil)                                     ;; タブの変わりに半角スペースを使う
+(setq inhibit-startup-screen 1)                                 ;; スタートアップメッセージを非表示
+(setq initial-scratch-message "")                               ;; scratch の初期メッセージ消去
+(setq line-spacing 0)                                           ;; 行間を無しに設定
+(setq scroll-conservatively 35)                                 ;; スクロールの設定
+(setq scroll-margin 0)                                          ;; スクロールの設定
+(setq tab-width 2)                                              ;; タブの幅は半角スペース 2
+(setq truncate-lines nil)                                       ;; 画面端まで来たら折り返す
+(setq truncate-partial-width-windows nil)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)  ;; 同じ名前のバッファを開いたときの設定
+(setq split-height-threshold 120)
+(setq split-width-threshold 200)
+(setq auto-coding-functions nil)                                ;; 文字コードの自動変換保存をしない
+(setq completion-ignore-case t)                                 ;; file 名の補完で大文字小文字を区別しない
+(setq auto-save-default nil)                                    ;; オートセーブのファイルを作らない
+(setq create-lockfiles nil)                                     ;; ロックファイル(.#filename)のファイルを作らない
+(setq garbage-collection-messages nil)                          ;; GC 実行のメッセージを表示しない
+(setq message-log-max 10000)                                    ;; ログの記録行数を増やす
+(setq vc-follow-symlinks t)                                     ;; symlink は必ず追いかける
+(setq enable-local-variables :all)                              ;; local variable は全て使用する
+(setq init-file-debug t)
+(setq frame-resize-pixelwise t)
+(setq history-length 3000)
+(setq history-delete-duplicates t)
+(setq scroll-preserve-screen-position t)
+(setq scroll-conservatively 100)
+(setq custom-file "~/.emacs.d/custom.el")
 
-  (leaf gcmh
-    :ensure t
-    :setq
-    (gcmh-verbose . t)
-    :config
-    (gcmh-mode t)
+(setq-default shell-file-name "/bin/bash")
+(defalias 'yes-or-no-p 'y-or-n-p)
+(keyboard-translate ?\C-h ?\C-?)
+
+(!if (eq system-type 'darwin)
+    (progn
+      (mac-auto-ascii-mode t)
+      (setq file-name-coding-system 'utf-8-hfs)
+      (setq locale-coding-system 'utf-8-hfs)
+      (setq prefer-coding-system 'utf-8)))
+
+(with-eval-after-load 'compile
+  (setq compilation-scroll-output t))
+
+(with-eval-after-load 'minibuffer
+  (setq enable-recursive-minibuffers t))
+
+(with-eval-after-load 'shell
+  (setq explicit-shell-file-name "/bin/bash"))
+
+(with-eval-after-load 'recentf
+  (setq recentf-max-saved-items 1000)
+  (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+  (setq recentf-auto-cleanup 'never))
+
+(defun frame-size-save ()
+  "Save current the frame size and postion."
+  (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
+  (erase-buffer)
+  (insert (concat
+           "(set-frame-width  (selected-frame) "
+           (int-to-string (frame-width))")
+            (set-frame-height (selected-frame) "
+           (int-to-string (frame-height))")
+            (set-frame-position (selected-frame) "
+           (int-to-string (car (frame-position))) " "
+           (int-to-string (cdr (frame-position))) ")"))
+  (save-buffer)
+  (kill-buffer))
+
+(defun frame-size-resume ()
+  "Load the saved frame size."
+  (let ((file "~/.emacs.d/.framesize"))
+    (if (file-exists-p file) (load-file file))))
+
+(add-hook 'window-setup-hook 'frame-size-resume)
+
+(with-delayed-execution
+  (add-hook 'kill-emacs-hook 'frame-size-save)
+  
+  (savehist-mode t)
+  (recentf-mode t)
+  
+  (global-auto-revert-mode))
+
+(with-delayed-execution
+  (server-running-p)
+  (server-start))
+
+;; TODO
+(leaf my-functions
+  :load-path "~/.emacs.d/site-lisp/my-functions/"
+  :hook (after-init-hook
+         . (lambda ()
+             (require 'my-util)
+             (require 'my-prog)
+             (require 'my-git))))
+
+;; install for basic
+(eval-when-compile
+  (package-install 'exec-path-from-shell)
+  (package-install 'gcmh))
+
+(with-delayed-execution
+  (exec-path-from-shell-initialize)
+  
+  (with-eval-after-load 'exec-path-from-shell
+    (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
+    (setq exec-path-from-shell-arguments nil)))
+
+(with-delayed-execution
+  (gcmh-mode t)
+
+  (with-eval-after-load 'gcmh
+    (setq gcmh-verbose t)
 
     (defvar my/gcmh-status nil)
-
     (advice-add #'garbage-collect
                 :before
                 (defun my/gcmh-log-start (&rest _)
                   (when gcmh-verbose
                     (setq my/gcmh-status "Running GC..."))))
-
     (advice-add #'gcmh-message
                 :override
                 (defun my/gcmh-message (format-string &rest args)
@@ -154,40 +190,12 @@
                         (apply #'format-message format-string args))
                   (run-with-timer 2 nil
                                   (lambda ()
-                                    (setq my/gcmh-status nil))))))
-  )
+                                    (setq my/gcmh-status nil)))))))
 
 ;;; ---------- 外観設定 ----------
 (leaf *appearance
   :leaf-defer nil
   :leaf-autoload nil
-  :hook
-  (window-setup-hook . frame-size-resume)
-  (kill-emacs-hook . frame-size-save)
-  :setq
-  (cursor-type .'box)
-  (echo-keystrokes . 0.1)                                     ;; キーストロークをエコーエリアに早く表示する
-  (frame-title-format . "")                                   ;; タイトルバーに何も表示しない
-  (indent-tabs-mode . nil)                                    ;; タブの変わりに半角スペースを使う
-  (inhibit-startup-screen . 1)                                ;; スタートアップメッセージを非表示
-  (init-loader-show-log-after-init . 'error-only)             ;; init-loader が失敗した時のみエラーメッセージを表示
-  (initial-scratch-message . "")                              ;; scratch の初期メッセージ消去
-  (line-spacing . 0)                                          ;; 行間を無しに設定
-  (scroll-conservatively . 35)                                ;; スクロールの設定
-  (scroll-margin . 0)                                         ;; スクロールの設定
-  (compilation-scroll-output . t)
-  (tab-width . 2)                                             ;; タブの幅は半角スペース 2
-  (truncate-lines . nil)                                      ;; 画面端まで来たら折り返す
-  (truncate-partial-width-windows . nil)
-  (uniquify-buffer-name-style . 'post-forward-angle-brackets) ;; 同じ名前のバッファを開いたときの設定
-  (split-height-threshold . 120)
-  (split-width-threshold . 200)
-  (default-frame-alist .
-    '((top . 0)
-      (left . 100)
-      (width . (text-pixels . 1280))
-      (height . (text-pixels . 800))
-      (alpha . (100 100))))
   :global-minor-mode
   transient-mark-mode                                         ;; 選択部分のハイライト
   global-font-lock-mode                                       ;; フォントロックモード
@@ -195,25 +203,6 @@
   column-number-mode                                          ;; 列番号を表示
   :init
   (set-scroll-bar-mode nil)                                   ;; スクロールバーを使わない
-  
-  (defun frame-size-save ()
-    "Save current the frame size and postion."
-    (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
-    (erase-buffer)
-    (insert (concat
-             "(set-frame-width  (selected-frame) "
-             (int-to-string (frame-width))")
-            (set-frame-height (selected-frame) "
-             (int-to-string (frame-height))")
-            (set-frame-position (selected-frame) "
-             (int-to-string (car (frame-position))) " "
-             (int-to-string (cdr (frame-position))) ")"))
-    (save-buffer)
-    (kill-buffer))
-  (defun frame-size-resume ()
-    "Load the saved frame size."
-    (let* ((file "~/.emacs.d/.framesize"))
-      (if (file-exists-p file) (load-file file))))
   
   :config
   (set-face-attribute 'default nil
@@ -483,10 +472,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook (magit-diff-visit-file . (lambda ()
                                    (when smerge-mode
                                      (unpackaged/smerge-hydra/body)))))
-
-(leaf disable-mouse
-  :ensure t
-  :setq (disable-mouse-wheel-events . '("wheel-left" "wheel-right")))
 
 (leaf tempel
   :ensure t
@@ -955,12 +940,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (completion-category-defaults . nil)
   (completion-category-overrides . nil)
   (fussy-filter-fn . 'fussy-filter-orderless)
-  (fussy-score-fn . 'fussy-fzf-native-score)
-  :config
-  (el-get-bundle fzf-native
-    :url "https://github.com/dangduc/fzf-native.git")
-  :defer-config
-  (fzf-native-load-dyn))
+  )
 
 (leaf marginalia
   :ensure t
@@ -1174,12 +1154,12 @@ targets."
   (git-link-open-in-browser . t)
   (git-link-use-commit . t))
 
-(leaf blamer
-  :ensure t
-  :setq
-  (blamer-type . 'visual)
-  :config
-  (global-blamer-mode 1))
+;; (leaf blamer
+;;   :ensure t
+;;   :setq
+;;   (blamer-type . 'visual)
+;;   :config
+;;   (global-blamer-mode 1))
 
 (leaf docker
   :ensure (t docker-tramp))
