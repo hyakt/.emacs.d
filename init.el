@@ -535,6 +535,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :setq
   (flymake-fringe-indicator-position . nil))
 
+(leaf flymake-yaml
+  :ensure t
+  :hook (yaml-mode-hook . flymake-mode))
+
 (leaf flymake-diagnostic-at-point
   :ensure t
   :hook
@@ -1173,6 +1177,11 @@ targets."
 
 (leaf docker
   :ensure (t docker-tramp))
+
+(leaf tramp
+  :config
+  (el-get-bundle consult-tramp
+    :url "https://github.com/Ladicle/consult-tramp.git"))
 
 (leaf open-junk-file
   :ensure t
