@@ -12,17 +12,12 @@
   (require 'profiler)
   (profiler-start 'cpu))
 
-(eval-and-compile
+(eval-when-compile
   (setq package-archives
         '(("org" . "https://orgmode.org/elpa/")
           ("melpa" . "https://melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")))
-  (package-initialize)
-  (unless (package-installed-p 'leaf)
-    (package-refresh-contents)
-    (package-install 'leaf))
-  
-  (leaf el-get :ensure t))
+  (package-initialize))
 
 (defvar my-delayed-configurations nil)
 
@@ -46,6 +41,11 @@
   (declare (indent 2))
   (when (eval test) then `(progn ,@else)))
 
+(defmacro !install (name)
+  (declare (indent 0))
+  (when (package-installed-p name)
+    (package-install name)))
+
 (defun my/native-comp-packages ()
   (interactive)
   (native-compile-async "~/.emacs.d/init.el")
@@ -56,7 +56,7 @@
 (setq user-mail-address "hyakt0@gmail.com")
 
 (setq make-backup-files t)                                      ;; Backup file を作る
-(setq backup-directory-alist '(("\\.*$" "~/.emacs.d/.backup"))) ;; バックアップ先
+(setq backup-directory-alist '(("\\.*$" .  "~/.emacs.d/.backup"))) ;; バックアップ先
 (setq cursor-type 'box)
 (setq completion-ignored-extensions '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
 (setq ring-bell-function 'ignore)
@@ -161,8 +161,8 @@
 
 ;; install for basic
 (eval-when-compile
-  (package-install 'exec-path-from-shell)
-  (package-install 'gcmh))
+  (!install 'exec-path-from-shell)
+  (!install 'gcmh))
 
 (with-delayed-execution
   (exec-path-from-shell-initialize)
