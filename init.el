@@ -5,9 +5,15 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
+(defconst my/loading-profile-p nil
+  "If non-nil, use built-in profiler.el.")
 
-;; (require 'profiler)
-;; (profiler-start 'cpu)
+(setq user-full-name "hyakt")
+(setq user-mail-address "hyakt0@gmail.com")
+
+(when my/enable-profile
+  (require 'profiler)
+  (profiler-start 'cpu))
 
 (setq gc-cons-threshold most-positive-fixnum)
 
@@ -1736,6 +1742,10 @@ To be used with `markdown-live-preview-window-function'."
   (plantuml-default-exec-mode . 'executable))
 
 (setq gc-cons-threshold 1073741824)
+
+(when my/enable-profile
+  (profiler-report)
+  (profiler-stop))
 
 ;; (profiler-report)
 ;; (profiler-stop)
