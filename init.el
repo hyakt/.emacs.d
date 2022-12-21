@@ -950,7 +950,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :commands orderless-filter)
 
 (use-package fussy
-  :ensure t 
+  :ensure t
+  :defer 1
   :config
   (setq completion-styles '(fussy))
   (setq completion-category-defaults nil)
@@ -962,9 +963,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package marginalia
   :ensure t 
-  :defer t
-  :config
-  (marginalia-mode t))
+  :hook vertico-mode)
 
 (use-package embark
   :ensure t 
