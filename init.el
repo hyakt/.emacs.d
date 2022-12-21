@@ -54,6 +54,16 @@
   (native-compile-async "~/.emacs.d/init.el")
   (native-compile-async "~/.emacs.d/site-lisp" 'recursively))
 
+(eval-and-compile
+  (setq package-archives
+        '(("org" . "https://orgmode.org/elpa/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("gnu" . "https://elpa.gnu.org/packages/")))
+  (package-initialize t)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package)))
+
 ;;; ---------- basic ----------
 (setq user-full-name "hyakt")
 (setq user-mail-address "hyakt0@gmail.com")
@@ -98,24 +108,6 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (keyboard-translate ?\C-h ?\C-?)
 
-(when-macos
- (with-eval-after-load
-     (mac-auto-ascii-mode t)))
-
-(with-eval-after-load 'compile
-  (setq compilation-scroll-output t))
-
-(with-eval-after-load 'minibuffer
-  (setq enable-recursive-minibuffers t))
-
-(with-eval-after-load 'shell
-  (setq explicit-shell-file-name "/bin/bash"))
-
-(with-eval-after-load 'recentf
-  (setq recentf-max-saved-items 1000)
-  (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-  (setq recentf-auto-cleanup 'never))
-
 (with-bit-delayed-eval
   (defun frame-size-save ()
     "Save current the frame size and postion."
@@ -141,6 +133,9 @@
   (add-hook 'kill-emacs-hook 'frame-size-save))
 
 (with-delayed-eval
+  (when-macos
+   (mac-auto-ascii-mode t))
+
   (savehist-mode t)
   (recentf-mode t)
   (global-auto-revert-mode))
@@ -153,22 +148,45 @@
   (exec-path-from-shell-initialize)
   (gcmh-mode t))
 
-;; TODO
-(leaf my-functions
-  :load-path "~/.emacs.d/site-lisp/my-functions/"
-  :hook (after-init-hook
-         . (lambda ()
-             (require 'my-util)
-             (require 'my-prog)
-             (require 'my-git))))
+(with-delayed-eval
+  (require 'my-util)
+  (require 'my-prog)
+  (require 'my-git))
 
-(with-eval-after-load 'exec-path-from-shell
+(use-package compile
+  :defer t
+  :config
+  (setq compilation-scroll-output t))
+
+(use-package minibuffer
+  :defer t
+  :config
+  (setq enable-recursive-minibuffers t))
+
+(use-package shell
+  :defer t
+  :config
+  (setq explicit-shell-file-name "/bin/bash"))
+
+(use-package recentf
+  :defer t
+  :config
+  (setq recentf-max-saved-items 1000)
+  (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
+  (setq recentf-auto-cleanup 'never))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :defer t
+  :config
   (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
   (setq exec-path-from-shell-arguments nil))
 
-(with-eval-after-load 'gcmh
+(use-package gcmh
+  :ensure t
+  :defer t
+  :config
   (setq gcmh-verbose t)
-
   (defvar my/gcmh-status nil)
   (advice-add #'garbage-collect
               :before
@@ -194,6 +212,16 @@
 (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
 
 (with-delayed-eval
+  (when-macos
+   (defun mac-selected-keyboard-input-source-change-hook-func ()
+     ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
+     (set-cursor-color (if (or
+                            (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-input-source))
+                            (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
+                            (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
+                           "#FF5996" "#51AFEF"))
+     (add-hook 'mac-selected-keyboard-input-source-change-hook 'mac-selected-keyboard-input-source-change-hook-func)))
+ 
   (global-font-lock-mode)
   (transient-mark-mode t)
   (line-number-mode t)
@@ -209,19 +237,10 @@
   (beacon-mode t)
   (volatile-highlights-mode t))
 
-(when-macos
- (with-delayed-eval
-   (defun mac-selected-keyboard-input-source-change-hook-func ()
-     ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
-     (set-cursor-color (if (or
-                            (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-input-source))
-                            (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
-                            (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
-                           "#FF5996" "#51AFEF")))
-
-   (add-hook 'mac-selected-keyboard-input-source-change-hook 'mac-selected-keyboard-input-source-change-hook-func)))
-
-(with-eval-after-load 'paren
+(use-package paren
+  :defer t
+  :bind (("M-o" . my/jump-to-match-parens))
+  :config
   (defun my/jump-to-match-parens nil
     "対応する括弧に移動"
     (interactive)
@@ -237,14 +256,14 @@
                  beg)
                 (goto-char end)
               (goto-char beg)))) t)))
-
-  (global-set-key (kbd "M-o") #'my/jump-to-match-parens)
-
+  
   (setq show-paren-style 'mixed)
   (setq show-paren-when-point-inside-paren t)
   (setq show-paren-when-point-in-periphery t))
 
-(with-eval-after-load 'whitespace
+(use-package whitespace
+  :defer t
+  :config
   (setq whitespace-style
         '(face
           spaces
@@ -268,10 +287,16 @@
   (setq whitespace-action '(auto-cleanup))
   (setq whitespace-space-regexp "\\(\u3000\\)"))
 
-(with-eval-after-load 'doom-themes
+(use-package doom-themes
+  :ensure t
+  :defer t
+  :config
   (doom-themes-org-config))
 
-(with-eval-after-load 'doom-modeline
+(use-package doom-modeline
+  :ensure t
+  :defer t
+  :config
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-buffer-file-name-style 'auto)
   (setq doom-modeline-height 32)
@@ -279,13 +304,14 @@
   (setq doom-modeline-enable-word-count 5)
   (setq doom-modeline-vcs-max-length 30))
 
-(with-eval-after-load 'dashboard
-  (setq dashboard-items '((recents  . 10) (projects 10)))
-  (setq dashboard-startup-banner 'logo))
+;; (use-package dashboard
+;;   :ensure t
+;;   :config
+;;   (setq dashboard-items '((recents  . 10) (projects 10)))
+;;   (setq dashboard-startup-banner 'logo)
+;;   (dashboard-setup-startup-hook))
 
-;; (dashboard-setup-startup-hook)
-
-;;; ---------- 編集機能設定 ----------
+;;; ---------- edit ----------
 (leaf *edit
   :leaf-defer nil
   :leaf-autoload nil
