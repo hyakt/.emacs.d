@@ -12,19 +12,34 @@
   (require 'profiler)
   (profiler-start 'cpu))
 
-(defvar my-delayed-configurations nil)
+(defvar my-delayed-priority-high-configurations nil)
+(defvar my-delayed-priority-high-configuration-timer nil)
 
+(defvar my-delayed-configurations nil)
 (defvar my-delayed-configuration-timer nil)
 
 (add-hook 'after-init-hook
           (lambda ()
+            (setq my-delayed-priority-high-configuration-timer
+                  (run-with-timer
+                   0.1 0.001
+                   (lambda ()
+                     (if my-delayed-priority-high-configurations
+                         (let ((inhibit-message t))
+                           (eval (pop my-delayed-priority-high-configurations)))
+                       (progn
+                         (cancel-timer my-delayed-priority-high-configuration-timer))))))
             (setq my-delayed-configuration-timer
                   (run-with-timer
-                   0.1 0.1
+                   0.3 0.001
                    (lambda ()
                      (if my-delayed-configurations
                          (eval (pop my-delayed-configurations))
                        (cancel-timer my-delayed-configuration-timer)))))))
+
+(defmacro with-bit-delayed-eval (&rest body)
+  (declare (indent 0))
+  `(push ',(cons 'progn body) my-delayed-configurations))
 
 (defmacro with-delayed-eval (&rest body)
   (declare (indent 0))
@@ -84,11 +99,8 @@
 (keyboard-translate ?\C-h ?\C-?)
 
 (when-macos
- (progn
-   (mac-auto-ascii-mode t)
-   (setq file-name-coding-system 'utf-8-hfs)
-   (setq locale-coding-system 'utf-8-hfs)
-   (setq prefer-coding-system 'utf-8)))
+ (with-eval-after-load
+     (mac-auto-ascii-mode t)))
 
 (with-eval-after-load 'compile
   (setq compilation-scroll-output t))
@@ -104,39 +116,42 @@
   (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
   (setq recentf-auto-cleanup 'never))
 
-(defun frame-size-save ()
-  "Save current the frame size and postion."
-  (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
-  (erase-buffer)
-  (insert (concat
-           "(set-frame-width  (selected-frame) "
-           (int-to-string (frame-width))")
+(with-bit-delayed-eval
+  (defun frame-size-save ()
+    "Save current the frame size and postion."
+    (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
+    (erase-buffer)
+    (insert (concat
+             "(set-frame-width  (selected-frame) "
+             (int-to-string (frame-width))")
             (set-frame-height (selected-frame) "
-           (int-to-string (frame-height))")
+             (int-to-string (frame-height))")
             (set-frame-position (selected-frame) "
-           (int-to-string (car (frame-position))) " "
-           (int-to-string (cdr (frame-position))) ")"))
-  (save-buffer)
-  (kill-buffer))
+             (int-to-string (car (frame-position))) " "
+             (int-to-string (cdr (frame-position))) ")"))
+    (save-buffer)
+    (kill-buffer))
 
-(defun frame-size-resume ()
-  "Load the saved frame size."
-  (let ((file "~/.emacs.d/.framesize"))
-    (if (file-exists-p file) (load-file file))))
-
-(add-hook 'window-setup-hook 'frame-size-resume)
+  (defun frame-size-resume ()
+    "Load the saved frame size."
+    (let ((file "~/.emacs.d/.framesize"))
+      (if (file-exists-p file) (load-file file))))
+  
+  (frame-size-resume)
+  (add-hook 'kill-emacs-hook 'frame-size-save))
 
 (with-delayed-eval
-  (add-hook 'kill-emacs-hook 'frame-size-save)
-  
   (savehist-mode t)
   (recentf-mode t)
-  
   (global-auto-revert-mode))
 
 (with-delayed-eval
   (server-running-p)
   (server-start))
+
+(with-delayed-eval
+  (exec-path-from-shell-initialize)
+  (gcmh-mode t))
 
 ;; TODO
 (leaf my-functions
@@ -147,35 +162,37 @@
              (require 'my-prog)
              (require 'my-git))))
 
-(with-delayed-eval
-  (exec-path-from-shell-initialize)
-  
-  (with-eval-after-load 'exec-path-from-shell
-    (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
-    (setq exec-path-from-shell-arguments nil)))
+(with-eval-after-load 'exec-path-from-shell
+  (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
+  (setq exec-path-from-shell-arguments nil))
 
-(with-delayed-eval
-  (gcmh-mode t)
+(with-eval-after-load 'gcmh
+  (setq gcmh-verbose t)
 
-  (with-eval-after-load 'gcmh
-    (setq gcmh-verbose t)
-
-    (defvar my/gcmh-status nil)
-    (advice-add #'garbage-collect
-                :before
-                (defun my/gcmh-log-start (&rest _)
-                  (when gcmh-verbose
-                    (setq my/gcmh-status "Running GC..."))))
-    (advice-add #'gcmh-message
-                :override
-                (defun my/gcmh-message (format-string &rest args)
-                  (setq my/gcmh-status
-                        (apply #'format-message format-string args))
-                  (run-with-timer 2 nil
-                                  (lambda ()
-                                    (setq my/gcmh-status nil)))))))
+  (defvar my/gcmh-status nil)
+  (advice-add #'garbage-collect
+              :before
+              (defun my/gcmh-log-start (&rest _)
+                (when gcmh-verbose
+                  (setq my/gcmh-status "Running GC..."))))
+  (advice-add #'gcmh-message
+              :override
+              (defun my/gcmh-message (format-string &rest args)
+                (setq my/gcmh-status
+                      (apply #'format-message format-string args))
+                (run-with-timer 2 nil
+                                (lambda ()
+                                  (setq my/gcmh-status nil))))))
 
 ;;; ---------- appearance ----------
+(set-face-attribute 'default nil
+                    :family "Source Han Code JP"
+                    :height 110)
+(set-face-attribute 'variable-pitch nil
+                    :family "Myrica M"
+                    :height 120)
+(set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
+
 (with-delayed-eval
   (global-font-lock-mode)
   (transient-mark-mode t)
@@ -185,16 +202,12 @@
   (whitespace-mode t)
   (set-scroll-bar-mode nil)
 
-  (beacon-mode t)
-  (volatile-highlights t)
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
+  (load-theme 'my-doom-tokyo-night t)
 
-  (set-face-attribute 'default nil
-                      :family "Source Han Code JP"
-                      :height 110)
-  (set-face-attribute 'variable-pitch nil
-                      :family "Myrica M"
-                      :height 120)
-  (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))
+  (doom-modeline-mode t)
+  (beacon-mode t)
+  (volatile-highlights-mode t))
 
 (when-macos
  (with-delayed-eval
@@ -226,7 +239,7 @@
               (goto-char beg)))) t)))
 
   (global-set-key (kbd "M-o") #'my/jump-to-match-parens)
-  
+
   (setq show-paren-style 'mixed)
   (setq show-paren-when-point-inside-paren t)
   (setq show-paren-when-point-in-periphery t))
@@ -256,23 +269,21 @@
   (setq whitespace-space-regexp "\\(\u3000\\)"))
 
 (with-eval-after-load 'doom-themes
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
-  (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 
-(with-delayed-eval
-  (with-eval-after-load 'doom-modeline
-    (setq doom-modeline-buffer-encoding nil)
-    (setq doom-modeline-buffer-file-name-style 'auto)
-    (setq doom-modeline-height 32)
-    (setq doom-modeline-bar-width 3)
-    (setq doom-modeline-enable-word-count 5)
-    (setq doom-modeline-vcs-max-length 30)))
+(with-eval-after-load 'doom-modeline
+  (setq doom-modeline-buffer-encoding nil)
+  (setq doom-modeline-buffer-file-name-style 'auto)
+  (setq doom-modeline-height 32)
+  (setq doom-modeline-bar-width 3)
+  (setq doom-modeline-enable-word-count 5)
+  (setq doom-modeline-vcs-max-length 30))
 
 (with-eval-after-load 'dashboard
   (setq dashboard-items '((recents  . 10) (projects 10)))
-  (setq dashboard-startup-banner 'logo)
-  (dashboard-setup-startup-hook))
+  (setq dashboard-startup-banner 'logo))
+
+;; (dashboard-setup-startup-hook)
 
 ;;; ---------- 編集機能設定 ----------
 (leaf *edit
@@ -283,7 +294,7 @@
   :config
   (defun with-faicon (icon str &optional height v-adjust)
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
-  
+
   (pretty-hydra-define
     edit
     (:title (with-faicon "code" "Window & Edit" 1 -0.05) :quit-key "q")
@@ -712,7 +723,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
            (new-filename (read-string (format "Copy %s to: " filename) (dired-get-filename))))
       (copy-file (dired-get-filename) new-filename))
     (revert-buffer))
-  
+
   (major-mode-hydra-define dired-mode ()
     ("Mark"
      (("m" dired-mark)
@@ -780,7 +791,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (setq deactivate-mark  t)
       (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
       (abort-recursive-edit)))
-  
+
   (defun my/ws-other-window-or-split-and-kill-minibuffer ()
     (interactive)
     (if (active-minibuffer-window)
@@ -938,7 +949,7 @@ targets."
            keymap)
          nil nil t (lambda (binding)
                      (not (string-suffix-p "-argument" (cdr binding))))))))
-  
+
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
@@ -1049,7 +1060,7 @@ targets."
                 :prompt "branch: "
                 :sort nil)))
       (magit-find-file-other-window rev (expand-file-name (buffer-name)))))
-  
+
   (pretty-hydra-define
     git
     (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
@@ -1194,7 +1205,7 @@ targets."
           (t                nil)))
 
   (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
-  
+
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
