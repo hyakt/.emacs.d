@@ -44,3 +44,5 @@ el-get/
 /emojis/
 /eln-cache/
 /projects
+/early-init.elc
+/init.elc
