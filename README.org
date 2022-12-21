@@ -7,7 +7,7 @@
    mkdir -p ~/repos/github.com/hyakt
    cd  ~/repos/github.com/hyakt
    git clone https://github.com/hyakt/.emacs.d
-   ln -sfv  ~/repos/github.com/hyakt/.emacs.d ~/
+   make
    #+END_SRC
 
 ** Requirements
