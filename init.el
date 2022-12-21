@@ -5,7 +5,7 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-(defconst my/enable-profile nil
+(defconst my/enable-profile t
   "If non-nil, use built-in profiler.el.")
 
 (when my/enable-profile
@@ -170,7 +170,7 @@
 
 (use-package exec-path-from-shell
   :ensure t
-  :defer 0.1
+  :defer 1
   :config
   (exec-path-from-shell-initialize)
   (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
@@ -178,7 +178,7 @@
 
 (use-package gcmh
   :ensure t
-  :defer 0.1
+  :defer 5
   :config
   (setq gcmh-verbose t)
   (defvar my/gcmh-status nil)
@@ -409,13 +409,9 @@
   (setq ediff-split-window-function 'split-window-horizontally))
 
 (use-package flymake
-  :hook emacs-lisp-mode-hook
+  :hook emacs-lisp-mode
   :config
   (setq flymake-fringe-indicator-position nil))
-
-(use-package flymake-yaml
-  :ensure t
-  :hook (yaml-mode-hook . flymake-mode))
 
 (use-package flymake-diagnostic-at-point
   :ensure t
@@ -517,6 +513,7 @@
           my/goto-address-or-smart-jump smart-jump-go smart-jump-ref
           xref-find-definitions xref-find-references
           dump-jump-go
+          vr/query-replace
           my/jump-to-match-parens
           consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
           er/expand-region
@@ -592,7 +589,7 @@
 
 (use-package pangu-spacing
   :ensure t
-  :defer 1
+  :defer 5
   :config
   (setq pangu-spacing-real-insert-separtor t)
   (defun my/pangu-spacing-region (beg end)
@@ -611,16 +608,73 @@
 (use-package google-this
   :ensure t)
 
-;;; ---------- インターフェース設定 ----------
-(leaf hydra :ensure t)
+;;; ---------- interface ----------
+(use-package hydra
+  :ensure t)
 
-(leaf major-mode-hydra
+(use-package major-mode-hydra
   :ensure t
-  :setq
-  (major-mode-hydra-invisible-quit-key . "q")
-  :bind ("M-a" . major-mode-hydra))
+  :bind ("M-a" . major-mode-hydra)
+  :config
+  (setq major-mode-hydra-invisible-quit-key "q"))
 
-(leaf eldoc
+(use-package which-key
+  :ensure t
+  :hook prog-mode)
+
+(use-package swap-buffers
+  :ensure t
+  :bind ("C-x C-o" . swap-buffers))
+
+(use-package other-window-or-split
+  :init
+  (el-get-bundle other-window-or-split
+    :url "https://github.com/conao3/other-window-or-split.git")
+  :bind
+  ("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
+  ("C-S-t" . ws-previous-other-window-or-split)
+  :config
+  (setq ws-split-window-width-with-em 130)
+  (defun minibuffer-keyboard-quit () ;; esc quits
+    "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+    (interactive)
+    (if (and delete-selection-mode transient-mark-mode mark-active)
+        (setq deactivate-mark  t)
+      (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+      (abort-recursive-edit)))
+
+  (defun my/ws-other-window-or-split-and-kill-minibuffer ()
+    (interactive)
+    (if (active-minibuffer-window)
+        (progn
+          (minibuffer-keyboard-quit)
+          (ws-other-window-or-split))
+      (ws-other-window-or-split))))
+
+(use-package projectile
+  :ensure t
+  :defer 1
+  :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
+  :config
+  (setq projectile-add-known-project '("~/repos/"))
+  
+  (defun my/projectile-toggle-between-implementation-and-test-other-window ()
+    "Toggle between an implementation file and its test file."
+    (interactive)
+    (find-file-other-window
+     (projectile-find-implementation-or-test
+      (buffer-file-name)))))
+
+(use-package eyebrowse
+  :ensure t
+  :defer 5
+  :config
+  (setq eyebrowse-new-workspace t)
+  (setq eyebrowse-keymap-prefix "\C-z"))
+
+(use-package eldoc
   :config
   (defvar eldoc-buffer-name "*ElDoc*")
 
@@ -659,23 +713,26 @@
         (setq eldoc-message-function #'eldoc-buffer-message)
         (message "buffer mode")))))
 
-(leaf dired
+(use-package dired
   :bind (("C-x C-d" . my/dired-this-buffer)
-         (dired-mode-map (("C-t" . nil)
-                          ("M-s" . nil)
-                          ("c" . my/dired-do-copy-with-filename)
-                          ("M-<up>" . nil)
-                          ("M-<down>" . nil)
-                          ("M-<left>" . nil)
-                          ("M-<right>" . nil))))
-  :ensure all-the-icons-dired
-  :setq ((dired-dwim-target . t))
+         :map dired-mode-map
+         ("e" . wdired-change-to-wdired-mode)
+         ("C-t" . nil)
+         ("M-s" . nil)
+         ("c" . my/dired-do-copy-with-filename)
+         ("M-<up>" . nil)
+         ("M-<down>" . nil)
+         ("M-<left>" . nil)
+         ("M-<right>" . nil))
   :config
+  (setq dired-dwim-target t)
+
   (defun my/dired-this-buffer ()
     "Open dired in this buffer."
     (interactive)
     (dired
      (file-name-directory (expand-file-name (buffer-name)))))
+
   ;; https://y0m0r.hateblo.jp/entry/20120219/1329657774
   (defun my/dired-view-file-other-window ()
     (interactive)
@@ -686,6 +743,7 @@
               (dired file))
         (view-file-other-window file)
         )))
+
   (defun my/dired-do-copy-with-filename (&optional arg)
     (interactive "P")
     (let* ((filename
@@ -728,89 +786,26 @@
       ("s" dired-sort-toggle-or-edit)
       ("g" revert-buffer)))))
 
-(leaf wdired
-  :hook (dired-mode-hook . (lambda () (require 'wdired)))
-  :bind (dired-mode-map (("e" . wdired-change-to-wdired-mode))))
+(use-package all-the-icons-dired
+  :ensure t)
 
-(leaf dired-x
-  :hook (dired-mode-hook . dired-omit-mode)
-  :setq (dired-omit-files . "^\\.DS_Store$"))
-
-(leaf dired-sidebar
+(use-package dired-sidebar
   :ensure t
   :bind
-  ("M-d" . dired-sidebar-toggle-sidebar)
-  (dired-sidebar-mode-map
+  (("M-d" . dired-sidebar-toggle-sidebar)
+   :map dired-sidebar-mode-map
    ("o" . dired-sidebar-subtree-toggle))
-  :setq
-  (dired-sidebar-use-term-integration . t)
-  (dired-sidebar-use-custom-modeline . nil))
-
-(leaf which-key
-  :ensure t
-  :hook prog-mode-hook)
-
-(leaf swap-buffers
-  :ensure t
-  :bind ("C-x C-o" . swap-buffers))
-
-(leaf other-window-or-split
-  :init
-  (el-get-bundle other-window-or-split
-    :url "https://github.com/conao3/other-window-or-split.git")
-  :bind
-  ("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
-  ("C-S-t" . ws-previous-other-window-or-split)
-  :setq (ws-split-window-width-with-em . 130)
   :config
-  (defun minibuffer-keyboard-quit () ;; esc quits
-    "Abort recursive edit.
-In Delete Selection mode, if the mark is active, just deactivate it;
-then it takes a second \\[keyboard-quit] to abort the minibuffer."
-    (interactive)
-    (if (and delete-selection-mode transient-mark-mode mark-active)
-        (setq deactivate-mark  t)
-      (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
-      (abort-recursive-edit)))
+  (setq dired-sidebar-use-term-integration t)
+  (setq dired-sidebar-use-custom-modeline nil))
 
-  (defun my/ws-other-window-or-split-and-kill-minibuffer ()
-    (interactive)
-    (if (active-minibuffer-window)
-        (progn
-          (minibuffer-keyboard-quit)
-          (ws-other-window-or-split))
-      (ws-other-window-or-split))))
-
-(leaf eyebrowse
+(use-package consult
   :ensure t
-  :hook prog-mode-hook
-  :custom
-  (eyebrowse-new-workspace . t)
-  (eyebrowse-keymap-prefix . "\C-z"))
-
-(leaf projectile
-  :ensure t
-  :hook prog-mode-hook
-  :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
-  :setq
-  (projectile-add-known-project . '("~/repos/"))
-  :preface
-  (defun my/projectile-toggle-between-implementation-and-test-other-window ()
-    "Toggle between an implementation file and its test file."
-    (interactive)
-    (find-file-other-window
-     (projectile-find-implementation-or-test
-      (buffer-file-name)))))
-
-(leaf consult
-  :ensure t consult-ghq consult-ls-git
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
          ("C-x f" . consult-fd)
          ("C-x e" . consult-ripgrep)
          ("C-x C-r" . consult-recent-file)
-         ("C-x C-g" . consult-ghq-find)
-         ("C-x g" . consult-ls-git)
          ;; Other custom bindings
          ("M-y" . consult-yank-pop)
          ;; M-g bindings (goto-map)
@@ -821,13 +816,20 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
          ("M-g M-g" . consult-goto-line)
          ("M-g o" . consult-outline)
          ("M-g i" . consult-imenu))
-  :setq
-  (xref-show-xrefs-function . 'consult-xref)
-  (xref-show-definitions-function . 'consult-xref)
-  (consult-ghq-find-function . 'find-file)
-  (consult-project-root-function . #'projectile-project-root)
-  (consult-ripgrep-command . "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case . -e ARG OPTS")
-  :defer-config
+  :config
+  (setq xref-show-xrefs-function 'consult-xref)
+  (setq xref-show-definitions-function 'consult-xref)
+  (setq consult-ghq-find-function 'find-file)
+  (setq consult-project-root-function #'projectile-project-root)
+  (setq consult-ripgrep-command "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case -e ARG OPTS")
+
+  (consult-customize
+   find-file
+   consult-ripgrep
+   consult-recent-file
+   consult-ls-git
+   :preview-key (kbd "C-."))
+  
   ;; https://github.com/minad/consult/wiki#find-files-using-fd
   (defvar consult--fd-command nil)
   (defun consult--fd-builder (input)
@@ -851,62 +853,55 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (interactive "P")
     (let* ((prompt-dir (consult--directory-prompt "Fd" dir))
            (default-directory (cdr prompt-dir)))
-      (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial))))
+      (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial)))))
 
-  (consult-customize
-   find-file
-   consult-ripgrep
-   consult-recent-file
-   consult-ls-git
-   :preview-key (kbd "C-.")))
-
-(leaf vertico
+(use-package consult-ghq
   :ensure t
-  :setq (vertico-count . 30)
-  :init
-  (vertico-mode))
+  :bind ("C-x C-g" . consult-ghq-find))
 
-(leaf orderless
+(use-package consult-ls-git
   :ensure t
-  :commands (orderless-filter)
-  ;; :config
-  ;; (if (fboundp #'migemo-get-pattern)
-  ;;     (defun orderless-migemo (component)
-  ;;       "Match COMPONENT as `migemo'."
-  ;;       (let ((pattern (migemo-get-pattern component)))
-  ;;         (condition-case nil
-  ;;             (progn (string-match-p pattern "") pattern)
-  ;;           (invalid-regexp nil)))))
+  :bind ("C-x g" . consult-ls-git))
 
-  ;; (if (and (boundp 'orderless-matching-styles)
-  ;;          (fboundp #'orderless-migemo))
-  ;;     (add-to-list 'orderless-matching-styles #'orderless-migemo t))
-  )
-
-(leaf fussy
+(use-package vertico
   :ensure t
-  :setq
-  (completion-styles . '(fussy))
-  (completion-category-defaults . nil)
-  (completion-category-overrides . nil)
-  (fussy-filter-fn . 'fussy-filter-orderless)
-  )
+  :defer 1
+  :config
+  (setq vertico-count 30)
+  (vertico-mode t))
 
-(leaf marginalia
+(use-package orderless
   :ensure t
-  :init
+  :commands orderless-filter)
+
+(use-package fussy
+  :demand t
+  :ensure t
+  :config
+  (setq completion-styles '(fussy))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides nil)
+  (setq fussy-filter-fn 'fussy-filter-orderless)
+  (with-eval-after-load 'eglot
+    (add-to-list 'completion-category-overrides
+                 '(eglot (styles fussy basic)))))
+
+(use-package marginalia
+  :ensure t
+  :demand t
+  :after orderless
+  :config
   (marginalia-mode))
 
-(leaf embark
+(use-package embark
   :ensure t
   :bind
   ("M-q" . embark-act)
-  :setq
-  (embark-indicators
-   . '(embark-which-key-indicator
-       embark-highlight-indicator
-       embark-isearch-highlight-indicator))
   :config
+  (setq embark-indicators
+        '(embark-which-key-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))
   ;; https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
   (defun embark-which-key-indicator ()
     "An embark indicator that displays keymaps using which-key.
@@ -937,48 +932,36 @@ targets."
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-(leaf embark-consult
+(use-package embark-consult
   :ensure t
-  :require t
-  :hook (embark-collect-mode-hook . consult-preview-at-point-mode)
+  :demand t
+  :hook (embark-collect-hook . consult-preview-at-point-mode)
   :after (embark consult))
 
-;; (leaf migemo
-;;   :ensure t
-;;   :require t
-;;   :setq
-;;   (migemo-command . "cmigemo")
-;;   (migemo-options . '("-q" "--emacs" "-i" "\a"))
-;;   (migemo-user-dictionary . nil)
-;;   (migemo-regex-dictionary . nil)
-;;   (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict")
-;;   :config
-;;   (migemo-init))
-
-(leaf eshell
-  :setq
-  (eshell-cmpl-ignore-case . t)
-  (eshell-ask-to-save-history . 'always))
-
-(leaf vterm
-  :ensure (t vterm-toggle)
-  :bind (("M-t" . vterm-toggle)
-         (vterm-mode-map (("C-t" . nil)
-                          ("M-<up>" . nil)
-                          ("M-<down>" . nil)
-                          ("M-<left>" . nil)
-                          ("M-<right>" . nil))))
-  :setq
-  (vterm-shell . "fish")
-  (vterm-max-scrollback . 10000)
-  (vterm-buffer-name-string . "vterm: %s")
-  ;; delete "C-h", add <f1> and <f2>
-  (vterm-keymap-exceptions
-   . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
-  (vterm-toggle-reset-window-configration-after-exit . t)
-  (vterm-toggle-scope . 'project)
-  (vterm-toggle-fullscreen-p . nil)
+(use-package eshell
   :config
+  (setq eshell-cmpl-ignore-case t)
+  (setq eshell-ask-to-save-history 'always))
+
+(use-package vterm
+  :ensure t
+  :bind-keymap
+  (("C-t" . nil)
+   ("M-<up>" . nil)
+   ("M-<down>" . nil)
+   ("M-<left>" . nil)
+   ("M-<right>" . nil))
+  :config
+  (setq vterm-shell "fish")
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-buffer-name-string "vterm: %s")
+  ;; delete "C-h", add <f1> and <f2>
+  (setq vterm-keymap-exceptions
+        '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
+  (setq vterm-toggle-reset-window-configration-after-exit t)
+  (setq vterm-toggle-scope 'project)
+  (setq vterm-toggle-fullscreen-p nil)
+  
   (add-to-list 'display-buffer-alist
                '((lambda(bufname _) (with-current-buffer bufname
                                       (or (equal major-mode 'vterm-mode)
@@ -987,23 +970,33 @@ targets."
                  (reusable-frames . visible)
                  (window-height . 0.4))))
 
-(leaf magit
-  :ensure (magit gh)
-  :setq ((magit-save-repository-buffers . 'dontask)
-         (magit-diff-highlight-indentation . nil)
-         (magit-diff-highlight-trailing . nil)
-         (magit-diff-paint-whitespace . nil)
-         (magit-diff-highlight-hunk-body . nil)
-         (magit-diff-refine-hunk . nil))
+(use-package vterm-toggle
+  :ensure t
+  :bind
+  ("M-t" . vterm-toggle))
+
+(use-package gh
+  :ensure t)
+
+(use-package magit
+  :ensure t
+  :defer 5
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
-         (magit-status-mode-map
-          ("q" . my/magit-quit-session)
-          ("C-o" . magit-diff-visit-file-other-window))
-         (git-commit-mode-map
-          ("M-i" . my/consult-git-commit-messages)
-          ("M-p" . my/consult-git-commit-prefix)))
-  :preface
+         (:map magit-status-mode-map
+               ("q" . my/magit-quit-session)
+               ("C-o" . magit-diff-visit-file-other-window))
+         (:map git-commit-mode-map
+               ("M-i" . my/consult-git-commit-messages)
+               ("M-p" . my/consult-git-commit-prefix)))
+  :config
+  (setq magit-save-repository-buffers 'dontask)
+  (setq magit-diff-highlight-indentation nil)
+  (setq magit-diff-highlight-trailing nil)
+  (setq magit-diff-paint-whitespace nil)
+  (setq magit-diff-highlight-hunk-body nil)
+  (setq magit-diff-refine-hunk nil)
+
   (defun my/magit-quit-session ()
     (interactive)
     (kill-buffer)
@@ -1032,7 +1025,7 @@ targets."
                      (buffer-local-value 'major-mode (window-buffer w))
                      'magit-mode))
                 (window-list)))
-  :config
+  
   (defun my/magit-find-file-current ()
     (interactive)
     (let ((rev (consult--read
@@ -1041,6 +1034,13 @@ targets."
                 :prompt "branch: "
                 :sort nil)))
       (magit-find-file-other-window rev (expand-file-name (buffer-name)))))
+
+  (add-to-list 'display-buffer-alist
+               '((lambda(bufname _) (with-current-buffer bufname
+                                      (equal major-mode 'magit-status-mode)))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.6)))
 
   (pretty-hydra-define
     git
@@ -1063,73 +1063,65 @@ targets."
      "GH"
      (("v" my/gh-pr-view "view pr" :exit t)
       ("c" my/gh-pr-create "create pr" :exit t)
-      ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t))))
+      ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
 
-  (add-to-list 'display-buffer-alist
-               '((lambda(bufname _) (with-current-buffer bufname
-                                      (equal major-mode 'magit-status-mode)))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.6))))
-
-(leaf magit-delta
+(use-package magit-delta
   :ensure t
-  :after magit
-  :hook (magit-mode-hook))
+  :hook magit-mode)
 
-(leaf git-gutter
+(use-package git-gutter
   :ensure t
-  :hook prog-mode-hook
-  :preface
+  :hook prog-mode
+  :custom-face
+  (git-gutter:modified . '((t (:background "#B4DCE7"))))
+  (git-gutter:added    . '((t (:background "#74DFC4"))))
+  (git-gutter:deleted  . '((t (:background "#964C7B"))))
+  :config
   (defun my/git-gutter:toggle-popup-hunk ()
     "Toggle git-gutter hunk window."
     (interactive)
     (if (and (get-buffer git-gutter:popup-buffer) (git-gutter:popup-buffer-window))
         (delete-window (git-gutter:popup-buffer-window))
       (git-gutter:popup-hunk)))
-  :setq
-  (git-gutter:modified-sign . " ")
-  (git-gutter:added-sign    . " ")
-  (git-gutter:deleted-sign  . " ")
-  :custom-face
-  (git-gutter:modified . '((t (:background "#B4DCE7"))))
-  (git-gutter:added    . '((t (:background "#74DFC4"))))
-  (git-gutter:deleted  . '((t (:background "#964C7B")))))
+  
+  (setq git-gutter:modified-sign " ")
+  (setq git-gutter:added-sign    " ")
+  (setq git-gutter:deleted-sign  " "))
 
-(leaf git-timemachine :ensure t)
+(use-package git-timemachine :ensure t)
 
-(leaf git-link
+(use-package git-link
   :ensure t
-  :setq
-  (git-link-open-in-browser . t)
-  (git-link-use-commit . t))
-
-;; (leaf blamer
-;;   :ensure t
-;;   :setq
-;;   (blamer-type . 'visual)
-;;   :config
-;;   (global-blamer-mode 1))
-
-(leaf docker
-  :ensure (t docker-tramp))
-
-(leaf tramp
   :config
+  (setq git-link-open-in-browser t)
+  (setq git-link-use-commit t))
+
+(use-package blamer
+  :ensure t
+  :defer 2
+  :config
+  (setq blamer-type 'visual)
+  (global-blamer-mode 1))
+
+(use-package consult-tramp
+  :init
   (el-get-bundle consult-tramp
     :url "https://github.com/Ladicle/consult-tramp.git"))
 
-(leaf open-junk-file
+(use-package open-junk-file
   :ensure t
-  :bind (("C-`" . open-junk-file))
-  :init
+  :bind ("C-`" . open-junk-file)
+  :config
   (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
-  :setq
-  (open-junk-file-format . "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+  (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
-(leaf tree-sitter
-  :ensure (t tree-sitter-langs)
-  :defer-config
+;;; ---------- メジャーモード設定 ----------
+(use-package tree-sitter-langs
+  :ensure t)
+
+(use-package tree-sitter
+  :ensure t 
+  :config
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
   ;; TSX の対応
   (tree-sitter-require 'tsx)
@@ -1153,8 +1145,6 @@ targets."
                   (.offset! @property.definition 0 1 0 -1)))
      ]))
 
-
-;;; ---------- メジャーモード設定 ----------
 (leaf eglot
   :ensure t
   :setq
@@ -1676,9 +1666,6 @@ To be used with `markdown-live-preview-window-function'."
 (when my/enable-profile
   (profiler-report)
   (profiler-stop))
-
-;; (profiler-report)
-;; (profiler-stop)
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil
