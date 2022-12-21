@@ -12,34 +12,18 @@
   (require 'profiler)
   (profiler-start 'cpu))
 
-(defvar my-delayed-priority-high-configurations nil)
-(defvar my-delayed-priority-high-configuration-timer nil)
-
 (defvar my-delayed-configurations nil)
 (defvar my-delayed-configuration-timer nil)
 
 (add-hook 'after-init-hook
           (lambda ()
-            (setq my-delayed-priority-high-configuration-timer
-                  (run-with-timer
-                   0.1 0.001
-                   (lambda ()
-                     (if my-delayed-priority-high-configurations
-                         (let ((inhibit-message t))
-                           (eval (pop my-delayed-priority-high-configurations)))
-                       (progn
-                         (cancel-timer my-delayed-priority-high-configuration-timer))))))
             (setq my-delayed-configuration-timer
                   (run-with-timer
-                   0.3 0.001
+                   0.1 0.1
                    (lambda ()
                      (if my-delayed-configurations
                          (eval (pop my-delayed-configurations))
                        (cancel-timer my-delayed-configuration-timer)))))))
-
-(defmacro with-bit-delayed-eval (&rest body)
-  (declare (indent 0))
-  `(push ',(cons 'progn body) my-delayed-configurations))
 
 (defmacro with-delayed-eval (&rest body)
   (declare (indent 0))
@@ -55,17 +39,23 @@
   (native-compile-async "~/.emacs.d/early-init.el")
   (native-compile-async "~/.emacs.d/site-lisp" 'recursively))
 
-(eval-and-compile
+(eval-when-compile
   (setq package-archives
         '(("org" . "https://orgmode.org/elpa/")
           ("melpa" . "https://melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize t)
   ;; デフォルトでパッケージの読み込み後 :config が有効にする
-  (setq use-package-always-defer t)
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
-    (package-install 'use-package)))
+    (package-install 'use-package)
+    (require 'use-package))
+  (unless (package-installed-p 'el-get)
+    (package-refresh-contents)
+    (package-install 'el-get)))
+
+(with-eval-after-load 'use-package
+  (setq use-package-always-defer t))
 
 ;;; ---------- basic ----------
 (setq user-full-name "hyakt")
@@ -111,7 +101,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (keyboard-translate ?\C-h ?\C-?)
 
-(with-bit-delayed-eval
+(with-delayed-eval
   (defun frame-size-save ()
     "Save current the frame size and postion."
     (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
@@ -306,7 +296,7 @@
 ;;   (dashboard-setup-startup-hook))
 
 ;;; ---------- edit ----------
-(with-bit-delayed-eval
+(with-delayed-eval
   (defun my/keyboard-quit()
     "Escape the minibuffer or cancel region consistently using 'Control-g'."
     (interactive)
@@ -365,12 +355,8 @@
   (global-unset-key (kbd "C-z")))
 
 (use-package elec-pair
-  :hook
-  ((prog-mode . electric-pair-mode)
-   (org-mode . org-add-electric-pairs-mode)
-   ((web-mode typescript-mode) . web-add-electric-pairs))
-  :config
-  (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
+  :hook ((prog-mode . electric-pair-mode))
+  :config  
   (defun org-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
@@ -378,13 +364,20 @@
   (defun web-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
+  (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
+
   (defun my/inhibit-electric-pair-mode (char)
     (minibufferp))
-  (setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair-mode))
+  
+  (setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair-mode)
+
+  (add-hook 'org-mode-hook #'org-add-electric-pairs)
+  (add-hook 'web-mode #'web-add-electric-pairs)
+  (add-hook 'typescript-mode #'web-add-electric-pairs))
 
 (use-package which-func-mode
   :hook
-  (prog-mode . which-func-mode)
+  prog-mode
   (prog-mode . (lambda ()
                  (setq which-func-format
                        '(:propertize
@@ -416,12 +409,11 @@
 
 (use-package flymake-diagnostic-at-point
   :ensure t
-  :hook
-  (flymake-mode-hook . flymake-diagnostic-at-point-mode))
+  :hook flymake-mode)
 
 (use-package tempel
   :ensure t
-  :bind ("<tab>" . my/tempel-maybe-expand)
+  :bind (("<tab>" . my/tempel-maybe-expand))
   :config
   (setq tempel-path "~/.emacs.d/site-lisp/templates")
   (define-key tempel-map [remap my/tempel-maybe-expand] #'tempel-next)
@@ -435,7 +427,7 @@
 (use-package corfu
   :ensure t
   :hook prog-mode
-  :bind ("C-j" . completion-at-point)
+  :bind (("C-j" . completion-at-point))
   :config
   (setq corfu-min-width 30)
   (setq corfu-auto t)
@@ -451,14 +443,6 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword))
 
-(use-package corfu-doc
-  :ensure t
-  :after corfu
-  :hook corfu-mode
-  :config
-  (setq corfu-doc-auto t)
-  (setq corfu-doc-delay 5))
-
 (use-package kind-icon
   :ensure t
   :after corfu
@@ -472,9 +456,9 @@
 (use-package smart-jump
   :ensure t
   :bind
-  ("M-." . my/goto-address-or-smart-jump)
-  ("M-," . smart-jump-back)
-  ("M-'" . smart-jump-references)
+  (("M-." . my/goto-address-or-smart-jump)
+   ("M-," . smart-jump-back)
+   ("M-'" . smart-jump-references))
   :config
   (defun my/goto-address-or-smart-jump ()
     (interactive)
@@ -637,7 +621,7 @@
 (use-package other-window-or-split
   :init
   (el-get-bundle other-window-or-split
-    :url "https://github.com/conao3/other-window-or-split.git")
+                 :url "https://github.com/conao3/other-window-or-split.git")
   :bind
   ("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
   ("C-S-t" . ws-previous-other-window-or-split)
@@ -951,42 +935,42 @@ targets."
   (setq eshell-cmpl-ignore-case t)
   (setq eshell-ask-to-save-history 'always))
 
-(use-package vterm
-  :ensure t
-  :bind
-  (:map vterm-mode-map
-        ("M-<up>" . nil)
-        ("M-<down>" . nil)
-        ("M-<left>" . nil)
-        ("M-<right>" . nil))
-  :config
-  (setq vterm-shell "fish")
-  (setq vterm-max-scrollback 10000)
-  (setq vterm-buffer-name-string "vterm: %s")
-  ;; delete "C-h", add <f1> and <f2>
-  (setq vterm-keymap-exceptions
-        '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
-  (setq vterm-toggle-reset-window-configration-after-exit t)
-  (setq vterm-toggle-scope 'project)
-  (setq vterm-toggle-fullscreen-p nil)
-  
-  (add-to-list 'display-buffer-alist
-               '((lambda(bufname _) (with-current-buffer bufname
-                                      (or (equal major-mode 'vterm-mode)
-                                          (string-prefix-p vterm-buffer-name bufname))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.4))))
+;; (use-package vterm
+;;   :ensure t
+;;   :bind
+;;   (:map vterm-mode-map
+;;         ("M-<up>" . nil)
+;;         ("M-<down>" . nil)
+;;         ("M-<left>" . nil)
+;;         ("M-<right>" . nil))
+;;   :config
+;;   (setq vterm-shell "fish")
+;;   (setq vterm-max-scrollback 10000)
+;;   (setq vterm-buffer-name-string "vterm: %s")
+;;   ;; delete "C-h", add <f1> and <f2>
+;;   (setq vterm-keymap-exceptions
+;;         '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
+;;   (setq vterm-toggle-reset-window-configration-after-exit t)
+;;   (setq vterm-toggle-scope 'project)
+;;   (setq vterm-toggle-fullscreen-p nil)
 
-(use-package vterm-toggle
-  :ensure t
-  :bind
-  ("M-t" . vterm-toggle))
+;;   (add-to-list 'display-buffer-alist
+;;                '((lambda(bufname _) (with-current-buffer bufname
+;;                                       (or (equal major-mode 'vterm-mode)
+;;                                           (string-prefix-p vterm-buffer-name bufname))))
+;;                  (display-buffer-reuse-window display-buffer-at-bottom)
+;;                  (reusable-frames . visible)
+;;                  (window-height . 0.4))))
+
+;; (use-package vterm-toggle
+;;   :ensure t
+;;   :bind
+;;   ("M-t" . vterm-toggle))
 
 (use-package consult-tramp
   :init
   (el-get-bundle consult-tramp
-    :url "https://github.com/Ladicle/consult-tramp.git"))
+                 :url "https://github.com/Ladicle/consult-tramp.git"))
 
 (use-package gh
   :ensure t)
@@ -1182,7 +1166,7 @@ targets."
                                                     (:typescript (:tsdk "node_modules/typescript/lib"))))))
 
 ;;; ---------- major mode ----------
-(use-package emacs-lisp-mode
+(use-package elisp-mode
   :config
   (major-mode-hydra-define emacs-lisp-mode
     (:quit-key "q" :title (concat (all-the-icons-fileicon "elisp") " Emacs Lisp"))
@@ -1211,7 +1195,7 @@ targets."
 (use-package web-mode
   :ensure t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue" "\\.astro")
+         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.astro")
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
@@ -1309,7 +1293,7 @@ targets."
 (use-package sws-mode
   :ensure t)
 
-(use-package js-mode
+(use-package js
   :mode ("\\.[mc]?js$" )
   :hook
   ((js-mode . eglot-ensure)
@@ -1438,7 +1422,7 @@ targets."
 (use-package graphql-mode
   :ensure t)
 
-(use-package java-mode
+(use-package cc-mode
   :config
   (setq tab-width 4)
   (setq indent-tabs-mode t)
@@ -1525,16 +1509,15 @@ targets."
   (csharp-mode . unity-mode)
   :config
   (el-get-bundle unity
-    :url "https://github.com/elizagamedev/unity.el.git"))
+                 :url "https://github.com/elizagamedev/unity.el.git"))
 
-(use-package sql-mode
-  :ensure t
+(use-package sql
   :hook
+  (sql-mode . sql-interactive-mode)  
   (sql-interactive-mode
    . (lambda ()
        (buffer-face-set 'variable-pitch)
        (toggle-truncate-lines t)))
-  (sql-mode sql-interactive-mode)
   :mode (".sql$")
   :config
   (defun my/sql-indent-region (beg end)
@@ -1636,7 +1619,7 @@ targets."
   (setq markdown-fontify-code-block-natively t)
   (setq markdown-gfm-additional-languages '("Mermaid"))
   (setq markdown-css-paths '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
-                          "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"))
+                             "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"))
   (setq markdown-live-preview-window-function 'markdown-live-preview-window-xwidget-webkit)
   (setq markdown-xhtml-body-preamble "<article class='markdown-body'>")
   (setq markdown-xhtml-body-epilogue "</article>")
