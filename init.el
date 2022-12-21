@@ -86,6 +86,9 @@
     (package-refresh-contents)
     (package-install 'el-get)))
 
+;; byet-compile 時に load されないため
+(require 'bind-key)
+
 ;;; ---------- basic ----------
 (setq user-full-name "hyakt")
 (setq user-mail-address "hyakt0@gmail.com")
@@ -172,18 +175,22 @@
   (require 'my-git))
 
 (use-package compile
+  :defer t
   :config
   (setq compilation-scroll-output t))
 
 (use-package minibuffer
+  :defer t
   :config
   (setq enable-recursive-minibuffers t))
 
 (use-package shell
+  :defer t
   :config
   (setq explicit-shell-file-name "/bin/bash"))
 
 (use-package recentf
+  :defer t
   :config
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
@@ -402,7 +409,7 @@
   (add-hook 'web-mode #'web-add-electric-pairs)
   (add-hook 'typescript-mode #'web-add-electric-pairs))
 
-(use-package which-func-mode
+(use-package which-func
   :hook
   prog-mode
   (prog-mode . (lambda ()
@@ -688,6 +695,7 @@
   :bind ("C-x C-o" . swap-buffers))
 
 (use-package other-window-or-split
+  :no-require t
   :init
   (el-get-bundle other-window-or-split
     :url "https://github.com/conao3/other-window-or-split.git")
@@ -716,7 +724,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package projectile
   :ensure t 
-  :defer 1
+  :defer t
   :bind (("C-x t" . my-projectile-toggle-between-implementation-and-test-other-window))
   :config
   (setq projectile-add-known-project '("~/repos/"))
@@ -955,10 +963,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (use-package marginalia
   :ensure t 
   :defer t
-  :demand t
-  :after orderless
   :config
-  (marginalia-mode))
+  (marginalia-mode t))
 
 (use-package embark
   :ensure t 
@@ -1050,6 +1056,7 @@ targets."
   ("M-t" . vterm-toggle))
 
 (use-package consult-tramp
+  :no-require t
   :defer t
   :init
   (el-get-bundle consult-tramp
@@ -1061,7 +1068,7 @@ targets."
 
 (use-package magit
   :ensure t 
-  :defer 10
+  :defer t
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
          (:map magit-status-mode-map
