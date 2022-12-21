@@ -5,10 +5,43 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-(defconst my/enable-profile nil
-  "If non-nil, use built-in profiler.el.")
+(defconst my-enable-measuring nil
+  "If non-nil, mesure start up time.")
 
-(when my/enable-profile
+(when my-enable-measuring
+  ;; https://zenn.dev/zk_phi/books/cba129aacd4c1418ade4/viewer/4d0a9dde1043c6eaffad
+  (defvar setup-tracker--level 0)
+  (defvar setup-tracker--parents nil)
+  (defvar setup-tracker--times nil)
+
+  (when load-file-name
+    (push load-file-name setup-tracker--parents)
+    (push (current-time) setup-tracker--times)
+    (setq setup-tracker--level (1+ setup-tracker--level)))
+
+  (add-variable-watcher
+   'load-file-name
+   (lambda (_ v &rest __)
+     (cond ((equal v (car setup-tracker--parents))
+            nil)
+           ((equal v (cadr setup-tracker--parents))
+            (setq setup-tracker--level (1- setup-tracker--level))
+            (let* ((now (current-time))
+                   (start (pop setup-tracker--times))
+                   (elapsed (+ (* (- (nth 1 now) (nth 1 start)) 1000)
+                               (/ (- (nth 2 now) (nth 2 start)) 1000))))
+              (with-current-buffer (get-buffer-create "*setup-tracker*")
+                (save-excursion
+                  (goto-char (point-min))
+                  (dotimes (_ setup-tracker--level) (insert "> "))
+                  (insert
+                   (file-name-nondirectory (pop setup-tracker--parents))
+                   " (" (number-to-string elapsed) " msec)\n")))))
+           (t
+            (push v setup-tracker--parents)
+            (push (current-time) setup-tracker--times)
+            (setq setup-tracker--level (1+ setup-tracker--level))))))
+  
   (require 'profiler)
   (profiler-start 'cpu))
 
@@ -21,7 +54,7 @@
                   (run-with-timer
                    0.1 0.1
                    (lambda ()
-                     (if my-delayed-configurations
+                     (if my-delayed-configurations  
                          (eval (pop my-delayed-configurations))
                        (cancel-timer my-delayed-configuration-timer)))))))
 
@@ -33,7 +66,7 @@
   (when (eq system-type 'darwin)
     `(progn ,@body)))
 
-(defun my/native-comp-packages ()
+(defun my-native-comp-packages ()
   (interactive)
   (native-compile-async "~/.emacs.d/init.el")
   (native-compile-async "~/.emacs.d/early-init.el")
@@ -44,18 +77,14 @@
         '(("org" . "https://orgmode.org/elpa/")
           ("melpa" . "https://melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")))
-  (package-initialize t)
-  ;; デフォルトでパッケージの読み込み後 :config が有効にする
-  (unless (package-installed-p 'use-package)
+  (package-initialize)
+  ;; TODO: Emacs 29 になったら削除
+  (unless (package-installed-p 'use-package) 
     (package-refresh-contents)
-    (package-install 'use-package)
-    (require 'use-package))
+    (package-install 'use-package))
   (unless (package-installed-p 'el-get)
     (package-refresh-contents)
     (package-install 'el-get)))
-
-(with-eval-after-load 'use-package
-  (setq use-package-always-defer t))
 
 ;;; ---------- basic ----------
 (setq user-full-name "hyakt")
@@ -96,6 +125,7 @@
 (setq scroll-preserve-screen-position t)
 (setq scroll-conservatively 100)
 (setq custom-file "~/.emacs.d/custom.el")
+(setq initial-major-mode 'text-mode)
 
 (setq-default shell-file-name "/bin/bash")
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -160,7 +190,7 @@
   (setq recentf-auto-cleanup 'never))
 
 (use-package exec-path-from-shell
-  :ensure t
+  :ensure t 
   :defer 1
   :config
   (exec-path-from-shell-initialize)
@@ -168,24 +198,24 @@
   (setq exec-path-from-shell-arguments nil))
 
 (use-package gcmh
-  :ensure t
+  :ensure t 
   :defer 5
   :config
   (setq gcmh-verbose t)
-  (defvar my/gcmh-status nil)
+  (defvar my-gcmh-status nil)
   (advice-add #'garbage-collect
               :before
-              (defun my/gcmh-log-start (&rest _)
+              (defun my-gcmh-log-start (&rest _)
                 (when gcmh-verbose
-                  (setq my/gcmh-status "Running GC..."))))
+                  (setq my-gcmh-status "Running GC..."))))
   (advice-add #'gcmh-message
               :override
-              (defun my/gcmh-message (format-string &rest args)
-                (setq my/gcmh-status
+              (defun my-gcmh-message (format-string &rest args)
+                (setq my-gcmh-status
                       (apply #'format-message format-string args))
                 (run-with-timer 2 nil
                                 (lambda ()
-                                  (setq my/gcmh-status nil)))))
+                                  (setq my-gcmh-status nil)))))
   (gcmh-mode t))
 
 ;;; ---------- appearance ----------
@@ -214,15 +244,12 @@
   (column-number-mode t)
   (show-paren-mode t)
   (whitespace-mode t)
-  (set-scroll-bar-mode nil)
-  
-  (beacon-mode t)
-  (volatile-highlights-mode t))
+  (set-scroll-bar-mode nil))
 
 (use-package paren
-  :bind (("M-o" . my/jump-to-match-parens))
+  :bind (("M-o" . my-jump-to-match-parens))
   :config
-  (defun my/jump-to-match-parens nil
+  (defun my-jump-to-match-parens nil
     "対応する括弧に移動"
     (interactive)
     (if (and (eq major-mode 'web-mode)
@@ -268,16 +295,16 @@
   (setq whitespace-space-regexp "\\(\u3000\\)"))
 
 (use-package doom-themes
-  :demand t
   :ensure t
+  :defer 0.1
   :config
   (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
   (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
-  :demand t
   :ensure t
+  :defer 0.1
   :config 
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-buffer-file-name-style 'auto)
@@ -297,7 +324,7 @@
 
 ;;; ---------- edit ----------
 (with-delayed-eval
-  (defun my/keyboard-quit()
+  (defun my-keyboard-quit()
     "Escape the minibuffer or cancel region consistently using 'Control-g'."
     (interactive)
     (if (not(window-minibuffer-p (selected-window)))
@@ -305,7 +332,7 @@
             (keyboard-escape-quit))
       (keyboard-quit)))
 
-  (defun my/buffer-indent ()
+  (defun my-buffer-indent ()
     "Indent whole current buffer."
     (interactive)
     (let ((current (point)))
@@ -314,19 +341,19 @@
       (indent-region (region-beginning)(region-end))
       (goto-char current)))
 
-  (defun my/revert-buffer-no-confirm ()
+  (defun my-revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive)
     (revert-buffer t t))
 
-  (defun my/close-and-kill-this-pane ()
+  (defun my-close-and-kill-this-pane ()
     "If there are multiple windows, then close this pane and kill the buffer in it also."
     (interactive)
     (kill-this-buffer)
     (if (not (one-window-p))
         (delete-window)))
 
-  (defun my/kill-other-buffers ()
+  (defun my-kill-other-buffers ()
     "Kill all other buffers."
     (interactive)
     (cl-loop for buf in (buffer-list)
@@ -341,13 +368,13 @@
   (global-set-key (kbd "C-h") nil)
   (global-set-key (kbd "C-m") #'newline-and-indent)
   (global-set-key (kbd "C-0") #'delete-frame)
-  (global-set-key (kbd "C-g") #'my/keyboard-quit)
-  (global-set-key (kbd "<f5>") #'my/revert-buffer-no-confirm)
-  (global-set-key (kbd "M-r") #'my/revert-buffer-no-confirm)
+  (global-set-key (kbd "C-g") #'my-keyboard-quit)
+  (global-set-key (kbd "<f5>") #'my-revert-buffer-no-confirm)
+  (global-set-key (kbd "M-r") #'my-revert-buffer-no-confirm)
   (global-set-key (kbd "C-x k") #'kill-this-buffer)
-  (global-set-key (kbd "C-x C-k") #'my/close-and-kill-this-pane)
-  (global-set-key (kbd "C-x C-x") #'my/kill-other-buffers)
-  (global-set-key (kbd "C-x i") #'my/buffer-indent)
+  (global-set-key (kbd "C-x C-k") #'my-close-and-kill-this-pane)
+  (global-set-key (kbd "C-x C-x") #'my-kill-other-buffers)
+  (global-set-key (kbd "C-x i") #'my-buffer-indent)
   (global-set-key (kbd "M-<up>") #'windmove-up)
   (global-set-key (kbd "M-<down>") #'windmove-down)
   (global-set-key (kbd "M-<left>") #'windmove-left)
@@ -366,10 +393,10 @@
     (setq-local electric-pair-text-pairs electric-pair-pairs))
   (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
 
-  (defun my/inhibit-electric-pair-mode (char)
+  (defun my-inhibit-electric-pair-mode (char)
     (minibufferp))
   
-  (setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair-mode)
+  (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
 
   (add-hook 'org-mode-hook #'org-add-electric-pairs)
   (add-hook 'web-mode #'web-add-electric-pairs)
@@ -399,33 +426,50 @@
                          help-echo "Current function\nmouse-1: go to beginning\nmouse-2: toggle rest visibility\nmouse-3: go to end")))))
 
 (use-package ediff
+  :defer t
   :config
   (setq ediff-split-window-function 'split-window-horizontally))
 
 (use-package flymake
+  :defer t
   :hook emacs-lisp-mode
   :config
   (setq flymake-fringe-indicator-position nil))
 
 (use-package flymake-diagnostic-at-point
-  :ensure t
+  :ensure t 
+  :defer t
   :hook flymake-mode)
 
+(use-package beacon
+  :ensure t 
+  :defer 5
+  :config
+  (beacon-mode t))
+
+(use-package volatile-highlights
+  :ensure t 
+  :defer 5
+  :config
+  (volatile-highlights-mode t))
+
 (use-package tempel
-  :ensure t
-  :bind (("<tab>" . my/tempel-maybe-expand))
+  :ensure t 
+  :defer t
+  :bind (("<tab>" . my-tempel-maybe-expand))
   :config
   (setq tempel-path "~/.emacs.d/site-lisp/templates")
-  (define-key tempel-map [remap my/tempel-maybe-expand] #'tempel-next)
+  (define-key tempel-map [remap my-tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
-  (defun my/tempel-maybe-expand ()
+  (defun my-tempel-maybe-expand ()
     (interactive)
     (if (tempel-expand)
         (tempel-expand t)
       (indent-for-tab-command))))
 
 (use-package corfu
-  :ensure t
+  :ensure t 
+  :defer t
   :hook prog-mode
   :bind (("C-j" . completion-at-point))
   :config
@@ -436,7 +480,8 @@
   (setq corfu-quit-at-boundary nil))
 
 (use-package cape
-  :ensure t
+  :ensure t 
+  :defer t
   :after corfu
   :init
   (add-to-list 'completion-at-point-functions #'cape-file)
@@ -444,23 +489,26 @@
   (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 (use-package kind-icon
-  :ensure t
+  :ensure t 
+  :defer t
   :after corfu
   :config
   (setq kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package dumb-jump
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package smart-jump
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
-  (("M-." . my/goto-address-or-smart-jump)
+  (("M-." . my-goto-address-or-smart-jump)
    ("M-," . smart-jump-back)
    ("M-'" . smart-jump-references))
   :config
-  (defun my/goto-address-or-smart-jump ()
+  (defun my-goto-address-or-smart-jump ()
     (interactive)
     (let ((url (thing-at-point 'url)))
       (if url
@@ -487,7 +535,8 @@
 
 (use-package jumplist
   :defer 1
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   ("M-n" . jumplist-next)
   ("M-p" . jumplist-previous)
@@ -495,106 +544,122 @@
   (setq jumplist-hook-commands
         '(avy-goto-char
           mouse-set-point
-          my/goto-address-or-smart-jump smart-jump-go smart-jump-ref
+          my-goto-address-or-smart-jump smart-jump-go smart-jump-ref
           xref-find-definitions xref-find-references
           dump-jump-go
           vr/query-replace
-          my/jump-to-match-parens
+          my-jump-to-match-parens
           consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
           er/expand-region
           end-of-buffer beginning-of-buffer))
   (setq jumplist-ex-mode t))
 
 (use-package rainbow-delimiters
-  :ensure t
+  :ensure t 
+  :defer t
   :hook prog-mode)
 
 (use-package rainbow-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :hook (js2-mode css-mode html-mode typescript-mode))
 
 (use-package symbol-overlay
-  :ensure t
+  :ensure t 
+  :defer t
   :hook (prog-mode markdown-mode)
   :bind ("C-." . symbol-overlay-put))
 
 (use-package yafolding
-  :ensure t
+  :ensure t 
+  :defer t
   :hook prog-mode)
 
 (use-package visual-regexp
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("C-r" . vr/query-replace)
   :config
   (setq case-fold-search nil)
   (setq vr/engine 'pcre2el))
 
 (use-package pcre2el
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package visual-regexp-steroids
-  :demand t
-  :ensure t
+  :ensure t 
+  :defer t
   :after visual-regexp)
 
 (use-package multiple-cursors
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   ("C->" . mc/mark-next-like-this)
   ("C-<" . mc/mark-previous-like-this))
 
 (use-package expand-region
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   ("C-," . er/expand-region)
   ("C-M-," . er/contract-region))
 
 (use-package undo-fu
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   ("C-/" . undo-fu-only-undo)
   ("M-/" . undo-fu-only-redo))
 
 (use-package wgrep
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq wgrep-enable-key "e")
   (setq wgrep-auto-save-buffer t)
   (setq wgrep-change-readonly-file t))
 
 (use-package string-inflection
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("M-[" . string-inflection-all-cycle))
 
 (use-package rg
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq rg-group-result t)
   (setq rg-custom-type-aliases '(("graphql" "*.gql *.graphql"))))
 
 (use-package pangu-spacing
-  :ensure t
+  :ensure t 
   :defer 5
   :config
   (setq pangu-spacing-real-insert-separtor t)
-  (defun my/pangu-spacing-region (beg end)
+  (defun my-pangu-spacing-region (beg end)
     "Replace regexp with match in region."
     (interactive "r")
     (pangu-spacing-search-buffer
      pangu-spacing-include-regexp beg (+ end 8) (replace-match "\\1 \\2" nil nil))))
 
 (use-package avy
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("C-;" . avy-goto-char))
 
 (use-package unicode-escape
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package google-this
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package open-junk-file
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("C-`" . open-junk-file)
   :config
   (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
@@ -602,28 +667,32 @@
 
 ;;; ---------- interface ----------
 (use-package hydra
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package major-mode-hydra
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("M-a" . major-mode-hydra)
   :config
   (setq major-mode-hydra-invisible-quit-key "q"))
 
 (use-package which-key
-  :ensure t
+  :ensure t 
+  :defer t
   :hook prog-mode)
 
 (use-package swap-buffers
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("C-x C-o" . swap-buffers))
 
 (use-package other-window-or-split
   :init
   (el-get-bundle other-window-or-split
-                 :url "https://github.com/conao3/other-window-or-split.git")
+    :url "https://github.com/conao3/other-window-or-split.git")
   :bind
-  ("C-t" . my/ws-other-window-or-split-and-kill-minibuffer)
+  ("C-t" . my-ws-other-window-or-split-and-kill-minibuffer)
   ("C-S-t" . ws-previous-other-window-or-split)
   :config
   (setq ws-split-window-width-with-em 130)
@@ -637,7 +706,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
       (abort-recursive-edit)))
 
-  (defun my/ws-other-window-or-split-and-kill-minibuffer ()
+  (defun my-ws-other-window-or-split-and-kill-minibuffer ()
     (interactive)
     (if (active-minibuffer-window)
         (progn
@@ -646,13 +715,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (ws-other-window-or-split))))
 
 (use-package projectile
-  :ensure t
+  :ensure t 
   :defer 1
-  :bind (("C-x t" . my/projectile-toggle-between-implementation-and-test-other-window))
+  :bind (("C-x t" . my-projectile-toggle-between-implementation-and-test-other-window))
   :config
   (setq projectile-add-known-project '("~/repos/"))
   
-  (defun my/projectile-toggle-between-implementation-and-test-other-window ()
+  (defun my-projectile-toggle-between-implementation-and-test-other-window ()
     "Toggle between an implementation file and its test file."
     (interactive)
     (find-file-other-window
@@ -660,7 +729,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (buffer-file-name)))))
 
 (use-package eyebrowse
-  :ensure t
+  :ensure t 
   :defer 5
   :config
   (setq eyebrowse-new-workspace t)
@@ -684,7 +753,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
          (current-buffer))
        )))
 
-  (defun my/switch-eldoc-display-mode ()
+  (defun my-switch-eldoc-display-mode ()
     (interactive)
     "Switch eldoc mode between minibuffer and buffer."
     (if (eq eldoc-message-function #'eldoc-buffer-message)
@@ -706,12 +775,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (message "buffer mode")))))
 
 (use-package dired
-  :bind (("C-x C-d" . my/dired-this-buffer)
+  :bind (("C-x C-d" . my-dired-this-buffer)
          :map dired-mode-map
          ("e" . wdired-change-to-wdired-mode)
          ("C-t" . nil)
          ("M-s" . nil)
-         ("c" . my/dired-do-copy-with-filename)
+         ("c" . my-dired-do-copy-with-filename)
          ("M-<up>" . nil)
          ("M-<down>" . nil)
          ("M-<left>" . nil)
@@ -719,14 +788,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :config
   (setq dired-dwim-target t)
 
-  (defun my/dired-this-buffer ()
+  (defun my-dired-this-buffer ()
     "Open dired in this buffer."
     (interactive)
     (dired
      (file-name-directory (expand-file-name (buffer-name)))))
 
   ;; https://y0m0r.hateblo.jp/entry/20120219/1329657774
-  (defun my/dired-view-file-other-window ()
+  (defun my-dired-view-file-other-window ()
     (interactive)
     (let ((file (dired-get-file-for-visit)))
       (if (file-directory-p file)
@@ -736,7 +805,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (view-file-other-window file)
         )))
 
-  (defun my/dired-do-copy-with-filename (&optional arg)
+  (defun my-dired-do-copy-with-filename (&optional arg)
     (interactive "P")
     (let* ((filename
             (or (dired-get-subdir)
@@ -765,7 +834,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
      (("+" dired-create-directory :exit t)
       ("M" dired-do-chmod :exit t)
       ("D" dired-do-delete :exit t)
-      ("c" my/dired-do-copy-with-filename :exit t)
+      ("c" my-dired-do-copy-with-filename :exit t)
       ("C" dired-do-copy :exit t)
       ("R" dired-do-rename :exit t)
       ("e" wdired-change-to-wdired-mode :exit t)
@@ -774,15 +843,17 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
      "Open"
      (("o" dired-find-file-other-window :exit t)
       ("v" dired-view-file :exit t)
-      ("V" my/dired-view-file-other-window :exit t)
+      ("V" my-dired-view-file-other-window :exit t)
       ("s" dired-sort-toggle-or-edit)
       ("g" revert-buffer)))))
 
 (use-package all-the-icons-dired
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package dired-sidebar
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   (("M-d" . dired-sidebar-toggle-sidebar)
    :map dired-sidebar-mode-map
@@ -792,7 +863,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq dired-sidebar-use-custom-modeline nil))
 
 (use-package consult
-  :ensure t
+  :ensure t 
+  :defer t
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
          ("C-x f" . consult-fd)
@@ -848,27 +920,29 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial)))))
 
 (use-package consult-ghq
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("C-x C-g" . consult-ghq-find))
 
 (use-package consult-ls-git
-  :ensure t
+  :ensure t 
+  :defer t
   :bind ("C-x g" . consult-ls-git))
 
 (use-package vertico
-  :ensure t
+  :ensure t 
   :defer 1
   :config
   (setq vertico-count 30)
   (vertico-mode t))
 
 (use-package orderless
-  :ensure t
+  :ensure t 
+  :defer t
   :commands orderless-filter)
 
 (use-package fussy
-  :demand t
-  :ensure t
+  :ensure t 
   :config
   (setq completion-styles '(fussy))
   (setq completion-category-defaults nil)
@@ -879,14 +953,16 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                  '(eglot (styles fussy basic)))))
 
 (use-package marginalia
-  :ensure t
+  :ensure t 
+  :defer t
   :demand t
   :after orderless
   :config
   (marginalia-mode))
 
 (use-package embark
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   ("M-q" . embark-act)
   :config
@@ -925,67 +1001,75 @@ targets."
                  (window-parameters (mode-line-format . none)))))
 
 (use-package embark-consult
-  :ensure t
+  :ensure t 
+  :defer t
   :demand t
   :hook (embark-collect-hook . consult-preview-at-point-mode)
   :after (embark consult))
 
 (use-package eshell
+  :defer t
   :config
   (setq eshell-cmpl-ignore-case t)
   (setq eshell-ask-to-save-history 'always))
 
-;; (use-package vterm
-;;   :ensure t
-;;   :bind
-;;   (:map vterm-mode-map
-;;         ("M-<up>" . nil)
-;;         ("M-<down>" . nil)
-;;         ("M-<left>" . nil)
-;;         ("M-<right>" . nil))
-;;   :config
-;;   (setq vterm-shell "fish")
-;;   (setq vterm-max-scrollback 10000)
-;;   (setq vterm-buffer-name-string "vterm: %s")
-;;   ;; delete "C-h", add <f1> and <f2>
-;;   (setq vterm-keymap-exceptions
-;;         '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
-;;   (setq vterm-toggle-reset-window-configration-after-exit t)
-;;   (setq vterm-toggle-scope 'project)
-;;   (setq vterm-toggle-fullscreen-p nil)
+(use-package vterm
+  :ensure t 
+  :defer t
+  :bind
+  (:map vterm-mode-map
+        ("M-<up>" . nil)
+        ("M-<down>" . nil)
+        ("M-<left>" . nil)
+        ("M-<right>" . nil))
+  :init
+  (setq vterm-always-compile-module t)
+  ;; delete "C-h", add <f1> and <f2>
+  (setq vterm-keymap-exceptions
+        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
+  :config
+  (setq vterm-shell "fish")
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-buffer-name-string "vterm: %s")
+  (setq vterm-toggle-reset-window-configration-after-exit t)
+  (setq vterm-toggle-scope 'project)
+  (setq vterm-toggle-fullscreen-p nil)
 
-;;   (add-to-list 'display-buffer-alist
-;;                '((lambda(bufname _) (with-current-buffer bufname
-;;                                       (or (equal major-mode 'vterm-mode)
-;;                                           (string-prefix-p vterm-buffer-name bufname))))
-;;                  (display-buffer-reuse-window display-buffer-at-bottom)
-;;                  (reusable-frames . visible)
-;;                  (window-height . 0.4))))
+  (add-to-list 'display-buffer-alist
+               '((lambda(bufname _) (with-current-buffer bufname
+                                      (or (equal major-mode 'vterm-mode)
+                                          (string-prefix-p vterm-buffer-name bufname))))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.4))))
 
-;; (use-package vterm-toggle
-;;   :ensure t
-;;   :bind
-;;   ("M-t" . vterm-toggle))
+(use-package vterm-toggle
+  :ensure t 
+  :defer t
+  :bind
+  ("M-t" . vterm-toggle))
 
 (use-package consult-tramp
+  :defer t
   :init
   (el-get-bundle consult-tramp
-                 :url "https://github.com/Ladicle/consult-tramp.git"))
+    :url "https://github.com/Ladicle/consult-tramp.git"))
 
 (use-package gh
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package magit
-  :ensure t
-  :defer 5
+  :ensure t 
+  :defer 10
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
          (:map magit-status-mode-map
-               ("q" . my/magit-quit-session)
+               ("q" . my-magit-quit-session)
                ("C-o" . magit-diff-visit-file-other-window))
          (:map git-commit-mode-map
-               ("M-i" . my/consult-git-commit-messages)
-               ("M-p" . my/consult-git-commit-prefix)))
+               ("M-i" . my-consult-git-commit-messages)
+               ("M-p" . my-consult-git-commit-prefix)))
   :config
   (setq magit-save-repository-buffers 'dontask)
   (setq magit-diff-highlight-indentation nil)
@@ -994,7 +1078,7 @@ targets."
   (setq magit-diff-highlight-hunk-body nil)
   (setq magit-diff-refine-hunk nil)
 
-  (defun my/magit-quit-session ()
+  (defun my-magit-quit-session ()
     (interactive)
     (kill-buffer)
     (delete-window))
@@ -1023,7 +1107,7 @@ targets."
                      'magit-mode))
                 (window-list)))
   
-  (defun my/magit-find-file-current ()
+  (defun my-magit-find-file-current ()
     (interactive)
     (let ((rev (consult--read
                 (magit-list-refnames nil t)
@@ -1038,14 +1122,17 @@ targets."
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
                  (window-height . 0.6)))
-
+  
+  (defun with-faicon (icon str &optional height v-adjust)
+    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+  
   (pretty-hydra-define
     git
     (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
     ("Magit"
      (("m" magit-status "status" :exit t)
       ("b" magit-blame "blame" :exit t)
-      ("f" my/magit-find-file-current "view another branch" :exit t))
+      ("f" my-magit-find-file-current "view another branch" :exit t))
      "Timemachine"
      (("t" git-timemachine "timemachine" :exit t))
      "Gutter"
@@ -1053,28 +1140,30 @@ targets."
       ("n" git-gutter:next-hunk "next")
       ("s" git-gutter:stage-hunk "stage")
       ("r" git-gutter:revert-hunk "revert")
-      ("SPC" my/git-gutter:toggle-popup-hunk "toggle hunk"))
+      ("SPC" my-git-gutter:toggle-popup-hunk "toggle hunk"))
      "Link"
      (("l" git-link "link" :exit t)
       ("h" git-link-homepage "homepage" :exit t))
      "GH"
-     (("v" my/gh-pr-view "view pr" :exit t)
-      ("c" my/gh-pr-create "create pr" :exit t)
-      ("o" my/git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
+     (("v" my-gh-pr-view "view pr" :exit t)
+      ("c" my-gh-pr-create "create pr" :exit t)
+      ("o" my-git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
 
 (use-package magit-delta
-  :ensure t
+  :ensure t 
+  :defer t
   :hook magit-mode)
 
 (use-package git-gutter
-  :ensure t
+  :ensure t 
+  :defer t
   :hook prog-mode
   :custom-face
   (git-gutter:modified . '((t (:background "#B4DCE7"))))
   (git-gutter:added    . '((t (:background "#74DFC4"))))
   (git-gutter:deleted  . '((t (:background "#964C7B"))))
   :config
-  (defun my/git-gutter:toggle-popup-hunk ()
+  (defun my-git-gutter:toggle-popup-hunk ()
     "Toggle git-gutter hunk window."
     (interactive)
     (if (and (get-buffer git-gutter:popup-buffer) (git-gutter:popup-buffer-window))
@@ -1085,25 +1174,29 @@ targets."
   (setq git-gutter:added-sign    " ")
   (setq git-gutter:deleted-sign  " "))
 
-(use-package git-timemachine :ensure t)
+(use-package git-timemachine :ensure t 
+  :defer t)
 
 (use-package git-link
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq git-link-open-in-browser t)
   (setq git-link-use-commit t))
 
 (use-package blamer
-  :ensure t
-  :hook prog-mode
+  :ensure t 
+  :defer 5
   :config
   (setq blamer-type 'visual))
 
 (use-package tree-sitter-langs
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package tree-sitter
   :ensure t 
+  :defer t 
   :config
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
   ;; TSX の対応
@@ -1129,7 +1222,8 @@ targets."
      ]))
 
 (use-package eglot
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
@@ -1154,8 +1248,8 @@ targets."
   ;; https://github.com/joaotavora/eglot/discussions/999
   (defun es-server-program (_)
     "Decide which server to use for ECMA Script based on project characteristics."
-    (cond ((my/deno-project-p) '("deno" "lsp" :initializationOptions (:enable t :lint t)))
-          ((my/node-project-p) '("typescript-language-server" "--stdio"))
+    (cond ((my-deno-project-p) '("deno" "lsp" :initializationOptions (:enable t :lint t)))
+          ((my-node-project-p) '("typescript-language-server" "--stdio"))
           (t                nil)))
 
   (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
@@ -1190,10 +1284,12 @@ targets."
      (("m" macrostep-expand "macrostep-expand")))))
 
 (use-package macrostep
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package web-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.astro")
   :init
@@ -1221,7 +1317,7 @@ targets."
               (when (equal web-mode-engine "vue")
                 (eglot-ensure))))
 
-  (defun my/emmet-change-at-point ()
+  (defun my-emmet-change-at-point ()
     (interactive)
     (let ((web-mode-cur-language
            (web-mode-language-at-pos)))
@@ -1254,18 +1350,19 @@ targets."
      "Test"
      (("tf" jest-file)
       ("tp" jest-popup)
-      ("tb" my/jest-current-buffer)
-      ("tw" my/jest-watch-current-buffer)
-      ("tcb" my/jest-copy-command-current-buffer)
-      ("tcw" my/jest-copy-command-watch-current-buffer))
+      ("tb" my-jest-current-buffer)
+      ("tw" my-jest-watch-current-buffer)
+      ("tcb" my-jest-copy-command-current-buffer)
+      ("tcw" my-jest-copy-command-watch-current-buffer))
      "Format"
      (("p" prettier-js)
       ("d" deno-fmt))
      "Misc"
-     (("e" my/emmet-change-at-point)))))
+     (("e" my-emmet-change-at-point)))))
 
 (use-package emmet-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :bind (:map emmet-mode-map ("C-j" . completion-at-point))
   :hook (html-mode
          web-mode
@@ -1273,42 +1370,46 @@ targets."
          scss-mode))
 
 (use-package slim-mode
-  :ensure t)
-
-(use-package haml-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package css-mode
+  :defer t
   :config
   (setq css-indent-offset 2))
 
 (use-package scss-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq scss-indent-offset 2))
 
 (use-package sass-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package sws-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package js
   :mode ("\\.[mc]?js$" )
   :hook
   ((js-mode . eglot-ensure)
    (js-mode . subword-mode)
-   (js-mode . tree-sitter-mode))
+   ;; (js-mode . tree-sitter-mode)
+   )
   :config
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
 
 (use-package typescript-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :hook
   (typescript-mode . eglot-ensure)
   (typescript-mode . subword-mode)
-  (typescript-mode . tree-sitter-mode)
+  ;; (typescript-mode . tree-sitter-mode)
   :init
   (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
@@ -1322,24 +1423,27 @@ targets."
      "Test"
      (("jf" jest-file)
       ("jp" jest-popup)
-      ("jb" my/jest-current-buffer)
-      ("jw" my/jest-watch-current-buffer)
-      ("jcb" my/jest-copy-command-current-buffer)
-      ("jcw" my/jest-copy-command-watch-current-buffer))
+      ("jb" my-jest-current-buffer)
+      ("jw" my-jest-watch-current-buffer)
+      ("jcb" my-jest-copy-command-current-buffer)
+      ("jcw" my-jest-copy-command-watch-current-buffer))
      "Format"
      (("p" prettier-js)
       ("d" deno-fmt)))))
 
 (use-package json-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :mode
   ("\\.jsonc\\'" . json-mode))
 
 (use-package jq-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package add-node-modules-path
-  :ensure t
+  :ensure t 
+  :defer t
   :hook
   ((typescript-mode
     js2-mode
@@ -1350,10 +1454,12 @@ targets."
     json-mode) . add-node-modules-path))
 
 (use-package nodejs-repl
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package jest
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
   :hook
@@ -1364,10 +1470,11 @@ targets."
   (setq jest-executable "npx jest"))
 
 (use-package prettier-js
-  :ensure t
+  :ensure t 
+  :defer t
   :hook
   ((typescript-mode . (lambda ()
-                        (when (my/node-project-p) (prettier-js-mode))))
+                        (when (my-node-project-p) (prettier-js-mode))))
    js2-mode
    web-mode
    css-mode
@@ -1376,13 +1483,15 @@ targets."
   :config
   (setq prettier-js-show-errors nil))
 
-(use-package deno-fmt :ensure t
+(use-package deno-fmt :ensure t 
+  :defer t
   :hook
   (typescript-mode . (lambda ()
-                       (when (my/deno-project-p) (deno-fmt-mode)))))
+                       (when (my-deno-project-p) (deno-fmt-mode)))))
 
 (use-package ruby-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
   :hook
   (ruby-mode . eglot-ensure)
@@ -1393,7 +1502,8 @@ targets."
   (setq ruby-insert-encoding-magic-comment nil))
 
 (use-package inf-ruby
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   (:map inf-ruby-minor-mode-map
         ("C-c C-b" . ruby-send-buffer)
@@ -1405,57 +1515,70 @@ targets."
   (setq inf-ruby-eval-binding "Pry.toplevel_binding"))
 
 (use-package rubocop
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package rspec-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :bind
   (:map rspec-mode-map
         ("C-c C-c C-c" . rspec-verify-single)))
 
 (use-package php-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package haskell-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package graphql-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package cc-mode
+  :defer t
   :config
   (setq tab-width 4)
   (setq indent-tabs-mode t)
   (setq c-basic-offset 4))
 
 (use-package swift-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package dart-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq dart-format-on-save nil)
   (setq dart-enable-analysis-server nil)
   (setq dart-sdk-path "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
 
 (use-package flutter
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq flutter-sdk-path "~/repos/github.com/flutter/flutter/"))
 
 (use-package go-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :hook (go-mode . eglot-ensure))
 
 (use-package elixir-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package scala-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :interpreter ("scala"))
 
 (use-package rust-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :hook (rust-mode . eglot-ensure)
   :config
   (setq rust-format-on-save t)
@@ -1467,10 +1590,10 @@ targets."
       ("l" cargo-process-clean "clean")
       ("i" cargo-process-init "init")
       ("r" cargo-process-run "run")
-      ("c" my/cargo-process-build-and-run-current-bin "run current bin")
+      ("c" my-cargo-process-build-and-run-current-bin "run current bin")
       ("u" cargo-process-update "update"))
      "Test"
-     (("t" my/cargo-process-build-and-test "build and test")
+     (("t" my-cargo-process-build-and-test "build and test")
       ("f" cargo-process-current-test "current")
       ("o" cargo-process-current-file-tests "file"))
      "Lint/Format"
@@ -1481,37 +1604,40 @@ targets."
      (("d" cargo-process-doc "doc")))))
 
 (use-package cargo
-  :ensure t
+  :ensure t 
+  :defer t
   :bind (:map cargo-mode-map
-              ("C-c C-c C-c" . my/cargo-process-build-and-test))
+              ("C-c C-c C-c" . my-cargo-process-build-and-test))
   :hook (rust-mode . cargo-minor-mode)
   :config
-  (defun my/cargo-process-build-and-test ()
+  (defun my-cargo-process-build-and-test ()
     (interactive)
     (cargo-process-build)
     (cargo-process-current-file-tests))
 
-  (defun my/cargo-process-run-bin-current-buffer ()
+  (defun my-cargo-process-run-bin-current-buffer ()
     (interactive)
     (let ((command (file-name-sans-extension (buffer-name))))
       (cargo-process--start (concat "Run " command)
                             (concat cargo-process--command-run-bin " " command))))
 
-  (defun my/cargo-process-build-and-run-current-bin ()
+  (defun my-cargo-process-build-and-run-current-bin ()
     (interactive)
     (cargo-process-build)
-    (my/cargo-process-run-bin-current-buffer)))
+    (my-cargo-process-run-bin-current-buffer)))
 
 (use-package csharp-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :hook
   (csharp-mode . eglot-ensure)
   (csharp-mode . unity-mode)
   :config
   (el-get-bundle unity
-                 :url "https://github.com/elizagamedev/unity.el.git"))
+    :url "https://github.com/elizagamedev/unity.el.git"))
 
 (use-package sql
+  :defer t
   :hook
   (sql-mode . sql-interactive-mode)  
   (sql-interactive-mode
@@ -1520,7 +1646,7 @@ targets."
        (toggle-truncate-lines t)))
   :mode (".sql$")
   :config
-  (defun my/sql-indent-region (beg end)
+  (defun my-sql-indent-region (beg end)
     "Indent the SQL statement in the BEG to END (region)."
     (interactive "*r")
     (save-excursion
@@ -1529,30 +1655,39 @@ targets."
         (sql-indent-buffer)))))
 
 (use-package sqlup-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package sqlformat
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package dockerfile-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package docker-compose-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package nginx-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package fish-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package csv-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package protobuf-mode
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package org
+  :defer t
   :bind (:map org-mode-map ("C-," . nil))
   :config
   (setq org-startup-truncated nil)
@@ -1560,6 +1695,7 @@ targets."
   (setq org-log-done 'time))
 
 (use-package ox-latex
+  :defer t
   :config
   (setq org-latex-pdf-process '("latexmk %f"))
   (setq org-file-apps '(("pdf" "/usr/bin/open -a Preview.app %s")))
@@ -1567,15 +1703,18 @@ targets."
   (setq org-latex-hyperref-template nil))
 
 (use-package htmlize
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package ox-gfm
-  :ensure t)
+  :ensure t 
+  :defer t)
 
 (use-package org-bullets
-  :ensure t
+  :ensure t 
+  :defer t
   :config
-  (defun my/org-bullets-export (path)
+  (defun my-org-bullets-export (path)
     "Export to bullets style text file into PATH."
     (interactive "FExport file: ")
     (let* ((current-buffer-string (buffer-string)))
@@ -1587,7 +1726,7 @@ targets."
             (replace-match
              (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
         (write-file path))))
-  (defun my/org-bullets-export-region-clipboard (start end)
+  (defun my-org-bullets-export-region-clipboard (start end)
     "Export to bullets style text file into clipbord from START to END."
     (interactive "*r")
     (let* ((current-buffer-string (buffer-substring start end)))
@@ -1601,7 +1740,8 @@ targets."
         (clipboard-kill-ring-save (point-min) (point-max))))))
 
 (use-package markdown-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :hook
   (markdown-mode
    . (lambda nil
@@ -1650,14 +1790,15 @@ To be used with `markdown-live-preview-window-function'."
       xwidget-webkit-last-session-buffer)))
 
 (use-package plantuml-mode
-  :ensure t
+  :ensure t 
+  :defer t
   :config
   (setq plantuml-executable-path "plantuml")
   (setq plantuml-default-exec-mode 'executable))
 
 (setq gc-cons-threshold 1073741824)
 
-(when my/enable-profile
+(when my-enable-measuring
   (profiler-report)
   (profiler-stop))
 
