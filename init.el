@@ -60,6 +60,8 @@
           ("melpa" . "https://melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize t)
+  ;; デフォルトでパッケージの読み込み後 :config が有効にする
+  (setq use-package-always-defer t)
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package)))
@@ -138,15 +140,10 @@
 
   (savehist-mode t)
   (recentf-mode t)
-  (global-auto-revert-mode))
+  (global-auto-revert-mode)
 
-(with-delayed-eval
   (server-running-p)
   (server-start))
-
-(with-delayed-eval
-  (exec-path-from-shell-initialize)
-  (gcmh-mode t))
 
 (with-delayed-eval
   (require 'my-util)
@@ -154,22 +151,18 @@
   (require 'my-git))
 
 (use-package compile
-  :defer t
   :config
   (setq compilation-scroll-output t))
 
 (use-package minibuffer
-  :defer t
   :config
   (setq enable-recursive-minibuffers t))
 
 (use-package shell
-  :defer t
   :config
   (setq explicit-shell-file-name "/bin/bash"))
 
 (use-package recentf
-  :defer t
   :config
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
@@ -177,14 +170,15 @@
 
 (use-package exec-path-from-shell
   :ensure t
-  :defer t
+  :defer 0.1
   :config
+  (exec-path-from-shell-initialize)
   (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
   (setq exec-path-from-shell-arguments nil))
 
 (use-package gcmh
   :ensure t
-  :defer t
+  :defer 0.1
   :config
   (setq gcmh-verbose t)
   (defvar my/gcmh-status nil)
@@ -200,7 +194,8 @@
                       (apply #'format-message format-string args))
                 (run-with-timer 2 nil
                                 (lambda ()
-                                  (setq my/gcmh-status nil))))))
+                                  (setq my/gcmh-status nil)))))
+  (gcmh-mode t))
 
 ;;; ---------- appearance ----------
 (set-face-attribute 'default nil
@@ -219,9 +214,9 @@
                             (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-input-source))
                             (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
                             (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
-                           "#FF5996" "#51AFEF"))
-     (add-hook 'mac-selected-keyboard-input-source-change-hook 'mac-selected-keyboard-input-source-change-hook-func)))
- 
+                           "#FF5996" "#51AFEF")))
+   (add-hook 'mac-selected-keyboard-input-source-change-hook 'mac-selected-keyboard-input-source-change-hook-func))
+  
   (global-font-lock-mode)
   (transient-mark-mode t)
   (line-number-mode t)
@@ -229,16 +224,11 @@
   (show-paren-mode t)
   (whitespace-mode t)
   (set-scroll-bar-mode nil)
-
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
-  (load-theme 'my-doom-tokyo-night t)
-
-  (doom-modeline-mode t)
+  
   (beacon-mode t)
   (volatile-highlights-mode t))
 
 (use-package paren
-  :defer t
   :bind (("M-o" . my/jump-to-match-parens))
   :config
   (defun my/jump-to-match-parens nil
@@ -262,7 +252,6 @@
   (setq show-paren-when-point-in-periphery t))
 
 (use-package whitespace
-  :defer t
   :config
   (setq whitespace-style
         '(face
@@ -288,21 +277,25 @@
   (setq whitespace-space-regexp "\\(\u3000\\)"))
 
 (use-package doom-themes
+  :demand t
   :ensure t
-  :defer t
   :config
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
+  (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
+  :demand t
   :ensure t
-  :defer t
-  :config
+  :config 
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-buffer-file-name-style 'auto)
   (setq doom-modeline-height 32)
   (setq doom-modeline-bar-width 3)
   (setq doom-modeline-enable-word-count 5)
-  (setq doom-modeline-vcs-max-length 30))
+  (setq doom-modeline-vcs-max-length 30)
+
+  (doom-modeline-mode t))
 
 ;; (use-package dashboard
 ;;   :ensure t
@@ -312,77 +305,70 @@
 ;;   (dashboard-setup-startup-hook))
 
 ;;; ---------- edit ----------
-(leaf *edit
-  :leaf-defer nil
-  :leaf-autoload nil
-  :ensure unicode-escape
-  :bind ("M-e" . edit/body)
-  :config
-  (defun with-faicon (icon str &optional height v-adjust)
-    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+(with-bit-delayed-eval
+  (defun my/keyboard-quit()
+    "Escape the minibuffer or cancel region consistently using 'Control-g'."
+    (interactive)
+    (if (not(window-minibuffer-p (selected-window)))
+        (if (or mark-active (active-minibuffer-window))
+            (keyboard-escape-quit))
+      (keyboard-quit)))
 
-  (pretty-hydra-define
-    edit
-    (:title (with-faicon "code" "Window & Edit" 1 -0.05) :quit-key "q")
-    (
-     "Resize"
-     (("j" shrink-window "  ↑  ")
-      ("k" enlarge-window "  ↓  ")
-      ("l" enlarge-window-horizontally "  →  ")
-      ("h" shrink-window-horizontally "  ←  "))
-     "Font"
-     (("+" text-scale-increase "increase")
-      ("-" text-scale-decrease "decrease"))
-     "Align"
-     (("a" align "align")
-      ("r" align-regexp "regex" :exit t))
-     "Convert"
-     (("p"  my/pangu-spacing-region "spacing jp")
-      ("tu" my/url-decode-region "url decode")
-      ("tn" unicode-unescape-region "unicode decode"))
-     "Template"
-     (("i" tempel-insert :exit t))
-     "Yafolding"
-     (("ya" yafolding-show-all "show all")
-      ("yh" yafolding-hide-all "hide all"))
-     "Symbol"
-     (("sr" symbol-overlay-remove-all "remove all" :exit t))
-     "Browse"
-     (("o" (call-process-shell-command "open .") "open finder" :exit t)
-      ("b" browse-url-at-point "browse url" :exit t)
-      ("g" google-this-symbol "google this" :exit t))
-     "File"
-     (("c" my/copy-this-file "copy" :exit t)
-      ("m" my/move-or-rename-this-file "rename" :exit t)
-      ("d" my/delete-or-remove-this-file "delete" :exit t)))))
+  (defun my/buffer-indent ()
+    "Indent whole current buffer."
+    (interactive)
+    (let ((current (point)))
+      (push-mark (point-max) nil t)
+      (goto-char (point-min))
+      (indent-region (region-beginning)(region-end))
+      (goto-char current)))
 
-(leaf keybind
-  :bind
-  ("C-h" . nil)
-  ("C-m" . newline-and-indent) ; リターンで改行とインデント
-  ("C-0" . delete-frame)
-  ;; my/function keybinding
-  ("C-g" . my/keyboard-quit)
-  ("<f5>" . my/revert-buffer-no-confirm)
-  ("M-r" . my/revert-buffer-no-confirm)
-  ("C-x k" . kill-this-buffer)
-  ("C-x C-k" . my/close-and-kill-this-pane)
-  ("C-x C-x" . my/kill-other-buffers)
-  ("C-x i" . my/buffer-indent)
-  ("M-<up>" . windmove-up)
-  ("M-<down>" . windmove-down)
-  ("M-<left>" . windmove-left)
-  ("M-<right>" . windmove-right)
-  :init
+  (defun my/revert-buffer-no-confirm ()
+    "Revert buffer without confirmation."
+    (interactive)
+    (revert-buffer t t))
+
+  (defun my/close-and-kill-this-pane ()
+    "If there are multiple windows, then close this pane and kill the buffer in it also."
+    (interactive)
+    (kill-this-buffer)
+    (if (not (one-window-p))
+        (delete-window)))
+
+  (defun my/kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (cl-loop for buf in (buffer-list)
+             unless (or
+                     (get-buffer-window buf)
+                     (string= (substring (buffer-name buf) 0 1) " ")
+                     (get-buffer-process buf)
+                     (member (buffer-name buf) ;; 消さないバッファ名を指定
+                             '("*Messages*" "*Compile-Log*" "*Help*" "*scratch*" "*init log*")))
+             do (kill-buffer buf)))
+  
+  (global-set-key (kbd "C-h") nil)
+  (global-set-key (kbd "C-m") #'newline-and-indent)
+  (global-set-key (kbd "C-0") #'delete-frame)
+  (global-set-key (kbd "C-g") #'my/keyboard-quit)
+  (global-set-key (kbd "<f5>") #'my/revert-buffer-no-confirm)
+  (global-set-key (kbd "M-r") #'my/revert-buffer-no-confirm)
+  (global-set-key (kbd "C-x k") #'kill-this-buffer)
+  (global-set-key (kbd "C-x C-k") #'my/close-and-kill-this-pane)
+  (global-set-key (kbd "C-x C-x") #'my/kill-other-buffers)
+  (global-set-key (kbd "C-x i") #'my/buffer-indent)
+  (global-set-key (kbd "M-<up>") #'windmove-up)
+  (global-set-key (kbd "M-<down>") #'windmove-down)
+  (global-set-key (kbd "M-<left>") #'windmove-left)
+  (global-set-key (kbd "M-<right>") #'windmove-right)
   (global-unset-key (kbd "C-z")))
 
-(leaf elec-pair
+(use-package elec-pair
   :hook
-  (prog-mode-hook . electric-pair-mode)
-  (org-mode-hook . org-add-electric-pairs)
-  ((web-mode-hook typescript-mode-hook) . web-add-electric-pairs)
-  :commands org-add-electric-pairs web-add-electric-pairs
-  :defer-config
+  ((prog-mode . electric-pair-mode)
+   (org-mode . org-add-electric-pairs-mode)
+   ((web-mode typescript-mode) . web-add-electric-pairs))
+  :config
   (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
   (defun org-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
@@ -391,88 +377,56 @@
   (defun web-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
-
   (defun my/inhibit-electric-pair-mode (char)
     (minibufferp))
-
   (setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair-mode))
 
-(leaf which-func-mode
+(use-package which-func-mode
   :hook
-  (prog-mode-hook . which-func-mode)
-  (prog-mode-hook . (lambda ()
-                      (setq which-func-format '(:propertize
-                                                (:eval
-                                                 (and (gethash (selected-window) which-func-table)
-                                                      (concat (doom-modeline-icon 'octicon "code" "" "" :height 1.0 :v-adjust 0)
-                                                              (gethash (selected-window) which-func-table))))
-	                                        local-map
-                                                (keymap
-	                                         (mode-line keymap
-			                                    (mouse-3 . end-of-defun)
-			                                    (mouse-2 .
-				                                     #[0 "e\300=\203	 \301 \207~\207"
-				                                         [1 narrow-to-defun]
-				                                         2 nil nil])
-			                                    (mouse-1 . beginning-of-defun)))
-	                                        face which-func
-	                                        mouse-face mode-line-highlight
-                                                help-echo "Current function\nmouse-1: go to beginning\nmouse-2: toggle rest visibility\nmouse-3: go to end")))))
+  (prog-mode . which-func-mode)
+  (prog-mode . (lambda ()
+                 (setq which-func-format
+                       '(:propertize
+                         (:eval
+                          (and (gethash (selected-window) which-func-table)
+                               (concat (doom-modeline-icon 'octicon "code" "" "" :height 1.0 :v-adjust 0)
+                                       (gethash (selected-window) which-func-table))))
+	                 local-map
+                         (keymap
+	                  (mode-line keymap
+			             (mouse-3 . end-of-defun)
+			             (mouse-2 .
+				              #[0 "e\300=\203	 \301 \207~\207"
+				                  [1 narrow-to-defun]
+				                  2 nil nil])
+			             (mouse-1 . beginning-of-defun)))
+	                 face which-func
+	                 mouse-face mode-line-highlight
+                         help-echo "Current function\nmouse-1: go to beginning\nmouse-2: toggle rest visibility\nmouse-3: go to end")))))
 
-(leaf ediff
-  :setq
-  (ediff-split-window-function . 'split-window-horizontally))
-
-(leaf smerge-mode
-  :setq
-  (smerge-command-prefix . "\C-c\C-m")
-  :hook (magit-diff-visit-file-hook . (lambda ()
-                                        (when smerge-mode
-                                          (my/hydra-smerge/body))))
+(use-package ediff
   :config
-  ;; https://github.com/alphapapa/unpackaged.el#smerge-mode
-  (defhydra unpackaged/smerge-hydra
-    (:color pink :hint nil :post (smerge-auto-leave))
-    "
-^Move^       ^Keep^               ^Diff^                 ^Other^
-^^-----------^^-------------------^^---------------------^^-------
-_n_ext       _b_ase               _<_: upper/base        _C_ombine
-_p_rev       _u_pper              _=_: upper/lower       _r_esolve
-^^           _l_ower              _>_: base/lower        _k_ill current
-^^           _a_ll                _R_efine
-^^           _RET_: current       _E_diff
-"
-    ("n" smerge-next)
-    ("p" smerge-prev)
-    ("b" smerge-keep-base)
-    ("u" smerge-keep-upper)
-    ("l" smerge-keep-lower)
-    ("a" smerge-keep-all)
-    ("RET" smerge-keep-current)
-    ("\C-m" smerge-keep-current)
-    ("<" smerge-diff-base-upper)
-    ("=" smerge-diff-upper-lower)
-    (">" smerge-diff-base-lower)
-    ("R" smerge-refine)
-    ("E" smerge-ediff)
-    ("C" smerge-combine-with-next)
-    ("r" smerge-resolve)
-    ("k" smerge-kill-current)
-    ("ZZ" (lambda ()
-            (interactive)
-            (save-buffer)
-            (bury-buffer))
-     "Save and bury buffer" :color blue)
-    ("q" nil "cancel" :color blue))
-  :hook (magit-diff-visit-file . (lambda ()
-                                   (when smerge-mode
-                                     (unpackaged/smerge-hydra/body)))))
+  (setq ediff-split-window-function 'split-window-horizontally))
 
-(leaf tempel
+(use-package flymake
+  :hook emacs-lisp-mode-hook
+  :config
+  (setq flymake-fringe-indicator-position nil))
+
+(use-package flymake-yaml
+  :ensure t
+  :hook (yaml-mode-hook . flymake-mode))
+
+(use-package flymake-diagnostic-at-point
+  :ensure t
+  :hook
+  (flymake-mode-hook . flymake-diagnostic-at-point-mode))
+
+(use-package tempel
   :ensure t
   :bind ("<tab>" . my/tempel-maybe-expand)
-  :setq (tempel-path . "~/.emacs.d/site-lisp/templates")
-  :defer-config
+  :config
+  (setq tempel-path "~/.emacs.d/site-lisp/templates")
   (define-key tempel-map [remap my/tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
   (defun my/tempel-maybe-expand ()
@@ -481,18 +435,18 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
         (tempel-expand t)
       (indent-for-tab-command))))
 
-(leaf corfu
+(use-package corfu
   :ensure t
-  :hook prog-mode-hook
+  :hook prog-mode
   :bind ("C-j" . completion-at-point)
-  :setq
-  (corfu-min-width . 30)
-  (corfu-auto . t)
-  (corfu-preview-current . nil)
-  (corfu-scroll-margin . 0)
-  (corfu-quit-at-boundary . nil))
+  :config
+  (setq corfu-min-width 30)
+  (setq corfu-auto t)
+  (setq corfu-preview-current nil)
+  (setq corfu-scroll-margin 0)
+  (setq corfu-quit-at-boundary nil))
 
-(leaf cape
+(use-package cape
   :ensure t
   :after corfu
   :init
@@ -500,51 +454,40 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword))
 
-(leaf corfu-doc
+(use-package corfu-doc
   :ensure t
   :after corfu
-  :hook corfu-mode-hook
-  :setq
-  (corfu-doc-auto . t)
-  (corfu-doc-delay . 5))
-
-(leaf kind-icon
-  :ensure t
-  :after corfu
-  :setq
-  (kind-icon-default-face . 'corfu-default) ; to compute blended backgrounds correctly)
+  :hook corfu-mode
   :config
+  (setq corfu-doc-auto t)
+  (setq corfu-doc-delay 5))
+
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :config
+  (setq kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-(leaf flymake
-  :hook emacs-lisp-mode-hook
-  :setq
-  (flymake-fringe-indicator-position . nil))
+(use-package dumb-jump
+  :ensure t)
 
-(leaf flymake-yaml
+(use-package smart-jump
   :ensure t
-  :hook (yaml-mode-hook . flymake-mode))
-
-(leaf flymake-diagnostic-at-point
-  :ensure t
-  :hook
-  (flymake-mode-hook . flymake-diagnostic-at-point-mode))
-
-(leaf smart-jump
-  :ensure (t dumb-jump)
-  :preface
+  :bind
+  ("M-." . my/goto-address-or-smart-jump)
+  ("M-," . smart-jump-back)
+  ("M-'" . smart-jump-references)
+  :config
   (defun my/goto-address-or-smart-jump ()
     (interactive)
     (let ((url (thing-at-point 'url)))
       (if url
           (browse-url url)
         (smart-jump-go))))
-  :bind
-  ("M-." . my/goto-address-or-smart-jump)
-  ("M-," . smart-jump-back)
-  ("M-'" . smart-jump-references)
-  :setq (smart-jump-bind-keys . nil)
-  :config
+  
+  (setq smart-jump-bind-keys nil)
+  
   (smart-jump-setup-default-registers)
   (smart-jump-register :modes 'js2-mode
                        :jump-fn 'xref-find-definitions
@@ -561,100 +504,112 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                        :heuristic 'point
                        :async t))
 
-(leaf jumplist
+(use-package jumplist
+  :defer 1
   :ensure t
   :bind
-  ("M-p" . jumplist-previous)
   ("M-n" . jumplist-next)
-  :setq
-  (jumplist-hook-commands
-   . '(avy-goto-char
-       mouse-set-point
-       my/goto-address-or-smart-jump smart-jump-go smart-jump-ref
-       xref-find-definitions xref-find-references
-       dump-jump-go
-       my/jump-to-match-parens
-       consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
-       er/expand-region
-       end-of-buffer beginning-of-buffer))
-  (jumplist-ex-mode . t))
+  ("M-p" . jumplist-previous)
+  :config
+  (setq jumplist-hook-commands
+        '(avy-goto-char
+          mouse-set-point
+          my/goto-address-or-smart-jump smart-jump-go smart-jump-ref
+          xref-find-definitions xref-find-references
+          dump-jump-go
+          my/jump-to-match-parens
+          consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
+          er/expand-region
+          end-of-buffer beginning-of-buffer))
+  (setq jumplist-ex-mode t))
 
-(leaf rainbow-delimiters
+(use-package rainbow-delimiters
   :ensure t
-  :hook (prog-mode-hook))
+  :hook prog-mode)
 
-(leaf rainbow-mode
+(use-package rainbow-mode
   :ensure t
-  :hook (js2-mode-hook css-mode-hook html-mode-hook typescript-mode-hook))
+  :hook (js2-mode css-mode html-mode typescript-mode))
 
-(leaf symbol-overlay
+(use-package symbol-overlay
   :ensure t
-  :hook (prog-mode-hook markdown-mode-hook)
+  :hook (prog-mode markdown-mode)
   :bind ("C-." . symbol-overlay-put))
 
-(leaf yafolding
+(use-package yafolding
   :ensure t
-  :hook prog-mode-hook)
+  :hook prog-mode)
 
-(leaf visual-regexp
-  :hook (after-init-hook . (lambda () (require 'visual-regexp-steroids)))
-  :ensure (t visual-regexp-steroids pcre2el)
+(use-package visual-regexp
+  :ensure t
   :bind ("C-r" . vr/query-replace)
-  :setq
-  (case-fold-search . nil)
-  (vr/engine . 'pcre2el))
+  :config
+  (setq case-fold-search nil)
+  (setq vr/engine 'pcre2el))
 
-(leaf multiple-cursors
+(use-package pcre2el
+  :ensure t)
+
+(use-package visual-regexp-steroids
+  :demand t
+  :ensure t
+  :after visual-regexp)
+
+(use-package multiple-cursors
   :ensure t
   :bind
   ("C->" . mc/mark-next-like-this)
   ("C-<" . mc/mark-previous-like-this))
 
-(leaf expand-region
+(use-package expand-region
   :ensure t
   :bind
   ("C-," . er/expand-region)
   ("C-M-," . er/contract-region))
 
-(leaf undo-fu
+(use-package undo-fu
   :ensure t
   :bind
   ("C-/" . undo-fu-only-undo)
   ("M-/" . undo-fu-only-redo))
 
-(leaf wgrep
+(use-package wgrep
   :ensure t
-  :setq
-  (wgrep-enable-key . "e")
-  (wgrep-auto-save-buffer . t)
-  (wgrep-change-readonly-file . t))
+  :config
+  (setq wgrep-enable-key "e")
+  (setq wgrep-auto-save-buffer t)
+  (setq wgrep-change-readonly-file t))
 
-(leaf string-inflection
+(use-package string-inflection
   :ensure t
   :bind ("M-[" . string-inflection-all-cycle))
 
-(leaf rg
+(use-package rg
   :ensure t
-  :setq
-  (rg-group-result . t)
-  (rg-custom-type-aliases . '(("graphql" . "*.gql *.graphql"))))
-
-(leaf pangu-spacing
-  :hook (after-init-hook . (lambda () (require 'pangu-spacing)))
-  :ensure t
-  :setq (pangu-spacing-real-insert-separtor . t)
   :config
+  (setq rg-group-result t)
+  (setq rg-custom-type-aliases . '(("graphql" "*.gql *.graphql"))))
+
+(use-package pangu-spacing
+  :ensure t
+  :defer 1
+  :config
+  (setq pangu-spacing-real-insert-separtor t)
   (defun my/pangu-spacing-region (beg end)
     "Replace regexp with match in region."
     (interactive "r")
     (pangu-spacing-search-buffer
      pangu-spacing-include-regexp beg (+ end 8) (replace-match "\\1 \\2" nil nil))))
 
-(leaf avy
+(use-package avy
   :ensure t
   :bind ("C-;" . avy-goto-char))
 
-(leaf google-this :ensure t)
+(use-package unicode-escape
+  :ensure t)
+
+(use-package google-this
+  :ensure t)
 
 ;;; ---------- インターフェース設定 ----------
 (leaf hydra :ensure t)
@@ -1259,7 +1214,7 @@ targets."
       ("v" describe-variable "variable")
       ("i" info-lookup-symbol "info lookup"))
      "Macrostep"
-     (("m" macrostep-mode "macrostep-mode")))))
+     (("m" macrostep-expand "macrostep-expand")))))
 
 (leaf web-mode
   :ensure t

@@ -142,47 +142,6 @@ BEG and END (region to sort)."
     (move-file-to-trash current-file-name)
     (kill-buffer current-file-name)))
 
-(defun my/close-and-kill-this-pane ()
-  "If there are multiple windows, then close this pane and kill the buffer in it also."
-  (interactive)
-  (kill-this-buffer)
-  (if (not (one-window-p))
-      (delete-window)))
-
-(defun my/kill-other-buffers ()
-  "Kill all other buffers."
-  (interactive)
-  (cl-loop for buf in (buffer-list)
-           unless (or
-                   (get-buffer-window buf)
-                   (string= (substring (buffer-name buf) 0 1) " ")
-                   (get-buffer-process buf)
-                   (member (buffer-name buf) ;; 消さないバッファ名を指定
-                           '("*Messages*" "*Compile-Log*" "*Help*" "*scratch*" "*init log*")))
-           do (kill-buffer buf)))
-
-(defun my/revert-buffer-no-confirm ()
-  "Revert buffer without confirmation."
-  (interactive)
-  (revert-buffer t t))
-
-(defun my/buffer-indent ()
-  "Indent whole current buffer."
-  (interactive)
-  (let ((current (point)))
-    (push-mark (point-max) nil t)
-    (goto-char (point-min))
-    (indent-region (region-beginning)(region-end))
-    (goto-char current)))
-
-(defun my/keyboard-quit()
-  "Escape the minibuffer or cancel region consistently using 'Control-g'."
-  (interactive)
-  (if (not(window-minibuffer-p (selected-window)))
-      (if (or mark-active (active-minibuffer-window))
-          (keyboard-escape-quit))
-    (keyboard-quit)))
-
 (defun my/find-file-and-create-directory(filename &optional wildcards)
   "Find a file, and then create FILENAME (WILDCARDS)
 the folder if it doesn't exist."
@@ -212,6 +171,10 @@ the folder if it doesn't exist."
     (setenv "SHELL" "/usr/local/bin/fish")
     (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name)))
     (setenv "SHELL" default-env-shell)))
+
+;;;###autoload
+(defun with-faicon (icon str &optional height v-adjust)
+    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
 
 (provide 'my-util)
 
