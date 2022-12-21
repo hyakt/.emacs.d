@@ -1008,8 +1008,6 @@ targets."
 
 (use-package embark-consult
   :ensure t 
-  :defer t
-  :demand t
   :hook (embark-collect-hook . consult-preview-at-point-mode)
   :after (embark consult))
 
@@ -1181,7 +1179,8 @@ targets."
   (setq git-gutter:added-sign    " ")
   (setq git-gutter:deleted-sign  " "))
 
-(use-package git-timemachine :ensure t 
+(use-package git-timemachine
+  :ensure t 
   :defer t)
 
 (use-package git-link
@@ -1193,7 +1192,8 @@ targets."
 
 (use-package blamer
   :ensure t 
-  :defer 5
+  :defer t
+  :hook prog-mode
   :config
   (setq blamer-type 'visual))
 
