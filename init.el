@@ -5,7 +5,7 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-(defconst my/enable-profile t
+(defconst my/enable-profile nil
   "If non-nil, use built-in profiler.el.")
 
 (when my/enable-profile
@@ -52,6 +52,7 @@
 (defun my/native-comp-packages ()
   (interactive)
   (native-compile-async "~/.emacs.d/init.el")
+  (native-compile-async "~/.emacs.d/early-init.el")
   (native-compile-async "~/.emacs.d/site-lisp" 'recursively))
 
 (eval-and-compile
@@ -608,6 +609,13 @@
 (use-package google-this
   :ensure t)
 
+(use-package open-junk-file
+  :ensure t
+  :bind ("C-`" . open-junk-file)
+  :config
+  (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
+  (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+
 ;;; ---------- interface ----------
 (use-package hydra
   :ensure t)
@@ -945,12 +953,12 @@ targets."
 
 (use-package vterm
   :ensure t
-  :bind-keymap
-  (("C-t" . nil)
-   ("M-<up>" . nil)
-   ("M-<down>" . nil)
-   ("M-<left>" . nil)
-   ("M-<right>" . nil))
+  :bind
+  (:map vterm-mode-map
+        ("M-<up>" . nil)
+        ("M-<down>" . nil)
+        ("M-<left>" . nil)
+        ("M-<right>" . nil))
   :config
   (setq vterm-shell "fish")
   (setq vterm-max-scrollback 10000)
@@ -974,6 +982,11 @@ targets."
   :ensure t
   :bind
   ("M-t" . vterm-toggle))
+
+(use-package consult-tramp
+  :init
+  (el-get-bundle consult-tramp
+    :url "https://github.com/Ladicle/consult-tramp.git"))
 
 (use-package gh
   :ensure t)
@@ -1098,24 +1111,10 @@ targets."
 
 (use-package blamer
   :ensure t
-  :defer 2
+  :hook prog-mode
   :config
-  (setq blamer-type 'visual)
-  (global-blamer-mode 1))
+  (setq blamer-type 'visual))
 
-(use-package consult-tramp
-  :init
-  (el-get-bundle consult-tramp
-    :url "https://github.com/Ladicle/consult-tramp.git"))
-
-(use-package open-junk-file
-  :ensure t
-  :bind ("C-`" . open-junk-file)
-  :config
-  (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
-  (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
-
-;;; ---------- メジャーモード設定 ----------
 (use-package tree-sitter-langs
   :ensure t)
 
@@ -1145,12 +1144,12 @@ targets."
                   (.offset! @property.definition 0 1 0 -1)))
      ]))
 
-(leaf eglot
+(use-package eglot
   :ensure t
-  :setq
-  (eglot-confirm-server-initiated-edits . nil)
-  (eglot-extend-to-xref . t)
-  :defer-config
+  :config
+  (setq eglot-confirm-server-initiated-edits nil)
+  (setq eglot-extend-to-xref t)
+  
   (defun advice-eglot--xref-make-match (old-fn name uri range)
     (cond
      ((string-prefix-p "deno:/" uri)
@@ -1182,8 +1181,8 @@ targets."
                                                     :initializationOptions
                                                     (:typescript (:tsdk "node_modules/typescript/lib"))))))
 
-(leaf emacs-lisp-mode
-  :ensure macrostep
+;;; ---------- major mode ----------
+(use-package emacs-lisp-mode
   :config
   (major-mode-hydra-define emacs-lisp-mode
     (:quit-key "q" :title (concat (all-the-icons-fileicon "elisp") " Emacs Lisp"))
@@ -1206,31 +1205,33 @@ targets."
      "Macrostep"
      (("m" macrostep-expand "macrostep-expand")))))
 
-(leaf web-mode
+(use-package macrostep
+  :ensure t)
+
+(use-package web-mode
   :ensure t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.vue" "\\.astro")
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
-  :setq
-  (web-mode-indent-style . 2)
-  (web-mode-markup-indent-offset . 2)
-  (web-mode-css-indent-offset . 2)
-  (web-mode-code-indent-offset . 2)
-  (web-mode-enable-auto-pairing . t)
-  (web-mode-enable-auto-quoting . nil)
-  (web-mode-enable-auto-indentation . nil)
-  (web-mode-enable-css-colorization . t)
-  (web-mode-enable-current-element-highlight . t)
-  (web-mode-enable-current-column-highlight . t)
-  (web-mode-enable-auto-quoting . nil)
-  (web-mode-comment-formats .
-                            '(("javascript" . "//")
-                              ("jsx" .  "//")
-                              ("php" . "/*")))
-  (web-mode-enable-front-matter-block . t) ;ignore Front Matter Data
   :config
+  (setq web-mode-indent-style 2)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-enable-auto-pairing t)
+  (setq web-mode-enable-auto-quoting nil)
+  (setq web-mode-enable-auto-indentation nil)
+  (setq web-mode-enable-css-colorization t)
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-enable-current-column-highlight t)
+  (setq web-mode-enable-auto-quoting nil)
+  (setq web-mode-comment-formats '(("javascript" . "//")
+                                   ("jsx" .  "//")
+                                   ("php" . "/*")))
+  (setq web-mode-enable-front-matter-block t) ;ignore Front Matter Data
+  
   (add-hook 'web-mode-hook
             (lambda ()
               (when (equal web-mode-engine "vue")
@@ -1277,57 +1278,58 @@ targets."
      (("p" prettier-js)
       ("d" deno-fmt))
      "Misc"
-     (("e" my/emmet-change-at-point)))
-    ))
+     (("e" my/emmet-change-at-point)))))
 
-(leaf emmet-mode
+(use-package emmet-mode
   :ensure t
-  :bind ((emmet-mode-keymap
-          ("C-j" . completion-at-point)))
-  :hook (html-mode-hook
-         web-mode-hook
-         css-mode-hook
-         scss-mode-hook))
+  :bind (:map emmet-mode-map ("C-j" . completion-at-point))
+  :hook (html-mode
+         web-mode
+         css-mode
+         scss-mode))
 
-(leaf slim-mode :ensure t)
+(use-package slim-mode
+  :ensure t)
 
-(leaf haml-mode :ensure t)
+(use-package haml-mode
+  :ensure t)
 
-(leaf css-mode
-  :setq (css-indent-offset . 2))
+(use-package css-mode
+  :config
+  (setq css-indent-offset 2))
 
-(leaf scss-mode
+(use-package scss-mode
   :ensure t
-  :setq (scss-indent-offset . 2))
+  :config
+  (setq scss-indent-offset 2))
 
-(leaf sass-mode :ensure t)
+(use-package sass-mode
+  :ensure t)
 
-(leaf sws-mode :ensure t)
+(use-package sws-mode
+  :ensure t)
 
-(leaf js2-mode
-  :ensure (js2-mode xref-js2)
+(use-package js-mode
   :mode ("\\.[mc]?js$" )
   :hook
-  (js2-mode-hook . eglot-ensure)
-  (js2-mode-hook . subword-mode)
-  :setq
-  (js-indent-level . 2)
-  (js-switch-indent-offset . 2)
-  (js2-basic-offset . 2)
-  (js2-strict-missing-semi-warning . nil)
-  (xref-js2-search-program . 'rg))
+  ((js-mode . eglot-ensure)
+   (js-mode . subword-mode)
+   (js-mode . tree-sitter-mode))
+  :config
+  (setq js-indent-level 2)
+  (setq js-switch-indent-offset 2))
 
-(leaf typescript-mode
+(use-package typescript-mode
   :ensure t
   :hook
-  (typescript-mode-hook . eglot-ensure)
-  (typescript-mode-hook . subword-mode)
-  (typescript-mode-hook . tree-sitter-mode)
-  :setq (typescript-indent-level . 2)
+  (typescript-mode . eglot-ensure)
+  (typescript-mode . subword-mode)
+  (typescript-mode . tree-sitter-mode)
   :init
   (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
   :config
+  (setq typescript-indent-level 2)
   (major-mode-hydra-define typescript-mode
     (:quit-key "q" :title (concat (all-the-icons-fileicon "typescript") " TypeScript"))
     ("REPL"
@@ -1344,137 +1346,136 @@ targets."
      (("p" prettier-js)
       ("d" deno-fmt)))))
 
-(leaf json-mode
+(use-package json-mode
+  :ensure t
   :mode
-  ("\\.jsonc\\'" . json-mode)
+  ("\\.jsonc\\'" . json-mode))
+
+(use-package jq-mode
   :ensure t)
 
-(leaf add-node-modules-path
+(use-package add-node-modules-path
   :ensure t
   :hook
-  ((typescript-mode-hook
-    js2-mode-hook
-    web-mode-hook
-    scss-mode-hook
-    graphql-mode-hook
-    ts-comint-mode-hook
-    json-mode-hook) . add-node-modules-path))
+  ((typescript-mode
+    js2-mode
+    web-mode
+    scss-mode
+    graphql-mode
+    ts-comint-mode
+    json-mode) . add-node-modules-path))
 
-(leaf nodejs-repl :ensure t)
+(use-package nodejs-repl
+  :ensure t)
 
-(leaf ts-comint
-  :ensure t typescript-mode
-  :after typescript-mode
-  :bind (typescript-mode-map
-         (("C-x C-e" . ts-send-last-sexp)
-          ("C-c b" . ts-send-buffer)
-          ("C-c r" . ts-send-region)))
-  :commands (run-ts)
-  :setq (ts-comint-program-command . "ts-node"))
-
-(leaf jest
+(use-package jest
   :ensure t
   :bind
-  (jest-minor-mode-map
-   ("C-c C-c C-c" . jest-file-dwim))
+  (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
   :hook
-  (typescript-mode-hook . jest-minor-mode)
-  (js2-mode-hook . jest-minor-mode)
-  (web-mode-hook . jest-minor-mode)
-  :setq (jest-executable . "npx jest"))
+  (typescript-mode . jest-minor-mode)
+  (js2-mode . jest-minor-mode)
+  (web-mode . jest-minor-mode)
+  :config
+  (setq jest-executable "npx jest"))
 
-(leaf prettier-js
+(use-package prettier-js
   :ensure t
   :hook
-  (typescript-mode-hook . (lambda ()
-                            (when (my/node-project-p) (prettier-js-mode))))
-  js2-mode-hook
-  web-mode-hook
-  css-mode-hook
-  scss-mode-hook
-  graphql-mode-hook
-  :setq (prettier-js-show-errors . nil))
+  ((typescript-mode . (lambda ()
+                        (when (my/node-project-p) (prettier-js-mode))))
+   js2-mode
+   web-mode
+   css-mode
+   scss-mode
+   graphql-mode)
+  :config
+  (setq prettier-js-show-errors nil))
 
-(leaf deno-fmt :ensure t
+(use-package deno-fmt :ensure t
   :hook
-  (typescript-mode-hook . (lambda ()
-                            (when (my/deno-project-p) (deno-fmt-mode)))))
+  (typescript-mode . (lambda ()
+                       (when (my/deno-project-p) (deno-fmt-mode)))))
 
-(leaf ruby-mode
+(use-package ruby-mode
   :ensure t
   :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
   :hook
-  (ruby-mode-hook . eglot-ensure)
-  (ruby-mode-hook . inf-ruby-minor-mode)
-  (ruby-mode-hook . inf-ruby-switch-setup)
+  (ruby-mode . eglot-ensure)
+  (ruby-mode . inf-ruby-minor-mode)
+  (ruby-mode . inf-ruby-switch-setup)
   :interpreter ("pry")
-  :setq ((ruby-insert-encoding-magic-comment . nil)))
+  :config
+  (setq ruby-insert-encoding-magic-comment nil))
 
-(leaf inf-ruby
+(use-package inf-ruby
   :ensure t
   :bind
-  (inf-ruby-minor-mode-map
-   ("C-c C-b" . ruby-send-buffer)
-   ("C-c C-l" . ruby-send-line))
+  (:map inf-ruby-minor-mode-map
+        ("C-c C-b" . ruby-send-buffer)
+        ("C-c C-l" . ruby-send-line))
   :init
   (defalias 'pry 'inf-ruby)
-  :setq
-  (inf-ruby-default-implementation . "pry")
-  (inf-ruby-eval-binding . "Pry.toplevel_binding"))
+  :config
+  (setq inf-ruby-default-implementation "pry")
+  (setq inf-ruby-eval-binding "Pry.toplevel_binding"))
 
-(leaf rubocop  :ensure t)
-
-(leaf rspec-mode
-  :ensure t
-  :bind
-  (rspec-mode-map
-   ("C-c C-c C-c" . rspec-verify-single)))
-
-(leaf php-mode :ensure t)
-
-(leaf haskell-mode :ensure t)
-
-(leaf graphql-mode :ensure t)
-
-(leaf java-mode
-  :hook
-  (java-mode-hook
-   . (lambda ()
-       (setq tab-width 4)
-       (setq indent-tabs-mode t)
-       (setq c-basic-offset 4))))
-
-(leaf swift-mode :ensure t)
-
-(leaf dart-mode
-  :ensure t
-  :setq
-  (dart-format-on-save . nil)
-  (dart-enable-analysis-server . nil)
-  (dart-sdk-path . "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
-
-(leaf flutter
-  :ensure t
-  :setq
-  (flutter-sdk-path . "~/repos/github.com/flutter/flutter/"))
-
-(leaf go-mode
-  :ensure t
-  :hook (go-mode-hook . eglot-ensure))
-
-(leaf elixir-mode
+(use-package rubocop
   :ensure t)
 
-(leaf scala-mode
+(use-package rspec-mode
+  :ensure t
+  :bind
+  (:map rspec-mode-map
+        ("C-c C-c C-c" . rspec-verify-single)))
+
+(use-package php-mode
+  :ensure t)
+
+(use-package haskell-mode
+  :ensure t)
+
+(use-package graphql-mode
+  :ensure t)
+
+(use-package java-mode
+  :config
+  (setq tab-width 4)
+  (setq indent-tabs-mode t)
+  (setq c-basic-offset 4))
+
+(use-package swift-mode
+  :ensure t)
+
+(use-package dart-mode
+  :ensure t
+  :config
+  (setq dart-format-on-save nil)
+  (setq dart-enable-analysis-server nil)
+  (setq dart-sdk-path "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
+
+(use-package flutter
+  :ensure t
+  :config
+  (setq flutter-sdk-path "~/repos/github.com/flutter/flutter/"))
+
+(use-package go-mode
+  :ensure t
+  :hook (go-mode . eglot-ensure))
+
+(use-package elixir-mode
+  :ensure t)
+
+(use-package scala-mode
   :ensure t
   :interpreter ("scala"))
 
-(leaf rust-mode
+(use-package rust-mode
   :ensure t
-  :hook (rust-mode-hook . eglot-ensure)
-  :setq
-  (rust-format-on-save . t)
+  :hook (rust-mode . eglot-ensure)
   :config
+  (setq rust-format-on-save t)
+  
   (major-mode-hydra-define rust-mode
     (:quit-key "q" :title (concat (all-the-icons-alltheicon "rust") "Rust"))
     ("Build/Run"
@@ -1495,8 +1496,12 @@ targets."
      "Doc"
      (("d" cargo-process-doc "doc")))))
 
-(leaf cargo
-  :preface
+(use-package cargo
+  :ensure t
+  :bind (:map cargo-mode-map
+              ("C-c C-c C-c" . my/cargo-process-build-and-test))
+  :hook (rust-mode . cargo-minor-mode)
+  :config
   (defun my/cargo-process-build-and-test ()
     (interactive)
     (cargo-process-build)
@@ -1511,29 +1516,25 @@ targets."
   (defun my/cargo-process-build-and-run-current-bin ()
     (interactive)
     (cargo-process-build)
-    (my/cargo-process-run-bin-current-buffer))
-  :bind ((cargo-mode-map
-          ("C-c C-c C-c" . my/cargo-process-build-and-test)))
-  :ensure t
-  :hook (rust-mode-hook . cargo-minor-mode))
+    (my/cargo-process-run-bin-current-buffer)))
 
-(leaf csharp-mode
+(use-package csharp-mode
   :ensure t
   :hook
-  (csharp-mode-hook . eglot-ensure)
-  (csharp-mode-hook . unity-mode)
+  (csharp-mode . eglot-ensure)
+  (csharp-mode . unity-mode)
   :config
   (el-get-bundle unity
     :url "https://github.com/elizagamedev/unity.el.git"))
 
-(leaf sql-mode
-  :ensure (sqlup-mode sqlformat)
+(use-package sql-mode
+  :ensure t
   :hook
-  (sql-interactive-mode-hook
+  (sql-interactive-mode
    . (lambda ()
        (buffer-face-set 'variable-pitch)
        (toggle-truncate-lines t)))
-  (sql-mode-hook sql-interactive-mode-hook)
+  (sql-mode sql-interactive-mode)
   :mode (".sql$")
   :config
   (defun my/sql-indent-region (beg end)
@@ -1544,42 +1545,53 @@ targets."
         (narrow-to-region beg end)
         (sql-indent-buffer)))))
 
-(leaf dockerfile-mode :ensure t)
-
-(leaf docker-compose-mode :ensure t)
-
-(leaf nginx-mode :ensure t)
-
-(leaf fish-mode :ensure t)
-
-(leaf csv-mode :ensure t)
-
-(leaf jq-mode
+(use-package sqlup-mode
   :ensure t)
 
-(leaf protobuf-mode :ensure t)
+(use-package sqlformat
+  :ensure t)
 
-(leaf org
-  :bind ((org-mode-map
-          ("C-," . nil)))
-  :setq
-  (org-startup-truncated . nil)
-  (org-src-fontify-natively . t)
-  (org-log-done . 'time))
+(use-package dockerfile-mode
+  :ensure t)
 
-(leaf ox-latex
-  :setq
-  (org-latex-pdf-process . '("latexmk %f"))
-  (org-file-apps . '(("pdf" . "/usr/bin/open -a Preview.app %s")))
-  (org-latex-with-hyperref . nil)
-  (org-latex-hyperref-template . nil))
+(use-package docker-compose-mode
+  :ensure t)
 
-(leaf htmlize :ensure t)
+(use-package nginx-mode
+  :ensure t)
 
-(leaf ox-gfm :ensure t)
+(use-package fish-mode
+  :ensure t)
 
-(leaf org-bullets :ensure t
-  :defer-config
+(use-package csv-mode
+  :ensure t)
+
+(use-package protobuf-mode
+  :ensure t)
+
+(use-package org
+  :bind (:map org-mode-map ("C-," . nil))
+  :config
+  (setq org-startup-truncated nil)
+  (setq org-src-fontify-natively t)
+  (setq org-log-done 'time))
+
+(use-package ox-latex
+  :config
+  (setq org-latex-pdf-process '("latexmk %f"))
+  (setq org-file-apps '(("pdf" "/usr/bin/open -a Preview.app %s")))
+  (setq org-latex-with-hyperref nil)
+  (setq org-latex-hyperref-template nil))
+
+(use-package htmlize
+  :ensure t)
+
+(use-package ox-gfm
+  :ensure t)
+
+(use-package org-bullets
+  :ensure t
+  :config
   (defun my/org-bullets-export (path)
     "Export to bullets style text file into PATH."
     (interactive "FExport file: ")
@@ -1605,31 +1617,30 @@ targets."
              (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
         (clipboard-kill-ring-save (point-min) (point-max))))))
 
-(leaf markdown-mode
+(use-package markdown-mode
   :ensure t
   :hook
-  (markdown-mode-hook
+  (markdown-mode
    . (lambda nil
        (set
         (make-local-variable 'whitespace-action)
         nil)))
-  :setq
-  (markdown-command . "marked")
   :mode
   ("\\.markdown\\'" . gfm-mode)
   ("\\.md\\'" . gfm-mode)
   ("\\.mdown\\'" . gfm-mode)
-  :setq
-  (markdown-hide-urls . nil)
-  (markdown-hide-markup . nil)
-  (markdown-fontify-code-block-natively . t)
-  (markdown-gfm-additional-languages . '("Mermaid"))
-  (markdown-css-paths . '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
+  :config
+  (setq markdown-command "marked")
+  (setq markdown-hide-urls nil)
+  (setq markdown-hide-markup nil)
+  (setq markdown-fontify-code-block-natively t)
+  (setq markdown-gfm-additional-languages '("Mermaid"))
+  (setq markdown-css-paths '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
                           "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"))
-  (markdown-live-preview-window-function . 'markdown-live-preview-window-xwidget-webkit)
-  (markdown-xhtml-body-preamble . "<article class='markdown-body'>")
-  (markdown-xhtml-body-epilogue . "</article>")
-  (markdown-xhtml-header-content . "
+  (setq markdown-live-preview-window-function 'markdown-live-preview-window-xwidget-webkit)
+  (setq markdown-xhtml-body-preamble "<article class='markdown-body'>")
+  (setq markdown-xhtml-body-epilogue "</article>")
+  (setq markdown-xhtml-header-content "
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <style>
 	.markdown-body {
@@ -1647,7 +1658,7 @@ mermaid.initialize({startOnLoad:true});
 hljs.highlightAll();
 </script>
 ")
-  :config
+  
   (defun markdown-live-preview-window-xwidget-webkit (file)
     "Preview FILE with xwidget-webkit.
 To be used with `markdown-live-preview-window-function'."
@@ -1655,11 +1666,11 @@ To be used with `markdown-live-preview-window-function'."
       (xwidget-webkit-browse-url uri)
       xwidget-webkit-last-session-buffer)))
 
-(leaf plantuml-mode
+(use-package plantuml-mode
   :ensure t
-  :setq
-  (plantuml-executable-path . "plantuml")
-  (plantuml-default-exec-mode . 'executable))
+  :config
+  (setq plantuml-executable-path "plantuml")
+  (setq plantuml-default-exec-mode 'executable))
 
 (setq gc-cons-threshold 1073741824)
 
