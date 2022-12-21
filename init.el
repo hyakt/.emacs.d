@@ -12,13 +12,6 @@
   (require 'profiler)
   (profiler-start 'cpu))
 
-(eval-when-compile
-  (setq package-archives
-        '(("org" . "https://orgmode.org/elpa/")
-          ("melpa" . "https://melpa.org/packages/")
-          ("gnu" . "https://elpa.gnu.org/packages/")))
-  (package-initialize))
-
 (defvar my-delayed-configurations nil)
 
 (defvar my-delayed-configuration-timer nil)
@@ -33,18 +26,13 @@
                          (eval (pop my-delayed-configurations))
                        (cancel-timer my-delayed-configuration-timer)))))))
 
-(defmacro with-delayed-execution (&rest body)
+(defmacro with-delayed-eval (&rest body)
   (declare (indent 0))
   `(push ',(cons 'progn body) my-delayed-configurations))
 
-(defmacro !if (test then &rest else)
-  (declare (indent 2))
-  (when (eval test) then `(progn ,@else)))
-
-(defmacro !install (name)
-  (declare (indent 0))
-  (when (package-installed-p name)
-    (package-install name)))
+(defmacro when-macos (&rest body)
+  (when (eq system-type 'darwin)
+    `(progn ,@body)))
 
 (defun my/native-comp-packages ()
   (interactive)
@@ -95,12 +83,12 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (keyboard-translate ?\C-h ?\C-?)
 
-(!if (eq system-type 'darwin)
-    (progn
-      (mac-auto-ascii-mode t)
-      (setq file-name-coding-system 'utf-8-hfs)
-      (setq locale-coding-system 'utf-8-hfs)
-      (setq prefer-coding-system 'utf-8)))
+(when-macos
+ (progn
+   (mac-auto-ascii-mode t)
+   (setq file-name-coding-system 'utf-8-hfs)
+   (setq locale-coding-system 'utf-8-hfs)
+   (setq prefer-coding-system 'utf-8)))
 
 (with-eval-after-load 'compile
   (setq compilation-scroll-output t))
@@ -138,7 +126,7 @@
 
 (add-hook 'window-setup-hook 'frame-size-resume)
 
-(with-delayed-execution
+(with-delayed-eval
   (add-hook 'kill-emacs-hook 'frame-size-save)
   
   (savehist-mode t)
@@ -146,7 +134,7 @@
   
   (global-auto-revert-mode))
 
-(with-delayed-execution
+(with-delayed-eval
   (server-running-p)
   (server-start))
 
@@ -159,19 +147,14 @@
              (require 'my-prog)
              (require 'my-git))))
 
-;; install for basic
-(eval-when-compile
-  (!install 'exec-path-from-shell)
-  (!install 'gcmh))
-
-(with-delayed-execution
+(with-delayed-eval
   (exec-path-from-shell-initialize)
   
   (with-eval-after-load 'exec-path-from-shell
     (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
     (setq exec-path-from-shell-arguments nil)))
 
-(with-delayed-execution
+(with-delayed-eval
   (gcmh-mode t)
 
   (with-eval-after-load 'gcmh
@@ -192,19 +175,19 @@
                                   (lambda ()
                                     (setq my/gcmh-status nil)))))))
 
-;;; ---------- 外観設定 ----------
-(leaf *appearance
-  :leaf-defer nil
-  :leaf-autoload nil
-  :global-minor-mode
-  transient-mark-mode                                         ;; 選択部分のハイライト
-  global-font-lock-mode                                       ;; フォントロックモード
-  line-number-mode                                            ;; 行番号を表示
-  column-number-mode                                          ;; 列番号を表示
-  :init
-  (set-scroll-bar-mode nil)                                   ;; スクロールバーを使わない
-  
-  :config
+;;; ---------- appearance ----------
+(with-delayed-eval
+  (global-font-lock-mode)
+  (transient-mark-mode t)
+  (line-number-mode t)
+  (column-number-mode t)
+  (show-paren-mode t)
+  (whitespace-mode t)
+  (set-scroll-bar-mode nil)
+
+  (beacon-mode t)
+  (volatile-highlights t)
+
   (set-face-attribute 'default nil
                       :family "Source Han Code JP"
                       :height 110)
@@ -213,28 +196,19 @@
                       :height 120)
   (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP")))
 
-(leaf cursor
-  :leaf-autoload nil
-  :when (eq system-type 'darwin)
-  :hook (mac-selected-keyboard-input-source-change-hook
-         . mac-selected-keyboard-input-source-change-hook-func)
-  :init
-  (defun mac-selected-keyboard-input-source-change-hook-func ()
-    ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
-    (set-cursor-color (if (or
-                           (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-input-source))
-                           (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
-                           (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
-                          "#FF5996" "#51AFEF"))))
+(when-macos
+ (with-delayed-eval
+   (defun mac-selected-keyboard-input-source-change-hook-func ()
+     ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
+     (set-cursor-color (if (or
+                            (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-input-source))
+                            (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
+                            (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
+                           "#FF5996" "#51AFEF")))
 
-(leaf paren
-  :hook (after-init . show-paren-mode)
-  :bind ("M-o" . my/jump-to-match-parens)
-  :setq
-  (show-paren-style . 'mixed)
-  (show-paren-when-point-inside-paren . t)
-  (show-paren-when-point-in-periphery . t)
-  :defer-config
+   (add-hook 'mac-selected-keyboard-input-source-change-hook 'mac-selected-keyboard-input-source-change-hook-func)))
+
+(with-eval-after-load 'paren
   (defun my/jump-to-match-parens nil
     "対応する括弧に移動"
     (interactive)
@@ -249,71 +223,55 @@
                  (point)
                  beg)
                 (goto-char end)
-              (goto-char beg)))) t))))
+              (goto-char beg)))) t)))
 
-(leaf whitespace
-  :hook after-init-hook
-  :setq
-  (whitespace-style
-   . '(face
-       spaces
-       space-mark
-       tabs
-       tab-mark
-       trailing
-       empty))
-  (whitespace-display-mappings
-   . '(
-       (space-mark
-        ?\xA0
-        [?\u00A4]
-        [?_])
-       (space-mark ?\u3000 [?\u25a1])
-       (newline-mark ?\n [?$ ?\n])
-       (tab-mark
-        ?\t
-        [?» ?\t]
-        [?\\ ?\t])
-       ))
-  (whitespace-action . '(auto-cleanup))
-  (whitespace-space-regexp . "\\(\u3000\\)"))
+  (global-set-key (kbd "M-o") #'my/jump-to-match-parens)
+  
+  (setq show-paren-style 'mixed)
+  (setq show-paren-when-point-inside-paren t)
+  (setq show-paren-when-point-in-periphery t))
 
-(leaf all-the-icons :ensure t)
+(with-eval-after-load 'whitespace
+  (setq whitespace-style
+        '(face
+          spaces
+          space-mark
+          tabs
+          tab-mark
+          trailing
+          empty))
+  (setq whitespace-display-mappings
+        '((space-mark
+           ?\xA0
+           [?\u00A4]
+           [?_])
+          (space-mark ?\u3000 [?\u25a1])
+          (newline-mark ?\n [?$ ?\n])
+          (tab-mark
+           ?\t
+           [?» ?\t]
+           [?\\ ?\t])
+          ))
+  (setq whitespace-action '(auto-cleanup))
+  (setq whitespace-space-regexp "\\(\u3000\\)"))
 
-(leaf doom-themes
-  :ensure t
-  :init
+(with-eval-after-load 'doom-themes
   (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
-  :config
   (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 
-(leaf doom-modeline
-  :ensure t
-  :hook (after-init-hook . doom-modeline-mode)
-  :setq
-  (doom-modeline-buffer-encoding . nil)
-  (doom-modeline-buffer-file-name-style . 'auto)
-  (doom-modeline-height . 32)
-  (doom-modeline-bar-width . 3)
-  (doom-modeline-enable-word-count . 5)
-  (doom-modeline-vcs-max-length . 30))
+(with-delayed-eval
+  (with-eval-after-load 'doom-modeline
+    (setq doom-modeline-buffer-encoding nil)
+    (setq doom-modeline-buffer-file-name-style 'auto)
+    (setq doom-modeline-height 32)
+    (setq doom-modeline-bar-width 3)
+    (setq doom-modeline-enable-word-count 5)
+    (setq doom-modeline-vcs-max-length 30)))
 
-(leaf beacon
-  :ensure t
-  :hook after-init-hook)
-
-(leaf volatile-highlights
-  :ensure t
-  :hook after-init-hook)
-
-(leaf dashboard
-  :ensure t
-  :setq
-  (dashboard-items . '((recents  . 10)
-                       (projects . 10)))
-  (dashboard-startup-banner . 'logo)
-  :config
+(with-eval-after-load 'dashboard
+  (setq dashboard-items '((recents  . 10) (projects 10)))
+  (setq dashboard-startup-banner 'logo)
   (dashboard-setup-startup-hook))
 
 ;;; ---------- 編集機能設定 ----------
