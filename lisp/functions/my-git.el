@@ -5,10 +5,11 @@
 
 ;;;###autoload
 (defun my-projectile-run-shell-command-in-root (command)
+  (require 'projectile)
   "Invoke `shell-command' COMMAND in the project's root."
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
-    (shell-command command)))
+    (shell-command cnnommand)))
 
 ;;;###autoload
 (defun my-gh-repo-view ()
@@ -50,6 +51,7 @@
 ;;;###autoload
 (defun my-consult-git-commit-messages ()
   (interactive)
+  (require 'consult)
   (insert (consult--read
            (split-string
             (shell-command-to-string
@@ -62,6 +64,7 @@
 ;;;###autoload
 (defun my-consult-git-commit-prefix ()
   (interactive)
+  (require 'consult)
   (insert (consult--read
            (list
             "feat: "

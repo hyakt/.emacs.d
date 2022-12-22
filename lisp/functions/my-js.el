@@ -7,6 +7,7 @@
 (defun my-copy-project-name-clipboard ()
   "Copy project name to clipbord."
   (interactive)
+  (require 'projectile)
   (kill-new (projectile-project-root)))
 
 (defcustom my-mocha-config-path nil
@@ -19,22 +20,24 @@
   (let ((enable-local-variables :all))
     (hack-dir-local-variables-non-file-buffer)))
 
-;;;###autoload
 (defun my-projectile-run-shell-command-in-root (command)
   "Invoke `shell-command' COMMAND in the project's root."
+  (require 'projectile)
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (shell-command command)))
 
-;;;###autoload
 (defun my-projectile-run-async-shell-command-in-root (command &optional output-buffer)
   "Invoke `async-shell-command' COMMAND in the project's root."
+  (require 'projectile)
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (async-shell-command command output-buffer)))
 
 (defun my-projectile-run-vterm-command-in-root (command)
   "Invoke `async-shell-command' COMMAND in the project's root."
+  (require 'projectile)
+  (require 'vterm)
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (my-run-in-vterm command)))
@@ -42,6 +45,7 @@
 ;;;###autoload
 (defun my-run-in-vterm (command)
   "Execute string COMMAND in a new vterm."
+  (require 'vterm)
   (interactive
    (list
     (let* ((f (cond (buffer-file-name)
@@ -196,18 +200,6 @@
    (concat "npx eslint --fix " (buffer-file-name))
    nil "*Shell Command Output*" t)
   (revert-buffer t t))
-
-(defun my-deno-project-p ()
-  "Predicate for determining if the open project is a Deno one."
-  (let ((p-root (cdr (project-current))))
-    (or
-     (file-exists-p (concat p-root "deno.json"))
-     (file-exists-p (concat p-root "deno.jsonc")))))
-
-(defun my-node-project-p ()
-  "Predicate for determining if the open project is a Node one."
-  (let ((p-root (cdr (project-current))))
-    (file-exists-p (concat p-root "package.json"))))
 
 (provide 'my-prog)
 ;;; my-prog.el ends here
