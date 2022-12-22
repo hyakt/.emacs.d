@@ -66,12 +66,6 @@
   (when (eq system-type 'darwin)
     `(progn ,@body)))
 
-(defun my-native-comp-packages ()
-  (interactive)
-  (native-compile-async "~/.emacs.d/init.el")
-  (native-compile-async "~/.emacs.d/early-init.el")
-  (native-compile-async "~/.emacs.d/site-lisp" 'recursively))
-
 (eval-when-compile
   (setq package-archives
         '(("org" . "https://orgmode.org/elpa/")
@@ -128,7 +122,7 @@
 (setq scroll-preserve-screen-position t)
 (setq scroll-conservatively 100)
 (setq custom-file "~/.emacs.d/custom.el")
-(setq initial-major-mode 'text-mode)
+(setq initial-major-mode 'fundamental-mode)
 
 (setq-default shell-file-name "/bin/bash")
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -170,7 +164,7 @@
   (server-start))
 
 (with-delayed-eval
-  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/my-functions"))
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
   (require 'my-util)
   (require 'my-prog)
   (require 'my-git))
@@ -308,7 +302,7 @@
   :ensure t
   :defer 1
   :config
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/my-themes")
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/themes")
   (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 
@@ -723,6 +717,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq eyebrowse-keymap-prefix "\C-z"))
 
 (use-package eldoc
+  :defer t
   :config
   (defvar eldoc-buffer-name "*ElDoc*")
 
@@ -762,6 +757,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (message "buffer mode")))))
 
 (use-package dired
+  :defer t
   :bind (("C-x C-d" . my-dired-this-buffer)
          :map dired-mode-map
          ("e" . wdired-change-to-wdired-mode)
@@ -1247,6 +1243,7 @@ targets."
 
 ;;; ---------- major mode ----------
 (use-package elisp-mode
+  :defer t
   :config
   (major-mode-hydra-define emacs-lisp-mode
     (:quit-key "q" :title (concat (all-the-icons-fileicon "elisp") " Emacs Lisp"))
@@ -1379,6 +1376,7 @@ targets."
   :defer t)
 
 (use-package js
+  :defer t
   :mode ("\\.[mc]?js$" )
   :hook
   ((js-mode . eglot-ensure)
@@ -1469,7 +1467,8 @@ targets."
   :config
   (setq prettier-js-show-errors nil))
 
-(use-package deno-fmt :ensure t
+(use-package deno-fmt
+  :ensure t
   :defer t
   :hook
   (typescript-mode . (lambda ()
