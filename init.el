@@ -1377,12 +1377,11 @@ targets."
 
 (use-package js
   :defer t
-  :mode ("\\.[mc]?js$" )
+  :mode ("\\.[mc]?js$" . js-mode)
   :hook
   ((js-mode . eglot-ensure)
    (js-mode . subword-mode)
-   (js-mode . tree-sitter-mode)
-   )
+   (js-mode . tree-sitter-mode))
   :config
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
