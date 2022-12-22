@@ -1298,7 +1298,7 @@ targets."
   :ensure t 
   :defer t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.jsx\\'" "\\.astro")
+         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.astro")
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
