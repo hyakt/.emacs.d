@@ -41,7 +41,7 @@
             (push v setup-tracker--parents)
             (push (current-time) setup-tracker--times)
             (setq setup-tracker--level (1+ setup-tracker--level))))))
-  
+
   (require 'profiler)
   (profiler-start 'cpu))
 
@@ -54,7 +54,7 @@
                   (run-with-timer
                    0.1 0.1
                    (lambda ()
-                     (if my-delayed-configurations  
+                     (if my-delayed-configurations
                          (eval (pop my-delayed-configurations))
                        (cancel-timer my-delayed-configuration-timer)))))))
 
@@ -79,7 +79,7 @@
           ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
   ;; TODO: Emacs 29 になったら削除
-  (unless (package-installed-p 'use-package) 
+  (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
   (unless (package-installed-p 'el-get)
@@ -154,7 +154,7 @@
     "Load the saved frame size."
     (let ((file "~/.emacs.d/.framesize"))
       (if (file-exists-p file) (load-file file))))
-  
+
   (frame-size-resume)
   (add-hook 'kill-emacs-hook 'frame-size-save))
 
@@ -198,7 +198,7 @@
   (setq recentf-auto-cleanup 'never))
 
 (use-package exec-path-from-shell
-  :ensure t 
+  :ensure t
   :defer 1
   :config
   (exec-path-from-shell-initialize)
@@ -206,7 +206,7 @@
   (setq exec-path-from-shell-arguments nil))
 
 (use-package gcmh
-  :ensure t 
+  :ensure t
   :defer 5
   :config
   (setq gcmh-verbose t)
@@ -245,16 +245,16 @@
                             (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
                            "#FF5996" "#51AFEF")))
    (add-hook 'mac-selected-keyboard-input-source-change-hook 'mac-selected-keyboard-input-source-change-hook-func))
-  
+
   (global-font-lock-mode)
   (transient-mark-mode t)
   (line-number-mode t)
   (column-number-mode t)
   (show-paren-mode t)
-  (whitespace-mode t)
   (set-scroll-bar-mode nil))
 
 (use-package paren
+  :defer t
   :bind (("M-o" . my-jump-to-match-parens))
   :config
   (defun my-jump-to-match-parens nil
@@ -272,12 +272,14 @@
                  beg)
                 (goto-char end)
               (goto-char beg)))) t)))
-  
+
   (setq show-paren-style 'mixed)
   (setq show-paren-when-point-inside-paren t)
   (setq show-paren-when-point-in-periphery t))
 
 (use-package whitespace
+  :defer t
+  :hook (prog-mode org-mode)
   :config
   (setq whitespace-style
         '(face
@@ -313,7 +315,7 @@
 (use-package doom-modeline
   :ensure t
   :defer 1
-  :config 
+  :config
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-buffer-file-name-style 'auto)
   (setq doom-modeline-height 32)
@@ -372,7 +374,7 @@
                      (member (buffer-name buf) ;; 消さないバッファ名を指定
                              '("*Messages*" "*Compile-Log*" "*Help*" "*scratch*" "*init log*")))
              do (kill-buffer buf)))
-  
+
   (global-set-key (kbd "C-h") nil)
   (global-set-key (kbd "C-m") #'newline-and-indent)
   (global-set-key (kbd "C-0") #'delete-frame)
@@ -391,7 +393,7 @@
 
 (use-package elec-pair
   :hook ((prog-mode . electric-pair-mode))
-  :config  
+  :config
   (defun org-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
@@ -403,7 +405,7 @@
 
   (defun my-inhibit-electric-pair-mode (char)
     (minibufferp))
-  
+
   (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
 
   (add-hook 'org-mode-hook #'org-add-electric-pairs)
@@ -427,19 +429,19 @@
   :hook flymake-mode)
 
 (use-package beacon
-  :ensure t 
+  :ensure t
   :defer 5
   :config
   (beacon-mode t))
 
 (use-package volatile-highlights
-  :ensure t 
+  :ensure t
   :defer 5
   :config
   (volatile-highlights-mode t))
 
 (use-package tempel
-  :ensure t 
+  :ensure t
   :defer t
   :bind (("<tab>" . my-tempel-maybe-expand))
   :config
@@ -453,7 +455,7 @@
       (indent-for-tab-command))))
 
 (use-package corfu
-  :ensure t 
+  :ensure t
   :defer t
   :hook prog-mode
   :bind (("C-j" . completion-at-point))
@@ -465,7 +467,7 @@
   (setq corfu-quit-at-boundary nil))
 
 (use-package cape
-  :ensure t 
+  :ensure t
   :defer t
   :after corfu
   :init
@@ -474,7 +476,7 @@
   (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 (use-package kind-icon
-  :ensure t 
+  :ensure t
   :defer t
   :after corfu
   :config
@@ -482,11 +484,11 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package dumb-jump
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package smart-jump
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   (("M-." . my-goto-address-or-smart-jump)
@@ -499,9 +501,9 @@
       (if url
           (browse-url url)
         (smart-jump-go))))
-  
+
   (setq smart-jump-bind-keys nil)
-  
+
   (smart-jump-setup-default-registers)
   (smart-jump-register :modes 'js2-mode
                        :jump-fn 'xref-find-definitions
@@ -520,7 +522,7 @@
 
 (use-package jumplist
   :defer 5
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   ("M-n" . jumplist-next)
@@ -540,27 +542,27 @@
   (setq jumplist-ex-mode t))
 
 (use-package rainbow-delimiters
-  :ensure t 
+  :ensure t
   :defer t
   :hook prog-mode)
 
 (use-package rainbow-mode
-  :ensure t 
+  :ensure t
   :defer t
   :hook (js2-mode css-mode html-mode typescript-mode))
 
 (use-package symbol-overlay
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("C-." . symbol-overlay-put))
 
 (use-package yafolding
-  :ensure t 
+  :ensure t
   :defer t
   :hook prog-mode)
 
 (use-package visual-regexp
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("C-r" . vr/query-replace)
   :config
@@ -568,37 +570,37 @@
   (setq vr/engine 'pcre2el))
 
 (use-package pcre2el
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package visual-regexp-steroids
-  :ensure t 
+  :ensure t
   :defer t
   :after visual-regexp)
 
 (use-package multiple-cursors
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   ("C->" . mc/mark-next-like-this)
   ("C-<" . mc/mark-previous-like-this))
 
 (use-package expand-region
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   ("C-," . er/expand-region)
   ("C-M-," . er/contract-region))
 
 (use-package undo-fu
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   ("C-/" . undo-fu-only-undo)
   ("M-/" . undo-fu-only-redo))
 
 (use-package wgrep
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (setq wgrep-enable-key "e")
@@ -606,19 +608,19 @@
   (setq wgrep-change-readonly-file t))
 
 (use-package string-inflection
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("M-[" . string-inflection-all-cycle))
 
 (use-package rg
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (setq rg-group-result t)
   (setq rg-custom-type-aliases '(("graphql" "*.gql *.graphql"))))
 
 (use-package pangu-spacing
-  :ensure t 
+  :ensure t
   :defer 5
   :config
   (setq pangu-spacing-real-insert-separtor t)
@@ -629,20 +631,20 @@
      pangu-spacing-include-regexp beg (+ end 8) (replace-match "\\1 \\2" nil nil))))
 
 (use-package avy
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("C-;" . avy-goto-char))
 
 (use-package unicode-escape
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package google-this
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package open-junk-file
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("C-`" . open-junk-file)
   :config
@@ -651,23 +653,23 @@
 
 ;;; ---------- interface ----------
 (use-package hydra
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package major-mode-hydra
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("M-a" . major-mode-hydra)
   :config
   (setq major-mode-hydra-invisible-quit-key "q"))
 
 (use-package which-key
-  :ensure t 
+  :ensure t
   :defer t
   :hook prog-mode)
 
 (use-package swap-buffers
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("C-x C-o" . swap-buffers))
 
@@ -700,12 +702,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (ws-other-window-or-split))))
 
 (use-package projectile
-  :ensure t 
+  :ensure t
   :defer t
   :bind (("C-x t" . my-projectile-toggle-between-implementation-and-test-other-window))
   :config
   (setq projectile-add-known-project '("~/repos/"))
-  
+
   (defun my-projectile-toggle-between-implementation-and-test-other-window ()
     "Toggle between an implementation file and its test file."
     (interactive)
@@ -714,7 +716,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (buffer-file-name)))))
 
 (use-package eyebrowse
-  :ensure t 
+  :ensure t
   :defer 5
   :config
   (setq eyebrowse-new-workspace t)
@@ -833,11 +835,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       ("g" revert-buffer)))))
 
 (use-package all-the-icons-dired
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package dired-sidebar
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   (("M-d" . dired-sidebar-toggle-sidebar)
@@ -848,7 +850,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq dired-sidebar-use-custom-modeline nil))
 
 (use-package consult
-  :ensure t 
+  :ensure t
   :defer t
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
@@ -878,7 +880,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    consult-recent-file
    consult-ls-git
    :preview-key (kbd "C-."))
-  
+
   ;; https://github.com/minad/consult/wiki#find-files-using-fd
   (defvar consult--fd-command nil)
   (defun consult--fd-builder (input)
@@ -905,24 +907,24 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (find-file (consult--find (car prompt-dir) #'consult--fd-builder initial)))))
 
 (use-package consult-ghq
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("C-x C-g" . consult-ghq-find))
 
 (use-package consult-ls-git
-  :ensure t 
+  :ensure t
   :defer t
   :bind ("C-x g" . consult-ls-git))
 
 (use-package vertico
-  :ensure t 
+  :ensure t
   :defer 1
   :config
   (setq vertico-count 30)
   (vertico-mode t))
 
 (use-package orderless
-  :ensure t 
+  :ensure t
   :defer t
   :commands orderless-filter)
 
@@ -939,11 +941,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                  '(eglot (styles fussy basic)))))
 
 (use-package marginalia
-  :ensure t 
+  :ensure t
   :hook vertico-mode)
 
 (use-package embark
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   ("M-q" . embark-act)
@@ -983,7 +985,7 @@ targets."
                  (window-parameters (mode-line-format . none)))))
 
 (use-package embark-consult
-  :ensure t 
+  :ensure t
   :hook (embark-collect-hook . consult-preview-at-point-mode)
   :after (embark consult))
 
@@ -994,7 +996,7 @@ targets."
   (setq eshell-ask-to-save-history 'always))
 
 (use-package vterm
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   (:map vterm-mode-map
@@ -1024,7 +1026,7 @@ targets."
                  (window-height . 0.4))))
 
 (use-package vterm-toggle
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   ("M-t" . vterm-toggle))
@@ -1037,11 +1039,11 @@ targets."
     :url "https://github.com/Ladicle/consult-tramp.git"))
 
 (use-package gh
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package magit
-  :ensure t 
+  :ensure t
   :defer 10
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
@@ -1087,7 +1089,7 @@ targets."
                      (buffer-local-value 'major-mode (window-buffer w))
                      'magit-mode))
                 (window-list)))
-  
+
   (defun my-magit-find-file-current ()
     (interactive)
     (let ((rev (consult--read
@@ -1103,10 +1105,10 @@ targets."
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
                  (window-height . 0.6)))
-  
+
   (defun with-faicon (icon str &optional height v-adjust)
     (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
-  
+
   (pretty-hydra-define
     git
     (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
@@ -1131,12 +1133,12 @@ targets."
       ("o" my-git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
 
 (use-package magit-delta
-  :ensure t 
+  :ensure t
   :defer t
   :hook magit-mode)
 
 (use-package git-gutter
-  :ensure t 
+  :ensure t
   :defer t
   :hook prog-mode
   :custom-face
@@ -1150,36 +1152,36 @@ targets."
     (if (and (get-buffer git-gutter:popup-buffer) (git-gutter:popup-buffer-window))
         (delete-window (git-gutter:popup-buffer-window))
       (git-gutter:popup-hunk)))
-  
+
   (setq git-gutter:modified-sign " ")
   (setq git-gutter:added-sign    " ")
   (setq git-gutter:deleted-sign  " "))
 
 (use-package git-timemachine
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package git-link
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (setq git-link-open-in-browser t)
   (setq git-link-use-commit t))
 
 (use-package blamer
-  :ensure t 
+  :ensure t
   :defer t
   :hook prog-mode
   :config
   (setq blamer-type 'selected))
 
 (use-package tree-sitter-langs
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package tree-sitter
-  :ensure t 
-  :defer t 
+  :ensure t
+  :defer t
   :config
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
   ;; TSX の対応
@@ -1205,13 +1207,13 @@ targets."
      ]))
 
 (use-package eglot
-  :ensure t 
+  :ensure t
   :defer t
   :commands (eglot-ensure)
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
-  
+
   (defun advice-eglot--xref-make-match (old-fn name uri range)
     (cond
      ((string-prefix-p "deno:/" uri)
@@ -1268,11 +1270,11 @@ targets."
      (("m" macrostep-expand "macrostep-expand")))))
 
 (use-package macrostep
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package web-mode
-  :ensure t 
+  :ensure t
   :defer t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.astro")
@@ -1295,7 +1297,7 @@ targets."
                                    ("jsx" .  "//")
                                    ("php" . "/*")))
   (setq web-mode-enable-front-matter-block t) ;ignore Front Matter Data
-  
+
   (add-hook 'web-mode-hook
             (lambda ()
               (when (equal web-mode-engine "vue")
@@ -1345,7 +1347,7 @@ targets."
      (("e" my-emmet-change-at-point)))))
 
 (use-package emmet-mode
-  :ensure t 
+  :ensure t
   :defer t
   :bind (:map emmet-mode-map ("C-j" . completion-at-point))
   :hook (html-mode
@@ -1354,7 +1356,7 @@ targets."
          scss-mode))
 
 (use-package slim-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package css-mode
@@ -1363,17 +1365,17 @@ targets."
   (setq css-indent-offset 2))
 
 (use-package scss-mode
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (setq scss-indent-offset 2))
 
 (use-package sass-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package sws-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package js
@@ -1388,7 +1390,7 @@ targets."
   (setq js-switch-indent-offset 2))
 
 (use-package typescript-mode
-  :ensure t 
+  :ensure t
   :defer t
   :hook
   (typescript-mode . eglot-ensure)
@@ -1416,17 +1418,17 @@ targets."
       ("d" deno-fmt)))))
 
 (use-package json-mode
-  :ensure t 
+  :ensure t
   :defer t
   :mode
   ("\\.jsonc\\'" . json-mode))
 
 (use-package jq-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package add-node-modules-path
-  :ensure t 
+  :ensure t
   :defer t
   :hook
   ((typescript-mode
@@ -1438,11 +1440,11 @@ targets."
     json-mode) . add-node-modules-path))
 
 (use-package nodejs-repl
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package jest
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
@@ -1454,7 +1456,7 @@ targets."
   (setq jest-executable "npx jest"))
 
 (use-package prettier-js
-  :ensure t 
+  :ensure t
   :defer t
   :hook
   ((typescript-mode . (lambda ()
@@ -1467,14 +1469,14 @@ targets."
   :config
   (setq prettier-js-show-errors nil))
 
-(use-package deno-fmt :ensure t 
+(use-package deno-fmt :ensure t
   :defer t
   :hook
   (typescript-mode . (lambda ()
                        (when (my-deno-project-p) (deno-fmt-mode)))))
 
 (use-package ruby-mode
-  :ensure t 
+  :ensure t
   :defer t
   :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
   :hook
@@ -1486,7 +1488,7 @@ targets."
   (setq ruby-insert-encoding-magic-comment nil))
 
 (use-package inf-ruby
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   (:map inf-ruby-minor-mode-map
@@ -1499,26 +1501,26 @@ targets."
   (setq inf-ruby-eval-binding "Pry.toplevel_binding"))
 
 (use-package rubocop
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package rspec-mode
-  :ensure t 
+  :ensure t
   :defer t
   :bind
   (:map rspec-mode-map
         ("C-c C-c C-c" . rspec-verify-single)))
 
 (use-package php-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package haskell-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package graphql-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package cc-mode
@@ -1529,11 +1531,11 @@ targets."
   (setq c-basic-offset 4))
 
 (use-package swift-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package dart-mode
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (setq dart-format-on-save nil)
@@ -1541,32 +1543,32 @@ targets."
   (setq dart-sdk-path "~/repos/github.com/flutter/flutter/bin/cache/dart-sdk/"))
 
 (use-package flutter
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (setq flutter-sdk-path "~/repos/github.com/flutter/flutter/"))
 
 (use-package go-mode
-  :ensure t 
+  :ensure t
   :defer t
   :hook (go-mode . eglot-ensure))
 
 (use-package elixir-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package scala-mode
-  :ensure t 
+  :ensure t
   :defer t
   :interpreter ("scala"))
 
 (use-package rust-mode
-  :ensure t 
+  :ensure t
   :defer t
   :hook (rust-mode . eglot-ensure)
   :config
   (setq rust-format-on-save t)
-  
+
   (major-mode-hydra-define rust-mode
     (:quit-key "q" :title (concat (all-the-icons-alltheicon "rust") "Rust"))
     ("Build/Run"
@@ -1588,7 +1590,7 @@ targets."
      (("d" cargo-process-doc "doc")))))
 
 (use-package cargo
-  :ensure t 
+  :ensure t
   :defer t
   :bind (:map cargo-mode-map
               ("C-c C-c C-c" . my-cargo-process-build-and-test))
@@ -1611,7 +1613,7 @@ targets."
     (my-cargo-process-run-bin-current-buffer)))
 
 (use-package csharp-mode
-  :ensure t 
+  :ensure t
   :defer t
   :hook
   (csharp-mode . eglot-ensure)
@@ -1623,7 +1625,7 @@ targets."
 (use-package sql
   :defer t
   :hook
-  (sql-mode . sql-interactive-mode)  
+  (sql-mode . sql-interactive-mode)
   (sql-interactive-mode
    . (lambda ()
        (buffer-face-set 'variable-pitch)
@@ -1639,35 +1641,35 @@ targets."
         (sql-indent-buffer)))))
 
 (use-package sqlup-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package sqlformat
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package dockerfile-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package docker-compose-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package nginx-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package fish-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package csv-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package protobuf-mode
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package org
@@ -1687,15 +1689,15 @@ targets."
   (setq org-latex-hyperref-template nil))
 
 (use-package htmlize
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package ox-gfm
-  :ensure t 
+  :ensure t
   :defer t)
 
 (use-package org-bullets
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (defun my-org-bullets-export (path)
@@ -1724,7 +1726,7 @@ targets."
         (clipboard-kill-ring-save (point-min) (point-max))))))
 
 (use-package markdown-mode
-  :ensure t 
+  :ensure t
   :defer t
   :hook
   (markdown-mode
@@ -1765,7 +1767,7 @@ mermaid.initialize({startOnLoad:true});
 hljs.highlightAll();
 </script>
 ")
-  
+
   (defun markdown-live-preview-window-xwidget-webkit (file)
     "Preview FILE with xwidget-webkit.
 To be used with `markdown-live-preview-window-function'."
@@ -1774,7 +1776,7 @@ To be used with `markdown-live-preview-window-function'."
       xwidget-webkit-last-session-buffer)))
 
 (use-package plantuml-mode
-  :ensure t 
+  :ensure t
   :defer t
   :config
   (setq plantuml-executable-path "plantuml")
