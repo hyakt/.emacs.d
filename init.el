@@ -170,6 +170,7 @@
   (server-start))
 
 (with-delayed-eval
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/my-functions"))
   (require 'my-util)
   (require 'my-prog)
   (require 'my-git))
@@ -303,15 +304,15 @@
 
 (use-package doom-themes
   :ensure t
-  :defer 0.1
+  :defer 1
   :config
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/my-themes")
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/my-themes")
   (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
   :ensure t
-  :defer 0.1
+  :defer 1
   :config 
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-buffer-file-name-style 'auto)
@@ -465,7 +466,7 @@
   :defer t
   :bind (("<tab>" . my-tempel-maybe-expand))
   :config
-  (setq tempel-path "~/.emacs.d/site-lisp/templates")
+  (setq tempel-path "~/.emacs.d/lisp/templates")
   (define-key tempel-map [remap my-tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
   (defun my-tempel-maybe-expand ()
@@ -541,7 +542,7 @@
                        :async t))
 
 (use-package jumplist
-  :defer 1
+  :defer 5
   :ensure t 
   :defer t
   :bind
@@ -1065,7 +1066,7 @@ targets."
 
 (use-package magit
   :ensure t 
-  :defer t
+  :defer 10
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
          (:map magit-status-mode-map

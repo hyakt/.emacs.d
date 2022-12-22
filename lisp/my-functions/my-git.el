@@ -2,48 +2,53 @@
 ;;; Commentary:
 
 ;;; Code:
-(require 'consult)
-(require 'projectile)
 
-(defun my/projectile-run-shell-command-in-root (command)
+;;;###autoload
+(defun my-projectile-run-shell-command-in-root (command)
   "Invoke `shell-command' COMMAND in the project's root."
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (shell-command command)))
 
 ;;;###autoload
-(defun my/gh-repo-view ()
+(defun my-gh-repo-view ()
   "gh open."
   (interactive)
-  (my/projectile-run-shell-command-in-root "gh repo view --web"))
+  (my-projectile-run-shell-command-in-root "gh repo view --web"))
 
-(defun my/gh-co (target)
+;;;###autoload
+(defun my-gh-co (target)
   "gh open."
   (interactive "sname/number: ")
-  (my/projectile-run-shell-command-in-root (concat "gh co " target))
-  (my/revert-buffer-no-confirm))
+  (my-projectile-run-shell-command-in-root (concat "gh co " target))
+  (my-revert-buffer-no-confirm))
 
-(defun my/gh-pr-view ()
+;;;###autoload
+(defun my-gh-pr-view ()
   "gh open."
   (interactive)
-  (my/projectile-run-shell-command-in-root "gh pr view --web"))
+  (my-projectile-run-shell-command-in-root "gh pr view --web"))
 
-(defun my/gh-pr-create ()
+;;;###autoload
+(defun my-gh-pr-create ()
   "gh pr create."
   (interactive)
-  (my/projectile-run-shell-command-in-root "git push -u origin HEAD; gh pr create --web --fill"))
+  (my-projectile-run-shell-command-in-root "git push -u origin HEAD; gh pr create --web --fill"))
 
-(defun my/gh-pr-list ()
+;;;###autoload
+(defun my-gh-pr-list ()
   "gh open."
   (interactive)
-  (my/projectile-run-shell-command-in-root "gh pr list --web"))
+  (my-projectile-run-shell-command-in-root "gh pr list --web"))
 
-(defun my/git-open-pr-from-commit-hash (hash)
+;;;###autoload
+(defun my-git-open-pr-from-commit-hash (hash)
   "gh open."
   (interactive "sHash: ")
-  (my/projectile-run-shell-command-in-root (concat "git openpr " hash)))
+  (my-projectile-run-shell-command-in-root (concat "git openpr " hash)))
 
-(defun my/consult-git-commit-messages ()
+;;;###autoload
+(defun my-consult-git-commit-messages ()
   (interactive)
   (insert (consult--read
            (split-string
@@ -54,7 +59,8 @@
            :prompt "Commit message: "
            :sort nil)))
 
-(defun my/consult-git-commit-prefix ()
+;;;###autoload
+(defun my-consult-git-commit-prefix ()
   (interactive)
   (insert (consult--read
            (list
