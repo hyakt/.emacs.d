@@ -58,7 +58,7 @@
                          (eval (pop my-delayed-configurations))
                        (cancel-timer my-delayed-configuration-timer)))))))
 
-(defmacro with-delayed-eval (&rest body)
+(defmacro with-deferred-eval (&rest body)
   (declare (indent 0))
   `(push ',(cons 'progn body) my-delayed-configurations))
 
@@ -128,7 +128,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (keyboard-translate ?\C-h ?\C-?)
 
-(with-delayed-eval
+(with-deferred-eval
   (defun frame-size-save ()
     "Save current the frame size and postion."
     (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
@@ -152,7 +152,7 @@
   (frame-size-resume)
   (add-hook 'kill-emacs-hook 'frame-size-save))
 
-(with-delayed-eval
+(with-deferred-eval
   (when-macos
    (mac-auto-ascii-mode t))
 
@@ -163,7 +163,7 @@
   (server-running-p)
   (server-start))
 
-(with-delayed-eval
+(with-deferred-eval
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
   (require 'my-util)
   (require 'my-prog)
@@ -229,7 +229,7 @@
                     :height 120)
 (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
 
-(with-delayed-eval
+(with-deferred-eval
   (when-macos
    (defun mac-selected-keyboard-input-source-change-hook-func ()
      ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
@@ -327,7 +327,7 @@
 ;;   (dashboard-setup-startup-hook))
 
 ;;; ---------- edit ----------
-(with-delayed-eval
+(with-deferred-eval
   (defun my-keyboard-quit()
     "Escape the minibuffer or cancel region consistently using 'Control-g'."
     (interactive)
@@ -1242,6 +1242,20 @@ targets."
                                                     (:typescript (:tsdk "node_modules/typescript/lib"))))))
 
 ;;; ---------- major mode ----------
+(with-deferred-eval
+  (defun my-deno-project-p ()
+    "Predicate for determining if the open project is a Deno one."
+    (let ((p-root (cdr (project-current))))
+      (or
+       (file-exists-p (concat p-root "deno.json"))
+       (file-exists-p (concat p-root "deno.jsonc")))))
+
+  (defun my-node-project-p ()
+    "Predicate for determining if the open project is a Node one."
+    (let ((p-root (cdr (project-current))))
+      (file-exists-p (concat p-root "package.json")))))
+
+
 (use-package elisp-mode
   :defer t
   :config
