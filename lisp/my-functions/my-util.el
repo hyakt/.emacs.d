@@ -2,50 +2,56 @@
 ;;; Commentary:
 
 ;;; Code:
-(defun my/set-alpha (alpha-num)
+;;;###autoload
+(defun my-set-alpha (alpha-num)
   "Set frame parameter ALPHA-NUM."
   (interactive "nAlpha: ")
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
 
-(defun my/buffer-face-set-variable-pitch-font ()
+;;;###autoload
+(defun my-buffer-face-set-variable-pitch-font ()
   "Change the current buffer font to variable pitch font."
   (interactive)
   (buffer-face-set 'variable-pitch))
 
-(defvar my/current-screen-geometry
+(defvar my-current-screen-geometry
   (cl-loop for x in (display-monitor-attributes-list)
            when (> (length (assoc 'frames x)) 1)
            return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
 
-(defun my/resize-frame (w h x y frame)
+;;;###autoload
+(defun my-resize-frame (w h x y frame)
   "Set frame W (width), H (height), X (position left) and Y (position top) on FRAME."
   (set-frame-width frame (- w 20) nil 'pixelwise)
   (set-frame-height frame (- h 10) nil 'pixelwise)
   (set-frame-position frame x y))
 
-(defun my/fullscreen ()
+;;;###autoload
+(defun my-fullscreen ()
   "Set frame maxmize."
   (interactive)
   (let ((frame (selected-frame))
-        (width (car my/current-screen-geometry))
-        (height (cdr my/current-screen-geometry)))
-    (my/resize-frame width height 0 0 frame)))
+        (width (car my-current-screen-geometry))
+        (height (cdr my-current-screen-geometry)))
+    (my-resize-frame width height 0 0 frame)))
 
-(defun my/halfscreen ()
+;;;###autoload
+(defun my-halfscreen ()
   "Set frame half."
   (interactive)
   (let ((frame (selected-frame))
-        (width (car my/current-screen-geometry))
-        (height (cdr my/current-screen-geometry)))
-    (my/resize-frame (/ width 2) height 0 0 frame)))
+        (width (car my-current-screen-geometry))
+        (height (cdr my-current-screen-geometry)))
+    (my-resize-frame (/ width 2) height 0 0 frame)))
 
-(defun my/halfscreen-right ()
+;;;###autoload
+(defun my-halfscreen-right ()
   "Set frame half."
   (interactive)
   (let ((frame (selected-frame))
-        (width (car my/current-screen-geometry))
-        (height (cdr my/current-screen-geometry)))
-    (my/resize-frame (/ width 2) height (/ width 2) 0 frame)))
+        (width (car my-current-screen-geometry))
+        (height (cdr my-current-screen-geometry)))
+    (my-resize-frame (/ width 2) height (/ width 2) 0 frame)))
 
 (defun url-encode-string (str &optional sys)
   "STRをSYSタイプにエンコードする."
@@ -57,7 +63,8 @@
   (let ((sys (or sys 'utf-8)))
     (decode-coding-string (url-unhex-string str) sys)))
 
-(defun my/url-decode-region (beg end)
+;;;###autoload
+(defun my-url-decode-region (beg end)
   "BEGからENDの範囲の文字をURLデコードする."
   (interactive "r")
   (let ((pos beg)
@@ -66,7 +73,8 @@
     (delete-region beg end)
     (insert (url-decode-string str 'utf-8))))
 
-(defun my/url-encode-region (beg end)
+;;;###autoload
+(defun my-url-encode-region (beg end)
   "BEGからENDの範囲の文字をURLエンコードする."
   (interactive "r")
   (let ((pos beg)
@@ -75,7 +83,8 @@
     (delete-region beg end)
     (insert (url-encode-string str 'utf-8))))
 
-(defun my/reverse-chars-region (beg end)
+;;;###autoload
+(defun my-reverse-chars-region (beg end)
   "BEGからENDの範囲の文字反転する."
   (interactive "r")
   (let ((pos beg)
@@ -85,7 +94,8 @@
     (delete-region beg end)
     (insert reverse-str)))
 
-(defun my/uniq-lines (beg end)
+;;;###autoload
+(defun my-uniq-lines (beg end)
   "Unique lines in region.
 Called from a program, there are two arguments:
 BEG and END (region to sort)."
@@ -104,7 +114,8 @@ BEG and END (region to sort)."
             (replace-match "" nil nil))
           (goto-char next-line))))))
 
-(defun my/reopen-with-sudo-tramp ()
+;;;###autoload
+(defun my-reopen-with-sudo-tramp ()
   "Reopen current buffer-file with sudo using tramp."
   (interactive)
   (let ((file-name (buffer-file-name)))
@@ -113,12 +124,14 @@ BEG and END (region to sort)."
         (find-alternate-file (replace-regexp-in-string ":.*:" (concat ":" (match-string 1 file-name) "|sudo:root" ":") file-name))
       (error "Cannot get a file name"))))
 
-(defun my/copy-buffer-name-clipboard ()
+;;;###autoload
+(defun my-copy-buffer-name-clipboard ()
   "Copy buffer name to clipbord."
   (interactive)
   (kill-new buffer-file-name))
 
-(defun my/move-or-rename-this-file (newfile)
+;;;###autoload
+(defun my-move-or-rename-this-file (newfile)
   "Move or Rename current buffer file to NEWFILE."
   (interactive "Fnewfile name: ")
   (let* ((current-file-name (buffer-name)))
@@ -126,7 +139,8 @@ BEG and END (region to sort)."
     (find-file newfile)
     (kill-buffer current-file-name)))
 
-(defun my/copy-this-file ()
+;;;###autoload
+(defun my-copy-this-file ()
   "Copy current buffer file to new file."
   (interactive)
   (let* ((current-file-name (buffer-name))
@@ -135,14 +149,16 @@ BEG and END (region to sort)."
     (find-file new-filename)
     (kill-buffer current-file-name)))
 
-(defun my/delete-or-remove-this-file ()
+;;;###autoload
+(defun my-delete-or-remove-this-file ()
   "Delete current buffer file."
   (interactive)
   (let* ((current-file-name (buffer-name)))
     (move-file-to-trash current-file-name)
     (kill-buffer current-file-name)))
 
-(defun my/find-file-and-create-directory(filename &optional wildcards)
+;;;###autoload
+(defun my-find-file-and-create-directory(filename &optional wildcards)
   "Find a file, and then create FILENAME (WILDCARDS)
 the folder if it doesn't exist."
   (interactive (find-file-read-args "Find file: " nil))
@@ -154,7 +170,8 @@ the folder if it doesn't exist."
     (message (format "Creating  %s" default-directory))
     (make-directory default-directory t)))
 
-(defun my/generate-slack-reminder (content)
+;;;###autoload
+(defun my-generate-slack-reminder (content)
   "Generate slack reminder with CONTENT and copy to clipboard."
   (interactive "sContent: ")
   (require 'org)
@@ -164,17 +181,14 @@ the folder if it doesn't exist."
          (channel (read-from-minibuffer "Channel: " "me")))
     (kill-new (concat "/remind " channel " " content " at " time-string " on " date-string))))
 
-(defun my/open-hyper-current-buffer ()
+;;;###autoload
+(defun my-open-hyper-current-buffer ()
   "Open current buffer with Hyper term and fish."
   (interactive)
   (let ((default-env-shell (getenv "SHELL")))
     (setenv "SHELL" "/usr/local/bin/fish")
     (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name)))
     (setenv "SHELL" default-env-shell)))
-
-;;;###autoload
-(defun with-faicon (icon str &optional height v-adjust)
-    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
 
 (provide 'my-util)
 
