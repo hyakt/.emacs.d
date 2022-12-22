@@ -410,29 +410,6 @@
   (add-hook 'web-mode #'web-add-electric-pairs)
   (add-hook 'typescript-mode #'web-add-electric-pairs))
 
-(use-package which-func
-  :hook
-  prog-mode
-  (prog-mode . (lambda ()
-                 (setq which-func-format
-                       '(:propertize
-                         (:eval
-                          (and (gethash (selected-window) which-func-table)
-                               (concat (doom-modeline-icon 'octicon "code" "" "" :height 1.0 :v-adjust 0)
-                                       (gethash (selected-window) which-func-table))))
-	                 local-map
-                         (keymap
-	                  (mode-line keymap
-			             (mouse-3 . end-of-defun)
-			             (mouse-2 .
-				              #[0 "e\300=\203	 \301 \207~\207"
-				                  [1 narrow-to-defun]
-				                  2 nil nil])
-			             (mouse-1 . beginning-of-defun)))
-	                 face which-func
-	                 mouse-face mode-line-highlight
-                         help-echo "Current function\nmouse-1: go to beginning\nmouse-2: toggle rest visibility\nmouse-3: go to end")))))
-
 (use-package ediff
   :defer t
   :config
@@ -445,7 +422,7 @@
   (setq flymake-fringe-indicator-position nil))
 
 (use-package flymake-diagnostic-at-point
-  :ensure t 
+  :ensure t
   :defer t
   :hook flymake-mode)
 
@@ -575,7 +552,6 @@
 (use-package symbol-overlay
   :ensure t 
   :defer t
-  :hook (prog-mode markdown-mode)
   :bind ("C-." . symbol-overlay-put))
 
 (use-package yafolding
@@ -1195,7 +1171,7 @@ targets."
   :defer t
   :hook prog-mode
   :config
-  (setq blamer-type 'visual))
+  (setq blamer-type 'selected))
 
 (use-package tree-sitter-langs
   :ensure t 
@@ -1231,6 +1207,7 @@ targets."
 (use-package eglot
   :ensure t 
   :defer t
+  :commands (eglot-ensure)
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
@@ -1404,7 +1381,7 @@ targets."
   :hook
   ((js-mode . eglot-ensure)
    (js-mode . subword-mode)
-   ;; (js-mode . tree-sitter-mode)
+   (js-mode . tree-sitter-mode)
    )
   :config
   (setq js-indent-level 2)
@@ -1416,7 +1393,7 @@ targets."
   :hook
   (typescript-mode . eglot-ensure)
   (typescript-mode . subword-mode)
-  ;; (typescript-mode . tree-sitter-mode)
+  (typescript-mode . tree-sitter-mode)
   :init
   (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
