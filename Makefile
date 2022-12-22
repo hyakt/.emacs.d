@@ -1,7 +1,8 @@
 TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 
 .PHONY: init
-init: install-mac-port install-fonts compile link
+init:
+	install-emacs-mac-port install-fonts link compile
 
 .PHONY: link
 link:
@@ -11,9 +12,13 @@ link:
 compile:
 	emacs -Q --batch -f batch-byte-compile early-init.el
 	emacs -Q --batch -f batch-byte-compile init.el
+	emacs -Q --batch -f batch-byte-compile lisp/**/*.el
+	# emacs -Q --batch -f batch-native-compile early-init.el
+	# emacs -Q --batch -f batch-native-compile init.el
+	# emacs -Q --batch -f batch-native-compile lisp/**/*.el
 
-.PHONY: install-mac-port
-install-mac-port:
+.PHONY: install-emacs-mac-port
+install-emacs-mac-port:
 	brew tap railwaycat/emacsmacport
 	brew install emacs-mac --with-ctags --with-glib --with-mac-metal --with-native-comp --with-natural-title-bar --with-librsvg --with-starter --with-xwidgets
 	ln -sfv /usr/local/opt/emacs-mac/Emacs.app /Applications/
