@@ -1054,7 +1054,7 @@ targets."
 
 (use-package magit
   :ensure t
-  :defer 10
+  :defer 5
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
          (:map magit-status-mode-map
