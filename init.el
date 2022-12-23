@@ -153,17 +153,6 @@
   (add-hook 'kill-emacs-hook 'frame-size-save))
 
 (with-deferred-eval
-  (when-macos
-   (mac-auto-ascii-mode t))
-
-  (savehist-mode t)
-  (recentf-mode t)
-  (global-auto-revert-mode)
-
-  (server-running-p)
-  (server-start))
-
-(with-deferred-eval
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
   (require 'my-util)
   (require 'my-prog)
@@ -185,19 +174,44 @@
   (setq explicit-shell-file-name "/bin/bash"))
 
 (use-package recentf
-  :defer t
+  :defer 1
   :config
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '("/\\.emacs\\.d/recentf" "COMMIT_EDITMSG" "^/sudo:" "/\\.emacs\\.d/elpa/"))
-  (setq recentf-auto-cleanup 'never))
+  (setq recentf-auto-cleanup 'never)
+
+  (recentf-mode t))
+
+(use-package savehist
+  :defer 1
+  :config
+  (savehist-mode t))
+
+(use-package mac-win
+  :defer 1
+  :if (eq system-type 'darwin)
+  :config
+  (mac-auto-ascii-mode t))
+
+(use-package autorevert
+  :defer 1
+  :config
+  (global-auto-revert-mode))
+
+(use-package server
+  :defer 2
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 (use-package exec-path-from-shell
   :ensure t
   :defer 1
   :config
-  (exec-path-from-shell-initialize)
   (setq exec-path-from-shell-variables '("PATH" "GOPATH"))
-  (setq exec-path-from-shell-arguments nil))
+  (setq exec-path-from-shell-arguments nil)
+
+  (exec-path-from-shell-initialize))
 
 (use-package gcmh
   :ensure t
