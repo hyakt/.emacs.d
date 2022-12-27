@@ -1141,7 +1141,9 @@ targets."
      "GH"
      (("v" my-gh-pr-view "view pr" :exit t)
       ("c" my-gh-pr-create "create pr" :exit t)
-      ("o" my-git-open-pr-from-commit-hash "open pr from hash" :exit t)))))
+      ("o" my-git-open-pr-from-commit-hash "open pr from hash" :exit t))
+     "Misc"
+     (("w" my-git-wip "wip" :exit t)))))
 
 (use-package magit-delta
   :ensure t
