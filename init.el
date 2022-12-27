@@ -557,7 +557,7 @@
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :hook (js2-mode css-mode html-mode typescript-mode))
+  :hook (js2-mode css-mode html-mode mhtml-mode typescript-mode))
 
 (use-package symbol-overlay
   :ensure t
@@ -1082,6 +1082,7 @@ targets."
     (if (or (derived-mode-p 'magit-status-mode)
             (magit-status-toggle--get-window))
         (magit-status-toggle-hide)
+      (magit-status-setup-buffer)
       (magit-status)))
 
   (defun magit-status-toggle-hide ()
@@ -1253,7 +1254,12 @@ targets."
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
-                                                    (:typescript (:tsdk "node_modules/typescript/lib"))))))
+                                                    (:typescript (:tsdk "node_modules/typescript/lib")))))
+
+  ;; npm install -g vscode-langservers-extracted
+  (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
+  )
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
@@ -1302,7 +1308,7 @@ targets."
   :ensure t
   :defer t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.html?\\'" "\\.astro")
+         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.astro")
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
@@ -1327,19 +1333,6 @@ targets."
             (lambda ()
               (when (equal web-mode-engine "vue")
                 (eglot-ensure))))
-
-  (defun my-emmet-change-at-point ()
-    (interactive)
-    (let ((web-mode-cur-language
-           (web-mode-language-at-pos)))
-      (if (string= web-mode-cur-language "css")
-          (and
-           (setq emmet-use-css-transform t)
-           (message "css transform"))
-        (progn
-          (setq emmet-use-css-transform nil)
-          (message "html transform")
-          ))))
 
   (major-mode-hydra-define web-mode
     (:quit-key "q" :title (concat (all-the-icons-alltheicon "html5") " Web mode"))
@@ -1368,17 +1361,22 @@ targets."
      "Format"
      (("p" prettier-js)
       ("d" deno-fmt))
-     "Misc"
-     (("e" my-emmet-change-at-point)))))
+     )))
 
 (use-package emmet-mode
   :ensure t
   :defer t
-  :bind (:map emmet-mode-map ("C-j" . completion-at-point))
+  :bind (:map emmet-mode-keymap ("C-j" . completion-at-point))
   :hook (html-mode
+         mhtml-mode
          web-mode
          css-mode
          scss-mode))
+
+(use-package mhtml-mode
+  :defer t
+  :config
+  (setq sgml-quick-keys 'close))
 
 (use-package slim-mode
   :ensure t
@@ -1386,14 +1384,9 @@ targets."
 
 (use-package css-mode
   :defer t
+  :hook ((css-mode scss-mode) . eglot-ensure)
   :config
   (setq css-indent-offset 2))
-
-(use-package scss-mode
-  :ensure t
-  :defer t
-  :config
-  (setq scss-indent-offset 2))
 
 (use-package sass-mode
   :ensure t
@@ -1484,10 +1477,14 @@ targets."
   :ensure t
   :defer t
   :hook
-  ((typescript-mode . (lambda ()
-                        (when (my-node-project-p) (prettier-js-mode))))
-   js2-mode
-   web-mode
+  (((typescript-mode
+     web-mode
+     js2-mode
+     json-mode) .
+     (lambda ()
+       (when (my-node-project-p) (prettier-js-mode))))
+   html-mode
+   mhtml-mode
    css-mode
    scss-mode
    graphql-mode)
@@ -1498,8 +1495,12 @@ targets."
   :ensure t
   :defer t
   :hook
-  (typescript-mode . (lambda ()
-                       (when (my-deno-project-p) (deno-fmt-mode)))))
+  ((typescript-mode
+    js2-mode
+    web-mode
+    json-mode) .
+    (lambda ()
+      (when (my-deno-project-p) (deno-fmt-mode)))))
 
 (use-package ruby-mode
   :ensure t
