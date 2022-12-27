@@ -155,8 +155,8 @@
 (with-deferred-eval
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
   (require 'my-util)
-  (require 'my-prog)
-  (require 'my-git))
+  (require 'my-git)
+  (require 'my-js))
 
 (use-package compile
   :defer t

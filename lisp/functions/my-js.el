@@ -1,4 +1,4 @@
-;;; my-prog.el --- prog mode用のユーティリティ
+;;; my-js.el --- javascript用のユーティリティ
 ;;; Commentary:
 
 ;;; Code:
@@ -201,5 +201,5 @@
    nil "*Shell Command Output*" t)
   (revert-buffer t t))
 
-(provide 'my-prog)
-;;; my-prog.el ends here
+(provide 'my-js)
+;;; my-js.el ends here
