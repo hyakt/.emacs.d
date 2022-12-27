@@ -2,49 +2,47 @@
 ;;; Commentary:
 
 ;;; Code:
-
-;;;###autoload
 (defun my-projectile-run-shell-command-in-root (command)
-  (require 'projectile)
   "Invoke `shell-command' COMMAND in the project's root."
+  (require 'projectile)
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
-    (shell-command cnnommand)))
+    (shell-command command)))
 
 ;;;###autoload
 (defun my-gh-repo-view ()
-  "gh open."
+  "Gh repo view."
   (interactive)
   (my-projectile-run-shell-command-in-root "gh repo view --web"))
 
 ;;;###autoload
 (defun my-gh-co (target)
-  "gh open."
+  "Gh checkout TARGET."
   (interactive "sname/number: ")
   (my-projectile-run-shell-command-in-root (concat "gh co " target))
   (my-revert-buffer-no-confirm))
 
 ;;;###autoload
 (defun my-gh-pr-view ()
-  "gh open."
+  "Gh open pr."
   (interactive)
   (my-projectile-run-shell-command-in-root "gh pr view --web"))
 
 ;;;###autoload
 (defun my-gh-pr-create ()
-  "gh pr create."
+  "Gh pr create."
   (interactive)
   (my-projectile-run-shell-command-in-root "git push -u origin HEAD; gh pr create --web --fill"))
 
 ;;;###autoload
 (defun my-gh-pr-list ()
-  "gh open."
+  "Gh pull request list."
   (interactive)
   (my-projectile-run-shell-command-in-root "gh pr list --web"))
 
 ;;;###autoload
 (defun my-git-open-pr-from-commit-hash (hash)
-  "gh open."
+  "Git openpr HASH."
   (interactive "sHash: ")
   (my-projectile-run-shell-command-in-root (concat "git openpr " hash)))
 
@@ -81,6 +79,11 @@
            :require-match t
            :prompt "prefix: "
            :sort nil)))
+
+;;;###autoload
+(defun my-git-wip ()
+  (interactive)
+  (my-projectile-run-shell-command-in-root "git wip"))
 
 (provide 'my-git)
 
