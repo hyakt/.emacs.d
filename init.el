@@ -5,7 +5,7 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-(defconst my-enable-measuring t
+(defconst my-enable-measuring nil
   "If non-nil, mesure start up time.")
 
 (when my-enable-measuring
@@ -154,9 +154,27 @@
 
 (with-deferred-eval
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
-  (require 'my-util)
-  (require 'my-git)
+  (require 'my-util))
+
+(with-deferred-eval
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
+  (require 'my-git))
+
+(with-deferred-eval
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
   (require 'my-js))
+
+;; (use-package my-util
+;;   :load-path "lisp/functions"
+;;   :defer 5)
+
+;; (use-package my-git
+;;   :load-path "lisp/functions"
+;;   :defer 5)
+
+;; (use-package my-js
+;;   :load-path "lisp/functions"
+;;   :defer 5)
 
 (use-package compile
   :defer t
@@ -1254,7 +1272,7 @@ targets."
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
-)
+  )
 
 ;;; ---------- major mode ----------
 (with-deferred-eval

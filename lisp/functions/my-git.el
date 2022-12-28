@@ -2,9 +2,11 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'projectile)
+
+;;;###autoload
 (defun my-projectile-run-shell-command-in-root (command)
   "Invoke `shell-command' COMMAND in the project's root."
-  (require 'projectile)
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (shell-command command)))
