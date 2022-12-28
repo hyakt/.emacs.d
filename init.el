@@ -1181,13 +1181,6 @@ targets."
   (setq git-link-open-in-browser t)
   (setq git-link-use-commit t))
 
-(use-package blamer
-  :ensure t
-  :defer t
-  :hook prog-mode
-  :config
-  (setq blamer-type 'selected))
-
 (use-package tree-sitter-langs
   :ensure t
   :defer t)
@@ -1261,8 +1254,7 @@ targets."
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
-  (add-to-list 'eglot-ignored-server-capabilites :hoverProvider)
-  )
+)
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
