@@ -1261,6 +1261,7 @@ targets."
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
+  (add-to-list 'eglot-ignored-server-capabilites :hoverProvider)
   )
 
 ;;; ---------- major mode ----------
