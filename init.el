@@ -5,7 +5,7 @@
 ;; This is hyakt's init.el of Emacs.
 
 ;;; Code:
-(defconst my-enable-measuring nil
+(defconst my-enable-measuring t
   "If non-nil, mesure start up time.")
 
 (when my-enable-measuring
@@ -574,17 +574,17 @@
   :defer t
   :bind ("C-r" . vr/query-replace)
   :config
-  (setq case-fold-search nil)
-  (setq vr/engine 'pcre2el))
+  (setq case-fold-search nil))
 
 (use-package pcre2el
   :ensure t
-  :defer t)
+  :after visual-regexp)
 
 (use-package visual-regexp-steroids
   :ensure t
-  :defer t
-  :after visual-regexp)
+  :after pcre2el
+  :config
+  (setq vr/engine 'pcre2el))
 
 (use-package multiple-cursors
   :ensure t
