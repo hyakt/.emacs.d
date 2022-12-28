@@ -19,7 +19,6 @@
            when (> (length (assoc 'frames x)) 1)
            return (cons (nth 3 (assoc 'geometry x)) (nth 4 (assoc 'geometry x)))))
 
-;;;###autoload
 (defun my-resize-frame (w h x y frame)
   "Set frame W (width), H (height), X (position left) and Y (position top) on FRAME."
   (set-frame-width frame (- w 20) nil 'pixelwise)
