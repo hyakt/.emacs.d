@@ -1066,6 +1066,10 @@ targets."
   (el-get-bundle consult-tramp
     :url "https://github.com/Ladicle/consult-tramp.git"))
 
+(use-package docker-tramp
+  :ensure t
+  :defer t)
+
 (use-package gh
   :ensure t
   :defer t)
