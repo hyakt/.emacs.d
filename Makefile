@@ -12,7 +12,8 @@ link:
 compile:
 	emacs -Q --batch -f batch-byte-compile early-init.el
 	emacs -Q --batch -f batch-byte-compile init.el
-	emacs -Q --batch -f batch-byte-compile lisp/**/*.el
+	emacs -Q --batch -f batch-byte-compile lisp/functions/*.el
+	emacs -Q --batch --eval "(progn (require 'package) (package-generate-autoloads \"my-functions\" \"~/.emacs.d/lisp/functions\"))"
 	# emacs -Q --batch -f batch-native-compile early-init.el
 	# emacs -Q --batch -f batch-native-compile init.el
 	# emacs -Q --batch -f batch-native-compile lisp/**/*.el
