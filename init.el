@@ -111,7 +111,7 @@
 (setq completion-ignore-case t)                                 ;; file 名の補完で大文字小文字を区別しない
 (setq auto-save-default nil)                                    ;; オートセーブのファイルを作らない
 (setq create-lockfiles nil)                                     ;; ロックファイル(.#filename)のファイルを作らない
-(setq garbage-collection-messages nil)                          ;; GC 実行のメッセージを表示しない
+(setq garbage-collection-message1s nil)                          ;; GC 実行のメッセージを表示しない
 (setq message-log-max 10000)                                    ;; ログの記録行数を増やす
 (setq vc-follow-symlinks t)                                     ;; symlink は必ず追いかける
 (setq enable-local-variables :all)                              ;; local variable は全て使用する
@@ -127,6 +127,8 @@
 (setq-default shell-file-name "/bin/bash")
 (defalias 'yes-or-no-p 'y-or-n-p)
 (keyboard-translate ?\C-h ?\C-?)
+
+(load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
 (with-deferred-eval
   (defun frame-size-save ()
@@ -151,30 +153,6 @@
 
   (frame-size-resume)
   (add-hook 'kill-emacs-hook 'frame-size-save))
-
-(with-deferred-eval
-  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
-  (require 'my-util))
-
-(with-deferred-eval
-  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
-  (require 'my-git))
-
-(with-deferred-eval
-  (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/functions"))
-  (require 'my-js))
-
-;; (use-package my-util
-;;   :load-path "lisp/functions"
-;;   :defer 5)
-
-;; (use-package my-git
-;;   :load-path "lisp/functions"
-;;   :defer 5)
-
-;; (use-package my-js
-;;   :load-path "lisp/functions"
-;;   :defer 5)
 
 (use-package compile
   :defer t

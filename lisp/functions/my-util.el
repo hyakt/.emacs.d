@@ -1,7 +1,14 @@
-;;; my-util.el --- 汎用的なユーティリティ -*- coding: utf-8; lexical-binding: t -*-
+;;; my-util.el --- 汎用的な関数 -*- coding: utf-8; lexical-binding: t -*-
 ;;; Commentary:
 
 ;;; Code:
+;;;###autoload
+(defun my-generate-autoloads ()
+  "Generates autoloads."
+  (interactive)
+  (require 'package)
+  (package-generate-autoloads "my-functions" "~/.emacs.d/lisp/functions"))
+
 ;;;###autoload
 (defun my-set-alpha (alpha-num)
   "Set frame parameter ALPHA-NUM."
