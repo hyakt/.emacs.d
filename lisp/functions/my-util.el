@@ -2,11 +2,13 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'package)
+(require 'org)
+
 ;;;###autoload
 (defun my-generate-autoloads ()
   "Generates autoloads."
   (interactive)
-  (require 'package)
   (package-generate-autoloads "my-functions" "~/.emacs.d/lisp/functions"))
 
 ;;;###autoload
@@ -180,7 +182,6 @@ the folder if it doesn't exist."
 (defun my-generate-slack-reminder (content)
   "Generate slack reminder with CONTENT and copy to clipboard."
   (interactive "sContent: ")
-  (require 'org)
   (let* ((date (org-read-date t 'to-time nil "Date:  "))
          (time-string (format-time-string "%H:%M" date))
          (date-string (format-time-string "%Y-%m-%d" date))

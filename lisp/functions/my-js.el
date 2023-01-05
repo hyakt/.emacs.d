@@ -2,6 +2,10 @@
 ;;; Commentary:
 
 ;;; Code:
+(eval-when-compile (package-initialize))
+
+(require 'projectile)
+(require 'vterm)
 
 ;;;###autoload
 (defun my-copy-project-name-clipboard ()
@@ -22,7 +26,6 @@
 
 (defun my-projectile-run-shell-command-in-root (command)
   "Invoke `shell-command' COMMAND in the project's root."
-  (require 'projectile)
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (shell-command command)))
@@ -35,7 +38,6 @@
 
 (defun my-projectile-run-vterm-command-in-root (command)
   "Invoke `async-shell-command' COMMAND in the project's root."
-  (require 'projectile)
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (my-run-in-vterm command)))
@@ -43,7 +45,6 @@
 ;;;###autoload
 (defun my-run-in-vterm (command)
   "Execute string COMMAND in a new vterm."
-  (require 'vterm)
   (interactive
    (list
     (let* ((f (cond (buffer-file-name)
