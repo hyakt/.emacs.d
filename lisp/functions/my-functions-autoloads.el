@@ -56,7 +56,7 @@ reload dir locals for the current buffer" t nil)
 (autoload 'my-run-in-vterm "my-js" "\
 Execute string COMMAND in a new vterm.
 
-\(fn COMMAND)" t nil)
+\(fn COMMAND)" nil nil)
 
 (autoload 'my-mocha-exec-current-buffer "my-js" "\
 Run mocha for current file." t nil)
@@ -186,10 +186,6 @@ Generate slack reminder with CONTENT and copy to clipboard.
 Open current buffer with Hyper term and fish." t nil)
 
 (register-definition-prefixes "my-util" '("my-" "url-"))
-
-;;;***
-
-;;;### (autoloads nil nil ("functions-autoloads.el") (0 0 0 0))
 
 ;;;***
 
