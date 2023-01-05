@@ -840,6 +840,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       ("s" dired-sort-toggle-or-edit)
       ("g" revert-buffer)))))
 
+(use-package all-the-icons
+  :ensure t
+  :defer t)
+
 (use-package all-the-icons-dired
   :ensure t
   :defer t)

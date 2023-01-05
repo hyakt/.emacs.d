@@ -14,9 +14,6 @@ compile:
 	emacs -Q --batch -f batch-byte-compile init.el
 	emacs -Q --batch -f batch-byte-compile lisp/functions/*.el
 	emacs -Q --batch --eval "(progn (require 'package) (package-generate-autoloads \"my-functions\" \"~/.emacs.d/lisp/functions\"))"
-	# emacs -Q --batch -f batch-native-compile early-init.el
-	# emacs -Q --batch -f batch-native-compile init.el
-	# emacs -Q --batch -f batch-native-compile lisp/**/*.el
 
 .PHONY: install-emacs-mac-port
 install-emacs-mac-port:
@@ -33,3 +30,4 @@ install-fonts:
 	brew tap homebrew/cask-fonts
 	brew tap iandol/adobe-fonts
 	brew install --cask font-source-han-code-jp font-myrica
+	emacs -Q --batch --eval '(progn (package-initialize) (all-the-icons-install-fonts t))'
