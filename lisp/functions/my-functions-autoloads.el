@@ -56,7 +56,7 @@ reload dir locals for the current buffer" t nil)
 (autoload 'my-run-in-vterm "my-js" "\
 Execute string COMMAND in a new vterm.
 
-\(fn COMMAND)" nil nil)
+\(fn COMMAND)" t nil)
 
 (autoload 'my-mocha-exec-current-buffer "my-js" "\
 Run mocha for current file." t nil)
