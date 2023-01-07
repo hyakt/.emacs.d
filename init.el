@@ -880,8 +880,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :config
   (setq xref-show-xrefs-function 'consult-xref)
   (setq xref-show-definitions-function 'consult-xref)
-  (setq consult-ghq-find-function 'find-file)
-  (setq consult-project-root-function #'projectile-project-root)
   (setq consult-ripgrep-command "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case -e ARG OPTS")
 
   (consult-customize
@@ -919,7 +917,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (use-package consult-ghq
   :ensure t
   :defer t
-  :bind ("C-x C-g" . consult-ghq-find))
+  :bind ("C-x C-g" . consult-ghq-find)
+  :config
+  (setq consult-ghq-find-function 'find-file))
 
 (use-package consult-ls-git
   :ensure t
