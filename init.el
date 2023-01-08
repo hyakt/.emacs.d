@@ -669,7 +669,9 @@
 
 (use-package which-key
   :ensure t
-  :defer 5)
+  :defer 5
+  :config
+  (which-key-mode t))
 
 (use-package swap-buffers
   :ensure t
@@ -722,9 +724,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :ensure t
   :defer 5
   :init
-  (setq eyebrowse-keymap-prefix (kbd "M-t"))
+  (setq eyebrowse-keymap-prefix (kbd "C-z"))
   :config
-  (setq eyebrowse-new-workspace t))
+  (setq eyebrowse-new-workspace t)
+  (eyebrowse-mode t))
 
 (use-package eldoc
   :defer t
@@ -1039,7 +1042,7 @@ targets."
   :ensure t
   :defer t
   :bind
-  ("M-I" . vterm-toggle))
+  ("M-t" . vterm-toggle))
 
 (use-package consult-tramp
   :no-require t
