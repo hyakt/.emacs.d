@@ -1,5 +1,5 @@
 TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-BREW_EMACS_APP_PATH = $(shell brew --prefix emacs-mac)
+EMACS_MAC_PORT_APP_PATH = $(shell brew --prefix emacs-mac)
 
 .PHONY: init
 init: emacs-mac-port link compile all-the-icons
@@ -19,7 +19,7 @@ compile:
 emacs-mac-port:
 	brew tap railwaycat/emacsmacport
 	brew install emacs-mac --with-ctags --with-glib --with-mac-metal --with-native-comp --with-natural-title-bar --with-librsvg --with-starter --with-xwidgets
-	ln -sfv $(BREW_EMACS_APP_PATH)/Emacs.app /Applications
+	ln -sfv $(EMACS_MAC_PORT_APP_PATH)/Emacs.app /Applications
 	# Adopting mac dark mode
 	defaults write org.gnu.Emacs TransparentTitleBar DARK
 	# Set No Title Bar Icon
