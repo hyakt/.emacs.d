@@ -25,9 +25,5 @@ install-emacs-mac-port:
 	# Set No Title Bar Icon
 	defaults write org.gnu.Emacs HideDocumentIcon YES
 
-.PHONY: install-fonts
 install-fonts:
-	brew tap homebrew/cask-fonts
-	brew tap iandol/adobe-fonts
-	brew install --cask font-source-han-code-jp font-myrica
 	emacs -Q --batch --eval '(progn (package-initialize) (all-the-icons-install-fonts t))'
