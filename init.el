@@ -509,7 +509,7 @@
   (setq smart-jump-bind-keys nil)
 
   (smart-jump-setup-default-registers)
-  (smart-jump-register :modes 'js2-mode
+  (smart-jump-register :modes 'js-mode
                        :jump-fn 'xref-find-definitions
                        :pop-fn 'xref-pop-marker-stack
                        :refs-fn 'xref-find-references
@@ -553,7 +553,7 @@
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :hook (js2-mode css-mode html-mode mhtml-mode typescript-mode))
+  :hook (js-mode css-mode html-mode mhtml-mode typescript-mode))
 
 (use-package symbol-overlay
   :ensure t
@@ -1452,7 +1452,7 @@ targets."
   :defer t
   :hook
   ((typescript-mode
-    js2-mode
+    js-mode
     web-mode
     scss-mode
     graphql-mode
@@ -1470,7 +1470,7 @@ targets."
   (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
   :hook
   (typescript-mode . jest-minor-mode)
-  (js2-mode . jest-minor-mode)
+  (js-mode . jest-minor-mode)
   (web-mode . jest-minor-mode)
   :config
   (setq jest-executable "npx jest"))
@@ -1481,7 +1481,7 @@ targets."
   :hook
   (((typescript-mode
      web-mode
-     js2-mode
+     js-mode
      json-mode) .
      (lambda ()
        (when (my-node-project-p) (prettier-js-mode))))
@@ -1498,7 +1498,7 @@ targets."
   :defer t
   :hook
   ((typescript-mode
-    js2-mode
+    js-mode
     web-mode
     json-mode) .
     (lambda ()
