@@ -2,7 +2,7 @@ TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 EMACS_MAC_PORT_APP_PATH = $(shell brew --prefix emacs-mac)
 
 .PHONY: init
-init: emacs-mac-port link compile all-the-icons
+init: emacs-mac-port link compile all-the-icons post-merge
 
 .PHONY: link
 link:
@@ -25,5 +25,11 @@ emacs-mac-port:
 	# Set No Title Bar Icon
 	defaults write org.gnu.Emacs HideDocumentIcon YES
 
+.PHONY: all-the-icons
 all-the-icons:
 	emacs -Q --batch --eval '(progn (package-initialize) (all-the-icons-install-fonts t))'
+
+.PHONY: post-merge
+post-merge:
+	echo "make compile" > "${TOP_DIR}/.git/hooks/post-merge"
+	chmod +x "${TOP_DIR}/.git/hooks/post-merge"
