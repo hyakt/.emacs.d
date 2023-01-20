@@ -432,6 +432,16 @@
   :defer t
   :hook flymake-mode)
 
+(use-package flymake-eslint
+  :ensure t
+  :after flymake
+  :init
+  (setq flymake-eslint-project-root (cdr (project-current)))
+  (defun enable-flymake-eslint-without-eglot ()
+    (setq-local eglot-stay-out-of '(flymake))
+    (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
+    (flymake-eslint-enable)))
+
 (use-package beacon
   :ensure t
   :defer 5
@@ -1334,7 +1344,9 @@ targets."
   (add-hook 'web-mode-hook
             (lambda ()
               (when (equal web-mode-engine "vue")
-                (eglot-ensure))))
+                (add-node-modules-path)
+                (eglot-ensure)
+                (enable-flymake-eslint-without-eglot))))
 
   (major-mode-hydra-define web-mode
     (:quit-key "q" :title (concat (all-the-icons-alltheicon "html5") " Web mode"))
@@ -1402,7 +1414,9 @@ targets."
   :defer t
   :mode ("\\.[mc]?js$" . js-mode)
   :hook
-  ((js-mode . eglot-ensure)
+  ((js-mode . (lambda ()
+                (eglot-ensure)
+                (enable-flymake-eslint-without-eglot)))
    (js-mode . subword-mode)
    (js-mode . tree-sitter-mode))
   :config
@@ -1413,7 +1427,9 @@ targets."
   :ensure t
   :defer t
   :hook
-  (typescript-mode . eglot-ensure)
+  (typescript-mode . (lambda ()
+                       (eglot-ensure)
+                       (enable-flymake-eslint-without-eglot)))
   (typescript-mode . subword-mode)
   (typescript-mode . tree-sitter-mode)
   :init
@@ -1453,7 +1469,6 @@ targets."
   :hook
   ((typescript-mode
     js-mode
-    web-mode
     scss-mode
     graphql-mode
     ts-comint-mode
