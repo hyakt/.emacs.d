@@ -80,6 +80,7 @@
     (package-refresh-contents)
     (package-install 'el-get)))
 
+;; TODO: Emacs 29 になったら削除
 ;; byet-compile 時に load されないため
 (require 'bind-key)
 
@@ -652,6 +653,7 @@
 (use-package unicode-escape
   :ensure t
   :defer t)
+(require 'unicode-escape)
 
 (use-package google-this
   :ensure t
@@ -1236,6 +1238,20 @@ targets."
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
+
+  ;; TODO: Emacs 29 になったら削除
+  ;; https://github.com/emacs-lsp/lsp-mode/issues/2681#issuecomment-1214902146
+  (advice-add 'json-parse-string :around
+              (lambda (orig string &rest rest)
+                (apply orig (s-replace "\\u0000" "" string)
+                       rest)))
+
+  (advice-add 'json-parse-buffer :around
+              (lambda (oldfn &rest args)
+	        (save-excursion
+                  (while (search-forward "\\u0000" nil t)
+                    (replace-match "" nil t)))
+		(apply oldfn args)))
 
   (defun advice-eglot--xref-make-match (old-fn name uri range)
     (cond
