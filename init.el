@@ -88,34 +88,33 @@
 (setq user-full-name "hyakt")
 (setq user-mail-address "hyakt0@gmail.com")
 
-(setq make-backup-files t)                                      ;; Backup file を作る
+(setq make-backup-files t)                                         ;; Backup file を作る
 (setq backup-directory-alist '(("\\.*$" .  "~/.emacs.d/.backup"))) ;; バックアップ先
 (setq cursor-type 'box)
 (setq completion-ignored-extensions '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
 (setq ring-bell-function 'ignore)
 (setq mouse-wheel-scroll-amount '(1 ((control). 5)))
 (setq text-quoting-style 'straight)
-(setq echo-keystrokes 0.1)                                      ;; キーストロークをエコーエリアに早く表示する
-(setq indent-tabs-mode nil)                                     ;; タブの変わりに半角スペースを使う
-(setq inhibit-startup-screen 1)                                 ;; スタートアップメッセージを非表示
-(setq initial-scratch-message "")                               ;; scratch の初期メッセージ消去
-(setq line-spacing 0)                                           ;; 行間を無しに設定
-(setq scroll-conservatively 35)                                 ;; スクロールの設定
-(setq scroll-margin 0)                                          ;; スクロールの設定
-(setq tab-width 2)                                              ;; タブの幅は半角スペース 2
-(setq truncate-lines nil)                                       ;; 画面端まで来たら折り返す
+(setq echo-keystrokes 0.1)                                         ;; キーストロークをエコーエリアに早く表示する
+(setq inhibit-startup-screen 1)                                    ;; スタートアップメッセージを非表示
+(setq initial-scratch-message "")                                  ;; scratch の初期メッセージ消去
+(setq line-spacing 0)                                              ;; 行間を無しに設定
+(setq scroll-conservatively 35)                                    ;; スクロールの設定
+(setq scroll-margin 0)                                             ;; スクロールの設定
+(setq tab-width 2)                                                 ;; タブの幅は半角スペース 2
+(setq truncate-lines nil)                                          ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets)  ;; 同じ名前のバッファを開いたときの設定
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)     ;; 同じ名前のバッファを開いたときの設定
 (setq split-height-threshold 120)
 (setq split-width-threshold 200)
-(setq auto-coding-functions nil)                                ;; 文字コードの自動変換保存をしない
-(setq completion-ignore-case t)                                 ;; file 名の補完で大文字小文字を区別しない
-(setq auto-save-default nil)                                    ;; オートセーブのファイルを作らない
-(setq create-lockfiles nil)                                     ;; ロックファイル(.#filename)のファイルを作らない
-(setq garbage-collection-message1s nil)                          ;; GC 実行のメッセージを表示しない
-(setq message-log-max 10000)                                    ;; ログの記録行数を増やす
-(setq vc-follow-symlinks t)                                     ;; symlink は必ず追いかける
-(setq enable-local-variables :all)                              ;; local variable は全て使用する
+(setq auto-coding-functions nil)                                   ;; 文字コードの自動変換保存をしない
+(setq completion-ignore-case t)                                    ;; file 名の補完で大文字小文字を区別しない
+(setq auto-save-default nil)                                       ;; オートセーブのファイルを作らない
+(setq create-lockfiles nil)                                        ;; ロックファイル(.#filename)のファイルを作らない
+(setq garbage-collection-message nil)                            ;; GC 実行のメッセージを表示しない
+(setq message-log-max 10000)                                       ;; ログの記録行数を増やす
+(setq vc-follow-symlinks t)                                        ;; symlink は必ず追いかける
+(setq enable-local-variables :all)                                 ;; local variable は全て使用する
 (setq init-file-debug t)
 (setq frame-resize-pixelwise t)
 (setq history-length 3000)
@@ -125,6 +124,7 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (setq initial-major-mode 'fundamental-mode)
 
+(setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/bin/bash")
 (defalias 'yes-or-no-p 'y-or-n-p)
 (keyboard-translate ?\C-h ?\C-?)
