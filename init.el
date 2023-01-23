@@ -414,8 +414,8 @@
   (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
 
   (add-hook 'org-mode-hook #'org-add-electric-pairs)
-  (add-hook 'web-mode #'web-add-electric-pairs)
-  (add-hook 'typescript-mode #'web-add-electric-pairs))
+  (add-hook 'web-mode-hook #'web-add-electric-pairs)
+  (add-hook 'typescript-mode-hook #'web-add-electric-pairs))
 
 (use-package ediff
   :defer t
@@ -426,6 +426,7 @@
   :defer t
   :hook emacs-lisp-mode
   :config
+  (setq flymake-no-changes-timeout 0.5)
   (setq flymake-fringe-indicator-position nil))
 
 (use-package flymake-diagnostic-at-point
@@ -745,6 +746,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :defer t
   :config
   (defvar eldoc-buffer-name "*ElDoc*")
+  (setq eldoc-idle-delay 0.75)
 
   (defun eldoc-buffer-message (format-string &rest args)
     "Display messages in the mode-line when in the ElDoc buffer."
@@ -1282,12 +1284,50 @@ targets."
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
-                                                    (:typescript (:tsdk "node_modules/typescript/lib")))))
+                                                    (:typescript (:tsdk "node_modules/typescript/lib")
+                                                                 :languageFeatures
+                                                                 (
+                                                                  :references t
+                                                                  :implementation t
+                                                                  :definition t
+                                                                  :typeDefinition t
+                                                                  :callHierarchy t
+                                                                  :hover t
+                                                                  :rename t
+                                                                  :renameFileRefactoring t
+                                                                  :signatureHelp t
+                                                                  :codeAction t
+                                                                  :workspaceSymbol t
+                                                                  :completion
+                                                                  (
+                                                                   :defaultTagNameCase "both"
+                                                                   :defaultAttrNameCase "kebabCase"
+                                                                   :getDocumentNameCasesRequest nil
+                                                                   :getDocumentSelectionRequest nil
+                                                                   )
+                                                                  :schemaRequestService
+                                                                  (:getDocumentContentRequest nil)
+                                                                  :createLanguageService t
+                                                                  )
+                                                                 :documentFeatures
+                                                                 (
+                                                                  :selectionRange t
+                                                                  :foldingRange t
+                                                                  :linkedEditingRange t
+                                                                  :documentSymbol t
+                                                                  :documentColor t
+                                                                  :documentFormatting
+                                                                  (
+                                                                   :defaultPrintWidth 100
+                                                                   :getDocumentPrintWidthRequest nil
+                                                                   )
+                                                                  )
+                                                                 ))))
 
-  ;; npm install -g vscode-langservers-extracted
-  (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
-  )
+;; npm install -g vscode-langservers-extracted
+(add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
+(add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
+)
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
