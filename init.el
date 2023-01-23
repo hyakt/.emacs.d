@@ -397,7 +397,7 @@
   (global-unset-key (kbd "C-z")))
 
 (use-package elec-pair
-  :hook ((prog-mode . electric-pair-mode))
+  :hook (prog-mode . electric-pair-mode)
   :config
   (defun org-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
@@ -1625,13 +1625,6 @@ targets."
 (use-package graphql-mode
   :ensure t
   :defer t)
-
-(use-package cc-mode
-  :defer t
-  :config
-  (setq tab-width 4)
-  (setq indent-tabs-mode t)
-  (setq c-basic-offset 4))
 
 (use-package swift-mode
   :ensure t
