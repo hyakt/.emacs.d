@@ -1567,6 +1567,10 @@ targets."
   :config
   (setq prettier-js-show-errors nil))
 
+(use-package eslintd-fix
+  :ensure t
+  :defer t)
+
 (use-package deno-fmt
   :ensure t
   :defer t
