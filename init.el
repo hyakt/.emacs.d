@@ -470,6 +470,11 @@
         (tempel-expand t)
       (indent-for-tab-command))))
 
+;; for some lsp
+(use-package yasnippet
+  :ensure t
+  :defer t)
+
 (use-package corfu
   :ensure t
   :defer t
@@ -1285,49 +1290,14 @@ targets."
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
                                                     (:typescript (:tsdk "node_modules/typescript/lib")
-                                                                 :languageFeatures
-                                                                 (
-                                                                  :references t
-                                                                  :implementation t
-                                                                  :definition t
-                                                                  :typeDefinition t
-                                                                  :callHierarchy t
-                                                                  :hover t
-                                                                  :rename t
-                                                                  :renameFileRefactoring t
-                                                                  :signatureHelp t
-                                                                  :codeAction t
-                                                                  :workspaceSymbol t
-                                                                  :completion
-                                                                  (
-                                                                   :defaultTagNameCase "both"
-                                                                   :defaultAttrNameCase "kebabCase"
-                                                                   :getDocumentNameCasesRequest nil
-                                                                   :getDocumentSelectionRequest nil
-                                                                   )
-                                                                  :schemaRequestService
-                                                                  (:getDocumentContentRequest nil)
-                                                                  :createLanguageService t
-                                                                  )
-                                                                 :documentFeatures
-                                                                 (
-                                                                  :selectionRange t
-                                                                  :foldingRange t
-                                                                  :linkedEditingRange t
-                                                                  :documentSymbol t
-                                                                  :documentColor t
-                                                                  :documentFormatting
-                                                                  (
-                                                                   :defaultPrintWidth 100
-                                                                   :getDocumentPrintWidthRequest nil
-                                                                   )
-                                                                  )
-                                                                 ))))
+                                                    :serverMode 0
+                                                    :diagnosticModel 1
+                                                    :textDocumentSync 2))))
 
-;; npm install -g vscode-langservers-extracted
-(add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
-(add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
-)
+  ;; npm install -g vscode-langservers-extracted
+  (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
+  )
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
@@ -1401,6 +1371,7 @@ targets."
             (lambda ()
               (when (equal web-mode-engine "vue")
                 (add-node-modules-path)
+                (yas-minor-mode t)
                 (eglot-ensure)
                 (enable-flymake-eslint-without-eglot))))
 
