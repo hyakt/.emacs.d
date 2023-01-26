@@ -1255,10 +1255,10 @@ targets."
 
   (advice-add 'json-parse-buffer :around
               (lambda (oldfn &rest args)
-	        (save-excursion
+                (save-excursion
                   (while (search-forward "\\u0000" nil t)
                     (replace-match "" nil t)))
-		(apply oldfn args)))
+                (apply oldfn args)))
 
   (defun advice-eglot--xref-make-match (old-fn name uri range)
     (cond
@@ -1289,15 +1289,21 @@ targets."
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
-                                                    (:typescript (:tsdk "node_modules/typescript/lib")
-                                                    :serverMode 0
-                                                    :diagnosticModel 1
-                                                    :textDocumentSync 2))))
+                                                    (:typescript
+                                                     (:tsdk "node_modules/typescript/lib")
+                                                     :serverMode 0
+                                                     :diagnosticModel 1
+                                                     :textDocumentSync 2))))
 
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
   )
+
+(use-package editorconfig
+  :ensure t
+  :defer t
+  :hook prog-mode)
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
