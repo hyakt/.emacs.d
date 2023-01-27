@@ -337,6 +337,12 @@
 ;;   (setq dashboard-startup-banner 'logo)
 ;;   (dashboard-setup-startup-hook))
 
+(use-package direnv
+  :ensure t
+  :defer 1
+  :config
+  (direnv-mode))
+
 ;;; ---------- edit ----------
 (with-deferred-eval
   (defun my-keyboard-quit()
