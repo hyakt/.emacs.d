@@ -1251,6 +1251,8 @@ targets."
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
+  ;; https://github.com/joaotavora/eglot/issues/43#issuecomment-1132605973
+  (setq eglot-events-buffer-size 0)
 
   ;; TODO: Emacs 29 になったら削除
   ;; https://github.com/emacs-lsp/lsp-mode/issues/2681#issuecomment-1214902146
