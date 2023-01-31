@@ -448,7 +448,7 @@
   (defun enable-flymake-eslint-without-eglot ()
     (setq-local eglot-stay-out-of '(flymake))
     (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
-    (flymake-eslint-enable)))
+    (ignore-errors (flymake-eslint-enable))))
 
 (use-package beacon
   :ensure t
