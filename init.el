@@ -550,7 +550,6 @@
 (use-package jumplist
   :defer 5
   :ensure t
-  :defer t
   :bind
   ("M-n" . jumplist-next)
   ("M-p" . jumplist-previous)
