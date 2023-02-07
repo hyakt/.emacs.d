@@ -512,7 +512,10 @@
 
 (use-package dumb-jump
   :ensure t
-  :defer t)
+  :defer t
+  :commands (dumb-jump-xref-activate)
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (use-package smart-jump
   :ensure t
