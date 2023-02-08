@@ -512,7 +512,10 @@
 
 (use-package dumb-jump
   :ensure t
-  :defer t)
+  :defer t
+  :commands (dumb-jump-xref-activate)
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (use-package smart-jump
   :ensure t
@@ -550,7 +553,6 @@
 (use-package jumplist
   :defer 5
   :ensure t
-  :defer t
   :bind
   ("M-n" . jumplist-next)
   ("M-p" . jumplist-previous)
