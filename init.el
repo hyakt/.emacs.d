@@ -1186,10 +1186,6 @@ targets."
   :ensure t
   :defer t
   :hook prog-mode
-  :custom-face
-  (git-gutter:modified . '((t (:background "#B4DCE7"))))
-  (git-gutter:added    . '((t (:background "#74DFC4"))))
-  (git-gutter:deleted  . '((t (:background "#964C7B"))))
   :config
   (defun my-git-gutter:toggle-popup-hunk ()
     "Toggle git-gutter hunk window."
@@ -1198,9 +1194,15 @@ targets."
         (delete-window (git-gutter:popup-buffer-window))
       (git-gutter:popup-hunk)))
 
+  (set-face-background 'git-gutter:modified "#B4DCE7")
+  (set-face-background 'git-gutter:added "#74DFC4")
+  (set-face-background 'git-gutter:deleted "#964C7B")
   (setq git-gutter:modified-sign " ")
   (setq git-gutter:added-sign    " ")
-  (setq git-gutter:deleted-sign  " "))
+  (setq git-gutter:deleted-sign  " ")
+
+  (add-to-list 'git-gutter:update-commands #'my-revert-buffer-no-confirm)
+  (add-to-list 'git-gutter:update-hooks 'focus-in-hook))
 
 (use-package git-timemachine
   :ensure t
