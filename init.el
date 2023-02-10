@@ -474,7 +474,9 @@
     (interactive)
     (if (tempel-expand)
         (tempel-expand t)
-      (indent-for-tab-command))))
+      (indent-for-tab-command)))
+
+  (add-hook 'before-save-hook 'tempel-done))
 
 ;; for some lsp
 (use-package yasnippet
