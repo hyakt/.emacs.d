@@ -1106,6 +1106,8 @@ targets."
   (setq magit-diff-paint-whitespace nil)
   (setq magit-diff-highlight-hunk-body nil)
   (setq magit-diff-refine-hunk nil)
+  (setq magit-no-confirm
+        '(discard stage-all-changes unstage-all-changes set-and-push))
 
   (defun my-magit-quit-session ()
     (interactive)
@@ -1191,6 +1193,8 @@ targets."
   :defer t
   :hook prog-mode
   :config
+  (setq git-gutter:ask-p nil)
+
   (defun my-git-gutter:toggle-popup-hunk ()
     "Toggle git-gutter hunk window."
     (interactive)
