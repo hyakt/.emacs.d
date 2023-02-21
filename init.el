@@ -669,7 +669,12 @@
 (use-package unicode-escape
   :ensure t
   :defer t)
-(require 'unicode-escape)
+
+(use-package mwim
+  :ensure t
+  :defer t
+  :bind (("C-a" . mwim-beginning)
+         ("C-e" . mwim-end)))
 
 (use-package google-this
   :ensure t
