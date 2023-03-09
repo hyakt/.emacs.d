@@ -688,6 +688,10 @@
   (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
   (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
+(use-package vlf
+  :ensure t
+  :defer t)
+
 ;;; ---------- interface ----------
 (use-package hydra
   :ensure t
@@ -1375,7 +1379,7 @@ targets."
   :ensure t
   :defer t
   :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.astro")
+         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.astro" "\\.njk")
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))

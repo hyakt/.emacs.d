@@ -40,6 +40,7 @@ js-mode js2-mode typescript-mode web-mode
 (imp "import " p " from '" p "'; ")
 (kiritori "console.log(\"------------------------------\");")
 (d "// eslint-disable-next-line \n debugger;")
+(range "[...Array(" p ")].map((_, i) => i)")
 
 typescript-mode
 
