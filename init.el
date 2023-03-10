@@ -668,7 +668,8 @@
 
 (use-package unicode-escape
   :ensure t
-  :defer t)
+  :defer t
+  :commands (unicode-escape-region unicode-unescape-region))
 
 (use-package mwim
   :ensure t
