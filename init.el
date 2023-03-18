@@ -132,6 +132,7 @@
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
 (with-deferred-eval
+  (load custom-file)
   (defun frame-size-save ()
     "Save current the frame size and postion."
     (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
@@ -688,6 +689,37 @@
   :config
   (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
   (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
+
+(use-package request
+  :ensure t
+  :defer t)
+
+(use-package chatgpt-arcana
+  :defer t
+  :after request
+  :bind (("C-c C-l" . my/send-region-to-chatgpt-arcana)
+         ("C-c C-;" . chatgpt-arcana-start-chat))
+  :init
+  (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
+  :config
+  (setq chatgpt-arcana-common-prompts-alist
+        '((smaller . "コードをもっと簡潔にリファクタリング")
+          (comment . "このコードに要約コメントを追加")
+          (explain . "このコードを80桁で説明する")
+          (test . "このコードのためにテストケースを書く")))
+
+  (setq chatgpt-arcana-system-prompts-alist
+        '((programming . "あなたはEmacsの中に住む大規模な言語モデルで、完璧なプログラマです。明示的に要求されない限り、簡潔なコードでのみ応答することができます。")
+          (writing . "あなたはEmacsの中に住む大規模な言語モデルで、優れたライティングアシスタントです。簡潔に応答し、指示を実行してください。")
+          (chat . "あなたはEmacsの中に住む大規模な言語モデルで、優れた会話パートナーです。簡潔に応答してください。")
+          (fallback . "あなたはEmacsの中に住む大規模な言語モデルです。ユーザーの助けをして、簡潔に応答してください。")))
+
+  (defun my/send-region-to-chatgpt-arcana (start end)
+    "Sends the selected region to chargpt-arcana."
+    (interactive "r")
+    (let ((region-text (buffer-substring-no-properties start end)))
+      (insert "\n")
+      (chatgpt-arcana-insert-at-point region-text))))
 
 (use-package vlf
   :ensure t
