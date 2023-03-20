@@ -696,7 +696,7 @@
 (use-package chatgpt-arcana
   :no-require t
   :after request
-  :bind (("C-c C-l" . my/send-region-to-chatgpt-arcana)
+  :bind (("C-c C-l" . my-send-region-to-chatgpt-arcana)
          ("C-c C-;" . chatgpt-arcana-start-chat))
   :init
   (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
@@ -705,8 +705,7 @@
         '((smaller . "コードをもっと簡潔にリファクタリング")
           (comment . "このコードに要約コメントを追加")
           (explain . "このコードを80桁で説明する")
-          (test . "このコードのためにテストケースを書く")
-          (commit-message . "この文を英語のGitのコミットメッセージに整形して")))
+          (test . "このコードのためにテストケースを書く")))
 
   (setq chatgpt-arcana-system-prompts-alist
         '((programming . "あなたはEmacsの中に住む大規模な言語モデルで、完璧なプログラマです。明示的に要求されない限り、簡潔なコードでのみ応答することができます。")
@@ -714,12 +713,18 @@
           (chat . "あなたはEmacsの中に住む大規模な言語モデルで、優れた会話パートナーです。簡潔に応答してください。")
           (fallback . "あなたはEmacsの中に住む大規模な言語モデルです。ユーザーの助けをして、簡潔に応答してください。")))
 
-  (defun my/send-region-to-chatgpt-arcana (start end)
+  (defun my-send-region-to-chatgpt-arcana (start end)
     "Sends the selected region to chargpt-arcana."
     (interactive "r")
     (let ((region-text (buffer-substring-no-properties start end)))
       (insert "\n")
-      (chatgpt-arcana-insert-at-point region-text))))
+      (chatgpt-arcana-insert-at-point region-text)))
+
+  (defun my-generate-conventional-commits-message ()
+    "Sends the selected region to chargpt-arcana."
+    (interactive)
+    (insert "\n")
+    (chatgpt-arcana-insert-at-point (concat (thing-at-point 'line) "\n" "この文を Conventional Commits に則った英語のGitのコミットメッセージに整形して"))))
 
 (use-package vlf
   :ensure t
@@ -1140,7 +1145,8 @@ targets."
                ("C-o" . magit-diff-visit-file-other-window))
          (:map git-commit-mode-map
                ("M-i" . my-consult-git-commit-messages)
-               ("M-p" . my-consult-git-commit-prefix)))
+               ("M-p" . my-consult-git-conventional-commit-prefix)
+               ("C-c C-l" . my-generate-conventional-commits-message)))
   :config
   (setq magit-save-repository-buffers 'dontask)
   (setq magit-diff-highlight-indentation nil)
