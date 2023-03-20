@@ -64,7 +64,7 @@
            :sort nil)))
 
 ;;;###autoload
-(defun my-consult-git-commit-prefix ()
+(defun my-consult-git-conventional-commit-prefix ()
   (interactive)
   (require 'consult)
   (insert (consult--read
