@@ -1,5 +1,5 @@
 ;;; init.el --- My emacs settings. -*- coding: utf-8; lexical-binding: t -*-
-;; Author: hyakt <https://github.com/hyakt/.emacs.d>
+;; Author: Hayato Kajiyama <https://github.com/hyakt/.emacs.d>
 
 ;;; Commentary:
 ;; This is hyakt's init.el of Emacs.
@@ -72,12 +72,11 @@
           ("melpa" . "https://melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
+  (package-refresh-contents)
   ;; TODO: Emacs 29 になったら削除
   (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
     (package-install 'use-package))
   (unless (package-installed-p 'el-get)
-    (package-refresh-contents)
     (package-install 'el-get)))
 
 ;; TODO: Emacs 29 になったら削除
@@ -85,8 +84,8 @@
 (require 'bind-key)
 
 ;;; ---------- basic ----------
-(setq user-full-name "hyakt")
-(setq user-mail-address "hyakt0@gmail.com")
+(setq user-full-name "Hayato Kajiyama")
+(setq user-mail-address "me@piginbeer.com")
 
 (setq make-backup-files t)                                         ;; Backup file を作る
 (setq backup-directory-alist '(("\\.*$" .  "~/.emacs.d/.backup"))) ;; バックアップ先
@@ -695,7 +694,7 @@
   :defer t)
 
 (use-package chatgpt-arcana
-  :defer t
+  :no-require t
   :after request
   :bind (("C-c C-l" . my/send-region-to-chatgpt-arcana)
          ("C-c C-;" . chatgpt-arcana-start-chat))
@@ -706,7 +705,8 @@
         '((smaller . "コードをもっと簡潔にリファクタリング")
           (comment . "このコードに要約コメントを追加")
           (explain . "このコードを80桁で説明する")
-          (test . "このコードのためにテストケースを書く")))
+          (test . "このコードのためにテストケースを書く")
+          (commit-message . "この文を英語のGitのコミットメッセージに整形して")))
 
   (setq chatgpt-arcana-system-prompts-alist
         '((programming . "あなたはEmacsの中に住む大規模な言語モデルで、完璧なプログラマです。明示的に要求されない限り、簡潔なコードでのみ応答することができます。")
