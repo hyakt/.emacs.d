@@ -38,7 +38,7 @@ Git openpr HASH.
 
 (autoload 'my-consult-git-commit-messages "my-git" nil t nil)
 
-(autoload 'my-consult-git-commit-prefix "my-git" nil t nil)
+(autoload 'my-consult-git-conventional-commit-prefix "my-git" nil t nil)
 
 (autoload 'my-git-wip "my-git" nil t nil)
 
