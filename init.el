@@ -694,13 +694,15 @@
   :defer t)
 
 (use-package chatgpt-arcana
-  :no-require t
-  :after request
+  :defer 5
   :bind (("C-c C-l" . my-send-region-to-chatgpt-arcana)
          ("C-c C-;" . chatgpt-arcana-start-chat))
   :init
   (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
   :config
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(chatgpt-arcana-chat-mode all-the-icons-octicon "comment-discussion" :height 1.0 :v-adjust -0.1 :face all-the-icons-purple))
+
   (setq chatgpt-arcana-common-prompts-alist
         '((smaller . "コードをもっと簡潔にリファクタリング")
           (comment . "このコードに要約コメントを追加")
@@ -711,20 +713,24 @@
         '((programming . "あなたはEmacsの中に住む大規模な言語モデルで、完璧なプログラマです。明示的に要求されない限り、簡潔なコードでのみ応答することができます。")
           (writing . "あなたはEmacsの中に住む大規模な言語モデルで、優れたライティングアシスタントです。簡潔に応答し、指示を実行してください。")
           (chat . "あなたはEmacsの中に住む大規模な言語モデルで、優れた会話パートナーです。簡潔に応答してください。")
-          (fallback . "あなたはEmacsの中に住む大規模な言語モデルです。ユーザーの助けをして、簡潔に応答してください。")))
+          (fallback . "あなたはEmacsの中に住む大規模な言語モデルです。ユーザーの助けをして、簡潔に応答してください。")
+          (git-commit . "この文章をConventional Commits に則った英語のGitのコミットメッセージに整形してください")))
+
+  (setq chatgpt-arcana-system-prompts-modes-alist
+        '((prog-mode . programming)
+          (emacs-lisp-mode . programming)
+          (org-mode . writing)
+          (markdown-mode . writing)
+          (chatgpt-arcana-chat-mode . chat)
+          (fallback . fallback)
+          (git-commit-elisp-text-mode . git-commit)))
 
   (defun my-send-region-to-chatgpt-arcana (start end)
     "Sends the selected region to chargpt-arcana."
     (interactive "r")
     (let ((region-text (buffer-substring-no-properties start end)))
       (insert "\n")
-      (chatgpt-arcana-insert-at-point region-text)))
-
-  (defun my-generate-conventional-commits-message ()
-    "Sends the selected region to chargpt-arcana."
-    (interactive)
-    (insert "\n")
-    (chatgpt-arcana-insert-at-point (concat (thing-at-point 'line) "\n" "この文を Conventional Commits に則った英語のGitのコミットメッセージに整形して"))))
+      (chatgpt-arcana-insert-at-point region-text))))
 
 (use-package vlf
   :ensure t
@@ -1145,8 +1151,7 @@ targets."
                ("C-o" . magit-diff-visit-file-other-window))
          (:map git-commit-mode-map
                ("M-i" . my-consult-git-commit-messages)
-               ("M-p" . my-consult-git-conventional-commit-prefix)
-               ("C-c C-l" . my-generate-conventional-commits-message)))
+               ("M-p" . my-consult-git-conventional-commit-prefix)))
   :config
   (setq magit-save-repository-buffers 'dontask)
   (setq magit-diff-highlight-indentation nil)
@@ -1156,6 +1161,7 @@ targets."
   (setq magit-diff-refine-hunk nil)
   (setq magit-no-confirm
         '(discard stage-all-changes unstage-all-changes set-and-push))
+  (setq git-commit-major-mode 'git-commit-elisp-text-mode)
 
   (defun my-magit-quit-session ()
     (interactive)
