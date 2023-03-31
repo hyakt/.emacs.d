@@ -648,7 +648,7 @@
   :defer t
   :config
   (setq rg-group-result t)
-  (setq rg-custom-type-aliases '(("graphql" "*.gql *.graphql"))))
+  (setq rg-custom-type-aliases '(("graphql" . "*.gql *.graphql"))))
 
 (use-package pangu-spacing
   :ensure t
