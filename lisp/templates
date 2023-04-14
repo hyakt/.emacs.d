@@ -32,7 +32,10 @@ emacs-lisp-mode
 
 js-mode js2-mode typescript-mode web-mode
 
-(cl "console.log(\"" (s variable) "\", " (s variable) ");")
+(cl "console.log(" p ");")
+(cll "console.log(`"(s variable)": `, "(s variable)");")
+(clb "console.log(`%c" p "`, \"color: #465DAA; font-size: 1.2em; font-weight: bold;\")")
+(cld "console.dir(" p ");")
 (sleep "await new Promise(resolve => setTimeout(resolve, " (p "1000") "));")
 (ed "/* eslint-disable " p " */")
 (edl "// eslint-disable-line " p)
