@@ -1042,7 +1042,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package embark
   :ensure t
-  :defer t
+  :defer 5
   :bind
   ("M-q" . embark-act)
   :config
