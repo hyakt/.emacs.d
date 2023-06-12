@@ -390,7 +390,6 @@
   (global-set-key (kbd "C-m") #'newline-and-indent)
   (global-set-key (kbd "C-0") #'delete-frame)
   (global-set-key (kbd "C-g") #'my-keyboard-quit)
-  (global-set-key (kbd "<f5>") #'my-revert-buffer-no-confirm)
   (global-set-key (kbd "M-r") #'my-revert-buffer-no-confirm)
   (global-set-key (kbd "C-x k") #'kill-this-buffer)
   (global-set-key (kbd "C-x C-k") #'my-close-and-kill-this-pane)
@@ -400,6 +399,8 @@
   (global-set-key (kbd "M-<down>") #'windmove-down)
   (global-set-key (kbd "M-<left>") #'windmove-left)
   (global-set-key (kbd "M-<right>") #'windmove-right)
+  (global-set-key (kbd "M-+") #'text-scale-increase)
+  (global-set-key (kbd "M-_") #'text-scale-decrease)
   (global-unset-key (kbd "C-z")))
 
 (use-package elec-pair
