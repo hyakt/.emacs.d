@@ -1385,14 +1385,14 @@ targets."
 (with-deferred-eval
   (defun my-deno-project-p ()
     "Predicate for determining if the open project is a Deno one."
-    (let ((p-root (cdr (project-current))))
+    (let ((p-root (car (last (project-current)))))
       (or
        (file-exists-p (concat p-root "deno.json"))
        (file-exists-p (concat p-root "deno.jsonc")))))
 
   (defun my-node-project-p ()
     "Predicate for determining if the open project is a Node one."
-    (let ((p-root (cdr (project-current))))
+    (let ((p-root (car (last (project-current)))))
       (file-exists-p (concat p-root "package.json")))))
 
 
@@ -1548,7 +1548,7 @@ targets."
   :config
   (setq typescript-indent-level 2)
   (major-mode-hydra-define typescript-mode
-    (:quit-key "q" :title (concat (with-sucicon "nf-seti-typescript") " TypeScript"))
+    (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
     ("REPL"
      (("n" nodejs-repl "node")
       ("t" run-ts "ts-node"))
@@ -1585,7 +1585,7 @@ targets."
     json-mode) . #'add-node-modules-path)
   :config
   ;; https://github.com/codesuki/add-node-modules-path/issues/23#issuecomment-1312961383
-  (setq add-node-modules-path-command "echo \"$(npm root)/.bin\""))
+  (setq add-node-modules-path-command '("echo \"$(npm root)/.bin\"")))
 
 (use-package nodejs-repl
   :ensure t
