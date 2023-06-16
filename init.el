@@ -702,9 +702,6 @@
   :init
   (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
   :config
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(chatgpt-arcana-chat-mode all-the-icons-octicon "comment-discussion" :height 1.0 :v-adjust -0.1 :face all-the-icons-purple))
-
   (setq chatgpt-arcana-common-prompts-alist
         '((smaller . "コードをもっと簡潔にリファクタリング")
           (comment . "このコードに要約コメントを追加")
@@ -937,7 +934,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package nerd-icons
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (defun with-faicon (icon str &optional height v-adjust)
+    (s-concat (nerd-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+
+  (defun with-sucicon (icon str &optional height v-adjust)
+    (s-concat (nerd-icons-sucicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)))
 
 (use-package dired-sidebar
   :ensure t
@@ -1215,12 +1218,9 @@ targets."
                  (reusable-frames . visible)
                  (window-height . 0.6)))
 
-  (defun with-faicon (icon str &optional height v-adjust)
-    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
-
   (pretty-hydra-define
     git
-    (:title (with-faicon "git" "Git commands" 1 -0.05) :quit-key "q")
+    (:title (with-faicon "nf-fa-git" "Git commands" 1 -0.05) :quit-key "q")
     ("Magit"
      (("m" magit-status "status" :exit t)
       ("b" magit-blame "blame" :exit t)
@@ -1402,7 +1402,7 @@ targets."
   :defer t
   :config
   (major-mode-hydra-define emacs-lisp-mode
-    (:quit-key "q" :title (concat (all-the-icons-fileicon "elisp") " Emacs Lisp"))
+    (:quit-key "q" :title (with-sucicon "nf-custom-emacs" "Emacs Lisp"))
     ("Eval"
      (("b" eval-buffer "buffer")
       ("e" eval-defun "defun")
@@ -1461,7 +1461,7 @@ targets."
                 (enable-flymake-eslint-without-eglot))))
 
   (major-mode-hydra-define web-mode
-    (:quit-key "q" :title (concat (all-the-icons-alltheicon "html5") " Web mode"))
+    (:quit-key "q" :title (with-sucicon "nf-seti-html" "Web mode"))
     ("Navigation"
      (("m" web-mode-navigate "navigate" :color red)
       ("g" web-mode-element-beginning "beginning" :color red)
@@ -1550,7 +1550,7 @@ targets."
   :config
   (setq typescript-indent-level 2)
   (major-mode-hydra-define typescript-mode
-    (:quit-key "q" :title (concat (all-the-icons-fileicon "typescript") " TypeScript"))
+    (:quit-key "q" :title (concat (with-sucicon "nf-seti-typescript") " TypeScript"))
     ("REPL"
      (("n" nodejs-repl "node")
       ("t" run-ts "ts-node"))
@@ -1726,7 +1726,7 @@ targets."
   (setq rust-format-on-save t)
 
   (major-mode-hydra-define rust-mode
-    (:quit-key "q" :title (concat (all-the-icons-alltheicon "rust") "Rust"))
+    (:quit-key "q" :title (concat (nerd-icons-devicon "nf-dev-rust") " " "Rust"))
     ("Build/Run"
      (("b" cargo-process-build "build")
       ("l" cargo-process-clean "clean")
