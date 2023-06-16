@@ -935,6 +935,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :ensure t
   :defer t)
 
+(use-package nerd-icons
+  :ensure t
+  :defer t)
+
 (use-package dired-sidebar
   :ensure t
   :defer t
