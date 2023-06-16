@@ -974,7 +974,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    consult-ripgrep
    consult-recent-file
    consult-ls-git
-   :preview-key (kbd "C-."))
+   :preview-key "C-.")
 
   ;; https://github.com/minad/consult/wiki#find-files-using-fd
   (defvar consult--fd-command nil)
