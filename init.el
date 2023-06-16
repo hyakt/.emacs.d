@@ -440,7 +440,7 @@
 (use-package flymake-diagnostic-at-point
   :ensure t
   :defer t
-  :hook (flymake-mode . flymake-diagnostic-at-point))
+  :hook (flymake-mode . flymake-diagnostic-at-point-mode))
 
 (use-package flymake-eslint
   :ensure t
