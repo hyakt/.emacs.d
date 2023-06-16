@@ -131,7 +131,8 @@
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
 (with-deferred-eval
-  (load custom-file)
+  (if (file-exists-p (expand-file-name custom-file))
+      (load-file (expand-file-name custom-file)))
   (defun frame-size-save ()
     "Save current the frame size and postion."
     (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
