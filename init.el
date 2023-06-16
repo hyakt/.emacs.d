@@ -285,7 +285,7 @@
 
 (use-package whitespace
   :defer t
-  :hook (prog-mode org-mode)
+  :hook ((prog-mode org-mode) . whitespace-mode)
   :config
   (setq whitespace-style
         '(face
@@ -432,7 +432,7 @@
 
 (use-package flymake
   :defer t
-  :hook emacs-lisp-mode
+  :hook (emacs-lisp-mode . flymake-mode)
   :config
   (setq flymake-no-changes-timeout 0.5)
   (setq flymake-fringe-indicator-position nil))
@@ -440,7 +440,7 @@
 (use-package flymake-diagnostic-at-point
   :ensure t
   :defer t
-  :hook flymake-mode)
+  :hook (flymake-mode . flymake-diagnostic-at-point))
 
 (use-package flymake-eslint
   :ensure t
@@ -488,7 +488,7 @@
 (use-package corfu
   :ensure t
   :defer t
-  :hook prog-mode
+  :hook (prog-mode . corfu-mode)
   :bind (("C-j" . completion-at-point))
   :config
   (setq corfu-min-width 30)
@@ -577,12 +577,12 @@
 (use-package rainbow-delimiters
   :ensure t
   :defer t
-  :hook prog-mode)
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :hook (js-mode css-mode html-mode mhtml-mode typescript-mode))
+  :hook ((js-mode css-mode html-mode mhtml-mode typescript-mode) . rainbow-mode))
 
 (use-package symbol-overlay
   :ensure t
@@ -592,7 +592,7 @@
 (use-package yafolding
   :ensure t
   :defer t
-  :hook prog-mode)
+  :hook (prog-mode . yafolding-mode))
 
 (use-package visual-regexp
   :ensure t
@@ -1043,7 +1043,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package marginalia
   :ensure t
-  :hook vertico-mode)
+  :hook (vertico-mode . marginalia-mode))
 
 (use-package embark
   :ensure t
@@ -1246,12 +1246,12 @@ targets."
 (use-package magit-delta
   :ensure t
   :defer t
-  :hook magit-mode)
+  :hook (magit-mode . magit-delta-mode))
 
 (use-package git-gutter
   :ensure t
   :defer t
-  :hook prog-mode
+  :hook (prog-mode . git-gutter-mode)
   :config
   (setq git-gutter:ask-p nil)
 
@@ -1381,7 +1381,7 @@ targets."
 (use-package editorconfig
   :ensure t
   :defer t
-  :hook prog-mode)
+  :hook (prog-mode . editorconfig-mode))
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
@@ -1493,11 +1493,11 @@ targets."
   :ensure t
   :defer t
   :bind (:map emmet-mode-keymap ("C-j" . completion-at-point))
-  :hook (html-mode
+  :hook ((html-mode
          mhtml-mode
          web-mode
          css-mode
-         scss-mode))
+         scss-mode) . emmet-mode))
 
 (use-package mhtml-mode
   :defer t
