@@ -1582,7 +1582,7 @@ targets."
     scss-mode
     graphql-mode
     ts-comint-mode
-    json-mode) . add-node-modules-path)
+    json-mode) . #'add-node-modules-path)
   :config
   ;; https://github.com/codesuki/add-node-modules-path/issues/23#issuecomment-1312961383
   (setq add-node-modules-path-command "echo \"$(npm root)/.bin\""))
