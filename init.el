@@ -2,7 +2,7 @@
 ;; Author: Hayato Kajiyama <https://github.com/hyakt/.emacs.d>
 
 ;;; Commentary:
-;; This is hyakt's init.el of Emacs.
+;; This is my init.el of Emacs.
 
 ;;; Code:
 (defconst my-enable-measuring nil
@@ -1117,6 +1117,7 @@ targets."
   (setq vterm-buffer-name-string "vterm: %s")
   (setq vterm-toggle-reset-window-configration-after-exit t)
   (setq vterm-toggle-scope 'project)
+  (setq vterm-toggle-project-root nil)
   (setq vterm-toggle-fullscreen-p nil)
 
   (add-to-list 'display-buffer-alist
