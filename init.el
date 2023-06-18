@@ -582,7 +582,7 @@
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :hook ((js-mode css-mode html-mode mhtml-mode typescript-mode) . rainbow-mode))
+  :hook ((js-mode css-mode html-mode typescript-mode) . rainbow-mode))
 
 (use-package symbol-overlay
   :ensure t
@@ -1373,7 +1373,7 @@ targets."
                                                      :textDocumentSync 2))))
 
   ;; npm install -g vscode-langservers-extracted
-  (add-to-list 'eglot-server-programs '((html-mode mhtml-mode) . ("vscode-html-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '((html-mode) . ("vscode-html-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
   )
 
@@ -1428,7 +1428,7 @@ targets."
 (use-package web-mode
   :ensure t
   :defer t
-  :mode ("\\.phtml\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
+  :mode ("\\.p?html\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.astro" "\\.njk")
   :bind (:map web-mode-map ("C-c C-l" . nil))
   :init
@@ -1493,15 +1493,9 @@ targets."
   :defer t
   :bind (:map emmet-mode-keymap ("C-j" . completion-at-point))
   :hook ((html-mode
-         mhtml-mode
          web-mode
          css-mode
          scss-mode) . emmet-mode))
-
-(use-package mhtml-mode
-  :defer t
-  :config
-  (setq sgml-quick-keys 'close))
 
 (use-package slim-mode
   :ensure t
@@ -1615,7 +1609,6 @@ targets."
      (lambda ()
        (when (my-node-project-p) (prettier-js-mode))))
    html-mode
-   mhtml-mode
    css-mode
    scss-mode
    graphql-mode)
@@ -1632,7 +1625,6 @@ targets."
   :hook
   ((typescript-mode
     js-mode
-    web-mode
     json-mode) .
     (lambda ()
       (when (my-deno-project-p) (deno-fmt-mode)))))
