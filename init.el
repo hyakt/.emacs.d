@@ -680,6 +680,7 @@
          ("C-e" . mwim-end)))
 
 (use-package google-this
+  :bind ("C-c C-;" . google-this-noconfirm)
   :ensure t
   :defer t)
 
@@ -697,8 +698,7 @@
 
 (use-package chatgpt-arcana
   :defer 5
-  :bind (("C-c C-l" . my-send-region-to-chatgpt-arcana)
-         ("C-c C-;" . chatgpt-arcana-start-chat))
+  :bind ("C-c C-l" . my-send-region-to-chatgpt-arcana)
   :init
   (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
   :config
