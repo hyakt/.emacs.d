@@ -679,11 +679,6 @@
   :bind (("C-a" . mwim-beginning)
          ("C-e" . mwim-end)))
 
-(use-package google-this
-  :bind ("C-c C-;" . google-this-noconfirm)
-  :ensure t
-  :defer t)
-
 (use-package open-junk-file
   :ensure t
   :defer t
@@ -702,6 +697,8 @@
   :init
   (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
   :config
+  (setq chatgpt-arcana-model-name "gpt-3.5-turbo-0613")
+
   (setq chatgpt-arcana-common-prompts-alist
         '((smaller . "コードをもっと簡潔にリファクタリング")
           (comment . "このコードに要約コメントを追加")
@@ -713,7 +710,7 @@
           (writing . "あなたはEmacsの中に住む大規模な言語モデルで、優れたライティングアシスタントです。簡潔に応答し、指示を実行してください。")
           (chat . "あなたはEmacsの中に住む大規模な言語モデルで、優れた会話パートナーです。簡潔に応答してください。")
           (fallback . "あなたはEmacsの中に住む大規模な言語モデルです。ユーザーの助けをして、簡潔に応答してください。")
-          (git-commit . "この文章をConventional Commits に則った英語のGitのコミットメッセージに整形してください")))
+          (git-commit . "この文章を Conventional Commits に則った英語の Git のコミットメッセージに整形してください")))
 
   (setq chatgpt-arcana-system-prompts-modes-alist
         '((prog-mode . programming)
@@ -730,6 +727,41 @@
     (let ((region-text (buffer-substring-no-properties start end)))
       (insert "\n")
       (chatgpt-arcana-insert-at-point region-text))))
+
+(use-package posframe
+  :defer t
+  :ensure t)
+
+(use-package go-translate
+  :defer t
+  :ensure t
+  :bind ("C-c C-;" . gts-do-translate)
+  :init
+  (defcustom gts-deepl-key ""
+    "DeepL API key"
+    :type 'string
+    :group 'go-translate)
+  :config
+  (setq go-translate-buffer-follow-p t)
+  (setq gts-translate-list '(("en" "ja") ("ja" "en")))
+
+  (setq gts-default-translator
+        (gts-translator
+         :picker
+         (gts-noprompt-picker :texter (gts-current-or-selection-texter))
+         :engines
+         (list
+          (gts-deepl-engine :auth-key gts-deepl-key :pro nil)
+          (gts-google-engine)
+          )
+         :render
+         (gts-posframe-pop-render))))
+
+
+(use-package google-this
+  :bind ("C-c C-'" . google-this-noconfirm)
+  :ensure t
+  :defer t)
 
 (use-package vlf
   :ensure t
@@ -1493,9 +1525,9 @@ targets."
   :defer t
   :bind (:map emmet-mode-keymap ("C-j" . completion-at-point))
   :hook ((html-mode
-         web-mode
-         css-mode
-         scss-mode) . emmet-mode))
+          web-mode
+          css-mode
+          scss-mode) . emmet-mode))
 
 (use-package slim-mode
   :ensure t
