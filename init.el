@@ -467,8 +467,9 @@
 (use-package tempel
   :ensure t
   :defer t
-  :bind (("<tab>" . my-tempel-maybe-expand))
   :config
+  (add-to-list 'completion-at-point-functions #'tempel-complete)
+
   (setq tempel-path "~/.emacs.d/lisp/templates")
   (define-key tempel-map [remap my-tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
@@ -1349,6 +1350,8 @@ targets."
   :ensure t
   :defer t
   :commands (eglot-ensure)
+  :hook (eglot--managed-mode . (lambda () (setq-local completion-at-point-functions
+                                                           (list (cape-super-capf #'eglot-completion-at-point #'tempel-complete)))))
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
@@ -1406,8 +1409,7 @@ targets."
 
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode) . ("vscode-html-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
-  )
+  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio"))))
 
 (use-package editorconfig
   :ensure t
