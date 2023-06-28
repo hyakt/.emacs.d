@@ -729,6 +729,16 @@
       (insert "\n")
       (chatgpt-arcana-insert-at-point region-text))))
 
+(use-package copilot.el
+  :no-require t
+  :init
+  (el-get-bundle copilot.el
+    :url "https://github.com/zerolfx/copilot.el.git")
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)))
+
 (use-package posframe
   :defer t
   :ensure t)
