@@ -468,7 +468,7 @@
   :ensure t
   :defer t
   :config
-  (add-to-list 'completion-at-point-functions #'tempel-complete)
+  (add-to-list 'completion-at-point-functions #'tempel-expand)
 
   (setq tempel-path "~/.emacs.d/lisp/templates")
   (define-key tempel-map [remap my-tempel-maybe-expand] #'tempel-next)
@@ -735,9 +735,7 @@
   (el-get-bundle copilot.el
     :url "https://github.com/zerolfx/copilot.el.git")
   :hook (prog-mode . copilot-mode)
-  :bind (:map copilot-completion-map
-              ("<tab>" . 'copilot-accept-completion)
-              ("TAB" . 'copilot-accept-completion)))
+  :bind ("<tab>" . copilot-accept-completion))
 
 (use-package posframe
   :defer t
@@ -1360,8 +1358,11 @@ targets."
   :ensure t
   :defer t
   :commands (eglot-ensure)
-  :hook (eglot--managed-mode . (lambda () (setq-local completion-at-point-functions
-                                                           (list (cape-super-capf #'eglot-completion-at-point #'tempel-complete)))))
+  :hook (eglot--managed-mode . (lambda ()
+                                 (setq-local completion-at-point-functions
+                                             (list (cape-super-capf
+                                                    #'eglot-completion-at-point
+                                                    #'tempel-expand)))))
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
