@@ -1427,6 +1427,17 @@ targets."
   :defer t
   :hook (prog-mode . editorconfig-mode))
 
+  (use-package imenu-list
+    :ensure t
+    :defer 5
+    :bind
+    ("M-i" . imenu-list-smart-toggle)
+    :custom-face
+    (imenu-list-entry-face-1 ((t (:foreground "white"))))
+    :custom
+    (imenu-list-focus-after-activation t)
+    (imenu-list-auto-resize nil))
+
 ;;; ---------- major mode ----------
 (with-deferred-eval
   (defun my-deno-project-p ()
