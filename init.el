@@ -121,7 +121,6 @@
 (setq scroll-preserve-screen-position t)
 (setq scroll-conservatively 100)
 (setq custom-file "~/.emacs.d/custom.el")
-(setq initial-major-mode 'fundamental-mode)
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/bin/bash")
@@ -694,11 +693,10 @@
 
 (use-package chatgpt-arcana
   :defer 5
-  :bind ("C-c C-l" . my-send-region-to-chatgpt-arcana)
   :init
   (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
   :config
-  (setq chatgpt-arcana-model-name "gpt-3.5-turbo-0613")
+  ;; (setq chatgpt-arcana-model-name "gpt-3.5-turbo-0613")
 
   (setq chatgpt-arcana-common-prompts-alist
         '((smaller . "コードをもっと簡潔にリファクタリング")
@@ -729,22 +727,74 @@
       (insert "\n")
       (chatgpt-arcana-insert-at-point region-text))))
 
-(use-package copilot.el
-  :no-require t
-  :init
-  (el-get-bundle copilot.el
-    :url "https://github.com/zerolfx/copilot.el.git")
-  :hook (prog-mode . copilot-mode)
-  :bind ("<tab>" . copilot-accept-completion))
-
 (use-package posframe
   :defer t
   :ensure t)
 
+(use-package copilot.el
+  :no-require t
+  :hook (prog-mode . copilot-mode)
+  :bind (("<tab>" . copilot-accept-completion)
+         ("M-P" . copilot-next-completion)
+         ("M-N" . copilot-previous-completion)
+         ("C-c C-j" . copilot-panel-complete))
+  :init
+  (el-get-bundle copilot.el
+    :url "https://github.com/zerolfx/copilot.el.git")
+
+  (defconst copilot-posframe-buffer--posframe "*copilot-panel*")
+  (defvar copilot-panel-point--posframe (point))
+
+  (defun copilot-panel-complete--posframe (orig-fun)
+    (interactive)
+    (setq copilot-panel-point--posframe (point))
+    (funcall orig-fun))
+
+  (advice-add 'copilot-panel-complete :around #'copilot-panel-complete--posframe)
+
+  (defun copilot--handle-notification--posframe (orig-fun _ method msg)
+    (when (eql method 'PanelSolution)
+      (copilot--dbind (:completionText completion-text :score completion-score) msg
+        (with-current-buffer (get-buffer-create copilot-posframe-buffer--posframe)
+          (read-only-mode 1)
+          (local-set-key (kbd "q") 'kill-buffer-and-window)
+
+          (unless (member (secure-hash 'sha256 completion-text)
+                          (org-map-entries (lambda () (org-entry-get nil "SHA"))))
+            (save-excursion
+              (goto-char (point-max))
+              (insert "* Solution\n"
+                      "  :PROPERTIES:\n"
+                      "  :SCORE: " (number-to-string completion-score) "\n"
+                      "  :SHA: " (secure-hash 'sha256 completion-text) "\n"
+                      "  :END:\n"
+                      "#+BEGIN_SRC " copilot--panel-lang "\n"
+                      completion-text "\n#+END_SRC\n\n")
+              (mark-whole-buffer)
+              (org-sort-entries nil ?R nil nil "SCORE"))))))
+
+    (when (eql method 'PanelSolutionsDone)
+      (message "Copilot: Finish synthesizing solutions.")
+      (if (string= (with-current-buffer copilot-posframe-buffer--posframe (buffer-string)) "")
+          (message "Copilot: No solution found.")
+        (posframe-show copilot-posframe-buffer--posframe
+                       :position copilot-panel-point--posframe
+                       :poshandler nil
+                       :background-color "black"
+                       :foreground-color "white"
+                       :internal-border-width 10
+                       :internal-border-color "black"
+                       :width 80
+                       :height 20
+                       :cursor 'hbar
+                       :accept-focus t))))
+
+  (advice-add 'copilot--handle-notification :around #'copilot--handle-notification--posframe))
+
 (use-package go-translate
   :defer t
   :ensure t
-  :bind ("C-c C-;" . gts-do-translate)
+  :bind ("C-c C-k" . gts-do-translate)
   :init
   (defcustom gts-deepl-key ""
     "DeepL API key"
@@ -768,7 +818,7 @@
 
 
 (use-package google-this
-  :bind ("C-c C-'" . google-this-noconfirm)
+  :bind ("C-c C-l" . google-this-noconfirm)
   :ensure t
   :defer t)
 
@@ -1427,16 +1477,16 @@ targets."
   :defer t
   :hook (prog-mode . editorconfig-mode))
 
-  (use-package imenu-list
-    :ensure t
-    :defer 5
-    :bind
-    ("M-i" . imenu-list-smart-toggle)
-    :custom-face
-    (imenu-list-entry-face-1 ((t (:foreground "white"))))
-    :custom
-    (imenu-list-focus-after-activation t)
-    (imenu-list-auto-resize nil))
+(use-package imenu-list
+  :ensure t
+  :defer 5
+  :bind
+  ("M-i" . imenu-list-smart-toggle)
+  :custom-face
+  (imenu-list-entry-face-1 ((t (:foreground "white"))))
+  :custom
+  (imenu-list-focus-after-activation t)
+  (imenu-list-auto-resize nil))
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
