@@ -439,7 +439,35 @@
 (use-package flymake-diagnostic-at-point
   :ensure t
   :defer t
-  :hook (flymake-mode . flymake-diagnostic-at-point-mode))
+  :hook (flymake-mode . flymake-diagnostic-at-point-mode)
+  :config
+  (defvar flymake-posframe-hide-posframe-hooks
+    '(pre-command-hook post-command-hook focus-out-hook)
+    "The hooks which should trigger automatic removal of the posframe.")
+
+  (defun flymake-posframe-hide--posframe ()
+    "Hide messages currently being shown if any."
+    (posframe-hide " *flymake-posframe-buffer*")
+    (dolist (hook flymake-posframe-hide-posframe-hooks)
+      (remove-hook hook #'flymake-posframe-hide--posframe t)))
+
+  (defun flymake-diagnostic-at-point-display-popup--posframe (text)
+    "Display the flymake diagnostic TEXT inside a posframe."
+    (posframe-show " *flymake-posframe-buffer*"
+                   :string (concat flymake-diagnostic-at-point-error-prefix
+                                   (flymake--diag-text
+                                    (get-char-property (point) 'flymake-diagnostic)))
+                   :position (point)
+                   :background-color "black"
+                   :foreground-color (if (eq (flymake--diag-type (get-char-property (point) 'flymake-diagnostic)) :warning)
+                                         "#ffdb69" "#db4b4b")
+                   :internal-border-width 2
+                   :internal-border-color "black"
+                   :poshandler nil)
+    (dolist (hook flymake-posframe-hide-posframe-hooks)
+      (add-hook hook #'flymake-posframe-hide--posframe nil t)))
+
+  (advice-add 'flymake-diagnostic-at-point-display-popup :override 'flymake-diagnostic-at-point-display-popup--posframe))
 
 (use-package flymake-eslint
   :ensure t
@@ -488,14 +516,17 @@
 (use-package corfu
   :ensure t
   :defer t
-  :hook (prog-mode . corfu-mode)
+  :hook
+  ((prog-mode . corfu-mode)
+   (prog-mode . corfu-popupinfo-mode))
   :bind (("C-j" . completion-at-point))
   :config
   (setq corfu-min-width 30)
   (setq corfu-auto t)
   (setq corfu-preview-current nil)
   (setq corfu-scroll-margin 0)
-  (setq corfu-quit-at-boundary nil))
+  (setq corfu-quit-at-boundary nil)
+  (setq corfu-popupinfo-delay 0.2))
 
 (use-package cape
   :ensure t
@@ -752,7 +783,7 @@
 
   (advice-add 'copilot-panel-complete :around #'copilot-panel-complete--posframe)
 
-  (defun copilot--handle-notification--posframe (orig-fun _ method msg)
+  (defun copilot--handle-notification--posframe (_ method msg)
     (when (eql method 'PanelSolution)
       (copilot--dbind (:completionText completion-text :score completion-score) msg
         (with-current-buffer (get-buffer-create copilot-posframe-buffer--posframe)
@@ -789,7 +820,7 @@
                        :cursor 'hbar
                        :accept-focus t))))
 
-  (advice-add 'copilot--handle-notification :around #'copilot--handle-notification--posframe))
+  (advice-add 'copilot--handle-notification :override #'copilot--handle-notification--posframe))
 
 (use-package go-translate
   :defer t
@@ -815,7 +846,6 @@
           )
          :render
          (gts-posframe-pop-render))))
-
 
 (use-package google-this
   :bind ("C-c C-l" . google-this-noconfirm)
