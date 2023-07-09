@@ -441,33 +441,35 @@
   :defer t
   :hook (flymake-mode . flymake-diagnostic-at-point-mode)
   :config
-  (defvar flymake-posframe-hide-posframe-hooks
-    '(pre-command-hook post-command-hook focus-out-hook)
-    "The hooks which should trigger automatic removal of the posframe.")
-
-  (defun flymake-posframe-hide--posframe ()
-    "Hide messages currently being shown if any."
-    (posframe-hide " *flymake-posframe-buffer*")
-    (dolist (hook flymake-posframe-hide-posframe-hooks)
-      (remove-hook hook #'flymake-posframe-hide--posframe t)))
-
-  (defun flymake-diagnostic-at-point-display-popup--posframe (text)
-    "Display the flymake diagnostic TEXT inside a posframe."
-    (posframe-show " *flymake-posframe-buffer*"
-                   :string (concat flymake-diagnostic-at-point-error-prefix
-                                   (flymake--diag-text
-                                    (get-char-property (point) 'flymake-diagnostic)))
-                   :position (point)
-                   :background-color "black"
-                   :foreground-color (if (eq (flymake--diag-type (get-char-property (point) 'flymake-diagnostic)) :warning)
-                                         "#ffdb69" "#db4b4b")
-                   :internal-border-width 2
-                   :internal-border-color "black"
-                   :poshandler nil)
-    (dolist (hook flymake-posframe-hide-posframe-hooks)
-      (add-hook hook #'flymake-posframe-hide--posframe nil t)))
-
-  (advice-add 'flymake-diagnostic-at-point-display-popup :override 'flymake-diagnostic-at-point-display-popup--posframe))
+  (defvar flymake-posframe-buffer " *flymake-posframe-buffer*"
+    "Name of the flymake posframe buffer.")
+  (defun flymake-diagnostic-at-point-display-posframe (text)
+    "Display the flymake diagnostic TEXT inside a child frame."
+    (posframe-show
+     flymake-posframe-buffer
+     :string (propertize
+              (concat flymake-diagnostic-at-point-error-prefix text)
+              'face (if-let ((type (get-char-property (point) 'flymake-diagnostic)))
+                        (pcase (flymake--diag-type type)
+                          (:error 'error)
+                          (:warning 'warning)
+                          (:note 'success)
+                          (_ 'default))
+                      'default))
+     :left-fringe 4
+     :right-fringe 4
+     :max-width (round (* (frame-width) 0.62))
+     :max-height (round (* (frame-height) 0.62))
+     :internal-border-width 1
+     :internal-border-color "black"
+     :background-color (face-background 'tooltip nil t))
+    (unwind-protect
+        (push (read-event) unread-command-events)
+      (progn
+        (posframe-hide flymake-posframe-buffer)
+        (other-frame 0))))
+  (setq flymake-diagnostic-at-point-display-diagnostic-function
+        #'flymake-diagnostic-at-point-display-posframe))
 
 (use-package flymake-eslint
   :ensure t
