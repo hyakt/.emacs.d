@@ -864,11 +864,11 @@
   (setq hydra-hint-display-type 'posframe)
   (setq hydra-posframe-show-params
         '(:internal-border-width 4
-          :internal-border-color "black"
-          :background-color "black"
-          :foreground-color "white"
-          :lines-truncate t
-          :poshandler posframe-poshandler-window-center)))
+                                 :internal-border-color "black"
+                                 :background-color "black"
+                                 :foreground-color "white"
+                                 :lines-truncate t
+                                 :poshandler posframe-poshandler-window-center)))
 
 (use-package major-mode-hydra
   :ensure t
@@ -1376,6 +1376,27 @@ targets."
   :ensure t
   :defer t
   :hook (magit-mode . magit-delta-mode))
+
+(use-package transient-posframe
+  :ensure t
+  :defer t
+  :custom-face
+  (transient-posframe ((t (:inherit tooltip))))
+  (transient-posframe-border ((t (:inherit posframe-border :background "black"))))
+  :hook (magit-mode . transient-posframe-mode)
+  :init
+  (setq transient-posframe-border-width 3
+        transient-posframe-min-height nil
+        transient-posframe-min-width 80
+        transient-posframe-poshandler nil
+        transient-posframe-parameters '((left-fringe . 8)
+                                        (right-fringe . 8)
+                                        (lines-truncate . t)))
+  :config
+  (defun my-transient-posframe--hide ()
+    "Hide transient posframe."
+    (posframe-hide transient--buffer-name))
+  (advice-add #'transient-posframe--delete :override #'my-transient-posframe--hide))
 
 (use-package git-gutter
   :ensure t
