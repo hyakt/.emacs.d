@@ -461,7 +461,7 @@
      :max-width (round (* (frame-width) 0.62))
      :max-height (round (* (frame-height) 0.62))
      :internal-border-width 1
-     :internal-border-color "black"
+     :internal-border-color "#0f0f14"
      :background-color (face-background 'tooltip nil t))
     (unwind-protect
         (push (read-event) unread-command-events)
@@ -813,10 +813,10 @@
         (posframe-show copilot-posframe-buffer--posframe
                        :position copilot-panel-point--posframe
                        :poshandler nil
-                       :background-color "black"
+                       :background-color "#0f0f14"
                        :foreground-color "white"
                        :internal-border-width 10
-                       :internal-border-color "black"
+                       :internal-border-color "#0f0f14"
                        :width 80
                        :height 20
                        :cursor 'hbar
@@ -865,12 +865,13 @@
   :config
   (setq hydra-hint-display-type 'posframe)
   (setq hydra-posframe-show-params
-        '(:internal-border-width 4
-                                 :internal-border-color "black"
-                                 :background-color "black"
-                                 :foreground-color "white"
-                                 :lines-truncate t
-                                 :poshandler posframe-poshandler-window-center)))
+        '(
+          :internal-border-width 10
+          :internal-border-color "#0f0f14"
+          :background-color "#0f0f14"
+          :foreground-color "white"
+          :lines-truncate t
+          :poshandler posframe-poshandler-window-center)))
 
 (use-package major-mode-hydra
   :ensure t
@@ -1384,7 +1385,7 @@ targets."
   :defer t
   :custom-face
   (transient-posframe ((t (:inherit tooltip))))
-  (transient-posframe-border ((t (:inherit posframe-border :background "black"))))
+  (transient-posframe-border ((t (:inherit posframe-border :background "#0f0f14"))))
   :hook (magit-mode . transient-posframe-mode)
   :init
   (setq transient-posframe-border-width 3
