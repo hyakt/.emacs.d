@@ -7,7 +7,7 @@
 ;;; Code:
 (defconst my-enable-measuring nil
   "If non-nil, mesure start up time.")
-
+;;
 (when my-enable-measuring
   ;; https://zenn.dev/zk_phi/books/cba129aacd4c1418ade4/viewer/4d0a9dde1043c6eaffad
   (defvar setup-tracker--level 0)
@@ -859,7 +859,16 @@
 ;;; ---------- interface ----------
 (use-package hydra
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-posframe-show-params
+        '(:internal-border-width 4
+          :internal-border-color "black"
+          :background-color "black"
+          :foreground-color "white"
+          :lines-truncate t
+          :poshandler posframe-poshandler-window-center)))
 
 (use-package major-mode-hydra
   :ensure t
