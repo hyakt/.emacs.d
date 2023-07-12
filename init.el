@@ -475,7 +475,8 @@
   :ensure t
   :after flymake
   :init
-  (setq flymake-eslint-project-root (cdr (project-current)))
+  ;; Need npm i -g eslint
+  (setq flymake-eslint-project-root (car (last (project-current))))
   (defun enable-flymake-eslint-without-eglot ()
     (setq-local eglot-stay-out-of '(flymake))
     (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
