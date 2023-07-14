@@ -142,7 +142,7 @@ determine the exact padding."
 
    ;; org-mode
    (org-hide :foreground hidden)
-   (org-block :background base2)
+   (org-block :background bg-alt)
    (org-block-begin-line :background base2 :foreground comments)
 
    ;; --- extra variables ---------------------
