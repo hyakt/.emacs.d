@@ -534,11 +534,7 @@
 (use-package cape
   :ensure t
   :defer t
-  :after corfu
-  :init
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword))
+  :after corfu)
 
 (use-package kind-icon
   :ensure t
@@ -1119,6 +1115,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (use-package vertico
   :ensure t
   :defer 1
+  :bind (:map vertico-map
+              ("C-l" . vertico-directory-up))
   :config
   (setq vertico-count 30)
   (vertico-mode t))
@@ -1957,7 +1955,10 @@ targets."
   :defer t
   :bind (:map org-mode-map ("C-," . nil) ("C-j" . nil))
   :hook (org-mode . (lambda ()
-                      (add-to-list 'completion-at-point-functions #'tempel-complete)))
+                      (setq-local completion-at-point-functions
+                                  (list (cape-super-capf
+                                         #'cape-elisp-block
+                                         #'tempel-complete)))))
   :config
   (setq org-startup-truncated nil)
   (setq org-src-fontify-natively t)
