@@ -185,6 +185,9 @@ Generate slack reminder with CONTENT and copy to clipboard.
 (autoload 'my-open-hyper-current-buffer "my-util" "\
 Open current buffer with Hyper term and fish." t nil)
 
+(autoload 'my-open-scratch "my-util" "\
+Open *scratch* buffer ." t nil)
+
 (register-definition-prefixes "my-util" '("my-" "url-"))
 
 ;;;***

@@ -96,7 +96,6 @@
 (setq text-quoting-style 'straight)
 (setq echo-keystrokes 0.1)                                         ;; キーストロークをエコーエリアに早く表示する
 (setq inhibit-startup-screen 1)                                    ;; スタートアップメッセージを非表示
-(setq initial-scratch-message "")                                  ;; scratch の初期メッセージ消去
 (setq line-spacing 0)                                              ;; 行間を無しに設定
 (setq scroll-conservatively 35)                                    ;; スクロールの設定
 (setq scroll-margin 0)                                             ;; スクロールの設定
@@ -110,7 +109,7 @@
 (setq completion-ignore-case t)                                    ;; file 名の補完で大文字小文字を区別しない
 (setq auto-save-default nil)                                       ;; オートセーブのファイルを作らない
 (setq create-lockfiles nil)                                        ;; ロックファイル(.#filename)のファイルを作らない
-(setq garbage-collection-message nil)                            ;; GC 実行のメッセージを表示しない
+(setq garbage-collection-message nil)                              ;; GC 実行のメッセージを表示しない
 (setq message-log-max 10000)                                       ;; ログの記録行数を増やす
 (setq vc-follow-symlinks t)                                        ;; symlink は必ず追いかける
 (setq enable-local-variables :all)                                 ;; local variable は全て使用する
@@ -121,6 +120,7 @@
 (setq scroll-preserve-screen-position t)
 (setq scroll-conservatively 100)
 (setq custom-file "~/.emacs.d/custom.el")
+(setq initial-scratch-message "")                                  ;; scratch の初期メッセージ消去
 (setq initial-major-mode 'org-mode)
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
@@ -402,6 +402,7 @@
   (global-set-key (kbd "M-<right>") #'windmove-right)
   (global-set-key (kbd "M-+") #'text-scale-increase)
   (global-set-key (kbd "M-_") #'text-scale-decrease)
+  (global-set-key (kbd "C-=") #'my-open-scratch)
   (global-unset-key (kbd "C-z")))
 
 (use-package elec-pair
@@ -1997,7 +1998,10 @@ targets."
 
 (use-package ox-gfm
   :ensure t
-  :defer t)
+  :defer t
+  :hook (org-mode . (lambda ()
+                           (require 'ox-gfm nil t)
+                           (add-to-list 'org-export-backends 'gfm))))
 
 (use-package org-bullets
   :ensure t
@@ -2035,7 +2039,7 @@ targets."
   (org-mode . org-ai-mode)
   :config
   (setq org-ai-default-chat-model "gpt-3.5-turbo") ;; You can use gpt-4 for special occasions.
-  (org-ai-install-yasnippets))
+  )
 
 (use-package persistent-scratch
   :ensure t
