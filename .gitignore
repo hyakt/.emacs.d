@@ -46,3 +46,4 @@ transient/
 undohist/
 url/
 var/
+/.persistent-scratch

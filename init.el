@@ -121,6 +121,7 @@
 (setq scroll-preserve-screen-position t)
 (setq scroll-conservatively 100)
 (setq custom-file "~/.emacs.d/custom.el")
+(setq initial-major-mode 'org-mode)
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/bin/bash")
@@ -498,8 +499,6 @@
   :ensure t
   :defer t
   :config
-  (add-to-list 'completion-at-point-functions #'tempel-expand)
-
   (setq tempel-path "~/.emacs.d/lisp/templates")
   (define-key tempel-map [remap my-tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
@@ -521,7 +520,8 @@
   :defer t
   :hook
   ((prog-mode . corfu-mode)
-   (prog-mode . corfu-popupinfo-mode))
+   (prog-mode . corfu-popupinfo-mode)
+   (org-mode . corfu-mode))
   :bind (("C-j" . completion-at-point))
   :config
   (setq corfu-min-width 30)
@@ -724,42 +724,6 @@
 (use-package request
   :ensure t
   :defer t)
-
-(use-package chatgpt-arcana
-  :defer 5
-  :init
-  (el-get-bundle chatgpt-arcana :url "https://github.com/CarlQLange/chatgpt-arcana.el.git")
-  :config
-  ;; (setq chatgpt-arcana-model-name "gpt-3.5-turbo-0613")
-
-  (setq chatgpt-arcana-common-prompts-alist
-        '((smaller . "コードをもっと簡潔にリファクタリング")
-          (comment . "このコードに要約コメントを追加")
-          (explain . "このコードを80桁で説明する")
-          (test . "このコードのためにテストケースを書く")))
-
-  (setq chatgpt-arcana-system-prompts-alist
-        '((programming . "あなたはEmacsの中に住む大規模な言語モデルで、完璧なプログラマです。明示的に要求されない限り、簡潔なコードでのみ応答することができます。")
-          (writing . "あなたはEmacsの中に住む大規模な言語モデルで、優れたライティングアシスタントです。簡潔に応答し、指示を実行してください。")
-          (chat . "あなたはEmacsの中に住む大規模な言語モデルで、優れた会話パートナーです。簡潔に応答してください。")
-          (fallback . "あなたはEmacsの中に住む大規模な言語モデルです。ユーザーの助けをして、簡潔に応答してください。")
-          (git-commit . "この文章を Conventional Commits に則った英語の Git のコミットメッセージに整形してください")))
-
-  (setq chatgpt-arcana-system-prompts-modes-alist
-        '((prog-mode . programming)
-          (emacs-lisp-mode . programming)
-          (org-mode . writing)
-          (markdown-mode . writing)
-          (chatgpt-arcana-chat-mode . chat)
-          (fallback . fallback)
-          (git-commit-elisp-text-mode . git-commit)))
-
-  (defun my-send-region-to-chatgpt-arcana (start end)
-    "Sends the selected region to chargpt-arcana."
-    (interactive "r")
-    (let ((region-text (buffer-substring-no-properties start end)))
-      (insert "\n")
-      (chatgpt-arcana-insert-at-point region-text))))
 
 (use-package posframe
   :defer t
@@ -1991,11 +1955,33 @@ targets."
 
 (use-package org
   :defer t
-  :bind (:map org-mode-map ("C-," . nil))
+  :bind (:map org-mode-map ("C-," . nil) ("C-j" . nil))
+  :hook (org-mode . (lambda ()
+                      (add-to-list 'completion-at-point-functions #'tempel-complete)))
   :config
   (setq org-startup-truncated nil)
   (setq org-src-fontify-natively t)
-  (setq org-log-done 'time))
+  (setq org-log-done 'time)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-src-lang-modes '(("ocaml" . tuareg)
+                             ("elisp" . emacs-lisp)
+                             ("emacs-lisp" . emacs-lisp)
+                             ("shell" . sh)
+                             ("bash" . sh)
+                             ("fish" . fish)
+                             ("typescript" . typescript)
+                             ("html" . web)
+                             ("vue" . vue)
+                             ("javascript" . js2)))
+
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((plantuml . t)
+                                 (sql . t)
+                                 (emacs-lisp . t)
+                                 (shell . t)
+                                 (js . t)
+                                 (org . t)
+                                 (ruby . t))))
 
 (use-package ox-latex
   :defer t
@@ -2041,6 +2027,21 @@ targets."
             (replace-match
              (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
         (clipboard-kill-ring-save (point-min) (point-max))))))
+
+(use-package org-ai
+  :ensure t
+  :defer t
+  :hook
+  (org-mode . org-ai-mode)
+  :config
+  (setq org-ai-default-chat-model "gpt-4")
+  (org-ai-install-yasnippets))
+
+(use-package persistent-scratch
+  :ensure t
+  :defer t
+  :init
+  (persistent-scratch-setup-default))
 
 (use-package markdown-mode
   :ensure t
