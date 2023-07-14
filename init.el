@@ -788,7 +788,7 @@
 (use-package go-translate
   :defer t
   :ensure t
-  :bind ("C-c C-k" . gts-do-translate)
+  :bind ("C-c C-l" . gts-do-translate)
   :init
   (defcustom gts-deepl-key ""
     "DeepL API key"
@@ -797,6 +797,7 @@
   :config
   (setq go-translate-buffer-follow-p t)
   (setq gts-translate-list '(("en" "ja") ("ja" "en")))
+  (setq gts-posframe-pop-render-timeout nil)
 
   (setq gts-default-translator
         (gts-translator
@@ -811,7 +812,7 @@
          (gts-posframe-pop-render))))
 
 (use-package google-this
-  :bind ("C-c C-l" . google-this-noconfirm)
+  :bind ("C-c C-k" . google-this-noconfirm)
   :ensure t
   :defer t)
 
@@ -1123,20 +1124,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package orderless
   :ensure t
-  :defer t
-  :commands orderless-filter)
-
-(use-package fussy
-  :ensure t
   :defer 1
   :config
-  (setq completion-styles '(fussy))
-  (setq completion-category-defaults nil)
-  (setq completion-category-overrides nil)
-  (setq fussy-filter-fn 'fussy-filter-orderless)
-  (with-eval-after-load 'eglot
-    (add-to-list 'completion-category-overrides
-                 '(eglot (styles fussy basic)))))
+  (setq completion-styles '(orderless)))
 
 (use-package marginalia
   :ensure t
