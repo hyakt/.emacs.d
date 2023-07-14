@@ -95,5 +95,6 @@ org-mode
 (verse "#+begin_verse" n> r> n> "#+end_verse")
 (src "#+begin_src " p n> r> n> "#+end_src")
 (elisp "#+begin_src emacs-lisp" n> r> n "#+end_src")
-(ai "#+begin_ai" n> r> n "#+end_ai")
+(chat "#+begin_ai" n> r> n "#+end_ai")
+(image "#+begin_ai :image :size 256x256" n> (p "Hyper realistic sci-fi rendering of super complicatedt echnical machine.") n "#+end_ai")
 (js "#+begin_src js" n> r> n "#+end_src")
