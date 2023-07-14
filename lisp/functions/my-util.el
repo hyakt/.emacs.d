@@ -197,6 +197,12 @@ the folder if it doesn't exist."
     (call-process-shell-command (concat "hyper " (file-name-directory buffer-file-name)))
     (setenv "SHELL" default-env-shell)))
 
+;;;###autoload
+(defun my-open-scratch ()
+  "Open *scratch* buffer ."
+  (interactive)
+  (switch-to-buffer-other-window "*scratch*"))
+
 (provide 'my-util)
 
 ;;; my-util.el ends here
