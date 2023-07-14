@@ -1134,6 +1134,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package embark
   :ensure t
+  :after which-key
   :defer 5
   :bind
   ("M-q" . embark-act)
@@ -1943,7 +1944,11 @@ targets."
 
 (use-package org
   :defer t
-  :bind (:map org-mode-map ("C-," . nil) ("C-j" . nil))
+  :bind (:map org-mode-map
+              ("C-," . nil)
+              ("C-j" . nil)
+              ("C-c C-l" . nil)
+              ("C-c C-k" . nil))
   :hook (org-mode . (lambda ()
                       (setq-local completion-at-point-functions
                                   (list (cape-super-capf
@@ -1963,16 +1968,20 @@ targets."
                              ("typescript" . typescript)
                              ("html" . web)
                              ("vue" . vue)
-                             ("javascript" . js2)))
+                             ("javascript" . js)))
+  (setq org-file-apps
+        (append '(("\\.png\\'" . (lambda (file link) (shell-command-to-string (concat "open -R " file))))
+                  ("\\.jpg\\'" . (lambda (file link) (shell-command-to-string (concat "open -R " file))))
+                  ("\\.gif\\'" . (lambda (file link) (shell-command-to-string (concat "open -R " file)))))))
 
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '((plantuml . t)
-                                 (sql . t)
-                                 (emacs-lisp . t)
-                                 (shell . t)
-                                 (js . t)
-                                 (org . t)
-                                 (ruby . t))))
+  (setq org-babel-load-languages
+        '((plantuml . t)
+          (sql . t)
+          (emacs-lisp . t)
+          (shell . t)
+          (js . t)
+          (org . t)
+          (ruby . t))))
 
 (use-package ox-latex
   :defer t
@@ -2025,7 +2034,7 @@ targets."
   :hook
   (org-mode . org-ai-mode)
   :config
-  (setq org-ai-default-chat-model "gpt-4")
+  (setq org-ai-default-chat-model "gpt-3.5-turbo") ;; You can use gpt-4 for special occasions.
   (org-ai-install-yasnippets))
 
 (use-package persistent-scratch
