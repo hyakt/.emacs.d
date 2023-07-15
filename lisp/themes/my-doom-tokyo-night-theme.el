@@ -129,6 +129,7 @@ determine the exact padding."
    (markdown-bold-face             :inherit 'bold :foreground magenta)
    (markdown-markup-face           :foreground base7)
    (markdown-gfm-checkbox-face :foreground cyan)
+   (markdown-code-face             :background bg-alt)
 
    ;; outline (affects org-mode)
    ((outline-1 &override) :foreground blue :background bg)
