@@ -2041,11 +2041,15 @@ targets."
   (setq org-ai-default-chat-model "gpt-3.5-turbo") ;; You can use gpt-4 for special occasions.
   )
 
+(use-package unkillable-scratch
+  :ensure t
+  :defer t
+  :hook (emacs-startup . unkillable-scratch))
+
 (use-package persistent-scratch
   :ensure t
   :defer t
-  :init
-  (persistent-scratch-setup-default))
+  :hook (emacs-startup . persistent-scratch-setup-default))
 
 (use-package markdown-mode
   :ensure t
