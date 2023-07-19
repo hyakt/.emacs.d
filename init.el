@@ -402,7 +402,7 @@
   (global-set-key (kbd "M-<right>") #'windmove-right)
   (global-set-key (kbd "M-+") #'text-scale-increase)
   (global-set-key (kbd "M-_") #'text-scale-decrease)
-  (global-set-key (kbd "C-=") #'my-open-scratch)
+  (global-set-key (kbd "C-\\") #'my-open-scratch)
   (global-unset-key (kbd "C-z")))
 
 (use-package elec-pair
