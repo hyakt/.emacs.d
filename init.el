@@ -121,7 +121,7 @@
 (setq scroll-conservatively 100)
 (setq custom-file "~/.emacs.d/custom.el")
 (setq initial-scratch-message "")                                  ;; scratch の初期メッセージ消去
-(setq initial-major-mode 'org-mode)
+(setq initial-major-mode 'fundamental-mode)
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/bin/bash")
