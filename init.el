@@ -523,7 +523,9 @@
   ((prog-mode . corfu-mode)
    (prog-mode . corfu-popupinfo-mode)
    (org-mode . corfu-mode))
-  :bind (("C-j" . completion-at-point))
+  :bind (("C-j" . completion-at-point)
+         (:map corfu-map
+               ("<tab>" . nil)))
   :config
   (setq corfu-min-width 30)
   (setq corfu-auto t)
