@@ -73,15 +73,8 @@
           ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
   (package-refresh-contents)
-  ;; TODO: Emacs 29 になったら削除
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
   (unless (package-installed-p 'el-get)
     (package-install 'el-get)))
-
-;; TODO: Emacs 29 になったら削除
-;; byet-compile 時に load されないため
-(require 'bind-key)
 
 ;;; ---------- basic ----------
 (setq user-full-name "Hayato Kajiyama")
@@ -402,7 +395,7 @@
   (global-set-key (kbd "M-<right>") #'windmove-right)
   (global-set-key (kbd "M-+") #'text-scale-increase)
   (global-set-key (kbd "M-_") #'text-scale-decrease)
-  (global-set-key (kbd "C-\\") #'my-open-scratch)
+  (global-set-key (kbd "C-\\") #'scrach-buffer)
   (global-unset-key (kbd "C-z")))
 
 (use-package elec-pair
@@ -1401,31 +1394,9 @@ targets."
   :ensure t
   :defer t
   :config
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-  ;; TSX の対応
-  (tree-sitter-require 'tsx)
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
-  ;; ハイライトの追加
-  (tree-sitter-hl-add-patterns 'tsx
-    [
-     ;; styled.div``
-     (call_expression
-      function: (member_expression
-                 object: (identifier) @function.call
-                 (.eq? @function.call "styled"))
-      arguments: ((template_string) @property.definition
-                  (.offset! @property.definition 0 1 0 -1)))
-     ;; styled(Component)``
-     (call_expression
-      function: (call_expression
-                 function: (identifier) @function.call
-                 (.eq? @function.call "styled"))
-      arguments: ((template_string) @property.definition
-                  (.offset! @property.definition 0 1 0 -1)))
-     ]))
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
 (use-package eglot
-  :ensure t
   :defer t
   :commands (eglot-ensure)
   :hook (eglot--managed-mode . (lambda ()
@@ -1438,20 +1409,6 @@ targets."
   (setq eglot-extend-to-xref t)
   ;; https://github.com/joaotavora/eglot/issues/43#issuecomment-1132605973
   (setq eglot-events-buffer-size 0)
-
-  ;; TODO: Emacs 29 になったら削除
-  ;; https://github.com/emacs-lsp/lsp-mode/issues/2681#issuecomment-1214902146
-  (advice-add 'json-parse-string :around
-              (lambda (orig string &rest rest)
-                (apply orig (s-replace "\\u0000" "" string)
-                       rest)))
-
-  (advice-add 'json-parse-buffer :around
-              (lambda (oldfn &rest args)
-                (save-excursion
-                  (while (search-forward "\\u0000" nil t)
-                    (replace-match "" nil t)))
-                (apply oldfn args)))
 
   (defun advice-eglot--xref-make-match (old-fn name uri range)
     (cond
@@ -1654,8 +1611,7 @@ targets."
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
 
-(use-package typescript-mode
-  :ensure t
+(use-package typescript-ts-mode
   :defer t
   :hook
   (typescript-mode . (lambda ()
@@ -1663,9 +1619,6 @@ targets."
                        (enable-flymake-eslint-without-eglot)))
   (typescript-mode . subword-mode)
   (typescript-mode . tree-sitter-mode)
-  :init
-  (define-derived-mode typescript-tsx-mode typescript-mode "TSX")
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
   :config
   (setq typescript-indent-level 2)
   (major-mode-hydra-define typescript-mode
@@ -2042,11 +1995,6 @@ targets."
   :config
   (setq org-ai-default-chat-model "gpt-3.5-turbo") ;; You can use gpt-4 for special occasions.
   )
-
-(use-package unkillable-scratch
-  :ensure t
-  :defer t
-  :hook (emacs-startup . unkillable-scratch))
 
 (use-package persistent-scratch
   :ensure t
