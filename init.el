@@ -1447,6 +1447,12 @@ targets."
   (imenu-list-focus-after-activation t)
   (imenu-list-auto-resize nil))
 
+(use-package treesit-auto
+  :ensure t
+  :config
+  (setq treesit-auto-install t)
+  (global-treesit-auto-mode))
+
 ;;; ---------- major mode ----------
 (with-deferred-eval
   (defun my-deno-project-p ()
@@ -1460,7 +1466,6 @@ targets."
     "Predicate for determining if the open project is a Node one."
     (let ((p-root (car (last (project-current)))))
       (file-exists-p (concat p-root "package.json")))))
-
 
 (use-package elisp-mode
   :defer t
@@ -1595,15 +1600,14 @@ targets."
 
 (use-package typescript-ts-mode
   :defer t
+  :mode ("\\.ts$" . typescript-ts-mode)
   :hook
-  (typescript-mode . (lambda ()
+  (typescript-ts-mode . (lambda ()
                        (eglot-ensure)
                        (enable-flymake-eslint-without-eglot)))
-  (typescript-mode . subword-mode)
-  (typescript-mode . tree-sitter-mode)
+  (typescript-ts-mode . subword-mode)
   :config
-  (setq typescript-indent-level 2)
-  (major-mode-hydra-define typescript-mode
+  (major-mode-hydra-define typescript-ts-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
     ("REPL"
      (("n" nodejs-repl "node")
