@@ -47,3 +47,4 @@ undohist/
 url/
 var/
 /.persistent-scratch
+/tree-sitter/
