@@ -73,8 +73,9 @@
           ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
   (package-refresh-contents)
-  (unless (package-installed-p 'el-get)
-    (package-install 'el-get)))
+  ;; TODO: Remove when https://github.com/slotThe/vc-use-package#installation
+  (unless (package-installed-p 'vc-use-package)
+    (package-vc-install "https://github.com/slotThe/vc-use-package")))
 
 ;;; ---------- basic ----------
 (setq user-full-name "Hayato Kajiyama")
@@ -395,7 +396,7 @@
   (global-set-key (kbd "M-<right>") #'windmove-right)
   (global-set-key (kbd "M-+") #'text-scale-increase)
   (global-set-key (kbd "M-_") #'text-scale-decrease)
-  (global-set-key (kbd "C-\\") #'scrach-buffer)
+  (global-set-key (kbd "C-\\") #'scratch-buffer)
   (global-unset-key (kbd "C-z")))
 
 (use-package elec-pair
@@ -722,16 +723,13 @@
   :ensure t)
 
 (use-package copilot.el
-  :no-require t
+  :vc (:fetcher github :repo zerolfx/copilot.el)
   :hook (prog-mode . copilot-mode)
   :bind (("<tab>" . copilot-accept-completion)
          ("M-P" . copilot-next-completion)
          ("M-N" . copilot-previous-completion)
          ("C-c C-j" . copilot-panel-complete))
   :init
-  (el-get-bundle copilot.el
-    :url "https://github.com/zerolfx/copilot.el.git")
-
   (defconst copilot-posframe-buffer--posframe "*copilot-panel*")
   (defvar copilot-panel-point--posframe (point))
 
@@ -850,10 +848,7 @@
   :bind ("C-x C-o" . swap-buffers))
 
 (use-package other-window-or-split
-  :no-require t
-  :init
-  (el-get-bundle other-window-or-split
-    :url "https://github.com/conao3/other-window-or-split.git")
+  :vc (:fetcher github :repo conao3/other-window-or-split)
   :bind
   ("C-t" . my-ws-other-window-or-split-and-kill-minibuffer)
   ("C-S-t" . ws-previous-other-window-or-split)
@@ -1218,11 +1213,8 @@ targets."
   ("M-t" . vterm-toggle))
 
 (use-package consult-tramp
-  :no-require t
-  :defer t
-  :init
-  (el-get-bundle consult-tramp
-    :url "https://github.com/Ladicle/consult-tramp.git"))
+  :vc (:fetcher github :repo Ladicle/consult-tramp)
+  :defer t)
 
 (use-package docker-tramp
   :ensure t
@@ -1385,16 +1377,6 @@ targets."
   :config
   (setq git-link-open-in-browser t)
   (setq git-link-use-commit t))
-
-(use-package tree-sitter-langs
-  :ensure t
-  :defer t)
-
-(use-package tree-sitter
-  :ensure t
-  :defer t
-  :config
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
 (use-package eglot
   :defer t
@@ -1842,11 +1824,7 @@ targets."
   :ensure t
   :defer t
   :hook
-  (csharp-mode . eglot-ensure)
-  (csharp-mode . unity-mode)
-  :config
-  (el-get-bundle unity
-    :url "https://github.com/elizagamedev/unity.el.git"))
+  (csharp-mode . eglot-ensure))
 
 (use-package sql
   :defer t
@@ -1955,8 +1933,8 @@ targets."
   :ensure t
   :defer t
   :hook (org-mode . (lambda ()
-                           (require 'ox-gfm nil t)
-                           (add-to-list 'org-export-backends 'gfm))))
+                      (require 'ox-gfm nil t)
+                      (add-to-list 'org-export-backends 'gfm))))
 
 (use-package org-bullets
   :ensure t
