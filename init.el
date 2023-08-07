@@ -1451,6 +1451,10 @@ targets."
   (imenu-list-focus-after-activation t)
   (imenu-list-auto-resize nil))
 
+(use-package treesit
+  :config
+  (setq treesit-font-lock-level 4))
+
 (use-package treesit-auto
   :ensure t
   :config
