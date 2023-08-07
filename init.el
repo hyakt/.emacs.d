@@ -67,6 +67,7 @@
     `(progn ,@body)))
 
 (eval-when-compile
+  (require 'package)
   (setq package-archives
         '(("org" . "https://orgmode.org/elpa/")
           ("melpa" . "https://melpa.org/packages/")
@@ -76,6 +77,9 @@
   ;; TODO: Remove when https://github.com/slotThe/vc-use-package#installation
   (unless (package-installed-p 'vc-use-package)
     (package-vc-install "https://github.com/slotThe/vc-use-package")))
+
+;; 読み込まないと init.elc の場合にエラーになる
+(require 'bind-key)
 
 ;;; ---------- basic ----------
 (setq user-full-name "Hayato Kajiyama")
@@ -609,7 +613,7 @@
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :hook ((js-mode css-mode html-mode typescript-mode) . rainbow-mode))
+  :hook ((js-mode css-mode html-mode typescript-ts-mode) . rainbow-mode))
 
 (use-package symbol-overlay
   :ensure t
@@ -1416,7 +1420,7 @@ targets."
           ((my-node-project-p) '("typescript-language-server" "--stdio"))
           (t                nil)))
 
-  (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
+  (add-to-list 'eglot-server-programs '((js-mode typescript-ts-mode) . es-server-program))
 
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
@@ -1637,7 +1641,7 @@ targets."
   :ensure t
   :defer t
   :hook
-  ((typescript-mode
+  ((typescript-ts-mode
     js-mode
     scss-mode
     graphql-mode
@@ -1657,7 +1661,7 @@ targets."
   :bind
   (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
   :hook
-  (typescript-mode . jest-minor-mode)
+  (typescript-ts-mode . jest-minor-mode)
   (js-mode . jest-minor-mode)
   (web-mode . jest-minor-mode)
   :config
@@ -1667,7 +1671,7 @@ targets."
   :ensure t
   :defer t
   :hook
-  (((typescript-mode
+  (((typescript-ts-mode
      web-mode
      js-mode
      json-mode) .
@@ -1688,7 +1692,7 @@ targets."
   :ensure t
   :defer t
   :hook
-  ((typescript-mode
+  ((typescript-ts-mode
     js-mode
     json-mode) .
     (lambda ()
@@ -1824,11 +1828,10 @@ targets."
     (cargo-process-build)
     (my-cargo-process-run-bin-current-buffer)))
 
-(use-package csharp-mode
-  :ensure t
+(use-package csharp-ts-mode
   :defer t
   :hook
-  (csharp-mode . eglot-ensure))
+  (csharp-ts-mode . eglot-ensure))
 
 (use-package sql
   :defer t
