@@ -416,7 +416,7 @@
 
   (add-hook 'org-mode-hook #'org-add-electric-pairs)
   (add-hook 'web-mode-hook #'web-add-electric-pairs)
-  (add-hook 'typescript-mode-hook #'web-add-electric-pairs))
+  (add-hook 'typescript-ts-mode-hook #'web-add-electric-pairs))
 
 (use-package ediff
   :defer t
@@ -492,7 +492,8 @@
   :ensure t
   :defer t
   :config
-  (setq tempel-path "~/.emacs.d/lisp/templates")
+  (setq tempel-path (expand-file-name "lisp/templates" user-emacs-directory))
+
   (define-key tempel-map [remap my-tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
   (defun my-tempel-maybe-expand ()

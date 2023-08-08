@@ -30,24 +30,23 @@ emacs-lisp-mode
 (rec "(letrec (" p ")" n> r> ")")
 (command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive)" n> r> ")")
 
-js-mode js2-mode typescript-mode web-mode
+js-mode js2-mode typescript-ts-mode web-mode
 
-(cl "console.log(" p ");")
-(cll "console.log(`"(s variable)": `, "(s variable)");")
+(cl "console.log(`"(s variable)": `, "(s variable)");")
+(cll "console.log(" p ");")
 (clb "console.log(`%c" p "`, \"color: #465DAA; font-size: 1.2em; font-weight: bold;\")")
 (cld "console.dir(" p ");")
-(sleep "await new Promise(resolve => setTimeout(resolve, " (p "1000") "));")
-(ed "/* eslint-disable " p " */")
-(edl "// eslint-disable-line " p)
-(edn "// eslint-disable-next-line " p)
+(wait1000 "await new Promise(resolve => setTimeout(resolve, " (p "1000") "));")
+(disable-eslint "/* eslint-disable " p " */")
+(disable-eslint-line "// eslint-disable-line " p)
+(disable-eslint-next-line "// eslint-disable-next-line " p)
 (imp "import " p " from '" p "'; ")
 (kiritori "console.log(\"------------------------------\");")
-(d "// eslint-disable-next-line \n debugger;")
 (range "[...Array(" p ")].map((_, i) => i)")
 
-typescript-mode
+typescript-ts-mode
 
-(tse "// @ts-expect-error " p)
+(disable-ts "// @ts-expect-error " p)
 
 web-mode css-mode
 
