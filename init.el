@@ -120,6 +120,7 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (setq initial-scratch-message "")                                  ;; scratch の初期メッセージ消去
 (setq initial-major-mode 'fundamental-mode)
+(setq package-install-upgrade-built-in t)
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/bin/bash")
@@ -329,13 +330,6 @@
 
   (doom-modeline-mode t))
 
-;; (use-package dashboard
-;;   :ensure t
-;;   :config
-;;   (setq dashboard-items '((recents  . 10) (projects 10)))
-;;   (setq dashboard-startup-banner 'logo)
-;;   (dashboard-setup-startup-hook))
-
 (use-package direnv
   :ensure t
   :defer 1
@@ -385,23 +379,23 @@
                              '("*Messages*" "*Compile-Log*" "*Help*" "*scratch*" "*init log*")))
              do (kill-buffer buf)))
 
-  (global-set-key (kbd "C-h") nil)
-  (global-set-key (kbd "C-m") #'newline-and-indent)
-  (global-set-key (kbd "C-0") #'delete-frame)
-  (global-set-key (kbd "C-g") #'my-keyboard-quit)
-  (global-set-key (kbd "M-r") #'my-revert-buffer-no-confirm)
-  (global-set-key (kbd "C-x k") #'kill-this-buffer)
-  (global-set-key (kbd "C-x C-k") #'my-close-and-kill-this-pane)
-  (global-set-key (kbd "C-x C-x") #'my-kill-other-buffers)
-  (global-set-key (kbd "C-x i") #'my-buffer-indent)
-  (global-set-key (kbd "M-<up>") #'windmove-up)
-  (global-set-key (kbd "M-<down>") #'windmove-down)
-  (global-set-key (kbd "M-<left>") #'windmove-left)
-  (global-set-key (kbd "M-<right>") #'windmove-right)
-  (global-set-key (kbd "M-+") #'text-scale-increase)
-  (global-set-key (kbd "M-_") #'text-scale-decrease)
-  (global-set-key (kbd "C-\\") #'scratch-buffer)
-  (global-unset-key (kbd "C-z")))
+  (keymap-global-set "C-h" nil)
+  (keymap-global-set "C-m" #'newline-and-indent)
+  (keymap-global-set "C-0" #'delete-frame)
+  (keymap-global-set "C-g" #'my-keyboard-quit)
+  (keymap-global-set "M-r" #'my-revert-buffer-no-confirm)
+  (keymap-global-set "C-x k" #'kill-this-buffer)
+  (keymap-global-set "C-x C-k" #'my-close-and-kill-this-pane)
+  (keymap-global-set "C-x C-x" #'my-kill-other-buffers)
+  (keymap-global-set "C-x i" #'my-buffer-indent)
+  (keymap-global-set "M-<up>" #'windmove-up)
+  (keymap-global-set "M-<down>" #'windmove-down)
+  (keymap-global-set "M-<left>" #'windmove-left)
+  (keymap-global-set "M-<right>" #'windmove-right)
+  (keymap-global-set "M-+" #'text-scale-increase)
+  (keymap-global-set "M-_" #'text-scale-decrease)
+  (keymap-global-set "C-\\" #'scratch-buffer)
+  (keymap-global-unset "C-z"))
 
 (use-package elec-pair
   :hook (prog-mode . electric-pair-mode)
@@ -749,7 +743,7 @@
       (copilot--dbind (:completionText completion-text :score completion-score) msg
         (with-current-buffer (get-buffer-create copilot-posframe-buffer--posframe)
           (read-only-mode 1)
-          (local-set-key (kbd "q") 'kill-buffer-and-window)
+          (keymap-local-set "q" #'kill-buffer-and-window)
 
           (unless (member (secure-hash 'sha256 completion-text)
                           (org-map-entries (lambda () (org-entry-get nil "SHA"))))
