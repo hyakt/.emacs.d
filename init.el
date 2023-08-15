@@ -565,7 +565,7 @@
   (setq smart-jump-bind-keys nil)
 
   (smart-jump-setup-default-registers)
-  (smart-jump-register :modes 'js-mode
+  (smart-jump-register :modes 'js-ts-mode
                        :jump-fn 'xref-find-definitions
                        :pop-fn 'xref-pop-marker-stack
                        :refs-fn 'xref-find-references
@@ -608,7 +608,7 @@
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :hook ((js-mode css-mode html-mode typescript-ts-mode) . rainbow-mode))
+  :hook ((js-ts-mode css-mode html-mode typescript-ts-mode) . rainbow-mode))
 
 (use-package symbol-overlay
   :ensure t
@@ -1415,7 +1415,7 @@ targets."
           ((my-node-project-p) '("typescript-language-server" "--stdio"))
           (t                nil)))
 
-  (add-to-list 'eglot-server-programs '((js-mode typescript-ts-mode) . es-server-program))
+  (add-to-list 'eglot-server-programs '((js-ts-mode typescript-ts-mode) . es-server-program))
 
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
@@ -1637,13 +1637,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package js
   :defer t
-  :mode ("\\.[mc]?js$" . js-mode)
+  :mode ("\\.[mc]?js$" . js-ts-mode)
   :hook
-  ((js-mode . (lambda ()
-                (eglot-ensure)
-                (enable-flymake-eslint-without-eglot)))
-   (js-mode . subword-mode)
-   (js-mode . tree-sitter-mode))
+  ((js-ts-mode . (lambda ()
+                   (eglot-ensure)
+                   (enable-flymake-eslint-without-eglot)))
+   (js-ts-mode . subword-mode))
   :config
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
@@ -1688,7 +1687,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :defer t
   :hook
   ((typescript-ts-mode
-    js-mode
+    js-ts-mode
     scss-mode
     graphql-mode
     ts-comint-mode
@@ -1708,7 +1707,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
   :hook
   (typescript-ts-mode . jest-minor-mode)
-  (js-mode . jest-minor-mode)
+  (js-ts-mode . jest-minor-mode)
   (web-mode . jest-minor-mode)
   :config
   (setq jest-executable "npx jest"))
@@ -1719,7 +1718,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook
   (((typescript-ts-mode
      web-mode
-     js-mode
+     js-ts-mode
      json-mode) .
      (lambda ()
        (when (my-node-project-p) (prettier-js-mode))))
@@ -1739,7 +1738,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :defer t
   :hook
   ((typescript-ts-mode
-    js-mode
+    js-ts-mode
     json-mode) .
     (lambda ()
       (when (my-deno-project-p) (deno-fmt-mode)))))
