@@ -1411,11 +1411,12 @@ targets."
   ;; https://github.com/joaotavora/eglot/discussions/999
   (defun es-server-program (_)
     "Decide which server to use for ECMA Script based on project characteristics."
-    (cond ((my-deno-project-p) '("deno" "lsp" :initializationOptions (:enable t :lint t)))
+    (cond ((my-deno-project-p) '("deno" "lsp" :initializationOptions (:enable t :lint t :unstable t)))
           ((my-node-project-p) '("typescript-language-server" "--stdio"))
           (t                nil)))
 
-  (add-to-list 'eglot-server-programs '((js-ts-mode typescript-ts-mode) . es-server-program))
+  (add-to-list 'eglot-server-programs '(((js-ts-mode :language-id "javascript")
+                                         (typescript-ts-mode :language-id "typescript")) . es-server-program))
 
   ;; npm i -g @volar/vue-language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
