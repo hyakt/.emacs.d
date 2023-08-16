@@ -2030,7 +2030,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package persistent-scratch
   :ensure t
   :defer t
-  :hook (emacs-startup . persistent-scratch-setup-default))
+  :hook (emacs-startup . persistent-scratch-setup-default)
+  :config
+  (setq persistent-scratch-backup-directory "~/.emacs.d/.persistent-scratch-backup/"))
 
 (use-package markdown-mode
   :ensure t
