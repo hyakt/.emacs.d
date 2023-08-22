@@ -51,6 +51,20 @@
   (my-projectile-run-shell-command-in-root (concat "git openpr " hash)))
 
 ;;;###autoload
+(defun my-git-open-pr-from-current-line ()
+  "Git openpr current line."
+  (interactive)
+  (let* ((filename (buffer-file-name))
+         (linenum (line-number-at-pos))
+         (commit-hash
+          (with-output-to-string
+            (with-current-buffer
+                standard-output
+              (call-process "git" nil t nil
+                            "blame" (concat "-L" (number-to-string linenum) "," (number-to-string linenum)) filename)))))
+    (my-git-open-pr-from-commit-hash (car (split-string commit-hash)))))
+
+;;;###autoload
 (defun my-consult-git-commit-messages ()
   (interactive)
   (require 'consult)
