@@ -191,6 +191,36 @@ Open *scratch* buffer ." t nil)
 (register-definition-prefixes "my-util" '("my-" "url-"))
 
 ;;;***
+
+
+;;; Generated autoloads from my-git.el
+
+(autoload 'my-projectile-run-shell-command-in-root "my-git" "\
+Invoke `shell-command' COMMAND in the project's root.
+
+(fn COMMAND)")
+(autoload 'my-gh-repo-view "my-git" "\
+Gh repo view." t)
+(autoload 'my-gh-co "my-git" "\
+Gh checkout TARGET.
+
+(fn TARGET)" t)
+(autoload 'my-gh-pr-view "my-git" "\
+Gh open pr." t)
+(autoload 'my-gh-pr-create "my-git" "\
+Gh pr create." t)
+(autoload 'my-gh-pr-list "my-git" "\
+Gh pull request list." t)
+(autoload 'my-git-open-pr-from-commit-hash "my-git" "\
+Git openpr HASH.
+
+(fn HASH)" t)
+(autoload 'my-git-open-pr-from-current-line "my-git" "\
+Git openpr current line." t)
+(autoload 'my-consult-git-commit-messages "my-git" nil t)
+(autoload 'my-consult-git-conventional-commit-prefix "my-git" nil t)
+(autoload 'my-git-wip "my-git" nil t)
+
 
 ;; Local Variables:
 ;; version-control: never
