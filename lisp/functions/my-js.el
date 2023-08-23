@@ -152,6 +152,38 @@
     (my-projectile-run-vterm-command-in-root jest-command)))
 
 ;;;###autoload
+(defun my-vitest-copy-command-current-buffer ()
+  "Watch vitest for current file for paste."
+  (interactive)
+  (let ((vitest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx vitest " (buffer-file-name))))
+    (kill-new (concat "cd " (projectile-project-root) "; " vitest-command ";"))
+    (message (concat "cd " (projectile-project-root) "; " vitest-command ";"))))
+
+;;;###autoload
+(defun my-vitest-copy-command-watch-current-buffer ()
+  "Watch vitest for current file for paste."
+  (interactive)
+  (let ((vitest-command (concat "npx vitest --watch " (buffer-file-name))))
+    (kill-new (concat "cd " (projectile-project-root) "; " vitest-command "; "))
+    (message (concat "cd " (projectile-project-root) "; " vitest-command "; "))))
+
+;;;###autoload
+(defun my-vitest-current-buffer ()
+  "Watch mocha for current file."
+  (interactive)
+  (setenv "NODE_ENV" "test")
+  (let ((vitest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx vitest " (buffer-file-name))))
+    (my-projectile-run-vterm-command-in-root vitest-command)))
+
+;;;###autoload
+(defun my-vitest-watch-current-buffer ()
+  "Watch mocha for current file."
+  (interactive)
+  (setenv "NODE_ENV" "test")
+  (let ((vitest-command (concat "npx vitest --watch " (buffer-file-name))))
+    (my-projectile-run-vterm-command-in-root vitest-command)))
+
+;;;###autoload
 (defun my-tsc-error-find-file-buffer ()
   "Show tsc error on buffer."
   (interactive)
