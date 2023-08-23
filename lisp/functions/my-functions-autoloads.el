@@ -221,6 +221,59 @@ Git openpr current line." t)
 (autoload 'my-consult-git-conventional-commit-prefix "my-git" nil t)
 (autoload 'my-git-wip "my-git" nil t)
 
+
+
+;;; Generated autoloads from my-js.el
+
+(autoload 'my-copy-project-name-clipboard "my-js" "\
+Copy project name to clipbord." t)
+(autoload 'my-reload-dir-locals-for-current-buffer "my-js" "\
+reload dir locals for the current buffer" t)
+(autoload 'my-run-in-vterm "my-js" "\
+Execute string COMMAND in a new vterm.
+
+(fn COMMAND)" t)
+(autoload 'my-mocha-exec-current-buffer "my-js" "\
+Run mocha for current file." t)
+(autoload 'my-mocha-copy-command-exec-current-buffer "my-js" "\
+Run mocha for current file for paste." t)
+(autoload 'my-mocha-watch-current-buffer "my-js" "\
+Watch mocha for current file." t)
+(autoload 'my-mocha-copy-command-watch-current-buffer "my-js" "\
+Watch mocha for current file for paste." t)
+(autoload 'my-mocha-exec-add-save-hook "my-js" "\
+Add save hook exec mocha." t)
+(autoload 'my-mocha-exec-remove-save-hook "my-js" "\
+Remove save hook exec mocha." t)
+(autoload 'my-jest-copy-command-current-buffer "my-js" "\
+Watch jest for current file for paste." t)
+(autoload 'my-jest-copy-command-watch-current-buffer "my-js" "\
+Watch jest for current file for paste." t)
+(autoload 'my-jest-current-buffer "my-js" "\
+Watch mocha for current file." t)
+(autoload 'my-jest-watch-current-buffer "my-js" "\
+Watch mocha for current file." t)
+(autoload 'my-vitest-copy-command-current-buffer "my-js" "\
+Watch vitest for current file for paste." t)
+(autoload 'my-vitest-copy-command-watch-current-buffer "my-js" "\
+Watch vitest for current file for paste." t)
+(autoload 'my-vitest-current-buffer "my-js" "\
+Watch mocha for current file." t)
+(autoload 'my-vitest-watch-current-buffer "my-js" "\
+Watch mocha for current file." t)
+(autoload 'my-tsc-error-find-file-buffer "my-js" "\
+Show tsc error on buffer." t)
+(autoload 'my-eslint-error-find-file-buffer "my-js" "\
+Show eslint error on buffer." t)
+(autoload 'my-eslint-warning-sorted-by-error-find-file-buffer "my-js" "\
+Show sorted eslint warning on buffer." t)
+(autoload 'my-eslint-spefic-error-find-file-buffer "my-js" "\
+Show eslint ERROR-NAME error on buffer.
+
+(fn ERROR-NAME)" t)
+(autoload 'my-eslint-fix-file "my-js" "\
+Run eslint for current file." t)
+(register-definition-prefixes "my-js" '("my-"))
 
 ;; Local Variables:
 ;; version-control: never
