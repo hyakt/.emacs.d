@@ -97,3 +97,4 @@ org-mode
 (chat "#+begin_ai markdown" n> r> n "#+end_ai")
 (image "#+begin_ai :image :size 256x256 :n 1" n> (p "Hyper realistic sci-fi rendering of super complicatedt echnical machine.") n "#+end_ai")
 (js "#+begin_src js" n> r> n "#+end_src")
+(todo "* TODO " p)
