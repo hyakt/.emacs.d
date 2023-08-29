@@ -394,6 +394,7 @@
   (keymap-global-set "M-<right>" #'windmove-right)
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
+  (keymap-global-set "C-`" #'open-today-org-file)
   (keymap-global-set "C-\\" #'scratch-buffer)
   (keymap-global-unset "C-z"))
 
@@ -716,14 +717,6 @@
   :defer t
   :bind (("C-a" . mwim-beginning)
          ("C-e" . mwim-end)))
-
-(use-package open-junk-file
-  :ensure t
-  :defer t
-  :bind ("C-`" . open-junk-file)
-  :config
-  (defvaralias 'open-junk-file-format 'open-junk-file-directory "Temporary alias for Emacs27")
-  (setq open-junk-file-format "~/Documents/junk/%Y-%m-%d-%H%M%S."))
 
 (use-package request
   :ensure t

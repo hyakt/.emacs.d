@@ -274,6 +274,70 @@ Show eslint ERROR-NAME error on buffer.
 (autoload 'my-eslint-fix-file "my-js" "\
 Run eslint for current file." t)
 (register-definition-prefixes "my-js" '("my-"))
+
+
+;;; Generated autoloads from my-util.el
+
+(autoload 'my-generate-autoloads "my-util" "\
+Generates autoloads." t)
+(autoload 'my-set-alpha "my-util" "\
+Set frame parameter ALPHA-NUM.
+
+(fn ALPHA-NUM)" t)
+(autoload 'my-buffer-face-set-variable-pitch-font "my-util" "\
+Change the current buffer font to variable pitch font." t)
+(autoload 'my-fullscreen "my-util" "\
+Set frame maxmize." t)
+(autoload 'my-halfscreen "my-util" "\
+Set frame half." t)
+(autoload 'my-halfscreen-right "my-util" "\
+Set frame half." t)
+(autoload 'my-url-decode-region "my-util" "\
+BEGからENDの範囲の文字をURLデコードする.
+
+(fn BEG END)" t)
+(autoload 'my-url-encode-region "my-util" "\
+BEGからENDの範囲の文字をURLエンコードする.
+
+(fn BEG END)" t)
+(autoload 'my-reverse-chars-region "my-util" "\
+BEGからENDの範囲の文字反転する.
+
+(fn BEG END)" t)
+(autoload 'my-uniq-lines "my-util" "\
+Unique lines in region.
+Called from a program, there are two arguments:
+BEG and END (region to sort).
+
+(fn BEG END)" t)
+(autoload 'my-reopen-with-sudo-tramp "my-util" "\
+Reopen current buffer-file with sudo using tramp." t)
+(autoload 'my-copy-buffer-name-clipboard "my-util" "\
+Copy buffer name to clipbord." t)
+(autoload 'my-move-or-rename-this-file "my-util" "\
+Move or Rename current buffer file to NEWFILE.
+
+(fn NEWFILE)" t)
+(autoload 'my-copy-this-file "my-util" "\
+Copy current buffer file to new file." t)
+(autoload 'my-delete-or-remove-this-file "my-util" "\
+Delete current buffer file." t)
+(autoload 'my-find-file-and-create-directory "my-util" "\
+Find a file, and then create FILENAME (WILDCARDS)
+the folder if it doesn't exist.
+
+(fn FILENAME &optional WILDCARDS)" t)
+(autoload 'my-generate-slack-reminder "my-util" "\
+Generate slack reminder with CONTENT and copy to clipboard.
+
+(fn CONTENT)" t)
+(autoload 'my-open-hyper-current-buffer "my-util" "\
+Open current buffer with Hyper term and fish." t)
+(autoload 'my-open-scratch "my-util" "\
+Open *scratch* buffer ." t)
+(autoload 'open-today-org-file "my-util" "\
+Open a today org file." t)
+(register-definition-prefixes "my-util" '("my-" "open-today-org-file-format" "url-"))
 
 ;; Local Variables:
 ;; version-control: never

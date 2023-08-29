@@ -203,6 +203,21 @@ the folder if it doesn't exist."
   (interactive)
   (switch-to-buffer-other-window "*scratch*"))
 
+(defcustom open-today-org-file-format "~/Documents/junk/%Y-%m-%d.org"
+  "File format to put junk files with directory.
+It can include `format-time-string' format specifications."
+  :type 'string
+  :group 'open-junk-file)
+
+;;;###autoload
+(defun open-today-org-file ()
+  "Open a today org file."
+  (interactive)
+  (let* ((file (format-time-string open-today-org-file-format (current-time)))
+         (dir (file-name-directory file)))
+    (make-directory dir t)
+    (find-file file)))
+
 (provide 'my-util)
 
 ;;; my-util.el ends here
