@@ -1177,20 +1177,47 @@ targets."
 
 (use-package eshell
   :defer t
-  :bind (:map eshell-command-mode
-              ("C-r" . consult-history))
+  :bind (:map eshell-mode-map
+              ("C-r" . consult-history)
+              ("C-l" . my-eshell/clear-scrollback)
+              ("C-d" . eshell-life-is-too-much))
   :init
+  (defun my-eshell/clear-scrollback ()
+    (interactive)
+    (eshell/clear-scrollback)
+    (eshell-send-input))
+
   (setq eshell-cmpl-ignore-case t)
-  (setq eshell-ask-to-save-history 'always)
+  (setq eshell-ask-to-save-history 'always))
 
-  (defun my-eshell-prompt ()
-    (let ((file-name (abbreviate-file-name (eshell/pwd))))
+(use-package eshell-prompt-extras
+  :ensure t
+  :config
+  (with-eval-after-load "esh-opt"
+    (defun my-epe-theme ()
+      "A eshell-prompt lambda theme."
+      (setq eshell-prompt-regexp "^[^#\nλ]*[#λ] ")
       (concat
-       (doom-modeline--buffer-file-name file-name (file-name-nondirectory file-name) 'shrink 'shrink 'hide)
-       " $ "))
-    )
+       (epe-colorize-with-face (funcall 'epe-fish-path (epe-pwd)) (if (zerop eshell-last-command-status)
+                                                                      'epe-dir-face
+                                                                    'epe-error-face))
+       (when (and (epe-git-p)
+                  (unless (string= (epe-git-branch) "main") t))
+         (concat
+          (epe-colorize-with-face " (" 'epe-dir-face)
+          (epe-colorize-with-face
+           (concat (epe-git-branch)
+                   (epe-git-dirty)
+                   (epe-git-untracked)
+                   (let ((unpushed (epe-git-unpushed-number)))
+                     (unless (= unpushed 0)
+                       (concat ":" (number-to-string unpushed)))))
+           `((t (:foreground "white"))))
+          (epe-colorize-with-face ")" 'epe-dir-face)
+          ))
+       " λ "))
 
-  (setq eshell-prompt-function 'my-eshell-prompt))
+    (setq eshell-prompt-function 'my-epe-theme)))
 
 (use-package shell-pop
   :defer t
@@ -1225,10 +1252,6 @@ targets."
 
 (use-package consult-tramp
   :vc (:fetcher github :repo Ladicle/consult-tramp)
-  :defer t)
-
-(use-package docker-tramp
-  :ensure t
   :defer t)
 
 (use-package gh
