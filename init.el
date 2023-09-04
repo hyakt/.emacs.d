@@ -516,7 +516,8 @@
   :hook
   ((prog-mode . corfu-mode)
    (prog-mode . corfu-popupinfo-mode)
-   (org-mode . corfu-mode))
+   (org-mode . corfu-mode)
+   (eshell-mode . corfu-mode))
   :bind (("C-j" . completion-at-point)
          (:map corfu-map
                ("<tab>" . nil)))
@@ -728,7 +729,8 @@
 
 (use-package copilot.el
   :vc (:fetcher github :repo zerolfx/copilot.el)
-  :hook (prog-mode . copilot-mode)
+  :hook ((prog-mode . copilot-mode)
+         (eshell-mode . copilot-mode))
   :bind (("<tab>" . copilot-accept-completion)
          ("M-P" . copilot-next-completion)
          ("M-N" . copilot-previous-completion)
@@ -1175,46 +1177,51 @@ targets."
 
 (use-package eshell
   :defer t
-  :config
-  (setq eshell-cmpl-ignore-case t)
-  (setq eshell-ask-to-save-history 'always))
-
-(use-package vterm
-  :ensure t
-  :defer t
-  :bind
-  (:map vterm-mode-map
-        ("M-<up>" . nil)
-        ("M-<down>" . nil)
-        ("M-<left>" . nil)
-        ("M-<right>" . nil))
+  :bind (:map eshell-command-mode
+              ("C-r" . consult-history))
   :init
-  (setq vterm-always-compile-module t)
-  ;; delete "C-h", add <f1> and <f2>
-  (setq vterm-keymap-exceptions
-        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
-  :config
-  (setq vterm-shell "fish")
-  (setq vterm-max-scrollback 10000)
-  (setq vterm-buffer-name-string "vterm: %s")
-  (setq vterm-toggle-reset-window-configration-after-exit t)
-  (setq vterm-toggle-scope 'project)
-  (setq vterm-toggle-project-root nil)
-  (setq vterm-toggle-fullscreen-p nil)
+  (setq eshell-cmpl-ignore-case t)
+  (setq eshell-ask-to-save-history 'always)
 
-  (add-to-list 'display-buffer-alist
-               '((lambda(bufname _) (with-current-buffer bufname
-                                      (or (equal major-mode 'vterm-mode)
-                                          (string-prefix-p vterm-buffer-name bufname))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.4))))
+  (defun my-eshell-prompt ()
+    (let ((file-name (abbreviate-file-name (eshell/pwd))))
+      (concat
+       (doom-modeline--buffer-file-name file-name (file-name-nondirectory file-name) 'shrink 'shrink 'hide)
+       " $ "))
+    )
 
-(use-package vterm-toggle
-  :ensure t
+  (setq eshell-prompt-function 'my-eshell-prompt))
+
+(use-package shell-pop
   :defer t
-  :bind
-  ("M-t" . vterm-toggle))
+  :ensure t
+  :bind (("M-t" . shell-pop))
+  :init
+  (setq
+   shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell)))
+   shell-pop-term-shell "eshell"
+   shell-pop-window-size 50
+   shell-pop-full-span nil
+   shell-pop-window-position "bottom"
+   shell-pop-autocd-to-working-dir t
+   shell-pop-restore-window-configuration t
+   shell-pop-cleanup-buffer-at-process-exit t))
+
+(use-package fish-completion
+  :defer t
+  :ensure t
+  :hook (eshell-mode . fish-completion-mode))
+
+(use-package esh-help
+  :defer t
+  :ensure t
+  :config
+  (setup-esh-help-eldoc))
+
+(use-package eshell-syntax-highlighting
+  :defer t
+  :ensure t
+  :hook (eshell-mode . eshell-syntax-highlighting-mode))
 
 (use-package consult-tramp
   :vc (:fetcher github :repo Ladicle/consult-tramp)
@@ -1465,11 +1472,10 @@ targets."
 (use-package smerge-mode
   :bind (:map smerge-mode-map
               ("M-a" . smerge-hydra/body))
-  :preface
-  (with-eval-after-load 'hydra
-    (defhydra smerge-hydra
-      (:color pink :hint nil :post (smerge-auto-leave))
-      "
+  :init
+  (defhydra smerge-hydra
+    (:color pink :hint nil :post (smerge-auto-leave))
+    "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
 _n_ext       _b_ase               _<_: upper/base        _C_ombine
@@ -1478,28 +1484,28 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 ^^           _a_ll                _R_efine
 ^^           _RET_: current       _E_diff
 "
-      ("n" smerge-next)
-      ("p" smerge-prev)
-      ("b" smerge-keep-base)
-      ("u" smerge-keep-upper)
-      ("l" smerge-keep-lower)
-      ("a" smerge-keep-all)
-      ("RET" smerge-keep-current)
-      ("\C-m" smerge-keep-current)
-      ("<" smerge-diff-base-upper)
-      ("=" smerge-diff-upper-lower)
-      (">" smerge-diff-base-lower)
-      ("R" smerge-refine)
-      ("E" smerge-ediff)
-      ("C" smerge-combine-with-next)
-      ("r" smerge-resolve)
-      ("k" smerge-kill-current)
-      ("ZZ" (lambda ()
-              (interactive)
-              (save-buffer)
-              (bury-buffer))
-       "Save and bury buffer" :color blue)
-      ("q" nil "cancel" :color blue)))
+    ("n" smerge-next)
+    ("p" smerge-prev)
+    ("b" smerge-keep-base)
+    ("u" smerge-keep-upper)
+    ("l" smerge-keep-lower)
+    ("a" smerge-keep-all)
+    ("RET" smerge-keep-current)
+    ("\C-m" smerge-keep-current)
+    ("<" smerge-diff-base-upper)
+    ("=" smerge-diff-upper-lower)
+    (">" smerge-diff-base-lower)
+    ("R" smerge-refine)
+    ("E" smerge-ediff)
+    ("C" smerge-combine-with-next)
+    ("r" smerge-resolve)
+    ("k" smerge-kill-current)
+    ("ZZ" (lambda ()
+            (interactive)
+            (save-buffer)
+            (bury-buffer))
+     "Save and bury buffer" :color blue)
+    ("q" nil "cancel" :color blue))
   :hook ((find-file . (lambda ()
                         (save-excursion
                           (goto-char (point-min))
