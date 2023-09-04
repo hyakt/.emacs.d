@@ -1178,19 +1178,48 @@ targets."
 (use-package eshell
   :defer t
   :bind (:map eshell-command-mode
-              ("C-r" . consult-history))
+              ("C-r" . consult-history)
+              ("C-l" . my-eshell/clear-scrollback)
+              ("C-d" . eshell-life-is-too-much))
   :init
+  (defun my-eshell/clear-scrollback ()
+    (interactive)
+    (eshell/clear-scrollback)
+    (eshell-send-input))
+
   (setq eshell-cmpl-ignore-case t)
-  (setq eshell-ask-to-save-history 'always)
+  (setq eshell-ask-to-save-history 'always))
 
-  (defun my-eshell-prompt ()
-    (let ((file-name (abbreviate-file-name (eshell/pwd))))
-      (concat
-       (doom-modeline--buffer-file-name file-name (file-name-nondirectory file-name) 'shrink 'shrink 'hide)
-       " $ "))
-    )
+(use-package eshell-prompt-extras
+  :defer t
+  :ensure t
+  :hook (eshell-mode . (lambda() (require 'eshell-prompt-extras)))
+  :config
+  (defun my-epe-theme ()
+    "A eshell-prompt lambda theme."
+    (setq eshell-prompt-regexp "^[^#\nλ]*[#λ] ")
+    (concat
+     (epe-colorize-with-face (funcall 'epe-fish-path (epe-pwd)) (if (zerop eshell-last-command-status)
+                                                                    'epe-dir-face
+                                                                  'epe-error-face))
+     (when (and (epe-git-p)
+                (unless (string= (epe-git-branch) "main") t))
+       (concat
+        (epe-colorize-with-face " (" 'epe-dir-face)
+        (epe-colorize-with-face
+         (concat (epe-git-branch)
+                 (epe-git-dirty)
+                 (epe-git-untracked)
+                 (let ((unpushed (epe-git-unpushed-number)))
+                   (unless (= unpushed 0)
+                     (concat ":" (number-to-string unpushed)))))
+         `((t (:foreground "white"))))
+        (epe-colorize-with-face ")" 'epe-dir-face)
+        ))
+     " λ "))
 
-  (setq eshell-prompt-function 'my-eshell-prompt))
+  (setq eshell-highlight-prompt nil
+        eshell-prompt-function 'my-epe-theme))
 
 (use-package shell-pop
   :defer t
