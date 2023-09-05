@@ -1250,6 +1250,42 @@ targets."
   :ensure t
   :hook (eshell-mode . eshell-syntax-highlighting-mode))
 
+(use-package vterm
+  :ensure t
+  :defer t
+  :bind
+  (:map vterm-mode-map
+        ("M-<up>" . nil)
+        ("M-<down>" . nil)
+        ("M-<left>" . nil)
+        ("M-<right>" . nil))
+  :init
+  (setq vterm-always-compile-module t)
+  ;; delete "C-h", add <f1> and <f2>
+  (setq vterm-keymap-exceptions
+        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
+  :config
+  (setq vterm-shell "fish")
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-buffer-name-string "vterm: %s")
+  (setq vterm-toggle-reset-window-configration-after-exit t)
+  (setq vterm-toggle-scope 'project)
+  (setq vterm-toggle-project-root nil)
+  (setq vterm-toggle-fullscreen-p nil)
+
+  (add-to-list 'display-buffer-alist
+               '((lambda(bufname _) (with-current-buffer bufname
+                                      (or (equal major-mode 'vterm-mode)
+                                          (string-prefix-p vterm-buffer-name bufname))))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.4))))
+
+(use-package eshell-vterm
+  :ensure t
+  :defer t
+  :hook (eshell-mode . eshell-vterm-mode))
+
 (use-package consult-tramp
   :vc (:fetcher github :repo Ladicle/consult-tramp)
   :defer t)
