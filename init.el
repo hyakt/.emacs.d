@@ -85,6 +85,7 @@
 (setq user-full-name "Hayato Kajiyama")
 (setq user-mail-address "me@piginbeer.com")
 
+(setq native-comp-async-report-warnings-errors 'silent)
 (setq make-backup-files t)                                         ;; Backup file を作る
 (setq backup-directory-alist '(("\\.*$" .  "~/.emacs.d/.backup"))) ;; バックアップ先
 (setq cursor-type 'box)
@@ -1262,7 +1263,6 @@ targets."
   :hook (eshell-mode . fish-completion-mode))
 
 (use-package esh-help
-  :defer t
   :ensure t
   :config
   (setup-esh-help-eldoc))
