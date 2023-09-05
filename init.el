@@ -1188,7 +1188,29 @@ targets."
     (eshell-send-input))
 
   (setq eshell-cmpl-ignore-case t)
-  (setq eshell-ask-to-save-history 'always))
+  (setq eshell-ask-to-save-history 'always)
+
+  (defun eshell/magit (&rest args)
+    "Magit for eshell."
+    (if (null args)
+        (magit-status)
+      (pcase (car args)
+        ("st" (magit-status))
+        ("status" (magit-status))
+        ("log" (magit-log))
+        ("diff" (magit-diff))
+        ("ci" (magit-commit))
+        ("commit" (magit-commit))
+        ("pull" (magit-pull))
+        ("push" (magit-push))
+        (_ (shell-command-to-string (concat "git " (eshell-flatten-and-stringify args)))))
+      )
+    )
+
+  (defalias 'g 'eshell/magit)
+  (defalias 'd (lambda () (dired ".")))
+  (defalias 'e 'find-file-other-window)
+  )
 
 (use-package eshell-prompt-extras
   :ensure t
