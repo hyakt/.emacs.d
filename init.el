@@ -1196,8 +1196,6 @@ targets."
     (if (null args)
         (magit-status)
       (pcase (car args)
-        ("st" (magit-status))
-        ("status" (magit-status))
         ("log" (magit-log))
         ("diff" (magit-diff))
         ("ci" (magit-commit))
@@ -1245,7 +1243,7 @@ targets."
 (use-package shell-pop
   :defer t
   :ensure t
-  :bind (("M-t" . shell-pop))
+  :bind (("M-e" . shell-pop))
   :init
   (setq
    shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell)))
@@ -1271,6 +1269,13 @@ targets."
   :defer t
   :ensure t
   :hook (eshell-mode . eshell-syntax-highlighting-mode))
+
+(use-package eshell-z
+  :ensure t
+  :defer t
+  :hook (eshell-mode . (lambda () (require 'eshell-z)))
+  :config
+  (setq eshell-z-freq-dir-hash-table-file-name "~/.local/share/z/data"))
 
 (use-package vterm
   :ensure t
