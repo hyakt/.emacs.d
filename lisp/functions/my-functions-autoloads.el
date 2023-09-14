@@ -257,10 +257,6 @@ Watch mocha for current file." t)
 Watch vitest for current file for paste." t)
 (autoload 'my-vitest-copy-command-watch-current-buffer "my-js" "\
 Watch vitest for current file for paste." t)
-(autoload 'my-vitest-current-buffer "my-js" "\
-Watch mocha for current file." t)
-(autoload 'my-vitest-watch-current-buffer "my-js" "\
-Watch mocha for current file." t)
 (autoload 'my-tsc-error-find-file-buffer "my-js" "\
 Show tsc error on buffer." t)
 (autoload 'my-eslint-error-find-file-buffer "my-js" "\
