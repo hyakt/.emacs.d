@@ -85,7 +85,7 @@
 (setq user-full-name "Hayato Kajiyama")
 (setq user-mail-address "me@piginbeer.com")
 
-(setq native-comp-async-report-warnings-errors 'silent)
+(setq native-comp-async-report-warnings-errors 'nil)
 (setq make-backup-files t)                                         ;; Backup file を作る
 (setq backup-directory-alist '(("\\.*$" .  "~/.emacs.d/.backup"))) ;; バックアップ先
 (setq cursor-type 'box)
@@ -1516,7 +1516,7 @@ targets."
   (add-to-list 'eglot-server-programs '(((js-ts-mode :language-id "javascript")
                                          (typescript-ts-mode :language-id "typescript")) . es-server-program))
 
-  ;; npm i -g @volar/vue-language-server
+  ;; npm i -g @vue/language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
                                                     :initializationOptions
                                                     (:typescript
