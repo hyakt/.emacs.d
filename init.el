@@ -2140,6 +2140,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
        (set
         (make-local-variable 'whitespace-action)
         nil)))
+  (markdown-mode . orgtbl-mode)
+  :bind (:map markdown-mode-map ("C-c C-l" . nil))
   :mode
   ("\\.markdown\\'" . gfm-mode)
   ("\\.md\\'" . gfm-mode)
