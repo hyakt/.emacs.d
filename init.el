@@ -315,7 +315,7 @@
   :defer 1
   :config
   (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/themes")
-  (load-theme 'my-doom-tokyo-night t)
+  (load-theme 'my-doom-monokai-navy t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
@@ -457,7 +457,7 @@
      :max-width (round (* (frame-width) 0.62))
      :max-height (round (* (frame-height) 0.62))
      :internal-border-width 1
-     :internal-border-color "#0f0f14"
+     :internal-border-color "#041136"
      :background-color (face-background 'tooltip nil t))
     (unwind-protect
         (push (read-event) unread-command-events)
@@ -778,7 +778,7 @@
                        :background-color "#0f0f14"
                        :foreground-color "white"
                        :internal-border-width 10
-                       :internal-border-color "#0f0f14"
+                       :internal-border-color "#041136"
                        :width 80
                        :height 20
                        :cursor 'hbar
@@ -830,8 +830,8 @@
   (setq hydra-posframe-show-params
         '(
           :internal-border-width 10
-          :internal-border-color "#0f0f14"
-          :background-color "#0f0f14"
+          :internal-border-color "#041136"
+          :background-color "#041136"
           :foreground-color "white"
           :lines-truncate t
           :poshandler posframe-poshandler-window-center)))
