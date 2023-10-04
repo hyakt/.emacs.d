@@ -2,10 +2,10 @@ TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 EMACS_MAC_PORT_APP_PATH = $(shell brew --prefix emacs-mac)
 
 .PHONY: init
-init: intall-emacs link compile install-icons setup-git-hook
+init: install-emacs link compile install-icons setup-git-hook
 
-.PHONY: intall-emacs
-intall-emacs:
+.PHONY: install-emacs
+install-emacs:
 	brew tap railwaycat/emacsmacport
 	brew install emacs-mac --with-ctags --with-glib --with-mac-metal --with-native-comp --with-natural-title-bar --with-librsvg --with-starter --with-xwidgets
 	ln -sfv $(EMACS_MAC_PORT_APP_PATH)/Emacs.app /Applications
