@@ -120,22 +120,6 @@
   (remove-hook 'before-save-hook 'my-mocha-exec-current-buffer))
 
 ;;;###autoload
-(defun my-jest-copy-command-current-buffer ()
-  "Watch jest for current file for paste."
-  (interactive)
-  (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
-    (kill-new (concat "cd " (projectile-project-root) "; " jest-command ";"))
-    (message (concat "cd " (projectile-project-root) "; " jest-command ";"))))
-
-;;;###autoload
-(defun my-jest-copy-command-watch-current-buffer ()
-  "Watch jest for current file for paste."
-  (interactive)
-  (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
-    (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
-    (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
-
-;;;###autoload
 (defun my-jest-current-buffer ()
   "Watch mocha for current file."
   (interactive)
@@ -152,10 +136,42 @@
     (my-projectile-run-vterm-command-in-root jest-command)))
 
 ;;;###autoload
+(defun my-jest-copy-command-current-buffer ()
+  "Watch jest for current file for paste."
+  (interactive)
+  (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
+    (kill-new (concat "cd " (projectile-project-root) "; " jest-command ";"))
+    (message (concat "cd " (projectile-project-root) "; " jest-command ";"))))
+
+;;;###autoload
+(defun my-jest-copy-command-watch-current-buffer ()
+  "Watch jest for current file for paste."
+  (interactive)
+  (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
+    (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
+    (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
+
+;;;###autoload
+(defun my-vitest-current-buffer ()
+  "Watch mocha for current file."
+  (interactive)
+  (setenv "NODE_ENV" "test")
+  (let ((command (concat "env DEBUG_PRINT_LIMIT=100000 NODE_OPTIONS='--no-experimental-fetch' pnpm vitest " (buffer-file-name))))
+    (my-projectile-run-vterm-command-in-root command)))
+
+;;;###autoload
+(defun my-vitest-watch-current-buffer ()
+  "Watch mocha for current file."
+  (interactive)
+  (setenv "NODE_ENV" "test")
+  (let ((command (concat "NODE_OPTIONS='--no-experimental-fetch' pnpm vitest --watch " (buffer-file-name))))
+    (my-projectile-run-vterm-command-in-root command)))
+
+;;;###autoload
 (defun my-vitest-copy-command-current-buffer ()
   "Watch vitest for current file for paste."
   (interactive)
-  (let ((vitest-command (concat "env DEBUG_PRINT_LIMIT=100000 pnpm vitest " (buffer-file-name))))
+  (let ((vitest-command (concat "env NODE_OPTIONS='--no-experimental-fetch' DEBUG_PRINT_LIMIT=100000 pnpm vitest " (buffer-file-name))))
     (kill-new (concat "cd " (projectile-project-root) "; " vitest-command ";"))
     (message (concat "cd " (projectile-project-root) "; " vitest-command ";"))))
 
@@ -165,6 +181,16 @@
   (interactive)
   (let ((vitest-command (concat "NODE_OPTIONS='--no-experimental-fetch' pnpm vitest --watch " (buffer-file-name))))
     (kill-new (concat "cd " (projectile-project-root) "; " vitest-command "; "))
+    (message (concat "cd " (projectile-project-root) "; " vitest-command "; "))))
+
+;;;###autoload
+(defun my-vitest-command-watch-tmux ()
+  "Watch vitest for other tmux."
+  (interactive)
+  (let ((vitest-command (concat "NODE_OPTIONS='--no-experimental-fetch' pnpm vitest --watch " (buffer-file-name))))
+    (shell-command
+     (concat "tmux send-keys '" vitest-command "' Enter"))
+    (shell-command "open -a Alacritty")
     (message (concat "cd " (projectile-project-root) "; " vitest-command "; "))))
 
 ;;;###autoload

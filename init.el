@@ -1308,6 +1308,10 @@ targets."
                  (reusable-frames . visible)
                  (window-height . 0.4))))
 
+(use-package vterm-toggle
+  :ensure t
+  :defer t)
+
 (use-package eshell-vterm
   :ensure t
   :defer t
@@ -1694,13 +1698,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("r" web-mode-element-rename "rename")
       ("s" web-mode-element-select "select")
       ("v" web-mode-element-vanish "vanish"))
-     "Test"
-     (("tf" jest-file)
-      ("tp" jest-popup)
-      ("tb" my-jest-current-buffer)
-      ("tw" my-jest-watch-current-buffer)
-      ("tcb" my-jest-copy-command-current-buffer)
-      ("tcw" my-jest-copy-command-watch-current-buffer))
      "Format"
      (("p" prettier-js)
       ("d" deno-fmt))
@@ -1760,12 +1757,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
      (("n" nodejs-repl "node")
       ("t" run-ts "ts-node"))
      "Test"
-     (("jf" jest-file)
-      ("jp" jest-popup)
-      ("jb" my-jest-current-buffer)
-      ("jw" my-jest-watch-current-buffer)
-      ("jcb" my-jest-copy-command-current-buffer)
-      ("jcw" my-jest-copy-command-watch-current-buffer))
+     (("jw" my-jest-watch-current-buffer)
+      ("jc" my-jest-copy-command-watch-current-buffer)
+      ("vw" my-vitest-watch-current-buffer)
+      ("vc" my-vitest-copy-command-watch-current-buffer)
+      ("vt" my-vitest-command-watch-tmux))
      "Format"
      (("p" prettier-js)
       ("d" deno-fmt)))))

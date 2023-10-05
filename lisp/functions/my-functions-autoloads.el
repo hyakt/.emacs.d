@@ -245,18 +245,24 @@ Watch mocha for current file for paste." t)
 Add save hook exec mocha." t)
 (autoload 'my-mocha-exec-remove-save-hook "my-js" "\
 Remove save hook exec mocha." t)
+(autoload 'my-jest-current-buffer "my-js" "\
+Watch mocha for current file." t)
+(autoload 'my-jest-watch-current-buffer "my-js" "\
+Watch mocha for current file." t)
 (autoload 'my-jest-copy-command-current-buffer "my-js" "\
 Watch jest for current file for paste." t)
 (autoload 'my-jest-copy-command-watch-current-buffer "my-js" "\
 Watch jest for current file for paste." t)
-(autoload 'my-jest-current-buffer "my-js" "\
+(autoload 'my-vitest-current-buffer "my-js" "\
 Watch mocha for current file." t)
-(autoload 'my-jest-watch-current-buffer "my-js" "\
+(autoload 'my-vitest-watch-current-buffer "my-js" "\
 Watch mocha for current file." t)
 (autoload 'my-vitest-copy-command-current-buffer "my-js" "\
 Watch vitest for current file for paste." t)
 (autoload 'my-vitest-copy-command-watch-current-buffer "my-js" "\
 Watch vitest for current file for paste." t)
+(autoload 'my-vitest-command-watch-tmux "my-js" "\
+Watch vitest for other tmux." t)
 (autoload 'my-tsc-error-find-file-buffer "my-js" "\
 Show tsc error on buffer." t)
 (autoload 'my-eslint-error-find-file-buffer "my-js" "\
