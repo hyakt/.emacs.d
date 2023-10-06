@@ -418,7 +418,7 @@
 
   (add-hook 'org-mode-hook #'org-add-electric-pairs)
   (add-hook 'web-mode-hook #'web-add-electric-pairs)
-  (add-hook 'typescript-ts-mode-hook #'web-add-electric-pairs))
+  (add-hook 'typescript-ts-base-mode-hook #'web-add-electric-pairs))
 
 (use-package ediff
   :defer t
@@ -472,7 +472,7 @@
   :after flymake
   :init
   ;; Need npm i -g eslint
-  (setq flymake-eslint-project-root (car (last (project-current))))
+  (setq flymake-eslint-project-root (file-name-directory (shell-command-to-string "npm root")))
   (defun enable-flymake-eslint-without-eglot ()
     (setq-local eglot-stay-out-of '(flymake))
     (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
@@ -611,7 +611,7 @@
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :hook ((js-ts-mode css-mode html-mode typescript-ts-mode) . rainbow-mode))
+  :hook ((js-ts-mode css-mode html-mode typescript-ts-base-mode) . rainbow-mode))
 
 (use-package symbol-overlay
   :ensure t
@@ -1518,7 +1518,7 @@ targets."
           (t                nil)))
 
   (add-to-list 'eglot-server-programs '(((js-ts-mode :language-id "javascript")
-                                         (typescript-ts-mode :language-id "typescript")) . es-server-program))
+                                         (typescript-ts-base-mode :language-id "typescript")) . es-server-program))
 
   ;; npm i -g @vue/language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
@@ -1616,7 +1616,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
   (defun my-node-project-p ()
     "Predicate for determining if the open project is a Node one."
-    (let ((p-root (car (last (project-current)))))
+    (let ((p-root (file-name-directory (shell-command-to-string "npm root"))))
       (file-exists-p (concat p-root "package.json")))))
 
 (use-package elisp-mode
@@ -1742,16 +1742,17 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
 
-(use-package typescript-ts-mode
+(use-package typescript-ts-base-mode
   :defer t
-  :mode ("\\.ts$" . typescript-ts-mode)
+  :mode (("\\.ts$" . typescript-ts-mode)
+         ("\\.tsx$" . tsx-ts-mode))
   :hook
-  (typescript-ts-mode . (lambda ()
+  (typescript-ts-base-mode . (lambda ()
                           (eglot-ensure)
                           (enable-flymake-eslint-without-eglot)))
-  (typescript-ts-mode . subword-mode)
+  (typescript-ts-base-mode . subword-mode)
   :config
-  (major-mode-hydra-define typescript-ts-mode
+  (major-mode-hydra-define typescript-ts-base-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
     ("REPL"
      (("n" nodejs-repl "node")
@@ -1780,7 +1781,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t
   :hook
-  ((typescript-ts-mode
+  ((typescript-ts-base-mode
     js-ts-mode
     scss-mode
     graphql-mode
@@ -1798,7 +1799,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t
   :hook
-  (((typescript-ts-mode
+  (((typescript-ts-base-mode
      web-mode
      js-ts-mode
      json-mode) .
@@ -1819,7 +1820,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t
   :hook
-  ((typescript-ts-mode
+  ((typescript-ts-base-mode
     js-ts-mode
     json-mode) .
     (lambda ()
