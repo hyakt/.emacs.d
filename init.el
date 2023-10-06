@@ -1794,18 +1794,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t)
 
-(use-package jest
-  :ensure t
-  :defer t
-  :bind
-  (:map jest-minor-mode-map ("C-c C-c C-c" . jest-file-dwim))
-  :hook
-  (typescript-ts-mode . jest-minor-mode)
-  (js-ts-mode . jest-minor-mode)
-  (web-mode . jest-minor-mode)
-  :config
-  (setq jest-executable "npx jest"))
-
 (use-package prettier-js
   :ensure t
   :defer t
