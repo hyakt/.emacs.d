@@ -198,6 +198,14 @@ the folder if it doesn't exist."
     (setenv "SHELL" default-env-shell)))
 
 ;;;###autoload
+(defun my-open-alacritty-tmux-current-buffer ()
+  "Open current buffer with tmux."
+  (interactive)
+  (shell-command
+   (concat "tmux send-keys 'tmux new-window -c " (file-name-directory buffer-file-name) "' Enter"))
+  (shell-command "open -a Alacritty"))
+
+;;;###autoload
 (defun my-open-scratch ()
   "Open *scratch* buffer ."
   (interactive)
