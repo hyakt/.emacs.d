@@ -397,6 +397,7 @@
   (keymap-global-set "M-_" #'text-scale-decrease)
   (keymap-global-set "C-`" #'open-today-org-file)
   (keymap-global-set "C-\\" #'scratch-buffer)
+  (keymap-global-set "M-t" #'my-open-alacritty-tmux-current-buffer)
   (keymap-global-unset "C-z"))
 
 (use-package elec-pair

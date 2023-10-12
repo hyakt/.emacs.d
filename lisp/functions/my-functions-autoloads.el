@@ -335,11 +335,14 @@ Generate slack reminder with CONTENT and copy to clipboard.
 (fn CONTENT)" t)
 (autoload 'my-open-hyper-current-buffer "my-util" "\
 Open current buffer with Hyper term and fish." t)
+(autoload 'my-open-alacritty-tmux-current-buffer "my-util" "\
+Open current buffer with tmux." t)
 (autoload 'my-open-scratch "my-util" "\
 Open *scratch* buffer ." t)
 (autoload 'open-today-org-file "my-util" "\
 Open a today org file." t)
 (register-definition-prefixes "my-util" '("my-" "open-today-org-file-format" "url-"))
+
 
 ;; Local Variables:
 ;; version-control: never
