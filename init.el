@@ -1753,7 +1753,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                           (enable-flymake-eslint-without-eglot)))
   (typescript-ts-base-mode . subword-mode)
   :config
-  (major-mode-hydra-define typescript-ts-base-mode
+  (major-mode-hydra-define typescript-ts-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
     ("REPL"
      (("n" nodejs-repl "node")
