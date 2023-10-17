@@ -2020,6 +2020,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               ("C-c C-l" . nil)
               ("C-c C-k" . nil))
   :hook (org-mode . (lambda ()
+                      (require 'ob-js)
                       (setq-local completion-at-point-functions
                                   (list (cape-super-capf
                                          #'cape-elisp-block
