@@ -122,10 +122,10 @@
 (setq initial-scratch-message "")                                  ;; scratch の初期メッセージ消去
 (setq initial-major-mode 'fundamental-mode)
 (setq package-install-upgrade-built-in t)
+(setq use-short-answers t)
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/bin/bash")
-(defalias 'yes-or-no-p 'y-or-n-p)
 (keyboard-translate ?\C-h ?\C-?)
 
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
