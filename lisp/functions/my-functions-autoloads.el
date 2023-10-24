@@ -341,6 +341,8 @@ Open current buffer with tmux." t)
 Open *scratch* buffer ." t)
 (autoload 'open-today-org-file "my-util" "\
 Open a today org file." t)
+(autoload 'my-open "my-util" "\
+Open finder." t)
 (register-definition-prefixes "my-util" '("my-" "open-today-org-file-format" "url-"))
 
 
