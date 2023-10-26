@@ -53,6 +53,10 @@ web-mode css-mode
 (med "@media (" p ") {" n> p n> "}")
 (pc "@media (--viewport-pc) {" n> p n> "}")
 
+vue-mode
+
+(init "<script setup lang=\"ts\">\n" p "</script>\n\n<template>\n</template>\n\n<style scoped lang=\"scss\">\n</style>")
+
 rust-mode
 
 (p "println!(\"" (s variable) ": {:?}\", " (s variable) ");")
