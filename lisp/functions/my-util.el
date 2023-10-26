@@ -226,6 +226,12 @@ It can include `format-time-string' format specifications."
     (make-directory dir t)
     (find-file file)))
 
+;;;###autoload
+(defun my-open ()
+  "Open finder."
+  (interactive)
+  (shell-command "open ."))
+
 (provide 'my-util)
 
 ;;; my-util.el ends here
