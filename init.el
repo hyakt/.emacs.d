@@ -283,6 +283,53 @@
   (setq show-paren-when-point-inside-paren t)
   (setq show-paren-when-point-in-periphery t))
 
+(use-package tagedit
+  :ensure t
+  :defer t)
+
+(use-package puni
+  :ensure t
+  :defer t
+  :bind
+  (:map puni-mode-map ("M-d" . nil))
+  :hook ((prog-mode . puni-mode)
+         ((tsx-ts-mode vue-mode) . (lambda () (my-puni-jsx-setup))))
+  :preface
+  (defun my-puni-jsx-setup ()
+    "Setup puni bindings for jsx."
+    (interactive)
+    (local-set-key [remap puni-kill-line] #'my-puni-jsx-kill-line))
+
+  (defun my-puni-jsx-end-of-soft-kill ()
+    (cond
+     ((eolp)
+      (forward-char))
+     ;; Kill content inside a tag (i.e. between "<" and ">")
+     ((and (looking-back (rx "<" (* (not (any "{>"))))
+                         (line-beginning-position)))
+      (if (re-search-forward (rx (? "/") ">") (line-end-position) t)
+          (goto-char (match-beginning 0))
+        (end-of-line)))
+     ;; Kill content inside a tag pair (i.e. between an open tag and end tag)
+     ((looking-back (rx ">" (* (not (any "<"))))
+                    (line-beginning-position))
+      (if (re-search-forward "<" (line-end-position) t)
+          (goto-char (match-beginning 0))
+        (end-of-line)))
+     (t
+      (end-of-line))))
+
+  (defun my-puni-jsx-kill-line ()
+    (interactive)
+    (if (looking-at (rx (* blank) "<"))
+        (tagedit-kill)
+      (puni-soft-delete-by-move #'my-puni-jsx-end-of-soft-kill
+                                nil
+                                'beyond
+                                ;; 'within
+                                'kill
+                                'delete-one))))
+
 (use-package whitespace
   :defer t
   :hook ((prog-mode org-mode) . whitespace-mode)
@@ -881,8 +928,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (ws-other-window-or-split))))
 
 (use-package project
- :init
- (setq project-vc-extra-root-markers '("package.json")))
+  :init
+  (setq project-vc-extra-root-markers '("package.json")))
 
 (use-package projectile
   :ensure t
@@ -1754,8 +1801,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
          ("\\.tsx$" . tsx-ts-mode))
   :hook
   (typescript-ts-base-mode . (lambda ()
-                          (eglot-ensure)
-                          (enable-flymake-eslint-without-eglot)))
+                               (eglot-ensure)
+                               (enable-flymake-eslint-without-eglot)))
   (typescript-ts-base-mode . subword-mode)
   :config
   (major-mode-hydra-define typescript-ts-mode
