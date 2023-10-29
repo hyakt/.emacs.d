@@ -126,7 +126,6 @@
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/bin/bash")
-(keyboard-translate ?\C-h ?\C-?)
 
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
@@ -291,7 +290,7 @@
   :ensure t
   :defer t
   :bind
-  (:map puni-mode-map ("M-d" . nil))
+  (:map puni-mode-map (("M-d" . nil) ("C-h" . puni-force-delete)))
   :hook ((prog-mode . puni-mode)
          ((tsx-ts-mode vue-mode) . (lambda () (my-puni-jsx-setup))))
   :preface
@@ -427,7 +426,7 @@
                              '("*Messages*" "*Compile-Log*" "*Help*" "*scratch*" "*init log*")))
              do (kill-buffer buf)))
 
-  (keymap-global-set "C-h" nil)
+  (keymap-global-set "C-h" #'delete-backward-char)
   (keymap-global-set "C-m" #'newline-and-indent)
   (keymap-global-set "C-0" #'delete-frame)
   (keymap-global-set "C-g" #'my-keyboard-quit)
