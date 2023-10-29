@@ -880,6 +880,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
           (ws-other-window-or-split))
       (ws-other-window-or-split))))
 
+(use-package project
+ :init
+ (setq project-vc-extra-root-markers '("package.json")))
+
 (use-package projectile
   :ensure t
   :defer t
@@ -1519,7 +1523,8 @@ targets."
           (t                nil)))
 
   (add-to-list 'eglot-server-programs '(((js-ts-mode :language-id "javascript")
-                                         (typescript-ts-base-mode :language-id "typescript")) . es-server-program))
+                                         (typescript-ts-mode :language-id "typescript")
+                                         (typescript-tsx-mode :language-id "typescriptreact")) . es-server-program))
 
   ;; npm i -g @vue/language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
