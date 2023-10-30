@@ -71,7 +71,8 @@
   (setq package-archives
         '(("org" . "https://orgmode.org/elpa/")
           ("melpa" . "https://melpa.org/packages/")
-          ("gnu" . "https://elpa.gnu.org/packages/")))
+          ("gnu" . "https://elpa.gnu.org/packages/")
+          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
   (package-initialize)
   (package-refresh-contents)
   ;; TODO: Remove when https://github.com/slotThe/vc-use-package#installation
@@ -1332,46 +1333,10 @@ targets."
   :config
   (setq eshell-z-freq-dir-hash-table-file-name "~/.local/share/z/data"))
 
-(use-package vterm
+(use-package eat
   :ensure t
   :defer t
-  :bind
-  (:map vterm-mode-map
-        ("M-<up>" . nil)
-        ("M-<down>" . nil)
-        ("M-<left>" . nil)
-        ("M-<right>" . nil))
-  :init
-  (setq vterm-always-compile-module t)
-  ;; delete "C-h", add <f1> and <f2>
-  (setq vterm-keymap-exceptions
-        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s"))
-  :config
-  (setq vterm-shell "fish")
-  (setq vterm-max-scrollback 10000)
-  (setq vterm-buffer-name-string "vterm: %s")
-  (setq vterm-toggle-reset-window-configration-after-exit t)
-  (setq vterm-toggle-scope 'project)
-  (setq vterm-toggle-project-root nil)
-  (setq vterm-toggle-fullscreen-p nil)
-
-  (add-to-list 'display-buffer-alist
-               '((lambda(bufname _) (with-current-buffer bufname
-                                      (or (equal major-mode 'vterm-mode)
-                                          (string-prefix-p vterm-buffer-name bufname))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.4))))
-
-(use-package vterm-toggle
-  :ensure t
-  :defer t)
-
-(use-package eshell-vterm
-  :ensure t
-  :defer t
-  :hook (eshell-mode . eshell-vterm-mode))
-
+  :hook (eshell-mode . eat-eshell-mode))
 (use-package consult-tramp
   :vc (:fetcher github :repo Ladicle/consult-tramp)
   :defer t)
@@ -1814,9 +1779,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
      (("n" nodejs-repl "node")
       ("t" run-ts "ts-node"))
      "Test"
-     (("jw" my-jest-watch-current-buffer)
-      ("jc" my-jest-copy-command-watch-current-buffer)
-      ("vw" my-vitest-watch-current-buffer)
+     (("jc" my-jest-copy-command-watch-current-buffer)
       ("vc" my-vitest-copy-command-watch-current-buffer)
       ("vt" my-vitest-command-watch-tmux))
      "Format"
