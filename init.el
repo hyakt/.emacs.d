@@ -290,7 +290,11 @@
   :ensure t
   :defer t
   :bind
-  (:map puni-mode-map (("M-d" . nil) ("C-h" . puni-force-delete)))
+  (:map puni-mode-map
+        (("M-d" . nil)
+         ("C-h" . puni-force-delete)
+         ("C-k" . kill-line)
+         ("C-M-k" . puni-kill-line)))
   :hook ((prog-mode . puni-mode)
          ((tsx-ts-mode vue-mode) . (lambda () (my-puni-jsx-setup))))
   :preface
