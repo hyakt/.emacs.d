@@ -5,7 +5,6 @@
 (eval-when-compile (package-initialize))
 
 (require 'projectile)
-(require 'vterm)
 
 ;;;###autoload
 (defun my-copy-project-name-clipboard ()
@@ -35,29 +34,6 @@
   (projectile-with-default-dir
       (projectile-ensure-project (projectile-project-root))
     (async-shell-command command output-buffer)))
-
-(defun my-projectile-run-vterm-command-in-root (command)
-  "Invoke `async-shell-command' COMMAND in the project's root."
-  (projectile-with-default-dir
-      (projectile-ensure-project (projectile-project-root))
-    (my-run-in-vterm command)))
-
-;;;###autoload
-(defun my-run-in-vterm (command)
-  "Execute string COMMAND in a new vterm."
-  (interactive
-   (list
-    (let* ((f (cond (buffer-file-name)
-                    ((eq major-mode 'dired-mode)
-                     (dired-get-filename nil t))))
-           (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
-      (read-shell-command "Terminal command: "
-                          (cons filename 0)
-                          (cons 'shell-command-history 1)
-                          (list filename)))))
-  (with-current-buffer (vterm-toggle)
-    (vterm-send-string command)
-    (vterm-send-return)))
 
 ;;;###autoload
 (defun my-mocha-exec-current-buffer ()
@@ -120,22 +96,6 @@
   (remove-hook 'before-save-hook 'my-mocha-exec-current-buffer))
 
 ;;;###autoload
-(defun my-jest-current-buffer ()
-  "Watch mocha for current file."
-  (interactive)
-  (setenv "NODE_ENV" "test")
-  (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
-    (my-projectile-run-vterm-command-in-root jest-command)))
-
-;;;###autoload
-(defun my-jest-watch-current-buffer ()
-  "Watch mocha for current file."
-  (interactive)
-  (setenv "NODE_ENV" "test")
-  (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
-    (my-projectile-run-vterm-command-in-root jest-command)))
-
-;;;###autoload
 (defun my-jest-copy-command-current-buffer ()
   "Watch jest for current file for paste."
   (interactive)
@@ -150,22 +110,6 @@
   (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
     (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
     (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
-
-;;;###autoload
-(defun my-vitest-current-buffer ()
-  "Watch mocha for current file."
-  (interactive)
-  (setenv "NODE_ENV" "test")
-  (let ((command (concat "env DEBUG_PRINT_LIMIT=100000 NODE_OPTIONS='--no-experimental-fetch' pnpm vitest " (buffer-file-name))))
-    (my-projectile-run-vterm-command-in-root command)))
-
-;;;###autoload
-(defun my-vitest-watch-current-buffer ()
-  "Watch mocha for current file."
-  (interactive)
-  (setenv "NODE_ENV" "test")
-  (let ((command (concat "NODE_OPTIONS='--no-experimental-fetch' pnpm vitest --watch " (buffer-file-name))))
-    (my-projectile-run-vterm-command-in-root command)))
 
 ;;;###autoload
 (defun my-vitest-copy-command-current-buffer ()

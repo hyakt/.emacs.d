@@ -229,10 +229,6 @@ Git openpr current line." t)
 Copy project name to clipbord." t)
 (autoload 'my-reload-dir-locals-for-current-buffer "my-js" "\
 reload dir locals for the current buffer" t)
-(autoload 'my-run-in-vterm "my-js" "\
-Execute string COMMAND in a new vterm.
-
-(fn COMMAND)" t)
 (autoload 'my-mocha-exec-current-buffer "my-js" "\
 Run mocha for current file." t)
 (autoload 'my-mocha-copy-command-exec-current-buffer "my-js" "\
@@ -245,18 +241,10 @@ Watch mocha for current file for paste." t)
 Add save hook exec mocha." t)
 (autoload 'my-mocha-exec-remove-save-hook "my-js" "\
 Remove save hook exec mocha." t)
-(autoload 'my-jest-current-buffer "my-js" "\
-Watch mocha for current file." t)
-(autoload 'my-jest-watch-current-buffer "my-js" "\
-Watch mocha for current file." t)
 (autoload 'my-jest-copy-command-current-buffer "my-js" "\
 Watch jest for current file for paste." t)
 (autoload 'my-jest-copy-command-watch-current-buffer "my-js" "\
 Watch jest for current file for paste." t)
-(autoload 'my-vitest-current-buffer "my-js" "\
-Watch mocha for current file." t)
-(autoload 'my-vitest-watch-current-buffer "my-js" "\
-Watch mocha for current file." t)
 (autoload 'my-vitest-copy-command-current-buffer "my-js" "\
 Watch vitest for current file for paste." t)
 (autoload 'my-vitest-copy-command-watch-current-buffer "my-js" "\
