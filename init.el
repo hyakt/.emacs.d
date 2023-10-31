@@ -786,57 +786,9 @@
          (eshell-mode . copilot-mode))
   :bind (("<tab>" . copilot-accept-completion)
          ("M-P" . copilot-next-completion)
-         ("M-N" . copilot-previous-completion)
-         ("C-c C-j" . copilot-panel-complete))
-  :init
-  (defconst copilot-posframe-buffer--posframe "*copilot-panel*")
-  (defvar copilot-panel-point--posframe (point))
-
-  (defun copilot-panel-complete--posframe (orig-fun)
-    (interactive)
-    (setq copilot-panel-point--posframe (point))
-    (funcall orig-fun))
-
-  (advice-add 'copilot-panel-complete :around #'copilot-panel-complete--posframe)
-
-  (defun copilot--handle-notification--posframe (_ method msg)
-    (when (eql method 'PanelSolution)
-      (copilot--dbind (:completionText completion-text :score completion-score) msg
-        (with-current-buffer (get-buffer-create copilot-posframe-buffer--posframe)
-          (read-only-mode 1)
-          (keymap-local-set "q" #'kill-buffer-and-window)
-
-          (unless (member (secure-hash 'sha256 completion-text)
-                          (org-map-entries (lambda () (org-entry-get nil "SHA"))))
-            (save-excursion
-              (goto-char (point-max))
-              (insert "* Solution\n"
-                      "  :PROPERTIES:\n"
-                      "  :SCORE: " (number-to-string completion-score) "\n"
-                      "  :SHA: " (secure-hash 'sha256 completion-text) "\n"
-                      "  :END:\n"
-                      "#+BEGIN_SRC " copilot--panel-lang "\n"
-                      completion-text "\n#+END_SRC\n\n")
-              (mark-whole-buffer)
-              (org-sort-entries nil ?R nil nil "SCORE"))))))
-
-    (when (eql method 'PanelSolutionsDone)
-      (message "Copilot: Finish synthesizing solutions.")
-      (if (string= (with-current-buffer copilot-posframe-buffer--posframe (buffer-string)) "")
-          (message "Copilot: No solution found.")
-        (posframe-show copilot-posframe-buffer--posframe
-                       :position copilot-panel-point--posframe
-                       :poshandler nil
-                       :background-color "#0f0f14"
-                       :foreground-color "white"
-                       :internal-border-width 10
-                       :internal-border-color "#041136"
-                       :width 80
-                       :height 20
-                       :cursor 'hbar
-                       :accept-focus t))))
-
-  (advice-add 'copilot--handle-notification :override #'copilot--handle-notification--posframe))
+         ("M-N" . copilot-previous-completion))
+  :config
+  (setq copilot-max-char -1))
 
 (use-package go-translate
   :defer t
@@ -1253,7 +1205,7 @@ targets."
         (magit-status)
       (pcase (car args)
         ("log" (magit-log))
-        ("diff" (magit-diff))
+        ("diff" (magit-diff-dwim))
         ("ci" (magit-commit))
         ("commit" (magit-commit))
         ("pull" (magit-pull))
