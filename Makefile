@@ -1,5 +1,5 @@
 TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-EMACS_MAC_PORT_APP_PATH = $(shell brew --prefix emacs-mac)
+EMACS_MAC_PORT_APP_PATH := $(shell brew --prefix emacs-mac)
 
 .PHONY: init
 init: install-emacs link compile install-icons setup-git-hook
