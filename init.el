@@ -1715,7 +1715,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
 
-(use-package typescript-ts-base-mode
+(use-package typescript-ts-mode
   :defer t
   :mode (("\\.ts$" . typescript-ts-mode)
          ("\\.tsx$" . tsx-ts-mode))
