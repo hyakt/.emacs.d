@@ -1049,7 +1049,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :bind
   (("M-d" . dired-sidebar-toggle-sidebar)
    :map dired-sidebar-mode-map
-   ("o" . dired-sidebar-subtree-toggle))
+   ("o" . dired-sidebar-subtree-toggle)
+   ("q" . kill-this-buffer))
   :config
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-modeline nil))
