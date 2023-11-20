@@ -366,7 +366,7 @@
   :defer 1
   :config
   (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/themes")
-  (load-theme 'my-doom-monokai-navy t)
+  (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
@@ -509,7 +509,7 @@
      :max-width (round (* (frame-width) 0.62))
      :max-height (round (* (frame-height) 0.62))
      :internal-border-width 1
-     :internal-border-color "#041136"
+     :internal-border-color "#0f0f14"
      :background-color (face-background 'tooltip nil t))
     (unwind-protect
         (push (read-event) unread-command-events)
@@ -834,8 +834,8 @@
   (setq hydra-posframe-show-params
         '(
           :internal-border-width 10
-          :internal-border-color "#041136"
-          :background-color "#041136"
+          :internal-border-color "#0f0f14"
+          :background-color "#0f0f14"
           :foreground-color "white"
           :lines-truncate t
           :poshandler posframe-poshandler-window-center)))
@@ -2081,13 +2081,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (setq org-ai-default-chat-model "gpt-3.5-turbo") ;; You can use gpt-4 for special occasions.
   )
-
-(use-package persistent-scratch
-  :ensure t
-  :defer t
-  :hook (emacs-startup . persistent-scratch-setup-default)
-  :config
-  (setq persistent-scratch-backup-directory "~/.emacs.d/.persistent-scratch-backup/"))
 
 (use-package markdown-mode
   :ensure t
