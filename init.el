@@ -668,7 +668,10 @@
 (use-package symbol-overlay
   :ensure t
   :defer t
-  :bind ("C-." . symbol-overlay-put))
+  :bind ("C-." . symbol-overlay-put)
+  :config
+  ;; https://github.com/wolray/symbol-overlay/issues/82
+  (setq symbol-overlay-priority 100))
 
 (use-package yafolding
   :ensure t
