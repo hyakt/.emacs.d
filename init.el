@@ -1876,6 +1876,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t)
 
+(use-package java-ts-mode
+  :defer t
+  :mode (".gradle$" ".java$"))
+
 (use-package scala-mode
   :ensure t
   :defer t
