@@ -132,9 +132,9 @@
   "Watch vitest for other tmux."
   (interactive)
   (let ((vitest-command (concat "NODE_OPTIONS='--no-experimental-fetch' pnpm vitest --watch " (buffer-file-name))))
+    (my-open-alacritty-tmux-current-buffer)
     (shell-command
      (concat "tmux send-keys '" vitest-command "' Enter"))
-    (shell-command "open -a Alacritty")
     (message (concat "cd " (projectile-project-root) "; " vitest-command "; "))))
 
 ;;;###autoload
