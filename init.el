@@ -1878,7 +1878,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package java-ts-mode
   :defer t
-  :mode (".gradle$" ".java$"))
+  :mode (".gradle$"))
+
+(use-package eglot-java
+  :defer t
+  :hook (java-ts-mode . eglot-java-mode))
 
 (use-package scala-mode
   :ensure t
