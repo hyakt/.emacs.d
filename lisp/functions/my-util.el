@@ -202,7 +202,7 @@ the folder if it doesn't exist."
   "Open current buffer with tmux."
   (interactive)
   (shell-command
-   (concat "tmux send-keys 'tmux new-window -c " (file-name-directory buffer-file-name) "' Enter"))
+   (concat "tmux new-window -c " (file-name-directory buffer-file-name)))
   (shell-command "open -a Alacritty"))
 
 ;;;###autoload
