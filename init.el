@@ -1083,33 +1083,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
   (consult-customize
    find-file
+   consult-fd
    consult-ripgrep
    consult-recent-file
+   consult--source-buffer
    consult-ls-git
-   :preview-key "C-.")
-
-  ;; https://github.com/minad/consult/wiki#find-files-using-fd
-  (defun consult--fd-builder (input)
-    (let ((fd-command
-           (if (eq 0 (process-file-shell-command "fdfind"))
-               "fdfind"
-             "fd")))
-      (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
-                   (`(,re . ,hl) (funcall consult--regexp-compiler
-                                          arg 'extended t)))
-        (when re
-          (cons (append
-                 (list fd-command
-                       "--color=never" "--full-path"
-                       (consult--join-regexps re 'extended))
-                 opts)
-                hl)))))
-
-  (defun consult-fd (&optional dir initial)
-    (interactive "P")
-    (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Fd" dir))
-                 (default-directory dir))
-      (find-file (consult--find prompt #'consult--fd-builder initial)))))
+   :preview-key
+   '("C-."
+     :debounce 0.4 any)))
 
 (use-package consult-ghq
   :ensure t
