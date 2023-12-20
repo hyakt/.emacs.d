@@ -1702,7 +1702,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package typescript-ts-mode
   :defer t
-  :mode (("\\.ts$" . typescript-ts-mode)
+  :mode (("\\.m?ts$" . typescript-ts-mode)
          ("\\.tsx$" . tsx-ts-mode))
   :hook
   (typescript-ts-base-mode . (lambda ()
