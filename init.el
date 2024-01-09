@@ -1081,6 +1081,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq xref-show-definitions-function 'consult-xref)
   (setq consult-ripgrep-command "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case -e ARG OPTS")
 
+  (setq read-file-name-function #'consult-find-file-with-preview)
+
+  (defun consult-find-file-with-preview (prompt &optional dir default mustmatch initial pred)
+    (interactive)
+    (let ((default-directory (or dir default-directory))
+          (minibuffer-completing-file-name t))
+      (consult--read #'read-file-name-internal :state (consult--file-preview)
+                     :prompt prompt
+                     :initial initial
+                     :require-match mustmatch
+                     :predicate pred)))
+
   (consult-customize
    find-file
    consult-fd
@@ -1412,7 +1424,7 @@ targets."
   :commands (eglot-ensure)
   :hook (eglot--managed-mode . (lambda ()
                                  (setq-local completion-at-point-functions
-                                             (list (cape-super-capf
+                                             (list (cape-capf-super
                                                     #'eglot-completion-at-point
                                                     #'tempel-expand)))))
   :config
@@ -1585,6 +1597,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
+  :hook ((vue-mode . (lambda ()
+                       (message "called-web-mode-vuehook")
+                       (add-node-modules-path)
+                       (yas-minor-mode t)
+                       (eglot-ensure)
+                       (enable-flymake-eslint-without-eglot))))
   :config
   (setq web-mode-indent-style 2)
   (setq web-mode-markup-indent-offset 2)
@@ -1601,14 +1619,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                                    ("jsx" .  "//")
                                    ("php" . "/*")))
   (setq web-mode-enable-front-matter-block t) ;ignore Front Matter Data
-
-  (add-hook 'web-mode-hook
-            (lambda ()
-              (when (equal web-mode-engine "vue")
-                (add-node-modules-path)
-                (yas-minor-mode t)
-                (eglot-ensure)
-                (enable-flymake-eslint-without-eglot))))
 
   (major-mode-hydra-define web-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-html" "Web mode"))
@@ -1956,7 +1966,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook (org-mode . (lambda ()
                       (require 'ob-js)
                       (setq-local completion-at-point-functions
-                                  (list (cape-super-capf
+                                  (list (cape-capf-super
                                          #'cape-elisp-block
                                          #'tempel-complete)))))
   :config
