@@ -1081,8 +1081,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq xref-show-definitions-function 'consult-xref)
   (setq consult-ripgrep-command "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case -e ARG OPTS")
 
-  (setq read-file-name-function #'consult-find-file-with-preview)
-
+  ;; https://github.com/minad/consult/wiki#previewing-files-in-find-file
   (defun consult-find-file-with-preview (prompt &optional dir default mustmatch initial pred)
     (interactive)
     (let ((default-directory (or dir default-directory))
@@ -1092,6 +1091,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                      :initial initial
                      :require-match mustmatch
                      :predicate pred)))
+  (setq read-file-name-function #'consult-find-file-with-preview)
+
+  ;; https://github.com/minad/consult/issues/837#issuecomment-1703762384
+  (consult-customize
+   consult-find
+   consult-fd
+   :state (consult--file-preview))
 
   (consult-customize
    find-file
@@ -1101,8 +1107,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    consult--source-buffer
    consult-ls-git
    :preview-key
-   '("C-."
-     :debounce 0.4 any)))
+   '("C-." :debounce 0.5 any)))
 
 (use-package consult-ghq
   :ensure t
