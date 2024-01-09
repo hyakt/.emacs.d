@@ -1204,35 +1204,6 @@ targets."
   (defalias 'e 'find-file-other-window)
   )
 
-(use-package eshell-prompt-extras
-  :ensure t
-  :config
-  (with-eval-after-load "esh-opt"
-    (defun my-epe-theme ()
-      "A eshell-prompt lambda theme."
-      (setq eshell-prompt-regexp "^[^#\nλ]*[#λ] ")
-      (concat
-       (epe-colorize-with-face (funcall 'epe-fish-path (epe-pwd)) (if (zerop eshell-last-command-status)
-                                                                      'epe-dir-face
-                                                                    'epe-error-face))
-       (when (and (epe-git-p)
-                  (unless (string= (epe-git-branch) "main") t))
-         (concat
-          (epe-colorize-with-face " (" 'epe-dir-face)
-          (epe-colorize-with-face
-           (concat (epe-git-branch)
-                   (epe-git-dirty)
-                   (epe-git-untracked)
-                   (let ((unpushed (epe-git-unpushed-number)))
-                     (unless (= unpushed 0)
-                       (concat ":" (number-to-string unpushed)))))
-           `((t (:foreground "white"))))
-          (epe-colorize-with-face ")" 'epe-dir-face)
-          ))
-       " λ "))
-
-    (setq eshell-prompt-function 'my-epe-theme)))
-
 (use-package shell-pop
   :defer t
   :ensure t
