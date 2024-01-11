@@ -784,7 +784,7 @@
   :ensure t)
 
 (use-package copilot.el
-  :vc (:fetcher github :repo zerolfx/copilot.el)
+  :vc (:fetcher github :repo copilot-emacs/copilot.el)
   :hook ((prog-mode . copilot-mode)
          (eshell-mode . copilot-mode))
   :bind (("<tab>" . copilot-accept-completion)
