@@ -1452,7 +1452,7 @@ targets."
 
   (add-to-list 'eglot-server-programs '(((js-ts-mode :language-id "javascript")
                                          (typescript-ts-mode :language-id "typescript")
-                                         (typescript-tsx-mode :language-id "typescriptreact")) . es-server-program))
+                                         (tsx-ts-mode :language-id "typescriptreact")) . es-server-program))
 
   ;; npm i -g @vue/language-server
   (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
@@ -1668,7 +1668,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook
   ((js-ts-mode . (lambda ()
                    (eglot-ensure)
-                   (enable-flymake-eslint-without-eglot)))
+                   (when (my-node-project-p)
+                       (enable-flymake-eslint-without-eglot))))
    (js-ts-mode . subword-mode))
   :config
   (setq js-indent-level 2)
@@ -1681,7 +1682,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook
   (typescript-ts-base-mode . (lambda ()
                                (eglot-ensure)
-                               (enable-flymake-eslint-without-eglot)))
+                               (when (my-node-project-p)
+                                 (enable-flymake-eslint-without-eglot))))
   (typescript-ts-base-mode . subword-mode)
   :config
   (major-mode-hydra-define typescript-ts-mode
