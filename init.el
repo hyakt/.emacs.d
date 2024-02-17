@@ -785,13 +785,19 @@
 
 (use-package copilot.el
   :vc (:fetcher github :repo copilot-emacs/copilot.el)
-  :hook ((prog-mode . copilot-mode)
+  :hook ((prog-mode
+          . (lambda ()
+              (when (and buffer-file-name
+                         (file-readable-p buffer-file-name)
+                         (< (nth 7 (file-attributes buffer-file-name)) 100000))
+                (copilot-mode t))))
          (eshell-mode . copilot-mode))
   :bind (("<tab>" . copilot-accept-completion)
          ("M-P" . copilot-next-completion)
          ("M-N" . copilot-previous-completion))
   :config
-  (setq copilot-max-char -1))
+  (setq copilot-indent-offset-warning-disable t)
+  (setq copilot-max-char 100000))
 
 (use-package go-translate
   :defer t
@@ -1553,9 +1559,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (let ((p-root (file-name-directory (shell-command-to-string "npm root"))))
       (file-exists-p (concat p-root "package.json")))))
 
-(use-package elisp-mode
+(use-package emacs-lisp-mode
   :defer t
   :config
+  (setq-default tab-width 2)
   (major-mode-hydra-define emacs-lisp-mode
     (:quit-key "q" :title (with-sucicon "nf-custom-emacs" "Emacs Lisp"))
     ("Eval"
@@ -1669,7 +1676,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ((js-ts-mode . (lambda ()
                    (eglot-ensure)
                    (when (my-node-project-p)
-                       (enable-flymake-eslint-without-eglot))))
+                     (enable-flymake-eslint-without-eglot))))
    (js-ts-mode . subword-mode))
   :config
   (setq js-indent-level 2)
