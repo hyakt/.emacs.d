@@ -794,7 +794,7 @@
   :bind (("<tab>" . copilot-accept-completion)
          ("M-P" . copilot-next-completion)
          ("M-N" . copilot-previous-completion))
-  :config
+  :init
   (setq copilot-indent-offset-warning-disable t)
   (setq copilot-max-char 100000))
 
