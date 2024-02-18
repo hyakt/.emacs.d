@@ -453,21 +453,15 @@
 (use-package elec-pair
   :hook (prog-mode . electric-pair-mode)
   :config
-  (defun org-add-electric-pairs ()
-    (setq-local electric-pair-pairs (append electric-pair-pairs org-electric-pairs))
-    (setq-local electric-pair-text-pairs electric-pair-pairs))
   (defvar web-electric-pairs '((?< . ?>) (?' . ?') (?` . ?`)) "Electric pairs for web-mode.")
   (defun web-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
-  (defvar org-electric-pairs '((?/ . ?/) (?= . ?=)) "Electric pairs for org-mode.")
-
   (defun my-inhibit-electric-pair-mode (char)
     (minibufferp))
 
   (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
 
-  (add-hook 'org-mode-hook #'org-add-electric-pairs)
   (add-hook 'web-mode-hook #'web-add-electric-pairs)
   (add-hook 'typescript-ts-base-mode-hook #'web-add-electric-pairs))
 
