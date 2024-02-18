@@ -69,8 +69,7 @@
 (eval-when-compile
   (require 'package)
   (setq package-archives
-        '(("org" . "https://orgmode.org/elpa/")
-          ("melpa" . "https://melpa.org/packages/")
+        '(("melpa" . "https://melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")
           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
   (package-initialize)
