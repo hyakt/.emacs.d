@@ -1544,6 +1544,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                                     (when smerge-mode
                                       (smerge-hydra/body))))))
 
+(use-package restclient :ensure t :defer t)
+
 ;;; ---------- major mode ----------
 (with-deferred-eval
   (defun my-deno-project-p ()
@@ -1997,7 +1999,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
           (shell . t)
           (js . t)
           (org . t)
-          (ruby . t))))
+          (ruby . t)
+          (restclient . t))))
 
 (use-package ox-latex
   :defer t
@@ -2053,8 +2056,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook
   (org-mode . org-ai-mode)
   :config
-  (setq org-ai-default-chat-model "gpt-3.5-turbo") ;; You can use gpt-4 for special occasions.
-  )
+  (setq org-ai-default-chat-model "gpt-3.5-turbo"))
+
+(use-package ob-restclient
+  :ensure t
+  :defer t)
 
 (use-package markdown-mode
   :ensure t
