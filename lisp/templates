@@ -33,7 +33,7 @@ emacs-lisp-mode
 js-mode js2-mode typescript-ts-mode tsx-ts-mode web-mode
 
 (cl "console.log(`"(s variable)": `, "(s variable)");")
-(cll "console.log(" p ");")
+(cll "console.log(" (r (concat "`" "Commented at: " (format-time-string "%Y-%m-%dT%T") "`")) ");")
 (clb "console.log(`%c" p "`, \"color: #465DAA; font-size: 1.2em; font-weight: bold;\")")
 (cld "console.dir(" p ");")
 (wait1000 "await new Promise(resolve => setTimeout(resolve, " (p "1000") "));")
