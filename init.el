@@ -1962,6 +1962,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
               ("C-c C-k" . nil))
   :hook (org-mode . (lambda ()
                       (require 'ob-js)
+                      (require 'ob-async)
                       (setq-local completion-at-point-functions
                                   (list (cape-capf-super
                                          #'cape-elisp-block
@@ -2053,6 +2054,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (setq org-ai-default-chat-model "gpt-3.5-turbo"))
 
 (use-package ob-restclient
+  :ensure t
+  :defer t)
+
+(use-package ob-async
   :ensure t
   :defer t)
 
