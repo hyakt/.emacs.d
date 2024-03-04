@@ -7,7 +7,7 @@
 ;;; Code:
 (defconst my-enable-measuring nil
   "If non-nil, mesure start up time.")
-;;
+
 (when my-enable-measuring
   ;; https://zenn.dev/zk_phi/books/cba129aacd4c1418ade4/viewer/4d0a9dde1043c6eaffad
   (defvar setup-tracker--level 0)
@@ -903,14 +903,19 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
      (projectile-find-implementation-or-test
       (buffer-file-name)))))
 
-(use-package eyebrowse
+(use-package activities
   :ensure t
-  :defer 5
+  :defer t
   :init
-  (setq eyebrowse-keymap-prefix (kbd "C-z"))
-  :config
-  (setq eyebrowse-new-workspace t)
-  (eyebrowse-mode t))
+  (activities-mode)
+  :bind
+  (("C-x C-a C-n" . activities-new)
+   ("C-x C-a C-a" . activities-resume)
+   ("C-x C-a C-s" . activities-suspend)
+   ("C-x C-a C-k" . activities-kill)
+   ("C-x C-a RET" . activities-switch)
+   ("C-x C-a g" . activities-revert)
+   ("C-x C-a l" . activities-list)))
 
 (use-package eldoc
   :defer t
