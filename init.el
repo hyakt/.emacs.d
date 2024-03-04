@@ -108,7 +108,6 @@
 (setq completion-ignore-case t)                                    ;; file 名の補完で大文字小文字を区別しない
 (setq auto-save-default nil)                                       ;; オートセーブのファイルを作らない
 (setq create-lockfiles nil)                                        ;; ロックファイル(.#filename)のファイルを作らない
-(setq garbage-collection-message nil)                              ;; GC 実行のメッセージを表示しない
 (setq message-log-max 10000)                                       ;; ログの記録行数を増やす
 (setq vc-follow-symlinks t)                                        ;; symlink は必ず追いかける
 (setq enable-local-variables :all)                                 ;; local variable は全て使用する
@@ -214,21 +213,6 @@
   :ensure t
   :defer 5
   :config
-  (setq gcmh-verbose t)
-  (defvar my-gcmh-status nil)
-  (advice-add #'garbage-collect
-              :before
-              (defun my-gcmh-log-start (&rest _)
-                (when gcmh-verbose
-                  (setq my-gcmh-status "Running GC..."))))
-  (advice-add #'gcmh-message
-              :override
-              (defun my-gcmh-message (format-string &rest args)
-                (setq my-gcmh-status
-                      (apply #'format-message format-string args))
-                (run-with-timer 2 nil
-                                (lambda ()
-                                  (setq my-gcmh-status nil)))))
   (gcmh-mode t))
 
 ;;; ---------- appearance ----------
