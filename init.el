@@ -529,11 +529,11 @@
   :config
   (beacon-mode t))
 
-(use-package volatile-highlights
+(use-package goggles
   :ensure t
-  :defer 5
+  :hook ((prog-mode text-mode) . goggles-mode)
   :config
-  (volatile-highlights-mode t))
+  (setq-default goggles-pulse t))
 
 (use-package tempel
   :ensure t
