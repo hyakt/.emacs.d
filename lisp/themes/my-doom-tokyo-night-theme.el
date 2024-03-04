@@ -164,6 +164,9 @@ determine the exact padding."
 
    (corfu-default :background bg-alt :foreground fg)
    (corfu-current :background dark-cyan :foreground fg)
+
+   (goggles-removed :background (doom-darken red 0.4))
+   (goggles-added :background (doom-darken green 0.4))
    )
   )
 

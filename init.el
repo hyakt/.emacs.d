@@ -915,7 +915,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    ("C-x C-a C-k" . activities-kill)
    ("C-x C-a RET" . activities-switch)
    ("C-x C-a g" . activities-revert)
-   ("C-x C-a l" . activities-list)))
+   ("C-x C-a l" . activities-list)
+   ("C-x C-a C-l" . activities-list)))
 
 (use-package eldoc
   :defer t
