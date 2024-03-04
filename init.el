@@ -2016,34 +2016,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                       (require 'ox-gfm nil t)
                       (add-to-list 'org-export-backends 'gfm))))
 
-(use-package org-bullets
+(use-package org-modern
   :ensure t
   :defer t
-  :config
-  (defun my-org-bullets-export (path)
-    "Export to bullets style text file into PATH."
-    (interactive "FExport file: ")
-    (let* ((current-buffer-string (buffer-string)))
-      (with-temp-buffer
-        (insert current-buffer-string)
-        (goto-char (point-min))
-        (while (re-search-forward "^\\*+ " nil t)
-          (let ((level (- (match-end 0) (match-beginning 0) 1)))
-            (replace-match
-             (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
-        (write-file path))))
-  (defun my-org-bullets-export-region-clipboard (start end)
-    "Export to bullets style text file into clipbord from START to END."
-    (interactive "*r")
-    (let* ((current-buffer-string (buffer-substring start end)))
-      (with-temp-buffer
-        (insert current-buffer-string)
-        (goto-char (point-min))
-        (while (re-search-forward "^\\*+" nil t)
-          (let ((level (- (match-end 0) (match-beginning 0))))
-            (replace-match
-             (concat  (make-string (- level 1) ? ) (string (org-bullets-level-char level)) " "))))
-        (clipboard-kill-ring-save (point-min) (point-max))))))
+  :hook ((org-mode . org-modern-mode)))
 
 (use-package org-ai
   :ensure t
