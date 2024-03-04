@@ -519,6 +519,15 @@
   :config
   (setq-default goggles-pulse t))
 
+(use-package indent-bars
+  :vc (:fetcher github :repo jdtsmith/indent-bars)
+  :defer t
+  :config
+  (setq indent-bars-width-frac 0.2)
+  (setq indent-bars-pattern " .    .  ")
+  (setq indent-bars-treesit-support t)
+  :hook ((yaml-mode) . indent-bars-mode))
+
 (use-package tempel
   :ensure t
   :defer t
@@ -1482,6 +1491,7 @@ targets."
   :ensure t
   :config
   (setq treesit-auto-install t)
+  (delete 'yaml treesit-auto-langs)
   (global-treesit-auto-mode))
 
 (use-package smerge-mode
@@ -1698,6 +1708,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :defer t
   :mode
   ("\\.jsonc\\'" . json-mode))
+
+(use-package yaml-mode
+  :ensure t
+  :defer t
+  :mode ("\\.ya?ml\\'"))
 
 (use-package jq-mode
   :ensure t
