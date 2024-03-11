@@ -11,9 +11,9 @@
 .mc-lists.el
 .org-id-locations
 .python-environments/
-/.persistent-scratch
-/.persistent-scratch-backup/
-/tree-sitter/
+.persistent-scratch
+.persistent-scratch-backup/
+tree-sitter/
 abbrev_defs
 ac-comphist.dat
 amx-items
@@ -47,6 +47,7 @@ site-lisp/my-proxy.el
 straight/
 tramp
 transient/
+undo/
 undohist/
 url/
 var/
