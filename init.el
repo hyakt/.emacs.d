@@ -695,12 +695,14 @@
   ("C-," . er/expand-region)
   ("C-M-," . er/contract-region))
 
-(use-package undo-fu
+(use-package undo-tree
   :ensure t
   :defer t
-  :bind
-  ("C-/" . undo-fu-only-undo)
-  ("M-/" . undo-fu-only-redo))
+  :init (global-undo-tree-mode)
+  :config
+  (setq undo-tree-visualizer-diff t)
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+  (setq undo-tree-visualizer-timestamps t))
 
 (use-package wgrep
   :ensure t
