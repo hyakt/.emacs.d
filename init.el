@@ -699,6 +699,7 @@
   :ensure t
   :defer t
   :init (global-undo-tree-mode)
+  :bind ("M-/" . undo-tree-redo)
   :config
   (setq undo-tree-visualizer-diff t)
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
