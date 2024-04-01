@@ -1545,6 +1545,22 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package restclient :ensure t :defer t)
 
+(use-package gptel
+  :ensure t
+  :defer t
+  :bind (("C-c C-a" . gptel-menu)
+         :map gptel-mode-map (("C-c C-m" . gptel-menu)
+                              ("C-c C-c" . gptel-send)))
+  :config
+  (setq gptel-directives
+        '((default . "あなたはEmacsに住む大きな言語モデルであり、親切なアシスタントです。簡潔に日本語で答えてください。")
+          (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+          (writing . "You are a large language model and a writing assistant. Respond concisely.")
+          (chat . "You are a large language model and a conversation partner. Respond concisely.")))
+  (setq gptel-default-mode 'org-mode)
+  (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key gptel-api-key))
+  (setq gptel-model "claude-3-sonnet-20240229"))
+
 ;;; ---------- major mode ----------
 (with-deferred-eval
   (defun my-deno-project-p ()
