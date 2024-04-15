@@ -847,7 +847,7 @@
 
 (use-package which-key
   :ensure t
-  :defer 5
+  :defer 1
   :config
   (which-key-mode t))
 
@@ -905,7 +905,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :init
   (activities-mode)
   :bind
-  (("C-x C-a C-n" . activities-new)
+  (("M-z" . activities/body)
+   ("C-x C-a C-n" . activities-new)
    ("C-x C-a C-a" . activities-resume)
    ("C-x C-a C-s" . activities-suspend)
    ("C-x C-a C-k" . activities-kill)
@@ -914,6 +915,19 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    ("C-x C-a l" . activities-list)
    ("C-x C-a C-l" . activities-list))
   :config
+  (pretty-hydra-define
+    activities
+    (:title (with-codicon "nf-cod-layout" "Activities" 1 -0.05) :quit-key "q")
+   ("Manage"
+    (("n" activities-new)
+     ("a" activities-resume)
+     ("s" activities-suspend)
+     ("k" activities-kill)
+     ("g" activities-revert))
+    "View"
+    (("b" activities-switch)
+     ("l" activities-list)
+     ("RET" activities-switch))))
   (setq activities-name-prefix ""))
 
 (use-package eldoc
@@ -1047,7 +1061,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (s-concat (nerd-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
 
   (defun with-sucicon (icon str &optional height v-adjust)
-    (s-concat (nerd-icons-sucicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)))
+    (s-concat (nerd-icons-sucicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+
+  (defun with-codicon (icon str &optional height v-adjust)
+    (s-concat (nerd-icons-codicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)))
 
 (use-package dired-sidebar
   :ensure t
