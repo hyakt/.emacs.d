@@ -2037,24 +2037,29 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                              ("shell" . sh)
                              ("bash" . sh)
                              ("fish" . fish)
-                             ("typescript" . typescript)
+                             ("typescript" . typescript-ts)
+                             ("ts" . typescript-ts)
+                             ("tsx" . tsx-ts)
                              ("html" . web)
                              ("vue" . vue)
                              ("javascript" . js)))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((plantuml . t)
+     (sql . t)
+     (emacs-lisp . t)
+     (shell . t)
+     (js . t)
+     (org . t)
+     (ruby . t)
+     (restclient . t)
+     (typescript . t)))
+
   (setq org-file-apps
         (append '(("\\.png\\'" . (lambda (file link) (shell-command-to-string (concat "open -R " file))))
                   ("\\.jpg\\'" . (lambda (file link) (shell-command-to-string (concat "open -R " file))))
-                  ("\\.gif\\'" . (lambda (file link) (shell-command-to-string (concat "open -R " file)))))))
-
-  (setq org-babel-load-languages
-        '((plantuml . t)
-          (sql . t)
-          (emacs-lisp . t)
-          (shell . t)
-          (js . t)
-          (org . t)
-          (ruby . t)
-          (restclient . t))))
+                  ("\\.gif\\'" . (lambda (file link) (shell-command-to-string (concat "open -R " file))))))))
 
 (use-package ox-latex
   :defer t
@@ -2093,6 +2098,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :defer t)
 
 (use-package ob-async
+  :ensure t
+  :defer t)
+
+(use-package ob-typescript
   :ensure t
   :defer t)
 
