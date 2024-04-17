@@ -918,16 +918,16 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (pretty-hydra-define
     activities
     (:title (with-codicon "nf-cod-layout" "Activities" 1 -0.05) :quit-key "q")
-   ("Manage"
-    (("n" activities-new)
-     ("a" activities-resume)
-     ("s" activities-suspend)
-     ("k" activities-kill)
-     ("g" activities-revert))
-    "View"
-    (("b" activities-switch)
-     ("l" activities-list)
-     ("RET" activities-switch))))
+    ("Manage"
+     (("n" activities-new)
+      ("a" activities-resume)
+      ("s" activities-suspend)
+      ("k" activities-kill)
+      ("g" activities-revert))
+     "View"
+     (("b" activities-switch)
+      ("l" activities-list)
+      ("RET" activities-switch))))
   (setq activities-name-prefix ""))
 
 (use-package eldoc
@@ -2015,6 +2015,22 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (setq org-src-fontify-natively t)
   (setq org-log-done 'time)
   (setq org-confirm-babel-evaluate nil)
+  (setq org-emphasis-regexp-components '("-[:space:]('\"{[:nonascii:]"
+                                         "-[:space:].,:!?;'\")}\\[[:nonascii:]"
+                                         "[:space:]"
+                                         "."
+                                         1))
+  (setq org-match-substring-regexp
+        (concat
+         "\\([0-9a-zA-Zα-γΑ-Ω]\\)\\([_^]\\)\\("
+         "\\(?:" (org-create-multibrace-regexp "{" "}" org-match-sexp-depth) "\\)"
+         "\\|"
+         "\\(?:" (org-create-multibrace-regexp "(" ")" org-match-sexp-depth) "\\)"
+         "\\|"
+         "\\(?:\\*\\|[+-]?[[:alnum:].,\\]*[[:alnum:]]\\)\\)"))
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+  (org-element-update-syntax)
+
   (setq org-src-lang-modes '(("ocaml" . tuareg)
                              ("elisp" . emacs-lisp)
                              ("emacs-lisp" . emacs-lisp)
