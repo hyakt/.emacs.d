@@ -365,11 +365,14 @@
 
   (doom-modeline-mode t))
 
-(use-package direnv
+(use-package dashboard
   :ensure t
-  :defer 1
   :config
-  (direnv-mode))
+  (setq dashboard-startup-banner 'logo)
+
+  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+  (dashboard-setup-startup-hook))
 
 ;;; ---------- edit ----------
 (with-deferred-eval
@@ -824,6 +827,12 @@
   :defer t)
 
 ;;; ---------- interface ----------
+(use-package direnv
+  :ensure t
+  :defer 1
+  :config
+  (direnv-mode))
+
 (use-package hydra
   :ensure t
   :defer t
