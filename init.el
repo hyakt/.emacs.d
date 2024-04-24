@@ -1894,6 +1894,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :defer t
   :mode (".gradle$"))
 
+(use-package kotlin-mode
+  :ensure t
+  :defer t)
+
 (use-package eglot-java
   :defer t
   :hook (java-ts-mode . eglot-java-mode))
