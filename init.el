@@ -1378,7 +1378,8 @@ targets."
       ("c" my-gh-pr-create "create pr" :exit t)
       ("o" my-git-open-pr-from-current-line "open pr from current line" :exit t))
      "Misc"
-     (("w" my-git-wip "wip" :exit t)))))
+     (("w" my-git-wip "wip" :exit t)
+      ("u" my-git-unwip "unwip" :exit t)))))
 
 (use-package magit-delta
   :ensure t

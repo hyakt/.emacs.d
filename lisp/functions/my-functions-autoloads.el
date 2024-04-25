@@ -220,6 +220,7 @@ Git openpr current line." t)
 (autoload 'my-consult-git-commit-messages "my-git" nil t)
 (autoload 'my-consult-git-conventional-commit-prefix "my-git" nil t)
 (autoload 'my-git-wip "my-git" nil t)
+(autoload 'my-git-unwip "my-git" nil t)
 
 
 ;;; Generated autoloads from my-js.el

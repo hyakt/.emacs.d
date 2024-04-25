@@ -103,6 +103,11 @@
   (interactive)
   (my-projectile-run-shell-command-in-root "git wip"))
 
+;;;###autoload
+(defun my-git-unwip ()
+  (interactive)
+  (my-projectile-run-shell-command-in-root "git unwip"))
+
 (provide 'my-git)
 
 ;;; my-git.el ends here
