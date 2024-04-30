@@ -124,7 +124,7 @@
 (setq use-short-answers t)
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
-(setq-default shell-file-name "/bin/bash")
+(setq-default shell-file-name "/opt/homebrew/bin/fish")
 
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
@@ -167,7 +167,7 @@
 (use-package shell
   :defer t
   :config
-  (setq explicit-shell-file-name "/bin/bash"))
+  (setq explicit-shell-file-name shell-file-name))
 
 (use-package recentf
   :defer 1
@@ -1235,28 +1235,7 @@ targets."
 
   (defalias 'g 'eshell/magit)
   (defalias 'd (lambda () (dired ".")))
-  (defalias 'e 'find-file-other-window)
-  )
-
-(use-package shell-pop
-  :defer t
-  :ensure t
-  :bind (("M-e" . shell-pop))
-  :init
-  (setq
-   shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell)))
-   shell-pop-term-shell "eshell"
-   shell-pop-window-size 50
-   shell-pop-full-span nil
-   shell-pop-window-position "bottom"
-   shell-pop-autocd-to-working-dir t
-   shell-pop-restore-window-configuration t
-   shell-pop-cleanup-buffer-at-process-exit t))
-
-(use-package fish-completion
-  :defer t
-  :ensure t
-  :hook (eshell-mode . fish-completion-mode))
+  (defalias 'e 'find-file-other-window))
 
 (use-package esh-help
   :ensure t
@@ -1268,17 +1247,54 @@ targets."
   :ensure t
   :hook (eshell-mode . eshell-syntax-highlighting-mode))
 
-(use-package eshell-z
-  :ensure t
-  :defer t
-  :hook (eshell-mode . (lambda () (require 'eshell-z)))
-  :config
-  (setq eshell-z-freq-dir-hash-table-file-name "~/.local/share/z/data"))
-
 (use-package eat
   :ensure t
   :defer t
   :hook (eshell-mode . eat-eshell-mode))
+
+(use-package fish-completion
+  :defer t
+  :ensure t
+  :hook (eshell-mode . fish-completion-mode))
+
+(use-package mistty
+  :ensure t
+  :defer t
+  :bind (("M-e" . mistty-toggle)
+         :map mistty-prompt-map
+         ("C-d" . mistty-toggle-hide))
+  :config
+  (defun mistty-toggle()
+    "magit toggle."
+    (interactive)
+    (if (or (string-prefix-p "*mistty" (buffer-name))
+            (mistty-toggle--get-window))
+        (mistty-toggle-hide)
+      (mistty)))
+
+  (defun mistty-toggle-hide ()
+    "Hide the magit-statsu buffer."
+    (interactive)
+    (or (string-prefix-p "*mistty" (buffer-name))
+        (select-window (mistty-toggle--get-window)))
+    (if (window-deletable-p)
+        (progn
+          (mistty-send-string "exit\n")
+          (kill-buffer)
+          (delete-window))))
+
+  (defun mistty-toggle--get-window()
+    "Get the mistty window which is visible (active or inactive)."
+    (cl-find-if #'(lambda(w)
+                    (string-prefix-p "*mistty" (buffer-name)))
+                (window-list)))
+
+  (add-to-list 'display-buffer-alist
+               '("\\*mistty"
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.3))))
+
 (use-package consult-tramp
   :vc (:fetcher github :repo Ladicle/consult-tramp)
   :defer t)
