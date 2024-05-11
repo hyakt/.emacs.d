@@ -794,28 +794,13 @@
 (use-package go-translate
   :defer t
   :ensure t
-  :bind ("C-c C-l" . gts-do-translate)
-  :init
-  (defcustom gts-deepl-key ""
-    "DeepL API key"
-    :type 'string
-    :group 'go-translate)
+  :bind ("C-c C-l" . gt-do-translate)
   :config
-  (setq go-translate-buffer-follow-p t)
-  (setq gts-translate-list '(("en" "ja") ("ja" "en")))
-  (setq gts-posframe-pop-render-timeout nil)
-
-  (setq gts-default-translator
-        (gts-translator
-         :picker
-         (gts-noprompt-picker :texter (gts-current-or-selection-texter))
-         :engines
-         (list
-          (gts-deepl-engine :auth-key gts-deepl-key :pro nil)
-          (gts-google-engine)
-          )
-         :render
-         (gts-posframe-pop-render))))
+  (setq gt-langs '(en ja))
+  (setq gt-default-translator
+        (gt-translator
+         :engines (list (gt-deepl-engine) (gt-google-engine) (gt-bing-engine))
+         :render  (gt-posframe-pop-render))))
 
 (use-package google-this
   :bind ("C-c C-k" . google-this-noconfirm)
