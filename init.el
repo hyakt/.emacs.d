@@ -856,7 +856,7 @@
   ("C-t" . my-ws-other-window-or-split-and-kill-minibuffer)
   ("C-S-t" . ws-previous-other-window-or-split)
   :config
-  (setq ws-split-window-width-with-em 130)
+  (setq ws-split-window-width-with-em 150)
   (defun minibuffer-keyboard-quit () ;; esc quits
     "Abort recursive edit.
 In Delete Selection mode, if the mark is active, just deactivate it;
