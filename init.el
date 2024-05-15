@@ -216,6 +216,8 @@
   (gcmh-mode t))
 
 ;;; ---------- appearance ----------
+(set-frame-parameter nil 'alpha '(94 . 94))
+
 (set-face-attribute 'default nil
                     :family "Source Han Code JP"
                     :height 110)
