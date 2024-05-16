@@ -371,9 +371,6 @@
   :ensure t
   :config
   (setq dashboard-startup-banner 'logo)
-
-  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
   (dashboard-setup-startup-hook))
 
 ;;; ---------- edit ----------
@@ -1397,9 +1394,9 @@ targets."
   :custom-face
   (transient-posframe ((t (:inherit tooltip))))
   (transient-posframe-border ((t (:inherit posframe-border :background "#0f0f14"))))
-  :hook (magit-mode . transient-posframe-mode)
+  :hook (after-init . transient-posframe-mode)
   :init
-  (setq transient-posframe-border-width 3
+  (setq transient-posframe-border-width 10
         transient-posframe-min-height nil
         transient-posframe-min-width 80
         transient-posframe-poshandler nil
@@ -1590,8 +1587,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
           (writing . "You are a large language model and a writing assistant. Respond concisely.")
           (chat . "You are a large language model and a conversation partner. Respond concisely.")))
   (setq gptel-default-mode 'org-mode)
-  (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key gptel-api-key))
-  (setq gptel-model "claude-3-sonnet-20240229"))
+  (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)
+  (gptel-make-gemini "Gemini" :stream t :key gptel-api-key)
+  (setq
+    gptel-model "claude-3-sonnet-20240229"
+    gptel-backend (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)))
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
@@ -2106,7 +2106,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package org-modern
   :ensure t
   :defer t
-  :hook ((org-mode . org-modern-mode)))
+  :hook ((org-mode . org-modern-mode))
+  :config
+  (setq org-modern-fold-stars
+        '(("▶" . "▼") ("▷" . "▽") ("⏷" . "⏵") ("▹" . "▿") ("▸" . "▾"))))
 
 (use-package org-ai
   :ensure t
