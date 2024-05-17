@@ -1256,7 +1256,9 @@ targets."
     (if (or (string-prefix-p "*mistty" (buffer-name))
             (mistty-toggle--get-window))
         (mistty-toggle-hide)
-      (mistty)))
+      (progn
+        (mistty)
+        (mac-auto-ascii-select-input-source))))
 
   (defun mistty-toggle-hide ()
     "Hide the magit-statsu buffer."
