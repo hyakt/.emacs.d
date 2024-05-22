@@ -2021,6 +2021,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :defer t)
 
 (use-package org
+  :pin gnu
   :defer t
   :bind (:map org-mode-map
               ("C-," . nil)
