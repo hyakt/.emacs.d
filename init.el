@@ -194,6 +194,11 @@
   :config
   (global-auto-revert-mode))
 
+(use-package so-long
+  :defer 1
+  :config
+  (global-so-long-mode))
+
 (use-package server
   :defer 2
   :config
@@ -509,11 +514,11 @@
     (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
     (ignore-errors (flymake-eslint-enable))))
 
-(use-package beacon
+(use-package pulsar
   :ensure t
   :defer 5
   :config
-  (beacon-mode t))
+  (pulsar-global-mode +1))
 
 (use-package goggles
   :ensure t
@@ -690,12 +695,12 @@
   ("C->" . mc/mark-next-like-this)
   ("C-<" . mc/mark-previous-like-this))
 
-(use-package expand-region
+(use-package expreg
   :ensure t
   :defer t
   :bind
-  ("C-," . er/expand-region)
-  ("C-M-," . er/contract-region))
+  ("C-," . expreg-expand)
+  ("C-M-," . expreg-contract))
 
 (use-package undo-fu
   :ensure t
@@ -946,6 +951,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
          (view-mode t)
          (current-buffer))
        )))
+
+  (use-package eldoc-box
+    :ensure t
+    :defer t
+    :hook (eglot-managed-mode . eldoc-box-hover-mode))
+
+  (use-package eglot-signature-eldoc-talkative
+    :ensure t
+    :after eldoc-box
+    :config
+    (advice-add #'eglot-signature-eldoc-function
+                :override #'eglot-signature-eldoc-talkative))
 
   (defun my-switch-eldoc-display-mode ()
     (interactive)
@@ -1502,6 +1519,17 @@ targets."
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode) . ("vscode-html-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio"))))
+
+(use-package eglot-tempel
+  :ensure t
+  :after (eglot tempel)
+  :hook (eglot-managed-mode . eglot-tempel-mode))
+
+(use-package eglot-booster
+  :after eglot
+  :vc (:fetcher github :repo jdtsmith/eglot-booster)
+  :config
+  (eglot-booster-mode +1))
 
 (use-package editorconfig
   :ensure t
