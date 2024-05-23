@@ -976,24 +976,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                '("^\\*eldoc" display-buffer-at-bottom
                  (window-height . 0.3))))
 
-(use-package eglot-signature-eldoc-talkative
-  :ensure t
-  :after eglot
-  :hook (eglot-managed-mode . eglot-signature-eldoc-talkative)
-  :config
-  (defun my-eglot-specific-eldoc ()
-    (setq-local eldoc-documentation-functions
-                (list
-                 #'eglot-signature-eldoc-talkative
-                 "\n"
-                 #'eglot-hover-eldoc-function
-                 t
-                 #'flymake-eldoc-function))
-    ;; Optionally, in echo-area, only show the most important
-    ;; documentation:
-    (setq-local eldoc-documentation-strategy
-                #'eldoc-documentation-enthusiast)))
-
 (use-package dired
   :defer t
   :bind (("C-x C-d" . my-dired-this-buffer)
@@ -1524,6 +1506,24 @@ targets."
   :ensure t
   :after (eglot tempel)
   :hook (eglot-managed-mode . eglot-tempel-mode))
+
+(use-package eglot-signature-eldoc-talkative
+  :ensure t
+  :after eglot
+  :hook (eglot-managed-mode . eglot-signature-eldoc-talkative)
+  :config
+  (defun my-eglot-specific-eldoc ()
+    (setq-local eldoc-documentation-functions
+                (list
+                 #'eglot-signature-eldoc-talkative
+                 "\n"
+                 #'eglot-hover-eldoc-function
+                 t
+                 #'flymake-eldoc-function))
+    ;; Optionally, in echo-area, only show the most important
+    ;; documentation:
+    (setq-local eldoc-documentation-strategy
+                #'eldoc-documentation-enthusiast)))
 
 (use-package eglot-booster
   :after eglot
