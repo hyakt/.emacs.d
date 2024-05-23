@@ -181,6 +181,7 @@
 (use-package savehist
   :defer 1
   :config
+  (setq savehist-additional-variables '(kill-ring))
   (savehist-mode t))
 
 (use-package mac-win
