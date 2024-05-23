@@ -754,6 +754,10 @@
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   (undo-fu-session-global-mode))
 
+(use-package vundo
+  :ensure t
+  :after undo-fu)
+
 (use-package wgrep
   :ensure t
   :defer t
