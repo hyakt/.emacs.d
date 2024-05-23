@@ -544,7 +544,7 @@
 
 (use-package pulsar
   :ensure t
-  :defer 5
+  :defer 1
   :config
   (setq pulsar-face 'pulsar-cyan)
   (setq pulsar-pulse-functions
