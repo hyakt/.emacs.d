@@ -519,6 +519,16 @@
   :ensure t
   :defer 5
   :config
+  (setq pulsar-face 'pulsar-cyan)
+  (setq pulsar-pulse-functions
+        (append '(avy-goto-char
+                  smart-jump-go smart-jump-back
+                  xref-find-definitions xref-find-references
+                  dump-jump-go
+                  my-jump-to-match-parens
+                  consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
+                  end-of-buffer beginning-of-buffer
+                  my-ws-other-window-or-split-and-kill-minibuffer) pulsar-pulse-functions))
   (pulsar-global-mode +1))
 
 (use-package goggles
@@ -645,7 +655,7 @@
           vr/query-replace
           my-jump-to-match-parens
           consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
-          er/expand-region
+          expreg-expand
           end-of-buffer beginning-of-buffer))
   (setq jumplist-ex-mode t))
 
