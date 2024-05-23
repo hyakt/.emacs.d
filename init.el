@@ -934,56 +934,54 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package eldoc
   :defer t
+  :bind
+  ("C-M-." . eldoc-doc-buffer-toggle)
   :config
-  (defvar eldoc-buffer-name "*ElDoc*")
-  (setq eldoc-idle-delay 0.75)
+  (setq eldoc-echo-area-display-truncation-message nil)
+  (setq eldoc-echo-area-use-multiline-p t)
+  (setq eldoc-documentation-strategy #'eldoc-documentation-default)
 
-  (defun eldoc-buffer-message (format-string &rest args)
-    "Display messages in the mode-line when in the ElDoc buffer."
-    (when (and (stringp format-string) (not (equal format-string "")))
-      (display-buffer
-       (with-current-buffer (get-buffer-create eldoc-buffer-name)
-         (view-mode -1)
-         (erase-buffer)
-         (insert (apply #'format format-string args))
-         (goto-char (point-min))
-         (setq-local kill-buffer-hook 'delete-window)
-         (view-mode t)
-         (current-buffer))
-       )))
-
-  (use-package eldoc-box
-    :ensure t
-    :defer t
-    :hook (eglot-managed-mode . eldoc-box-hover-mode))
-
-  (use-package eglot-signature-eldoc-talkative
-    :ensure t
-    :after eldoc-box
-    :config
-    (advice-add #'eglot-signature-eldoc-function
-                :override #'eglot-signature-eldoc-talkative))
-
-  (defun my-switch-eldoc-display-mode ()
+  (defun eldoc-doc-buffer-toggle()
+    "Eldoc toggle."
     (interactive)
-    "Switch eldoc mode between minibuffer and buffer."
-    (if (eq eldoc-message-function #'eldoc-buffer-message)
-        (progn
-          (setq eldoc-message-function #'eldoc-minibuffer-message)
-          (message "minibuffer mode")
-          (when-let
-              ((eldoc-window
-                (cl-find-if
-                 (lambda (win)
-                   (string-match eldoc-buffer-name (buffer-name (window-buffer win))))
-                 (window-list))))
-            (and
-             (select-window eldoc-window)
-             (window-deletable-p)
-             (delete-window))))
-      (progn
-        (setq eldoc-message-function #'eldoc-buffer-message)
-        (message "buffer mode")))))
+    (if (eldoc-doc-buffer-toggle--get-window)
+        (eldoc-doc-buffer-toggle-hide)
+      (eldoc-doc-buffer t)))
+
+  (defun eldoc-doc-buffer-toggle-hide ()
+    "Hide buffer."
+    (interactive)
+    (or (string-prefix-p "*eldoc" (buffer-name))
+        (select-window (eldoc-doc-buffer-toggle--get-window)))
+    (quit-window))
+
+  (defun eldoc-doc-buffer-toggle--get-window()
+    "Get the eldoc window which is visible (active or inactive)."
+    (cl-find-if #'(lambda(w)
+                    (string-prefix-p "*eldoc" (buffer-name (window-buffer w))))
+                (window-list)))
+
+  (add-to-list 'display-buffer-alist
+               '("^\\*eldoc" display-buffer-at-bottom
+                 (window-height . 0.3))))
+
+(use-package eglot-signature-eldoc-talkative
+  :ensure t
+  :after eglot
+  :hook (eglot-managed-mode . eglot-signature-eldoc-talkative)
+  :config
+  (defun my-eglot-specific-eldoc ()
+    (setq-local eldoc-documentation-functions
+                (list
+                 #'eglot-signature-eldoc-talkative
+                 "\n"
+                 #'eglot-hover-eldoc-function
+                 t
+                 #'flymake-eldoc-function))
+    ;; Optionally, in echo-area, only show the most important
+    ;; documentation:
+    (setq-local eldoc-documentation-strategy
+                #'eldoc-documentation-enthusiast)))
 
 (use-package dired
   :defer t
@@ -1270,31 +1268,22 @@ targets."
          ("C-d" . mistty-toggle-hide))
   :config
   (defun mistty-toggle()
-    "magit toggle."
+    "Mistty toggle."
     (interactive)
-    (if (or (string-prefix-p "*mistty" (buffer-name))
-            (mistty-toggle--get-window))
+    (if (string-prefix-p "*mistty" (buffer-name))
         (mistty-toggle-hide)
       (progn
         (mistty)
         (mac-auto-ascii-select-input-source))))
 
   (defun mistty-toggle-hide ()
-    "Hide the magit-statsu buffer."
+    "Hide buffer."
     (interactive)
-    (or (string-prefix-p "*mistty" (buffer-name))
-        (select-window (mistty-toggle--get-window)))
     (if (window-deletable-p)
         (progn
           (mistty-send-string "exit\n")
           (kill-buffer)
           (delete-window))))
-
-  (defun mistty-toggle--get-window()
-    "Get the mistty window which is visible (active or inactive)."
-    (cl-find-if #'(lambda(w)
-                    (string-prefix-p "*mistty" (buffer-name)))
-                (window-list)))
 
   (add-to-list 'display-buffer-alist
                '("\\*mistty"
@@ -1347,7 +1336,7 @@ targets."
       (magit-status)))
 
   (defun magit-status-toggle-hide ()
-    "Hide the magit-statsu buffer."
+    "Hide buffer."
     (interactive)
     (or (derived-mode-p 'magit-mode)
         (select-window (magit-status-toggle--get-window)))
@@ -1649,8 +1638,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)
   (gptel-make-gemini "Gemini" :stream t :key gptel-api-key)
   (setq
-    gptel-model "claude-3-sonnet-20240229"
-    gptel-backend (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)))
+   gptel-model "claude-3-sonnet-20240229"
+   gptel-backend (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)))
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
