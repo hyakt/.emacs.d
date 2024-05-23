@@ -697,17 +697,19 @@
   ("C-," . er/expand-region)
   ("C-M-," . er/contract-region))
 
-(use-package undo-tree
+(use-package undo-fu
   :ensure t
   :defer t
-  :init (global-undo-tree-mode)
-  :bind (("M-/" . undo-tree-redo)
-         :map undo-tree-map
-         ("M-_" . nil))
+  :bind
+  ("C-/" . undo-fu-only-undo)
+  ("M-/" . undo-fu-only-redo))
+
+(use-package undo-fu-session
+  :ensure t
+  :after undo-fu
   :config
-  (setq undo-tree-visualizer-diff t)
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-  (setq undo-tree-visualizer-timestamps t))
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+  (undo-fu-session-global-mode))
 
 (use-package wgrep
   :ensure t

@@ -49,5 +49,7 @@ tramp
 transient/
 undo/
 undohist/
+undo-fu-session/
 url/
 var/
+
