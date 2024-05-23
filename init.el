@@ -1560,7 +1560,9 @@ targets."
   :after eglot
   :vc (:fetcher github :repo jdtsmith/eglot-booster)
   :config
-  (eglot-booster-mode t))
+  (eglot-booster-mode t)
+  ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
+  )
 
 (use-package editorconfig
   :ensure t
