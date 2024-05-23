@@ -1664,6 +1664,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package restclient :ensure t :defer t)
 
+(use-package apheleia
+  :ensure t
+  :defer t
+  :hook (prog-mode . apheleia-mode))
+
 (use-package gptel
   :ensure t
   :defer t
@@ -1778,9 +1783,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
       ("r" web-mode-element-rename "rename")
       ("s" web-mode-element-select "select")
       ("v" web-mode-element-vanish "vanish"))
-     "Format"
-     (("p" prettier-js)
-      ("d" deno-fmt))
      )))
 
 (use-package emmet-mode
@@ -1842,10 +1844,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
      "Test"
      (("jc" my-jest-copy-command-watch-current-buffer)
       ("vc" my-vitest-copy-command-watch-current-buffer)
-      ("vt" my-vitest-command-watch-tmux))
-     "Format"
-     (("p" prettier-js)
-      ("d" deno-fmt)))))
+      ("vt" my-vitest-command-watch-tmux)))))
 
 (use-package json-mode
   :ensure t
@@ -1880,36 +1879,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t)
 
-(use-package prettier-js
-  :ensure t
-  :defer t
-  :hook
-  (((typescript-ts-base-mode
-     web-mode
-     js-ts-mode
-     json-mode) .
-     (lambda ()
-       (when (my-node-project-p) (prettier-js-mode))))
-   html-mode
-   css-mode
-   scss-mode
-   graphql-mode)
-  :config
-  (setq prettier-js-show-errors nil))
-
 (use-package eslintd-fix
   :ensure t
   :defer t)
-
-(use-package deno-fmt
-  :ensure t
-  :defer t
-  :hook
-  ((typescript-ts-base-mode
-    js-ts-mode
-    json-mode) .
-    (lambda ()
-      (when (my-deno-project-p) (deno-fmt-mode)))))
 
 (use-package ruby-mode
   :ensure t

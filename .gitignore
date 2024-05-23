@@ -10,10 +10,9 @@
 .lsp-session-v1
 .mc-lists.el
 .org-id-locations
-.python-environments/
 .persistent-scratch
 .persistent-scratch-backup/
-tree-sitter/
+.python-environments/
 abbrev_defs
 ac-comphist.dat
 amx-items
@@ -36,6 +35,7 @@ meghanada/
 omnisharp-server/
 persist/
 persp-confs/
+places
 projectile-bookmarks.eld
 projectile.cache
 projects
@@ -47,9 +47,9 @@ site-lisp/my-proxy.el
 straight/
 tramp
 transient/
+tree-sitter/
+undo-fu-session/
 undo/
 undohist/
-undo-fu-session/
 url/
 var/
-
