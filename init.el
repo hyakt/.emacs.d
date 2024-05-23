@@ -85,7 +85,9 @@
 (setq user-full-name "Hayato Kajiyama")
 (setq user-mail-address "me@piginbeer.com")
 
-(setq native-comp-async-report-warnings-errors 'nil)
+(setq native-comp-async-report-warnings-errors 'silent)
+(setq native-compile-prune-cache t)
+
 (setq make-backup-files t)                                         ;; Backup file を作る
 (setq backup-directory-alist '(("\\.*$" .  "~/.emacs.d/.backup"))) ;; バックアップ先
 (setq cursor-type 'box)
@@ -122,6 +124,22 @@
 (setq initial-major-mode 'fundamental-mode)
 (setq package-install-upgrade-built-in t)
 (setq use-short-answers t)
+
+;; performance
+(setq process-adaptive-read-buffering t)
+(setq blink-matching-paren nil)
+(setq vc-handled-backends '(Git))
+(setq auto-mode-case-fold nil)
+(setq-default bidi-display-reordering 'left-to-right)
+(setq bidi-inhibit-bpa t)
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+(setq fast-but-imprecise-scrolling t)
+(setq ffap-machine-p-known 'reject)
+(setq idle-update-delay 1.0)
+(setq redisplay-skip-fontification-on-input t)
+(when-macos
+ (setq command-line-ns-option-alist nil))
 
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/opt/homebrew/bin/fish")
@@ -183,6 +201,11 @@
   :config
   (setq savehist-additional-variables '(kill-ring))
   (savehist-mode t))
+
+(use-package saveplace
+  :defer 1
+  :init
+  (save-place-mode t))
 
 (use-package mac-win
   :defer 1
@@ -515,6 +538,10 @@
     (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
     (ignore-errors (flymake-eslint-enable))))
 
+(use-package delsel
+  :config
+  (delete-selection-mode t))
+
 (use-package pulsar
   :ensure t
   :defer 5
@@ -529,7 +556,7 @@
                   consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
                   end-of-buffer beginning-of-buffer
                   my-ws-other-window-or-split-and-kill-minibuffer) pulsar-pulse-functions))
-  (pulsar-global-mode +1))
+  (pulsar-global-mode t))
 
 (use-package goggles
   :ensure t
@@ -1529,7 +1556,7 @@ targets."
   :after eglot
   :vc (:fetcher github :repo jdtsmith/eglot-booster)
   :config
-  (eglot-booster-mode +1))
+  (eglot-booster-mode t))
 
 (use-package editorconfig
   :ensure t
