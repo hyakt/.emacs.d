@@ -1401,11 +1401,11 @@ targets."
      "Timemachine"
      (("t" git-timemachine "timemachine" :exit t))
      "Gutter"
-     (("p" git-gutter:previous-hunk "previous")
-      ("n" git-gutter:next-hunk "next")
-      ("s" git-gutter:stage-hunk "stage")
-      ("r" git-gutter:revert-hunk "revert")
-      ("SPC" my-git-gutter:toggle-popup-hunk "toggle hunk"))
+     (("p" diff-hl-previous-hunk "previous")
+      ("n" diff-hl-next-hunk "next")
+      ("s" diff-hl-stage-hunk "stage")
+      ("r" diff-hl-revert-hunk "revert")
+      ("SPC" diff-hl-show-hunk "toggle hunk"))
      "Link"
      (("l" git-link "link" :exit t)
       ("h" git-link-homepage "homepage" :exit t))
@@ -1443,29 +1443,19 @@ targets."
     (posframe-hide transient--buffer-name))
   (advice-add #'transient-posframe--delete :override #'my-transient-posframe--hide))
 
-(use-package git-gutter
+(use-package diff-hl
   :ensure t
   :defer t
-  :hook (prog-mode . git-gutter-mode)
-  :config
-  (setq git-gutter:ask-p nil)
-
-  (defun my-git-gutter:toggle-popup-hunk ()
-    "Toggle git-gutter hunk window."
-    (interactive)
-    (if (and (get-buffer git-gutter:popup-buffer) (git-gutter:popup-buffer-window))
-        (delete-window (git-gutter:popup-buffer-window))
-      (git-gutter:popup-hunk)))
-
-  (set-face-background 'git-gutter:modified "#B4DCE7")
-  (set-face-background 'git-gutter:added "#74DFC4")
-  (set-face-background 'git-gutter:deleted "#964C7B")
-  (setq git-gutter:modified-sign " ")
-  (setq git-gutter:added-sign    " ")
-  (setq git-gutter:deleted-sign  " ")
-
-  (add-to-list 'git-gutter:update-commands #'my-revert-buffer-no-confirm)
-  (add-to-list 'git-gutter:update-hooks 'focus-in-hook))
+  :custom-face
+  (diff-hl-change ((t (:background "#B4DCE7" :foreground "#B4DCE7"))))
+  (diff-hl-insert ((t (:background "#74DFC4" :foreground "#74DFC4"))))
+  (diff-hl-change ((t (:background "#964C7B" :foreground "#964C7B"))))
+  :hook ((prog-mode . diff-hl-mode)
+         (prog-mode . diff-hl-show-hunk-mouse-mode)
+         (magit-pre-refresh . diff-hl-magit-pre-refresh)
+         (magit-post-refresh . diff-hl-magit-post-refresh)
+         (dired-mode . diff-hl-dired-mode))
+  )
 
 (use-package git-timemachine
   :ensure t
