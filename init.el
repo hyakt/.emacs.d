@@ -549,6 +549,7 @@
   (setq pulsar-face 'pulsar-cyan)
   (setq pulsar-pulse-functions
         (append '(avy-goto-char
+                  symbol-overlay-jump-next symbol-overlay-jump-prev symbol-overlay-jump-last
                   smart-jump-go smart-jump-back
                   xref-find-definitions xref-find-references
                   dump-jump-go
