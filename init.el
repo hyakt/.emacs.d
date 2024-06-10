@@ -1812,8 +1812,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ((js-ts-mode . (lambda ()
                    (eglot-ensure)
                    (when (my-node-project-p)
-                     (enable-flymake-eslint-without-eglot))))
-   (js-ts-mode . subword-mode))
+                     (enable-flymake-eslint-without-eglot)))))
   :config
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
@@ -1827,7 +1826,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                                (eglot-ensure)
                                (when (my-node-project-p)
                                  (enable-flymake-eslint-without-eglot))))
-  (typescript-ts-base-mode . subword-mode)
   :config
   (major-mode-hydra-define typescript-ts-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
