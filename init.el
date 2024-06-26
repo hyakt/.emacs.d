@@ -100,7 +100,6 @@
 (setq line-spacing 0)                                              ;; 行間を無しに設定
 (setq scroll-conservatively 35)                                    ;; スクロールの設定
 (setq scroll-margin 0)                                             ;; スクロールの設定
-(setq tab-width 2)                                                 ;; タブの幅は半角スペース 2
 (setq truncate-lines nil)                                          ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)     ;; 同じ名前のバッファを開いたときの設定
@@ -141,6 +140,7 @@
 (when-macos
  (setq command-line-ns-option-alist nil))
 
+(setq-default tab-width 2)                                         ;; タブの幅は半角スペース 2
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/opt/homebrew/bin/fish")
 
@@ -1522,7 +1522,14 @@ targets."
 
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode) . ("vscode-html-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio"))))
+  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
+
+  ;; npm i -g @astrojs/language-server
+  (add-to-list 'eglot-server-programs
+               '(astro-mode . ("astro-ls" "--stdio"
+                               :initializationOptions
+                               (:typescript (:tsdk "./node_modules/typescript/lib")))))
+  )
 
 (use-package eglot-tempel
   :ensure t
@@ -1731,15 +1738,23 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t
   :mode ("\\.p?html\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.astro" "\\.njk" "\\.tt")
+         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.njk" "\\.tt")
   :bind (:map web-mode-map ("C-c C-l" . nil))
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
-  :hook ((vue-mode . (lambda ()
-                       (message "called-web-mode-vuehook")
+  (define-derived-mode astro-mode web-mode "astro")
+  (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-mode))
+  :hook ((vue-mode .
+                   (lambda ()
+                     (message "called-web-mode-vuehook")
+                     (add-node-modules-path)
+                     (yas-minor-mode t)
+                     (eglot-ensure)
+                     (enable-flymake-eslint-without-eglot)))
+         (astro-mode .
+                     (lambda ()
                        (add-node-modules-path)
-                       (yas-minor-mode t)
                        (eglot-ensure)
                        (enable-flymake-eslint-without-eglot))))
   :config
