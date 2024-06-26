@@ -151,6 +151,7 @@ determine the exact padding."
    (tooltip           :background bg-alt :foreground fg)
    (whitespace-indentation :foreground cyan  :underline t)
    (whitespace-trailing :background orange)
+   (whitespace-tab :foreground base2 :background bg)
    (rainbow-delimiters-depth-1-face :foreground "#3d59a1")
    (rainbow-delimiters-depth-2-face :foreground "#6183bb")
    (rainbow-delimiters-depth-3-face :foreground "#6d91de")
