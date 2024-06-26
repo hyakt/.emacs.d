@@ -1731,7 +1731,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t
   :mode ("\\.p?html\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.astro" "\\.njk")
+         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.astro" "\\.njk" "\\.tt")
   :bind (:map web-mode-map ("C-c C-l" . nil))
   :init
   (define-derived-mode vue-mode web-mode "vue")
