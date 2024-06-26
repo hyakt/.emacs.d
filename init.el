@@ -1667,7 +1667,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package apheleia
   :ensure t
   :defer t
-  :hook (prog-mode . apheleia-mode))
+  :hook (prog-mode . apheleia-mode)
+  :config
+  (setf (alist-get 'biome apheleia-formatters)
+        '("apheleia-npx" "biome" "format" "--stdin-file-path" filepath)))
 
 (use-package gptel
   :ensure t
