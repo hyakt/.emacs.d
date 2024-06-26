@@ -36,7 +36,7 @@
 (defun my-gh-pr-create ()
   "Gh pr create."
   (interactive)
-  (my-projectile-run-shell-command-in-root "git push -u origin HEAD; gh pr create --web --fill"))
+  (my-projectile-run-shell-command-in-root "git push -u origin HEAD; gh pr create --web"))
 
 ;;;###autoload
 (defun my-gh-pr-list ()
