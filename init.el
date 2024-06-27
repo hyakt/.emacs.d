@@ -1688,7 +1688,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)
   (gptel-make-gemini "Gemini" :stream t :key gptel-api-key)
   (setq
-   gptel-model "claude-3-sonnet-20240229"
+   gptel-model "claude-3-5-sonnet-20240620"
    gptel-backend (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)))
 
 ;;; ---------- major mode ----------
@@ -1742,7 +1742,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :defer t
   :mode ("\\.p?html\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.njk" "\\.tt")
-  :bind (:map web-mode-map ("C-c C-l" . nil))
+  :bind (:map web-mode-map ("C-c C-l" . nil) ("C-c C-a" . nil))
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
