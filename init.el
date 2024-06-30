@@ -1423,6 +1423,27 @@ targets."
   :defer t
   :hook (magit-mode . magit-delta-mode))
 
+(use-package magit-gptcommit
+  :ensure t
+  :after magit
+  :init
+  (defun my-magit-gptcommit-openai-llm-provider ()
+    (let (provider)
+      (lambda ()
+        (or provider
+            (progn
+              (require 'llm-openai)
+              (setq provider (make-llm-openai
+                              :chat-model "gpt-4o"
+                              :key
+                              (auth-info-password
+                               (car (auth-source-search
+                                     :host "api.openai.com"
+                                     :user "apikey"))))))))))
+  :config
+  (setq magit-gptcommit-llm-provider (my-magit-gptcommit-openai-llm-provider))
+  (magit-gptcommit-status-buffer-setup))
+
 (use-package transient-posframe
   :ensure t
   :defer t
