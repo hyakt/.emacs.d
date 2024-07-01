@@ -1433,6 +1433,7 @@ targets."
         (or provider
             (progn
               (require 'llm-openai)
+              (setq llm-warn-on-nonfree nil)
               (setq provider (make-llm-openai
                               :chat-model "gpt-4o"
                               :key
