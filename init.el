@@ -1425,7 +1425,10 @@ targets."
 
 (use-package magit-gptcommit
   :ensure t
+  :demand t
   :after magit
+  :bind (:map git-commit-mode-map
+              ("C-c C-g" . magit-gptcommit-commit-accept))
   :init
   (defun my-magit-gptcommit-openai-llm-provider ()
     (let (provider)
