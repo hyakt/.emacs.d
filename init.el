@@ -1111,6 +1111,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    :map dired-sidebar-mode-map
    ("o" . dired-sidebar-subtree-toggle)
    ("q" . kill-this-buffer))
+  :hook
+  (dired-sidebar-mode . (lambda ()
+                          (setq buffer-face-mode-face `(:background "#0f0f14"))
+                          (buffer-face-mode 1)
+                          (setq-local mode-line-format nil)))
   :config
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-modeline nil))
@@ -1291,6 +1296,13 @@ targets."
   :bind (("M-e" . mistty-toggle)
          :map mistty-prompt-map
          ("C-d" . mistty-toggle-hide))
+  :custom-face
+  (mistty-fringe-face ((t (:foreground "#bbc2e0"))))
+  :hook
+  (mistty-mode . (lambda ()
+                   (setq-local buffer-face-mode-face `(:background "#0f0f14"))
+                   (buffer-face-mode 1)
+                   (setq-local mode-line-format nil)))
   :config
   (defun mistty-toggle()
     "Mistty toggle."
@@ -1783,8 +1795,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
          (astro-mode .
                      (lambda ()
                        (add-node-modules-path)
-                       (eglot-ensure)
-                       (enable-flymake-eslint-without-eglot))))
+                       (eglot-ensure))))
   :config
   (setq web-mode-indent-style 2)
   (setq web-mode-markup-indent-offset 2)
