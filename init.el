@@ -904,8 +904,7 @@
 (use-package other-window-or-split
   :vc (:fetcher github :repo conao3/other-window-or-split)
   :bind
-  ("C-t" . my-ws-other-window-or-split-and-kill-minibuffer)
-  ("C-S-t" . ws-previous-other-window-or-split)
+  ("C-o" . my-ws-other-window-or-split-and-kill-minibuffer)
   :config
   (setq ws-split-window-width-with-em 150)
   (defun minibuffer-keyboard-quit () ;; esc quits
@@ -1195,7 +1194,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :after which-key
   :defer 5
   :bind
-  ("M-q" . embark-act)
+  ("M-e" . embark-act)
   :config
   (setq embark-indicators
         '(embark-which-key-indicator
@@ -1293,7 +1292,7 @@ targets."
 (use-package mistty
   :ensure t
   :defer t
-  :bind (("M-e" . mistty-toggle)
+  :bind (("C-t" . mistty-toggle)
          :map mistty-prompt-map
          ("C-d" . mistty-toggle-hide))
   :custom-face
