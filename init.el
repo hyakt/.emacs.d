@@ -1300,8 +1300,7 @@ targets."
   :hook
   (mistty-mode . (lambda ()
                    (setq-local buffer-face-mode-face `(:background "#0f0f14"))
-                   (buffer-face-mode 1)
-                   (setq-local mode-line-format nil)))
+                   (buffer-face-mode 1)))
   :config
   (defun mistty-toggle()
     "Mistty toggle."
