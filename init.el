@@ -1012,7 +1012,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :bind (("C-x C-d" . my-dired-this-buffer)
          :map dired-mode-map
          ("e" . wdired-change-to-wdired-mode)
-         ("C-t" . nil)
+         ("C-o" . nil)
          ("M-s" . nil)
          ("c" . my-dired-do-copy-with-filename)
          ("M-<up>" . nil)
