@@ -1340,8 +1340,7 @@ targets."
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
          (:map magit-status-mode-map
-               ("q" . my-magit-quit-session)
-               ("C-o" . magit-diff-visit-file-other-window))
+               ("q" . my-magit-quit-session))
          (:map git-commit-mode-map
                ("M-i" . my-consult-git-commit-messages)
                ("M-p" . my-consult-git-conventional-commit-prefix)))
@@ -1737,7 +1736,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (gptel-make-gemini "Gemini" :stream t :key gptel-api-key)
   (setq
    gptel-model "claude-3-5-sonnet-20240620"
-   gptel-backend (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)))
+   gptel-backend (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key))
+  下記のコードについて説明してください
+  (gptel-make-ollama "Ollama"
+    :host "localhost:11434"
+    :stream t
+    :models '("codegemma:7b-instruct")))
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
