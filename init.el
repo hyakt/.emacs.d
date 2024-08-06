@@ -1454,8 +1454,20 @@ targets."
                                (car (auth-source-search
                                      :host "api.openai.com"
                                      :user "apikey"))))))))))
+  (defun my-magit-gptcommit-ollama-llm-provider ()
+    (let (provider)
+      (lambda ()
+        (or provider
+            (progn
+              (require 'llm-ollama)
+              (setq llm-warn-on-nonfree nil)
+              (setq provider
+                    (make-llm-ollama
+                     :embedding-model "codegemma:7b-instruct"
+                     :chat-model "codegemma:7b-instruct"
+                     :default-chat-temperature 0.1)))))))
   :config
-  (setq magit-gptcommit-llm-provider (my-magit-gptcommit-openai-llm-provider))
+  (setq magit-gptcommit-llm-provider (my-magit-gptcommit-ollama-llm-provider))
   (magit-gptcommit-status-buffer-setup))
 
 (use-package transient-posframe
