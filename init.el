@@ -1463,7 +1463,6 @@ targets."
                      :default-chat-temperature 0.1)))))))
   :config
   (setq magit-gptcommit-llm-provider (my-magit-gptcommit-ollama-llm-provider))
-  (magit-gptcommit-mode 1)
   (magit-gptcommit-status-buffer-setup))
 
 (use-package transient-posframe
