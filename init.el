@@ -1727,7 +1727,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
           (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
           (writing . "You are a large language model and a writing assistant. Respond concisely.")
           (chat . "You are a large language model and a conversation partner. Respond concisely.")))
-  (setq gptel-default-mode 'org-mode)
+  (setq gptel-default-mode 'markdown-mode)
   (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)
   (gptel-make-gemini "Gemini" :stream t :key gptel-api-key)
   (setq
