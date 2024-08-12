@@ -1326,10 +1326,6 @@ targets."
                  (reusable-frames . visible)
                  (window-height . 0.3))))
 
-(use-package consult-tramp
-  :vc (:fetcher github :repo Ladicle/consult-tramp)
-  :defer t)
-
 (use-package gh
   :ensure t
   :defer t)
