@@ -705,11 +705,6 @@
   ;; https://github.com/wolray/symbol-overlay/issues/82
   (setq symbol-overlay-priority 100))
 
-(use-package yafolding
-  :ensure t
-  :defer t
-  :hook (prog-mode . yafolding-mode))
-
 (use-package visual-regexp
   :ensure t
   :defer t
@@ -1657,6 +1652,13 @@ targets."
   (setq treesit-auto-install t)
   (delete 'yaml treesit-auto-langs)
   (global-treesit-auto-mode))
+
+(use-package treesit-fold
+  :vc (:fetcher github :repo emacs-tree-sitter/treesit-fold)
+  :hook (prog-mode . treesit-fold-mode)
+  :bind (:map treesit-fold-mode-map
+              ("C-<return>" . treesit-fold-toggle)
+              ("C-M-<return>" . treesit-fold-close-all)))
 
 (use-package smerge-mode
   :bind (:map smerge-mode-map
