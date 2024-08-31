@@ -472,13 +472,19 @@
   (defun web-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs web-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
+  (add-hook 'web-mode-hook #'web-add-electric-pairs)
+  (add-hook 'typescript-ts-base-mode-hook #'web-add-electric-pairs)
+
+  (defvar markdown-electric-pairs '((?` . ?`)) "Electric pairs for markdown-mode.")
+  (defun markdown-add-electric-pairs ()
+    (setq-local electric-pair-pairs (append electric-pair-pairs markdown-electric-pairs))
+    (setq-local electric-pair-text-pairs electric-pair-pairs))
+
+  (add-hook 'markdown-mode-hook #'markdown-add-electric-pairs)
+
   (defun my-inhibit-electric-pair-mode (char)
     (minibufferp))
-
-  (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
-
-  (add-hook 'web-mode-hook #'web-add-electric-pairs)
-  (add-hook 'typescript-ts-base-mode-hook #'web-add-electric-pairs))
+  (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode))
 
 (use-package ediff
   :defer t
@@ -2251,6 +2257,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t)
 
+(use-package mermaid-mode
+  :ensure t
+  :defer t)
+
 (use-package markdown-mode
   :ensure t
   :defer t
@@ -2260,48 +2270,57 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
        (set
         (make-local-variable 'whitespace-action)
         nil)))
-  (markdown-mode . orgtbl-mode)
-  :bind (:map markdown-mode-map ("C-c C-l" . nil))
+  :bind (:map markdown-mode-map (("C-c C-l" . nil)
+                                 ("C-c C-a" . nil)))
   :mode
   ("\\.markdown\\'" . gfm-mode)
   ("\\.md\\'" . gfm-mode)
   ("\\.mdown\\'" . gfm-mode)
   :config
-  (setq markdown-command "marked")
-  (setq markdown-hide-urls nil)
-  (setq markdown-hide-markup nil)
-  (setq markdown-fontify-code-block-natively t)
+  (setq markdown-enable-wiki-links t
+        markdown-italic-underscore t
+        markdown-asymmetric-header t
+        markdown-make-gfm-checkboxes-buttons t
+        markdown-gfm-uppercase-checkbox t
+        markdown-fontify-code-blocks-natively t
+        markdown-content-type "application/xhtml+xml")
+
+  (when (executable-find "multimarkdown")
+    (setq markdown-command "multimarkdown"))
   (setq markdown-gfm-additional-languages '("Mermaid"))
-  (setq markdown-css-paths '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
-                             "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"))
-  (setq markdown-live-preview-window-function 'markdown-live-preview-window-xwidget-webkit)
+  (setq markdown-css-paths
+        '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
+          "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"))
+  (setq markdown-live-preview-window-function 'markdown-live-preview-window-xwidget)
   (setq markdown-xhtml-body-preamble "<article class='markdown-body'>")
   (setq markdown-xhtml-body-epilogue "</article>")
   (setq markdown-xhtml-header-content "
-<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 <style>
-	.markdown-body {
-		box-sizing: border-box;
-		min-width: 200px;
-		max-width: 980px;
-		margin: 0 auto;
-		padding: 45px;
-	}
+body { max-width: 740px; padding: 1em 2em; }
+.markdown-body { margin: 0 auto; }
 </style>
-<script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js'></script>
 <script>
-mermaid.initialize({startOnLoad:true});
-hljs.highlightAll();
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('markdown-body');
+  document.querySelectorAll('pre code').forEach((code) => {
+    if (code.className != 'mermaid') {
+      hljs.highlightBlock(code);
+    }
+  });
+});
 </script>
-")
+<script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
+<script>mermaid.initialize({ startOnLoad: true });</script>")
 
-  (defun markdown-live-preview-window-xwidget-webkit (file)
-    "Preview FILE with xwidget-webkit.
-To be used with `markdown-live-preview-window-function'."
-    (let ((uri (format "file://%s" file)))
-      (xwidget-webkit-browse-url uri)
-      xwidget-webkit-last-session-buffer)))
+  (defun markdown-live-preview-window-xwidget (file)
+    "Preview file with xwidget browser"
+    (xwidget-webkit-browse-url (concat "file://" file))
+    (let ((buf (xwidget-buffer (xwidget-webkit-current-session))))
+      (when (buffer-live-p buf)
+        (and (eq buf (current-buffer)) (quit-window))
+        (pop-to-buffer buf)))))
 
 (use-package plantuml-mode
   :ensure t
