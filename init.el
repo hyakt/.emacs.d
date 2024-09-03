@@ -1797,7 +1797,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure t
   :defer t
   :mode ("\\.p?html\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
-         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.njk" "\\.tt")
+         "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.njk" "\\.tt" "\\.vento" "\\.vto")
   :bind (:map web-mode-map ("C-c C-l" . nil) ("C-c C-a" . nil))
   :init
   (define-derived-mode vue-mode web-mode "vue")
@@ -1816,6 +1816,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                        (add-node-modules-path)
                        (eglot-ensure))))
   :config
+  (setq web-mode-engines-alist
+        '(("django"    .  "\\.vento")
+          ("django"    .  "\\.vto")))
   (setq web-mode-indent-style 2)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
