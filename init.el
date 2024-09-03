@@ -1720,8 +1720,16 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package apheleia
   :ensure t
   :defer t
-  :hook ((prog-mode . apheleia-mode)
-         (yaml-mode . apheleia-mode)))
+  :hook ((prog-mode text-mode) .
+         (lambda ()
+           (let ((p-root (car (last (project-current)))))
+             (when
+                 (or
+                  (file-exists-p (concat p-root "dprint.json"))
+                  (file-exists-p (concat p-root "dprint.jsonc")))
+               (setq-local apheleia-mode-alist '((prog-mode . dprint)
+                                                 (text-mode . dprint))))
+             (apheleia-mode)))))
 
 (use-package gptel
   :ensure t
