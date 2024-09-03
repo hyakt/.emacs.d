@@ -1126,7 +1126,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
          ("C-x f" . consult-fd)
-         ("C-x e" . consult-ripgrep)
+         ("C-x e" . consult-git-grep)
+         ("C-x E" . consult-rg)
          ("C-x C-r" . consult-recent-file)
          ;; Other custom bindings
          ("M-y" . consult-yank-pop)
@@ -1153,6 +1154,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    find-file
    consult-fd
    consult-ripgrep
+   consult-git-grep
    consult-recent-file
    consult--source-buffer
    consult-ls-git
