@@ -1716,13 +1716,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package restclient :ensure t :defer t)
 
+;; formatter
 (use-package apheleia
   :ensure t
   :defer t
-  :hook (prog-mode . apheleia-mode)
-  :config
-  (setf (alist-get 'biome apheleia-formatters)
-        '("apheleia-npx" "biome" "format" "--stdin-file-path" filepath)))
+  :hook ((prog-mode . apheleia-mode)
+         (yaml-mode . apheleia-mode)))
 
 (use-package gptel
   :ensure t
