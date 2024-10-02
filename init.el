@@ -808,11 +808,6 @@
   :defer t
   :bind ("C-;" . avy-goto-char))
 
-(use-package unicode-escape
-  :ensure t
-  :defer 5
-  :commands (unicode-escape-region unicode-unescape-region))
-
 (use-package mwim
   :ensure t
   :defer t
@@ -1174,16 +1169,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setopt consult-gh-default-clone-directory "~/repos")
   (setopt consult-gh-show-preview t)
   (setopt consult-gh-preview-key "C-o")
-  (setopt consult-gh-repo-action #'consult-gh--repo-browse-files-action)
-  (setopt consult-gh-issue-action #'consult-gh--issue-view-action)
   (setopt consult-gh-pr-action #'consult-gh--pr-view-action)
   (setopt consult-gh-code-action #'consult-gh--code-view-action)
   (setopt consult-gh-file-action #'consult-gh--files-view-action)
-  (setopt consult-gh-notifications-action #'consult-gh--notifications-action)
-  (setopt consult-gh-dashboard-action #'consult-gh--dashboard-action)
   (setopt consult-gh-large-file-warning-threshold 2500000)
   (setopt consult-gh-prioritize-local-folder t)
-
   (setq consult-gh-default-orgs-list (consult-gh--get-current-orgs t))
 
   ;; Add a hook to change default organizations when the account is switched

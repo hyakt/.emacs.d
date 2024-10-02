@@ -290,6 +290,14 @@ BEGからENDの範囲の文字をURLデコードする.
 BEGからENDの範囲の文字をURLエンコードする.
 
 (fn BEG END)" t)
+(autoload 'unicode-unescape-region "my-util" "\
+指定した範囲のUnicodeエスケープ文字(\\uXXXX)をデコードする.
+
+(fn START END)" t)
+(autoload 'unicode-escape-region "my-util" "\
+指定した範囲の文字をUnicodeエスケープする.
+
+(fn &optional START END)" t)
 (autoload 'my-reverse-chars-region "my-util" "\
 BEGからENDの範囲の文字反転する.
 
@@ -331,7 +339,7 @@ Open *scratch* buffer ." t)
 Open a today org file." t)
 (autoload 'my-open "my-util" "\
 Open finder." t)
-(register-definition-prefixes "my-util" '("my-" "open-today-org-file-format" "url-"))
+(register-definition-prefixes "my-util" '("char-unicode" "my-" "open-today-org-file-format" "unicode-char" "url-"))
 
 
 ;; Local Variables:

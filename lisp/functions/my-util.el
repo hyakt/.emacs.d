@@ -92,6 +92,32 @@
     (insert (url-encode-string str 'utf-8))))
 
 ;;;###autoload
+(defun unicode-unescape-region (start end)
+  "指定した範囲のUnicodeエスケープ文字(\\uXXXX)をデコードする."
+  (interactive "*r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (re-search-forward "\\\\u\\([[:xdigit:]]\\{4\\}\\)" nil t)
+      (replace-match (string (unicode-char
+                              (string-to-number (match-string 1) 16)))
+                     nil t))))
+
+;;;###autoload
+(defun unicode-escape-region (&optional start end)
+  "指定した範囲の文字をUnicodeエスケープする."
+  (interactive "*r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (re-search-forward "." nil t)
+      (replace-match (format "\\u%04x"
+                             (char-unicode
+                              (string-to-char (match-string 0))))
+                     nil t))))
+
+
+;;;###autoload
 (defun my-reverse-chars-region (beg end)
   "BEGからENDの範囲の文字反転する."
   (interactive "r")
@@ -231,6 +257,9 @@ It can include `format-time-string' format specifications."
   "Open finder."
   (interactive)
   (shell-command "open ."))
+
+(defun char-unicode (char) (encode-char char 'ucs))
+(defun unicode-char (code) (decode-char 'ucs code))
 
 (provide 'my-util)
 
