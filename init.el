@@ -1126,8 +1126,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
          ("C-x f" . consult-fd)
-         ("C-x e" . consult-git-grep)
-         ("C-x E" . consult-rg)
+         ("C-x e" . consult-ripgrep)
          ("C-x C-r" . consult-recent-file)
          ;; Other custom bindings
          ("M-y" . consult-yank-pop)
@@ -1167,6 +1166,38 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :bind ("C-x C-g" . consult-ghq-find)
   :config
   (setq consult-ghq-find-function 'find-file))
+
+(use-package consult-gh
+  :ensure t
+  :after consult
+  :config
+  (setopt consult-gh-default-clone-directory "~/repos")
+  (setopt consult-gh-show-preview t)
+  (setopt consult-gh-preview-key "C-o")
+  (setopt consult-gh-repo-action #'consult-gh--repo-browse-files-action)
+  (setopt consult-gh-issue-action #'consult-gh--issue-view-action)
+  (setopt consult-gh-pr-action #'consult-gh--pr-view-action)
+  (setopt consult-gh-code-action #'consult-gh--code-view-action)
+  (setopt consult-gh-file-action #'consult-gh--files-view-action)
+  (setopt consult-gh-notifications-action #'consult-gh--notifications-action)
+  (setopt consult-gh-dashboard-action #'consult-gh--dashboard-action)
+  (setopt consult-gh-large-file-warning-threshold 2500000)
+  (setopt consult-gh-prioritize-local-folder t)
+
+  (setq consult-gh-default-orgs-list (consult-gh--get-current-orgs t))
+
+  ;; Add a hook to change default organizations when the account is switched
+  (add-hook 'consult-gh-auth-post-switch-hook (lambda (&rest args) (setq consult-gh-default-orgs-list (consult-gh--get-current-orgs t))))
+
+  ;; Remember visited orgs and repos across sessions
+  (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)
+  (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list))
+
+(use-package consult-gh-embark
+  :ensure t
+  :after consult-gh embark
+  :config
+  (consult-gh-embark-mode +1))
 
 (use-package consult-ls-git
   :ensure t
@@ -1421,7 +1452,8 @@ targets."
      "GH"
      (("v" my-gh-pr-view "view pr" :exit t)
       ("c" my-gh-pr-create "create pr" :exit t)
-      ("o" my-git-open-pr-from-current-line "open pr from current line" :exit t))
+      ("o" my-git-open-pr-from-current-line "open pr from current line" :exit t)
+      ("L" consult-gh-pr-list "consult-gh-pr-list" :exit t))
      "Misc"
      (("w" my-git-wip "wip" :exit t)
       ("u" my-git-unwip "unwip" :exit t)))))
@@ -1619,9 +1651,9 @@ targets."
   ("M-i" . imenu-list-smart-toggle)
   :custom-face
   (imenu-list-entry-face-1 ((t (:foreground "white"))))
-  :custom
-  (imenu-list-focus-after-activation t)
-  (imenu-list-auto-resize nil))
+  :config
+  (setopt imenu-list-focus-after-activation t)
+  (setopt imenu-list-auto-resize nil))
 
 (use-package treesit
   :config
