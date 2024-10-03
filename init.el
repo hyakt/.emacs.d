@@ -1836,7 +1836,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-mode))
   :hook ((vue-mode .
                    (lambda ()
-                     (message "called-web-mode-vuehook")
                      (add-node-modules-path)
                      (yas-minor-mode t)
                      (eglot-ensure)
