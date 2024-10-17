@@ -596,11 +596,6 @@
 
   (add-hook 'before-save-hook 'tempel-done))
 
-;; for some lsp
-(use-package yasnippet
-  :ensure t
-  :defer t)
-
 (use-package corfu
   :ensure t
   :defer t
