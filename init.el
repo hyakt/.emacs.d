@@ -917,8 +917,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (ws-other-window-or-split))))
 
 (use-package project
-  :init
-  (setq project-vc-extra-root-markers '("package.json")))
+  ;; :init
+  ;; (setq project-vc-extra-root-markers '("package.json"))
+  )
 
 (use-package projectile
   :ensure t
@@ -1578,6 +1579,8 @@ targets."
                                                     :initializationOptions
                                                     (:typescript
                                                      (:tsdk "node_modules/typescript/lib")
+                                                     :vue
+                                                     (:hybridMode :json-false)
                                                      :serverMode 0
                                                      :diagnosticModel 1
                                                      :textDocumentSync 2))))
@@ -1596,7 +1599,8 @@ targets."
 (use-package eglot-tempel
   :ensure t
   :after (eglot tempel)
-  :hook (eglot-managed-mode . eglot-tempel-mode))
+  :config
+  (eglot-tempel-mode t))
 
 (use-package eglot-signature-eldoc-talkative
   :ensure t
