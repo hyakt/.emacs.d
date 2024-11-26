@@ -763,6 +763,9 @@
   (setq wgrep-auto-save-buffer t)
   (setq wgrep-change-readonly-file t))
 
+(use-package grep
+  :bind (:map grep-mode-map ("C-o" . nil)))
+
 (use-package string-inflection
   :ensure t
   :defer t
