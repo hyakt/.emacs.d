@@ -255,6 +255,9 @@
                     :height 120)
 (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
 
+(setq-default line-spacing 4)
+(set-frame-parameter nil 'internal-border-width 2)
+
 (with-deferred-eval
   (when-macos
    (defun mac-selected-keyboard-input-source-change-hook-func ()
