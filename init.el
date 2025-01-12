@@ -245,8 +245,6 @@
   (gcmh-mode t))
 
 ;;; ---------- appearance ----------
-(set-frame-parameter nil 'alpha '(94 . 94))
-
 (set-face-attribute 'default nil
                     :family "Source Han Code JP"
                     :height 110)
@@ -255,8 +253,10 @@
                     :height 120)
 (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
 
+(set-frame-parameter nil 'alpha '(98 . 98))
+(set-frame-parameter nil 'internal-border-width 4)
 (setq-default line-spacing 4)
-(set-frame-parameter nil 'internal-border-width 2)
+
 
 (with-deferred-eval
   (when-macos
@@ -1325,7 +1325,7 @@ targets."
   (mistty-fringe-face ((t (:foreground "#bbc2e0"))))
   :hook
   (mistty-mode . (lambda ()
-                   (setq-local buffer-face-mode-face `(:background "#0f0f14"))
+                   (setq-local buffer-face-mode-face `(:background "#171d23"))
                    (buffer-face-mode 1)))
   :config
   (defun mistty-toggle()
