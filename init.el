@@ -1325,7 +1325,7 @@ targets."
   (mistty-fringe-face ((t (:foreground "#bbc2e0"))))
   :hook
   (mistty-mode . (lambda ()
-                   (setq-local buffer-face-mode-face `(:background "#171d23"))
+                   (setq-local buffer-face-mode-face `(:background "#0b0e11"))
                    (buffer-face-mode 1)))
   :config
   (defun mistty-toggle()
