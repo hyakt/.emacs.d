@@ -1364,8 +1364,8 @@ targets."
          (:map magit-status-mode-map
                ("q" . my-magit-quit-session))
          (:map git-commit-mode-map
-               ("M-i" . my-consult-git-commit-messages)
-               ("M-p" . my-consult-git-conventional-commit-prefix)))
+               ("M-p" . my-consult-git-commit-messages)
+               ("M-i" . my-consult-git-conventional-commit-prefix)))
   :config
   (setq magit-save-repository-buffers 'dontask)
   (setq magit-diff-highlight-indentation nil)
