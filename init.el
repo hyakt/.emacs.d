@@ -1164,33 +1164,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :defer t
   :bind ("C-x C-g" . consult-ghq-find))
 
-(use-package consult-gh
-  :ensure t
-  :after consult
-  :config
-  (setopt consult-gh-default-clone-directory "~/repos")
-  (setopt consult-gh-show-preview t)
-  (setopt consult-gh-preview-key "C-o")
-  (setopt consult-gh-pr-action #'consult-gh--pr-view-action)
-  (setopt consult-gh-code-action #'consult-gh--code-view-action)
-  (setopt consult-gh-file-action #'consult-gh--files-view-action)
-  (setopt consult-gh-large-file-warning-threshold 2500000)
-  (setopt consult-gh-prioritize-local-folder t)
-  (setq consult-gh-default-orgs-list (consult-gh--get-current-orgs t))
-
-  ;; Add a hook to change default organizations when the account is switched
-  (add-hook 'consult-gh-auth-post-switch-hook (lambda (&rest args) (setq consult-gh-default-orgs-list (consult-gh--get-current-orgs t))))
-
-  ;; Remember visited orgs and repos across sessions
-  (add-to-list 'savehist-additional-variables 'consult-gh--known-orgs-list)
-  (add-to-list 'savehist-additional-variables 'consult-gh--known-repos-list))
-
-(use-package consult-gh-embark
-  :ensure t
-  :after consult-gh embark
-  :config
-  (consult-gh-embark-mode +1))
-
 (use-package consult-ls-git
   :ensure t
   :defer t
@@ -1455,8 +1428,7 @@ targets."
      "GH"
      (("v" my-gh-pr-view "view pr" :exit t)
       ("c" my-gh-pr-create "create pr" :exit t)
-      ("o" my-git-open-pr-from-current-line "open pr from current line" :exit t)
-      ("L" consult-gh-pr-list "consult-gh-pr-list" :exit t))
+      ("o" my-git-open-pr-from-current-line "open pr from current line" :exit t))
      "Misc"
      (("w" my-git-wip "wip" :exit t)
       ("u" my-git-unwip "unwip" :exit t)))))
