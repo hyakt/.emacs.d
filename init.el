@@ -70,6 +70,7 @@
   (require 'package)
   (setq package-archives
         '(("melpa" . "https://melpa.org/packages/")
+          ("stable" . "https://stable.melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")
           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
   (package-initialize)
@@ -1119,6 +1120,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package consult
   :ensure t
+  :pin stable
   :defer t
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
@@ -1160,9 +1162,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (use-package consult-ghq
   :ensure t
   :defer t
-  :bind ("C-x C-g" . consult-ghq-find)
-  :config
-  (setq consult-ghq-find-function 'find-file))
+  :bind ("C-x C-g" . consult-ghq-find))
 
 (use-package consult-gh
   :ensure t
@@ -1260,6 +1260,17 @@ targets."
   :ensure t
   :hook (embark-collect-hook . consult-preview-at-point-mode)
   :after (embark consult))
+
+(use-package affe
+  :ensure t
+  :pin stable
+  :config
+  (defun affe-orderless-regexp-compiler (input _type _ignorecase)
+    (setq input (cdr (orderless-compile input)))
+    (cons input (apply-partially #'orderless--highlight input t)))
+  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
+  (setq affe-find-command "fd --color=never --full-path")
+  (consult-customize affe-grep :preview-key "M-."))
 
 (use-package eshell
   :defer t
