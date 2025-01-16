@@ -91,6 +91,9 @@
     (delete-region beg end)
     (insert (url-encode-string str 'utf-8))))
 
+(defun char-unicode (char) (encode-char char 'ucs))
+(defun unicode-char (code) (decode-char 'ucs code))
+
 ;;;###autoload
 (defun unicode-unescape-region (start end)
   "指定した範囲のUnicodeエスケープ文字(\\uXXXX)をデコードする."
@@ -258,8 +261,33 @@ It can include `format-time-string' format specifications."
   (interactive)
   (shell-command "open ."))
 
-(defun char-unicode (char) (encode-char char 'ucs))
-(defun unicode-char (code) (decode-char 'ucs code))
+;;;###autoload
+(defun my-other-window-or-split ()
+  "Switch to other window or split window."
+  (interactive)
+  (if (one-window-p)
+      (split-window-horizontally)
+    (other-window 1)))
+
+(defun minibuffer-keyboard-quit () ;; esc quits
+  "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactivate-mark  t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
+
+;;;###autoload
+(defun my-other-window-or-split-and-kill-minibuffer ()
+  "Switch to other window or split window and kill minibuffer."
+  (interactive)
+  (if (active-minibuffer-window)
+      (progn
+        (minibuffer-keyboard-quit)
+        (my-other-window-or-split))
+    (my-other-window-or-split)))
 
 (provide 'my-util)
 

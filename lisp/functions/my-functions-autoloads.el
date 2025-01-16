@@ -339,7 +339,11 @@ Open *scratch* buffer ." t)
 Open a today org file." t)
 (autoload 'my-open "my-util" "\
 Open finder." t)
-(register-definition-prefixes "my-util" '("char-unicode" "my-" "open-today-org-file-format" "unicode-char" "url-"))
+(autoload 'my-other-window-or-split "my-util" "\
+Switch to other window or split window." t)
+(autoload 'my-other-window-or-split-and-kill-minibuffer "my-util" "\
+Switch to other window or split window and kill minibuffer." t)
+(register-definition-prefixes "my-util" '("char-unicode" "minibuffer-keyboard-quit" "my-" "open-today-org-file-format" "unicode-char" "url-"))
 
 
 ;; Local Variables:
