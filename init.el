@@ -58,6 +58,9 @@
                          (eval (pop my-delayed-configurations))
                        (cancel-timer my-delayed-configuration-timer)))))))
 
+;; shrink title bar
+(add-hook 'after-init-hook (lambda () (tool-bar-mode 1) (tool-bar-mode 0)))
+
 (defmacro with-deferred-eval (&rest body)
   (declare (indent 0))
   `(push ',(cons 'progn body) my-delayed-configurations))
