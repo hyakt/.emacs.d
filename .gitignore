@@ -53,3 +53,4 @@ undo/
 undohist/
 url/
 var/
+.emacs.desktop*

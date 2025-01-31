@@ -168,6 +168,9 @@ determine the exact padding."
 
    (goggles-removed :background (doom-darken red 0.4))
    (goggles-added :background (doom-darken green 0.4))
+
+   ;; tab-bar-mode faces
+   ((tab-line &override) :box '(:line-width (1 . 8) :color nil :style flat-button))
    )
   )
 

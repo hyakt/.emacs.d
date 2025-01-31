@@ -147,32 +147,6 @@
 
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
-(with-deferred-eval
-  (if (file-exists-p (expand-file-name custom-file))
-      (load-file (expand-file-name custom-file)))
-  (defun frame-size-save ()
-    "Save current the frame size and postion."
-    (set-buffer (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
-    (erase-buffer)
-    (insert (concat
-             "(set-frame-width  (selected-frame) "
-             (int-to-string (frame-width))")
-            (set-frame-height (selected-frame) "
-             (int-to-string (frame-height))")
-            (set-frame-position (selected-frame) "
-             (int-to-string (car (frame-position))) " "
-             (int-to-string (cdr (frame-position))) ")"))
-    (save-buffer)
-    (kill-buffer))
-
-  (defun frame-size-resume ()
-    "Load the saved frame size."
-    (let ((file "~/.emacs.d/.framesize"))
-      (if (file-exists-p file) (load-file file))))
-
-  (frame-size-resume)
-  (add-hook 'kill-emacs-hook 'frame-size-save))
-
 (use-package compile
   :defer t
   :config
@@ -325,12 +299,6 @@
 
   (doom-modeline-mode t))
 
-(use-package dashboard
-  :ensure t
-  :config
-  (setq dashboard-startup-banner 'logo)
-  (dashboard-setup-startup-hook))
-
 ;;; ---------- edit ----------
 (with-deferred-eval
   (defun my-keyboard-quit()
@@ -391,7 +359,6 @@
   (keymap-global-set "M-_" #'text-scale-decrease)
   (keymap-global-set "C-`" #'open-today-org-file)
   (keymap-global-set "C-\\" #'scratch-buffer)
-  (keymap-global-set "M-t" #'my-open-alacritty-tmux-current-buffer)
   (keymap-global-set "C-o" #'my-other-window-or-split-and-kill-minibuffer)
   (keymap-global-unset "C-z"))
 
@@ -919,36 +886,26 @@
      (projectile-find-implementation-or-test
       (buffer-file-name)))))
 
-(use-package activities
-  :ensure t
+(use-package tab-bar-mode
   :defer t
-  :init
-  (activities-mode)
-  :bind
-  (("M-z" . activities/body)
-   ("C-x C-a C-n" . activities-new)
-   ("C-x C-a C-a" . activities-resume)
-   ("C-x C-a C-s" . activities-suspend)
-   ("C-x C-a C-k" . activities-kill)
-   ("C-x C-a RET" . activities-switch)
-   ("C-x C-a g" . activities-revert)
-   ("C-x C-a l" . activities-list)
-   ("C-x C-a C-l" . activities-list))
+  :bind (("M-t" . tab-bar-new-tab-to)
+         ("M-W" . tab-bar-close-tab)
+         ("M-}" . tab-bar-switch-to-next-tab)
+         ("M-{" . tab-bar-switch-to-prev-tab))
   :config
-  (pretty-hydra-define
-    activities
-    (:title (with-codicon "nf-cod-layout" "Activities" 1 -0.05) :quit-key "q")
-    ("Manage"
-     (("n" activities-new)
-      ("a" activities-resume)
-      ("s" activities-suspend)
-      ("k" activities-kill)
-      ("g" activities-revert))
-     "View"
-     (("b" activities-switch)
-      ("l" activities-list)
-      ("RET" activities-switch))))
-  (setq activities-name-prefix ""))
+  (setq tab-bar-show 1)
+  (tab-bar-mode t))
+
+(use-package desktop
+  :config
+  (setq desktop-load-locked-desktop t)
+  (setq desktop-save t)
+  (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+  (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+  (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+  (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+  (add-to-list 'desktop-modes-not-to-save 'special-mode)
+  (desktop-save-mode t))
 
 (use-package eldoc
   :defer t
