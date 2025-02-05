@@ -841,7 +841,7 @@
                '("\\*Copilot-chat"
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
-                 (window-height . 0.3)))
+                 (window-height . 0.6)))
 
   (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
 
