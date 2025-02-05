@@ -814,9 +814,35 @@
 (use-package copilot-chat
   :ensure t
   :demand t
+  :bind (("M-q" . copilot-chat-toggle)
+         :map copilot-chat-shell-mode-map
+         ("C-d" . copilot-chat-hide))
   :after magit
   :config
+  (setq shell-maker-prompt-before-killing-buffer nil)
+  (setq shell-maker-display-function #'display-buffer)
   (setq copilot-chat-frontend 'shell-maker)
+  (defun copilot-chat-toggle()
+    "Copilot chat toggle."
+    (interactive)
+    (if (string-prefix-p "*Copilot-chat" (buffer-name))
+        (copilot-chat-hide)
+      (copilot-chat-display)))
+
+  (defun copilot-chat-hide()
+    "Hide buffer."
+    (interactive)
+    (if (window-deletable-p)
+        (progn
+          (kill-buffer)
+          (delete-window))))
+
+  (add-to-list 'display-buffer-alist
+               '("\\*Copilot-chat"
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.3)))
+
   (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
 
 (use-package go-translate
