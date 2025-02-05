@@ -796,7 +796,7 @@
   :ensure t)
 
 (use-package copilot.el
-  :vc (:fetcher github :repo copilot-emacs/copilot.el)
+  :ensure t
   :hook ((prog-mode
           . (lambda ()
               (when (and buffer-file-name
@@ -810,6 +810,14 @@
   :init
   (setq copilot-indent-offset-warning-disable t)
   (setq copilot-max-char 100000))
+
+(use-package copilot-chat
+  :ensure t
+  :demand t
+  :after magit
+  :config
+  (setq copilot-chat-frontend 'shell-maker)
+  (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
 
 (use-package go-translate
   :defer t
@@ -1382,43 +1390,6 @@ targets."
   :defer t
   :hook (magit-mode . magit-delta-mode))
 
-(use-package magit-gptcommit
-  :ensure t
-  :demand t
-  :after magit
-  :bind (:map git-commit-mode-map
-              ("C-c C-g" . magit-gptcommit-commit-accept))
-  :init
-  (defun my-magit-gptcommit-openai-llm-provider ()
-    (let (provider)
-      (lambda ()
-        (or provider
-            (progn
-              (require 'llm-openai)
-              (setq llm-warn-on-nonfree nil)
-              (setq provider (make-llm-openai
-                              :chat-model "gpt-4o"
-                              :key
-                              (auth-info-password
-                               (car (auth-source-search
-                                     :host "api.openai.com"
-                                     :user "apikey"))))))))))
-  (defun my-magit-gptcommit-ollama-llm-provider ()
-    (let (provider)
-      (lambda ()
-        (or provider
-            (progn
-              (require 'llm-ollama)
-              (setq llm-warn-on-nonfree nil)
-              (setq provider
-                    (make-llm-ollama
-                     :embedding-model "codegemma:7b-instruct"
-                     :chat-model "codegemma:7b-instruct"
-                     :default-chat-temperature 0.1)))))))
-  :config
-  (setq magit-gptcommit-llm-provider (my-magit-gptcommit-ollama-llm-provider))
-  (magit-gptcommit-status-buffer-setup))
-
 (use-package transient-posframe
   :ensure t
   :defer t
@@ -1684,30 +1655,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                (setq-local apheleia-mode-alist '((prog-mode . dprint)
                                                  (text-mode . dprint))))
              (apheleia-mode)))))
-
-(use-package gptel
-  :ensure t
-  :defer t
-  :bind (("C-c C-a" . gptel-menu)
-         :map gptel-mode-map (("C-c C-m" . gptel-menu)
-                              ("C-c C-c" . gptel-send)))
-  :config
-  (setq gptel-directives
-        '((default . "あなたはEmacsに住む大きな言語モデルであり、親切なアシスタントです。簡潔に日本語で答えてください。")
-          (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
-          (writing . "You are a large language model and a writing assistant. Respond concisely.")
-          (chat . "You are a large language model and a conversation partner. Respond concisely.")))
-  (setq gptel-default-mode 'markdown-mode)
-  (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key)
-  (gptel-make-gemini "Gemini" :stream t :key gptel-api-key)
-  (setq
-   gptel-model "claude-3-5-sonnet-20240620"
-   gptel-backend (gptel-make-anthropic "Claude" :stream t  :key gptel-api-key))
-  下記のコードについて説明してください
-  (gptel-make-ollama "Ollama"
-    :host "localhost:11434"
-    :stream t
-    :models '("codegemma:7b-instruct")))
 
 ;;; ---------- major mode ----------
 (with-deferred-eval
