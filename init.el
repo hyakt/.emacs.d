@@ -833,9 +833,7 @@
     "Hide buffer."
     (interactive)
     (if (window-deletable-p)
-        (progn
-          (kill-buffer)
-          (delete-window))))
+        (delete-window)))
 
   (add-to-list 'display-buffer-alist
                '("\\*Copilot-chat"
