@@ -814,14 +814,14 @@
 (use-package copilot-chat
   :ensure t
   :demand t
-  :bind (("M-q" . copilot-chat-toggle)
-         :map copilot-chat-shell-mode-map
-         ("C-d" . copilot-chat-hide))
+  :bind ("M-q" . copilot-chat-toggle)
   :after magit
   :config
   (setq shell-maker-prompt-before-killing-buffer nil)
   (setq shell-maker-display-function #'display-buffer)
   (setq copilot-chat-frontend 'shell-maker)
+  (setq copilot-chat-prompt-suffix "Reply in Japanse")
+
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
     (interactive)
@@ -835,13 +835,26 @@
     (if (window-deletable-p)
         (delete-window)))
 
+  (defun copilot-chat-close()
+    "Hide buffer."
+    (interactive)
+    (if (window-deletable-p)
+        (progn
+          (kill-buffer)
+          (delete-window))))
+
   (add-to-list 'display-buffer-alist
                '("\\*Copilot-chat"
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
                  (window-height . 0.6)))
 
-  (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message))
+  (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message)
+  (add-hook 'copilot-chat-shell-mode-hook
+            (lambda ()
+              (keymap-local-set "C-c C-l" nil)
+              (keymap-local-set "C-d" #'copilot-chat-close)
+              (setq copilot-chat-prompt (concat copilot-chat-prompt "\nReply in Japanese.")))))
 
 (use-package go-translate
   :defer t
