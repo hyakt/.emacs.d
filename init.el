@@ -942,6 +942,7 @@
   :config
   (setq tab-bar-show 1)
   (setq tab-bar-separator "")
+  (setq tab-bar-new-tab-to 'rightmost)
   (tab-bar-mode t))
 
 (use-package desktop
