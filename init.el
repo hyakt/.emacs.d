@@ -816,6 +816,11 @@
   :demand t
   :bind ("M-q" . copilot-chat-toggle)
   :after magit
+  :hook ((git-commit-setup . copilot-chat-insert-commit-message)
+         (copilot-chat-shell-mode . (lambda ()
+                                      (keymap-local-set "C-c C-l" nil)
+                                      (keymap-local-set "C-d" #'copilot-chat-close)
+                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nReply in Japanese.")))))
   :config
   (setq shell-maker-prompt-before-killing-buffer nil)
   (setq shell-maker-display-function #'display-buffer)
@@ -847,14 +852,7 @@
                '("\\*Copilot-chat"
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
-                 (window-height . 0.6)))
-
-  (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message)
-  (add-hook 'copilot-chat-shell-mode-hook
-            (lambda ()
-              (keymap-local-set "C-c C-l" nil)
-              (keymap-local-set "C-d" #'copilot-chat-close)
-              (setq copilot-chat-prompt (concat copilot-chat-prompt "\nReply in Japanese.")))))
+                 (window-height . 0.6))))
 
 (use-package go-translate
   :defer t
