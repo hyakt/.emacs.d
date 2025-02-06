@@ -820,12 +820,12 @@
          (copilot-chat-shell-mode . (lambda ()
                                       (keymap-local-set "C-c C-l" nil)
                                       (keymap-local-set "C-d" #'copilot-chat-close)
-                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nReply in Japanese.")))))
+                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nYou should reply in Japanese.")))))
   :config
   (setq shell-maker-prompt-before-killing-buffer nil)
   (setq shell-maker-display-function #'display-buffer)
   (setq copilot-chat-frontend 'shell-maker)
-  (setq copilot-chat-prompt-suffix "Reply in Japanse")
+  (setq copilot-chat-commit-prompt (concat "You must reply in English.\n\n" copilot-chat-commit-prompt))
 
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
@@ -1190,9 +1190,9 @@
   ;; https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
   (defun embark-which-key-indicator ()
     "An embark indicator that displays keymaps using which-key.
-The which-key help message will show the type and value of the
-current target followed by an ellipsis if there are further
-targets."
+    The which-key help message will show the type and value of the
+    current target followed by an ellipsis if there are further
+    targets."
     (lambda (&optional keymap targets prefix)
       (if (null keymap)
           (which-key--hide-popup-ignore-command)
@@ -1636,14 +1636,14 @@ targets."
   (defhydra smerge-hydra
     (:color pink :hint nil :post (smerge-auto-leave))
     "
-^Move^       ^Keep^               ^Diff^                 ^Other^
-^^-----------^^-------------------^^---------------------^^-------
-_n_ext       _b_ase               _<_: upper/base        _C_ombine
-_p_rev       _u_pper              _=_: upper/lower       _r_esolve
-^^           _l_ower              _>_: base/lower        _k_ill current
-^^           _a_ll                _R_efine
-^^           _RET_: current       _E_diff
-"
+    ^Move^       ^Keep^               ^Diff^                 ^Other^
+    ^^-----------^^-------------------^^---------------------^^-------
+    _n_ext       _b_ase               _<_: upper/base        _C_ombine
+    _p_rev       _u_pper              _=_: upper/lower       _r_esolve
+    ^^           _l_ower              _>_: base/lower        _k_ill current
+    ^^           _a_ll                _R_efine
+    ^^           _RET_: current       _E_diff
+    "
     ("n" smerge-next)
     ("p" smerge-prev)
     ("b" smerge-keep-base)
