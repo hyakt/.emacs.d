@@ -954,6 +954,7 @@
                 "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
                 "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.gz\\|\\.bbdb"
                 "\\)$"))
+  (setq desktop-restore-eager 5)
   (add-to-list 'desktop-modes-not-to-save 'dired-mode)
   (add-to-list 'desktop-modes-not-to-save 'Info-mode)
   (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
@@ -1686,26 +1687,40 @@
            (let ((p-root (car (last (project-current)))))
              (when
                  (or
+                  (file-exists-p (concat p-root "deno.json"))
+                  (file-exists-p (concat p-root "deno.jsonc")))
+               (let ((ext (file-name-extension (buffer-file-name))))
+                 (cond
+                  ((member ext '("js" "jsx" "ts" "tsx"))
+                   (setq-local apheleia-mode-alist '((prog-mode . denofmt))))
+                  ((member ext '("md" "mkd" "mkdn" "mdwn" "mdown" "markdown"))
+                   (setq-local apheleia-mode-alist '((text-mode . denofmt-md))))
+                  ((member ext '("json" "jsonc"))
+                   (setq-local apheleia-mode-alist '((json-mode . denofmt-json))))
+                  ((member ext '("css" "scss" "sass" "less"))
+                   (setq-local apheleia-mode-alist '((prog-mode . denofmt-css))))
+                  ((member ext '("html" "svelte" "vue" "astro" "vto" "njk"))
+                   (setq-local apheleia-mode-alist '((prog-mode . denofmt-html))))
+                  ((member ext '("yml" "yaml"))
+                   (setq-local apheleia-mode-alist '((prog-mode . denofmt-yaml))))
+                  ((string= ext "sql")
+                   (setq-local apheleia-mode-alist '((prog-mode . denofmt-sql)))
+                   )
+                  )
+                 ))
+             (when
+                 (or
                   (file-exists-p (concat p-root "dprint.json"))
                   (file-exists-p (concat p-root "dprint.jsonc")))
-               (setq-local apheleia-mode-alist '((prog-mode . dprint)
-                                                 (text-mode . dprint))))
-             (apheleia-mode)))))
+               (setq-local apheleia-mode-alist '((prog-mode . dprint))))
+
+             (apheleia-mode))))
+  :config
+  (add-to-list 'apheleia-formatters '(denofmt-html . ("deno" "fmt" "-" "--ext" "html" "--unstable-component")))
+  (add-to-list 'apheleia-formatters '(denofmt-css . ("deno" "fmt" "-" "--ext" "css")))
+  (add-to-list 'apheleia-formatters '(denofmt-sql . ("deno" "fmt" "-" "--ext" "sql" "--unstable-sql"))))
 
 ;;; ---------- major mode ----------
-(with-deferred-eval
-  (defun my-deno-project-p ()
-    "Predicate for determining if the open project is a Deno one."
-    (let ((p-root (car (last (project-current)))))
-      (or
-       (file-exists-p (concat p-root "deno.json"))
-       (file-exists-p (concat p-root "deno.jsonc")))))
-
-  (defun my-node-project-p ()
-    "Predicate for determining if the open project is a Node one."
-    (let ((p-root (file-name-directory (shell-command-to-string "npm root"))))
-      (file-exists-p (concat p-root "package.json")))))
-
 (use-package emacs-lisp-mode
   :defer t
   :config

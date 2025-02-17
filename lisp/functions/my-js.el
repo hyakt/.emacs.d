@@ -7,6 +7,20 @@
 (require 'projectile)
 
 ;;;###autoload
+(defun my-deno-project-p ()
+  "Predicate for determining if the open project is a Deno one."
+  (let ((p-root (car (last (project-current)))))
+    (or
+     (file-exists-p (concat p-root "deno.json"))
+     (file-exists-p (concat p-root "deno.jsonc")))))
+
+;;;###autoload
+(defun my-node-project-p ()
+  "Predicate for determining if the open project is a Node one."
+  (let ((p-root (file-name-directory (shell-command-to-string "npm root"))))
+    (file-exists-p (concat p-root "package.json"))))
+
+;;;###autoload
 (defun my-copy-project-name-clipboard ()
   "Copy project name to clipbord."
   (interactive)
@@ -26,14 +40,14 @@
 (defun my-projectile-run-shell-command-in-root (command)
   "Invoke `shell-command' COMMAND in the project's root."
   (projectile-with-default-dir
-      (projectile-ensure-project (projectile-project-root))
-    (shell-command command)))
+   (projectile-ensure-project (projectile-project-root))
+   (shell-command command)))
 
 (defun my-projectile-run-async-shell-command-in-root (command &optional output-buffer)
   "Invoke `async-shell-command' COMMAND in the project's root."
   (projectile-with-default-dir
-      (projectile-ensure-project (projectile-project-root))
-    (async-shell-command command output-buffer)))
+   (projectile-ensure-project (projectile-project-root))
+   (async-shell-command command output-buffer)))
 
 ;;;###autoload
 (defun my-mocha-exec-current-buffer ()

@@ -225,6 +225,10 @@ Git openpr current line." t)
 
 ;;; Generated autoloads from my-js.el
 
+(autoload 'my-deno-project-p "my-js" "\
+Predicate for determining if the open project is a Deno one.")
+(autoload 'my-node-project-p "my-js" "\
+Predicate for determining if the open project is a Node one.")
 (autoload 'my-copy-project-name-clipboard "my-js" "\
 Copy project name to clipbord." t)
 (autoload 'my-reload-dir-locals-for-current-buffer "my-js" "\
