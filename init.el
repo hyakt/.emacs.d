@@ -364,8 +364,8 @@
   (keymap-global-set "C-\\" #'scratch-buffer)
   (keymap-global-set "C-o" #'my-other-window-or-split-and-kill-minibuffer)
   (keymap-global-unset "C-z")
-  (keymap-global-unset [swipe-left])
-  (keymap-global-unset [swipe-right]))
+  (global-unset-key [swipe-left])
+  (global-unset-key [swipe-right]))
 
 (use-package paren
   :defer t
