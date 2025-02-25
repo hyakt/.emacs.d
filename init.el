@@ -797,7 +797,7 @@
   :defer t
   :ensure t)
 
-(use-package copilot.el
+(use-package copilot
   :ensure t
   :hook ((prog-mode
           . (lambda ()
