@@ -2248,9 +2248,7 @@
         markdown-gfm-uppercase-checkbox t
         markdown-fontify-code-blocks-natively t
         markdown-content-type "application/xhtml+xml")
-
-  (when (executable-find "multimarkdown")
-    (setq markdown-command "multimarkdown"))
+  (setq markdown-command "multimarkdown")
   (setq markdown-gfm-additional-languages '("Mermaid"))
   (setq markdown-css-paths
         '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
