@@ -555,7 +555,7 @@
   (setq indent-bars-width-frac 0.2)
   (setq indent-bars-pattern " .    .  ")
   (setq indent-bars-treesit-support t)
-  :hook ((yaml-mode) . indent-bars-mode))
+  :hook ((yaml-ts-mode) . indent-bars-mode))
 
 (use-package tempel
   :ensure t
@@ -1879,8 +1879,7 @@
   :mode
   ("\\.jsonc\\'" . json-mode))
 
-(use-package yaml-mode
-  :ensure t
+(use-package yaml-ts-mode
   :defer t
   :mode ("\\.ya?ml\\'"))
 
@@ -2084,10 +2083,6 @@
   :defer t)
 
 (use-package dockerfile-mode
-  :ensure t
-  :defer t)
-
-(use-package docker-compose-mode
   :ensure t
   :defer t)
 
