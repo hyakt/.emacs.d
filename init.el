@@ -834,7 +834,7 @@
     (interactive)
     (if (string-prefix-p "*Copilot-chat" (buffer-name))
         (copilot-chat-hide)
-      (copilot-chat-display)))
+      (copilot-chat-switch-to-buffer)))
 
   (defun copilot-chat-hide()
     "Hide buffer."
