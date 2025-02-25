@@ -805,7 +805,7 @@
                          (file-readable-p buffer-file-name)
                          (< (nth 7 (file-attributes buffer-file-name)) 100000))
                 (copilot-mode t))))
-         (eshell-mode . copilot-mode))
+         ((json-ts-mode yaml-ts-mode eshell-mode) . copilot-mode))
   :bind (("<tab>" . copilot-accept-completion)
          ("M-P" . copilot-next-completion)
          ("M-N" . copilot-previous-completion))
@@ -1699,7 +1699,7 @@
                 ((member ext '("md" "mkd" "mkdn" "mdwn" "mdown" "markdown"))
                  (setq-local apheleia-mode-alist '((text-mode . denofmt-md))))
                 ((member ext '("json" "jsonc"))
-                 (setq-local apheleia-mode-alist '((json-mode . denofmt-json))))
+                 (setq-local apheleia-mode-alist '((json-ts-mode . denofmt-json))))
                 ((member ext '("css" "scss" "sass" "less"))
                  (setq-local apheleia-mode-alist '((prog-mode . denofmt-css))))
                 ((member ext '("html" "svelte" "vue" "astro" "vto" "njk"))
@@ -1873,11 +1873,9 @@
       ("vc" my-vitest-copy-command-watch-current-buffer)
       ("vt" my-vitest-command-watch-tmux)))))
 
-(use-package json-mode
-  :ensure t
+(use-package json-ts-mode
   :defer t
-  :mode
-  ("\\.jsonc\\'" . json-mode))
+  :mode ("\\.jsonc\\'"))
 
 (use-package yaml-ts-mode
   :defer t
@@ -1896,7 +1894,7 @@
     scss-mode
     graphql-mode
     ts-comint-mode
-    json-mode) . #'add-node-modules-path)
+    json-ts-mode) . #'add-node-modules-path)
   :config
   ;; https://github.com/codesuki/add-node-modules-path/issues/23#issuecomment-1312961383
   (setq add-node-modules-path-command '("echo \"$(npm root)/.bin\"")))
