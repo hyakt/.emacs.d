@@ -822,7 +822,9 @@
          (copilot-chat-shell-mode . (lambda ()
                                       (keymap-local-set "C-c C-l" nil)
                                       (keymap-local-set "C-d" #'copilot-chat-close)
-                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nYou should reply in Japanese.")))))
+                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nYou should reply in Japanese."))
+                                      (setq buffer-face-mode-face `(:background "#0f0f14"))
+                                      (buffer-face-mode 1))))
   :config
   (setq shell-maker-prompt-before-killing-buffer nil)
   (setq shell-maker-display-function #'display-buffer)
