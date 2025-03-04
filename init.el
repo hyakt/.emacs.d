@@ -940,11 +940,12 @@
          ("M-W" . tab-bar-close-tab)
          ("M-}" . tab-bar-switch-to-next-tab)
          ("M-{" . tab-bar-switch-to-prev-tab))
-  :hook (tab-bar-mode . (lambda () (setq tab-bar-close-button-show nil)))
+  :hook (tab-bar-mode . (lambda ()
+                          (setq tab-bar-close-button-show nil)
+                          (setq tab-bar-show 1)
+                          (setq tab-bar-separator "")
+                          (setq tab-bar-new-tab-to 'rightmost)))
   :config
-  (setq tab-bar-show 1)
-  (setq tab-bar-separator "")
-  (setq tab-bar-new-tab-to 'rightmost)
   (tab-bar-mode t))
 
 (use-package desktop
