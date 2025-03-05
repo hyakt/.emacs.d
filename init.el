@@ -836,7 +836,16 @@
     (interactive)
     (if (string-prefix-p "*Copilot-chat" (buffer-name))
         (copilot-chat-hide)
-      (copilot-chat-switch-to-buffer)))
+      (let ((mode (replace-regexp-in-string "-mode$" "" (format "%s" major-mode)))
+            (region (if (region-active-p)
+                        (buffer-substring-no-properties (region-beginning) (region-end))
+                      "")))
+        (deactivate-mark)
+        (copilot-chat-switch-to-buffer)
+        (when (not (string= region ""))
+          (save-excursion
+            (goto-char (point-max))
+            (insert "\n```" mode "\n" region "\n```"))))))
 
   (defun copilot-chat-hide()
     "Hide buffer."
