@@ -840,9 +840,12 @@
              (lang (replace-regexp-in-string "\\(?:-ts\\)?-mode$" "" major-mode-str))
              (region (if (region-active-p)
                          (buffer-substring-no-properties (region-beginning) (region-end))
-                       "")))
+                       ""))
+             (buffer (current-buffer)))
         (deactivate-mark)
         (copilot-chat-switch-to-buffer)
+        (with-current-buffer buffer
+          (copilot-chat-add-current-buffer))
         (when (not (string= region ""))
           (save-excursion
             (goto-char (point-max))
