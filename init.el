@@ -876,7 +876,8 @@
   (setq gt-default-translator
         (gt-translator
          :engines (list (gt-deepl-engine) (gt-google-engine) (gt-bing-engine))
-         :render  (gt-posframe-pop-render))))
+         :render  (gt-posframe-pop-render
+                   :width 100  :frame-params (list :cursor 'box)))))
 
 (use-package google-this
   :bind ("C-c C-k" . google-this-noconfirm)
