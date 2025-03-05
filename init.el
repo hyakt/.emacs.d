@@ -862,6 +862,7 @@
     (interactive)
     (if (window-deletable-p)
         (progn
+          (copilot-chat-list-clear-buffers)
           (kill-buffer)
           (delete-window))))
 
