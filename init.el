@@ -822,7 +822,9 @@
          (copilot-chat-shell-mode . (lambda ()
                                       (keymap-local-set "C-c C-l" nil)
                                       (keymap-local-set "C-d" #'copilot-chat-close)
-                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nYou should reply in Japanese.")))))
+                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nYou should reply in Japanese."))
+                                      (setq buffer-face-mode-face `(:background "#0f0f14"))
+                                      (buffer-face-mode 1))))
   :config
   (setq shell-maker-prompt-before-killing-buffer nil)
   (setq shell-maker-display-function #'display-buffer)
@@ -834,7 +836,20 @@
     (interactive)
     (if (string-prefix-p "*Copilot-chat" (buffer-name))
         (copilot-chat-hide)
-      (copilot-chat-switch-to-buffer)))
+      (let* ((major-mode-str (symbol-name major-mode))
+             (lang (replace-regexp-in-string "\\(?:-ts\\)?-mode$" "" major-mode-str))
+             (region (if (region-active-p)
+                         (buffer-substring-no-properties (region-beginning) (region-end))
+                       ""))
+             (buffer (current-buffer)))
+        (deactivate-mark)
+        (copilot-chat-switch-to-buffer)
+        (with-current-buffer buffer
+          (copilot-chat-add-current-buffer))
+        (when (not (string= region ""))
+          (save-excursion
+            (goto-char (point-max))
+            (insert "\n```" lang "\n" region "\n```"))))))
 
   (defun copilot-chat-hide()
     "Hide buffer."
@@ -847,6 +862,7 @@
     (interactive)
     (if (window-deletable-p)
         (progn
+          (copilot-chat-list-clear-buffers)
           (kill-buffer)
           (delete-window))))
 
@@ -865,7 +881,8 @@
   (setq gt-default-translator
         (gt-translator
          :engines (list (gt-deepl-engine) (gt-google-engine) (gt-bing-engine))
-         :render  (gt-posframe-pop-render))))
+         :render  (gt-posframe-pop-render
+                   :width 100  :frame-params (list :cursor 'box)))))
 
 (use-package google-this
   :bind ("C-c C-k" . google-this-noconfirm)
