@@ -235,6 +235,12 @@
 (set-frame-parameter nil 'internal-border-width 4)
 (setq-default line-spacing 4)
 
+(defun my-special-mode-hook ()
+  "Customize background color for special modes."
+  (setq buffer-face-mode-face `(:background "#0f0f14"))
+  (buffer-face-mode 1))
+
+(add-hook 'special-mode-hook 'my-special-mode-hook)
 
 (with-deferred-eval
   (when-macos
@@ -989,7 +995,7 @@
   :config
   (setq eldoc-echo-area-display-truncation-message nil)
   (setq eldoc-echo-area-use-multiline-p t)
-  (setq eldoc-documentation-strategy #'eldoc-documentation-default)
+  (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
 
   (defun eldoc-doc-buffer-toggle()
     "Eldoc toggle."
@@ -1562,24 +1568,6 @@
   :after (eglot tempel)
   :config
   (eglot-tempel-mode t))
-
-(use-package eglot-signature-eldoc-talkative
-  :ensure t
-  :after eglot
-  :hook (eglot-managed-mode . eglot-signature-eldoc-talkative)
-  :config
-  (defun my-eglot-specific-eldoc ()
-    (setq-local eldoc-documentation-functions
-                (list
-                 #'eglot-signature-eldoc-talkative
-                 "\n"
-                 #'eglot-hover-eldoc-function
-                 t
-                 #'flymake-eldoc-function))
-    ;; Optionally, in echo-area, only show the most important
-    ;; documentation:
-    (setq-local eldoc-documentation-strategy
-                #'eldoc-documentation-enthusiast)))
 
 (use-package eglot-booster
   :after eglot
