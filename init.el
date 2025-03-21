@@ -150,6 +150,10 @@
 
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
+(with-deferred-eval
+  (if (file-exists-p (expand-file-name custom-file))
+      (load-file (expand-file-name custom-file))))
+
 (use-package compile
   :defer t
   :config
