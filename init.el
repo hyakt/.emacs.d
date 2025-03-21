@@ -143,7 +143,7 @@
 (setq redisplay-skip-fontification-on-input t)
 (when-macos
  (setq command-line-ns-option-alist nil))
-
+(setq require-final-newline t)
 (setq-default tab-width 2)                                         ;; タブの幅は半角スペース 2
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 (setq-default shell-file-name "/opt/homebrew/bin/fish")
