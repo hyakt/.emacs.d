@@ -878,6 +878,24 @@
                  (reusable-frames . visible)
                  (window-height . 0.6))))
 
+(use-package aidermacs
+  :ensure t
+  :defer t
+  :bind ("C-c a" . aidermacs-transient-menu)
+  :hook
+  (aidermacs-before-run-backend-hook . (lambda ()
+                                         (setq my-aidermacs-api-keys '(("OPENAI_API_KEY" . "api.openai.com")
+                                                                       ("ANTHROPIC_API_KEY" . "api.anthropic.com")))
+                                         (dolist (pair my-aidermacs-api-keys)
+                                           (let ((env-var (car pair))
+                                                 (host (cdr pair)))
+                                             (if-let ((secret (plist-get (car (auth-source-search
+                                                                               :host host
+                                                                               :user "apikey"))
+                                                                         :secret)))
+                                                 (setenv env-var (if (functionp secret) (funcall secret) secret))
+                                               (user-error "No `%s` found in the auth source" env-var)))))))
+
 (use-package go-translate
   :defer t
   :ensure t
