@@ -886,14 +886,18 @@
   :ensure t
   :defer t
   :bind (("M-C-1" . aidermacs-transient-menu)
-         ("M-1" . aider-toggle)
+         ("M-1" . my-aidermacs-toggle)
          :map aidermacs-comint-mode-map
-         ("C-d" . aidermacs-close))
+         ("C-d" . my-aidermacs-close))
   :hook
-  ((aidermacs-comint-mode . (lambda ()
-                              (setq-local buffer-face-mode-face `(:background "#0b0e11"))
-                              (buffer-face-mode 1))))
+  ((aidermacs-comint-mode . my-aidermacs-setup-buffer-face))
+  :init
+  (defun my-aidermacs-setup-buffer-face ()
+    "Set up buffer face for aidermacs."
+    (setq-local buffer-face-mode-face `(:background "#0b0e11"))
+    (buffer-face-mode 1))
   :config
+  ;; Load API keys from auth-source
   (add-hook 'aidermacs-before-run-backend-hook
             (lambda ()
               (let ((my-aidermacs-api-keys '(("OPENAI_API_KEY" . "api.openai.com")
@@ -908,41 +912,43 @@
                         (setenv env-var (concat "" (if (functionp secret) (funcall secret) secret)) "")
                       (user-error "No `%s` found in the auth source" env-var)))))))
 
+  ;; Basic settings
   (setq aidermacs-default-model "sonnet")
   (setq aidermacs-backend 'comint)
   (setq aidermacs-auto-accept-architect t)
 
-  (defun aider-toggle()
-    "Toggle aider buffer visibility."
+  (defun my-aidermacs-toggle ()
+    "Toggle aidermacs buffer visibility."
     (interactive)
-    (if-let ((win (aider-toggle--get-window)))
-        (aider-toggle-hide)
+    (if-let ((win (my-aidermacs-get-window)))
+        (my-aidermacs-hide)
       (aidermacs-run-in-current-dir)))
 
-  (defun aider-toggle-hide ()
-    "Hide aider buffer."
+  (defun my-aidermacs-hide ()
+    "Hide aidermacs buffer."
     (interactive)
-    (when-let ((win (aider-toggle--get-window)))
+    (when-let ((win (my-aidermacs-get-window)))
       (delete-window win)))
 
-  (defun aidermacs-close ()
-    "Aidermacs buffer を閉じる."
+  (defun my-aidermacs-close ()
+    "Close aidermacs buffer completely."
     (interactive)
     (let ((buffer (get-buffer (aidermacs-get-buffer-name))))
       (when buffer
         (with-current-buffer buffer
-          (let ((kill-buffer-query-functions nil))  ;; 確認プロンプトを無効にする
+          (let ((kill-buffer-query-functions nil))  ;; Disable confirmation prompt
             (kill-buffer buffer))
           (when (window-deletable-p (selected-window))
             (delete-window (selected-window)))))))
 
-  (defun aider-toggle--get-window()
-    "Get aider window if visible."
+  (defun my-aidermacs-get-window ()
+    "Get aidermacs window if visible."
     (get-window-with-predicate
      (lambda (window)
        (with-current-buffer (window-buffer window)
          (string-match-p "\\*aidermacs:" (buffer-name))))))
 
+  ;; Display settings
   (add-to-list 'display-buffer-alist
                '("\\*aidermacs:"
                  (display-buffer-reuse-window display-buffer-at-bottom)
