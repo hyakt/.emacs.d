@@ -844,7 +844,7 @@
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
     (interactive)
-    (if (string-prefix-p "*Copilot-chat" (buffer-name))
+    (if (string-prefix-p "*Copilot Chat" (buffer-name))
         (copilot-chat-hide)
       (let* ((major-mode-str (symbol-name major-mode))
              (lang (replace-regexp-in-string "\\(?:-ts\\)?-mode$" "" major-mode-str))
@@ -877,7 +877,7 @@
           (delete-window))))
 
   (add-to-list 'display-buffer-alist
-               '("\\*Copilot-chat"
+               '("\\*Copilot Chat"
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
                  (window-height . 0.6))))
