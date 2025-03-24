@@ -888,7 +888,8 @@
   :bind (("M-C-1" . aidermacs-transient-menu)
          ("M-1" . my-aidermacs-toggle)
          :map aidermacs-comint-mode-map
-         ("C-d" . my-aidermacs-close))
+         ("C-d" . my-aidermacs-close)
+         ("M-a" . aidermacs-transient-menu))
   :hook
   ((aidermacs-comint-mode . my-aidermacs-setup-buffer-face))
   :init
