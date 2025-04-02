@@ -978,11 +978,11 @@
   :defer t)
 
 ;;; ---------- interface ----------
-(use-package direnv
+(use-package mise
   :ensure t
   :defer 1
   :config
-  (direnv-mode))
+  (global-mise-mode))
 
 (use-package hydra
   :ensure t
