@@ -539,7 +539,10 @@
   :ensure t
   :defer 1
   :config
+  (setq pulsar-pulse-on-window-change t)
   (setq pulsar-face 'pulsar-cyan)
+  (setq pulsar-window-change-face 'pulsar-cyan)
+
   (setq pulsar-pulse-functions
         (append '(avy-goto-char
                   symbol-overlay-jump-next symbol-overlay-jump-prev symbol-overlay-jump-last
@@ -547,10 +550,11 @@
                   xref-find-definitions xref-find-references
                   dump-jump-go
                   my-jump-to-match-parens
-                  consult-line consult-ripgrep consult-find consult-ghq-find consult-fd consult-flymake
-                  end-of-buffer beginning-of-buffer
-                  my-ws-other-window-or-split-and-kill-minibuffer) pulsar-pulse-functions))
-  (pulsar-global-mode t))
+                  end-of-buffer beginning-of-buffer ) pulsar-pulse-functions))
+  (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+  (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry)
+  (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
+  (pulsar-global-mode))
 
 (use-package goggles
   :ensure t
@@ -826,7 +830,8 @@
 (use-package copilot-chat
   :ensure t
   :demand t
-  :bind ("M-q" . copilot-chat-toggle)
+  :pin stable
+  :bind (("M-q" . copilot-chat-toggle))
   :after magit
   :hook ((git-commit-setup . copilot-chat-insert-commit-message)
          (copilot-chat-shell-mode . (lambda ()
@@ -980,9 +985,8 @@
 ;;; ---------- interface ----------
 (use-package mise
   :ensure t
-  :defer 1
-  :config
-  (global-mise-mode))
+  :defer t
+  :hook (prog-mode-hook . mise-mode))
 
 (use-package hydra
   :ensure t
