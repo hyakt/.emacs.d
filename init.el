@@ -903,6 +903,7 @@
     (setq-local buffer-face-mode-face `(:background "#0b0e11"))
     (buffer-face-mode 1))
   :config
+  ;; 設定値は ~/aider.conf.yml で設定するので、defcutomの値は設定しない
   ;; Load API keys from auth-source
   (add-hook 'aidermacs-before-run-backend-hook
             (lambda ()
@@ -917,13 +918,6 @@
                                                 :secret)))
                         (setenv env-var (concat "" (if (functionp secret) (funcall secret) secret)) "")
                       (user-error "No `%s` found in the auth source" env-var)))))))
-
-  ;; Basic settings
-  (setq aidermacs-default-model "sonnet")
-  (setq aidermacs-backend 'comint)
-  (setq aidermacs-use-architect-mode t)
-  (setq aidermacs-auto-accept-architect nil)
-  (setq aidermacs-auto-commits nil)
 
   (defun my-aidermacs-toggle ()
     "Toggle aidermacs buffer visibility."
