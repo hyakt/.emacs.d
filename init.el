@@ -921,6 +921,7 @@
   ;; Basic settings
   (setq aidermacs-default-model "sonnet")
   (setq aidermacs-backend 'comint)
+  (setq aidermacs-use-architect-mode t)
   (setq aidermacs-auto-accept-architect nil)
   (setq aidermacs-auto-commits nil)
 
