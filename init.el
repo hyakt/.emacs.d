@@ -921,14 +921,15 @@
   ;; Basic settings
   (setq aidermacs-default-model "sonnet")
   (setq aidermacs-backend 'comint)
-  (setq aidermacs-auto-accept-architect t)
+  (setq aidermacs-auto-accept-architect nil)
+  (setq aidermacs-auto-commits nil)
 
   (defun my-aidermacs-toggle ()
     "Toggle aidermacs buffer visibility."
     (interactive)
     (if-let ((win (my-aidermacs-get-window)))
         (my-aidermacs-hide)
-      (aidermacs-run-in-current-dir)))
+      (aidermacs-run)))
 
   (defun my-aidermacs-hide ()
     "Hide aidermacs buffer."
