@@ -233,28 +233,12 @@ Predicate for determining if the open project is a Node one.")
 Copy project name to clipbord." t)
 (autoload 'my-reload-dir-locals-for-current-buffer "my-js" "\
 reload dir locals for the current buffer" t)
-(autoload 'my-mocha-exec-current-buffer "my-js" "\
-Run mocha for current file." t)
-(autoload 'my-mocha-copy-command-exec-current-buffer "my-js" "\
-Run mocha for current file for paste." t)
-(autoload 'my-mocha-watch-current-buffer "my-js" "\
-Watch mocha for current file." t)
-(autoload 'my-mocha-copy-command-watch-current-buffer "my-js" "\
-Watch mocha for current file for paste." t)
-(autoload 'my-mocha-exec-add-save-hook "my-js" "\
-Add save hook exec mocha." t)
-(autoload 'my-mocha-exec-remove-save-hook "my-js" "\
-Remove save hook exec mocha." t)
-(autoload 'my-jest-copy-command-current-buffer "my-js" "\
-Watch jest for current file for paste." t)
-(autoload 'my-jest-copy-command-watch-current-buffer "my-js" "\
-Watch jest for current file for paste." t)
 (autoload 'my-vitest-copy-command-current-buffer "my-js" "\
-Watch vitest for current file for paste." t)
+Run vitest for current file and copy command to clipboard." t)
 (autoload 'my-vitest-copy-command-watch-current-buffer "my-js" "\
-Watch vitest for current file for paste." t)
+Watch vitest for current file and copy command to clipboard." t)
 (autoload 'my-vitest-command-watch-tmux "my-js" "\
-Watch vitest for other tmux." t)
+Watch vitest for current file in another tmux pane." t)
 (autoload 'my-tsc-error-find-file-buffer "my-js" "\
 Show tsc error on buffer." t)
 (autoload 'my-eslint-error-find-file-buffer "my-js" "\

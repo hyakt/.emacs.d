@@ -40,116 +40,95 @@
 (defun my-projectile-run-shell-command-in-root (command)
   "Invoke `shell-command' COMMAND in the project's root."
   (projectile-with-default-dir
-   (projectile-ensure-project (projectile-project-root))
-   (shell-command command)))
+      (projectile-ensure-project (projectile-project-root))
+    (shell-command command)))
 
 (defun my-projectile-run-async-shell-command-in-root (command &optional output-buffer)
   "Invoke `async-shell-command' COMMAND in the project's root."
   (projectile-with-default-dir
-   (projectile-ensure-project (projectile-project-root))
-   (async-shell-command command output-buffer)))
+      (projectile-ensure-project (projectile-project-root))
+    (async-shell-command command output-buffer)))
 
-;;;###autoload
-(defun my-mocha-exec-current-buffer ()
-  "Run mocha for current file."
-  (interactive)
-  (setenv "NODE_ENV" "test")
-  (my-projectile-run-async-shell-command-in-root
-   (concat "npx mocha -c"
-           (when my-mocha-config-path
-             (concat " --config " my-mocha-config-path))
-           (concat " " (buffer-file-name)))
-   "*My Mocha Exec Command*"))
+(defun my-js-detect-package-manager ()
+  "Detect the package manager used in the current project."
+  (let* ((project-root (projectile-project-root)))
+    (cond
+     ;; ロックファイルを確認
+     ((file-exists-p (concat project-root "pnpm-lock.yaml"))
+      "pnpm")
+     ((file-exists-p (concat project-root "yarn.lock"))
+      "yarn")
+     ((file-exists-p (concat project-root "package-lock.json"))
+      "npm")
+     ;; デフォルト
+     (t "npm"))))
 
-;;;###autoload
-(defun my-mocha-copy-command-exec-current-buffer ()
-  "Run mocha for current file for paste."
-  (interactive)
-  (let ((mocha-command
-         (concat "env NODE_PATH=test npx mocha -c"
-                 (when my-mocha-config-path
-                   (concat " --config " my-mocha-config-path))
-                 (concat " " (buffer-file-name)))))
-    (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
-    (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
+(defun my-js-get-package-runner (pkg-manager)
+  "Get the appropriate command prefix for running binaries with PKG-MANAGER."
+  (cond
+   ((string= pkg-manager "npm") "npx")
+   ((string= pkg-manager "pnpm") "pnpm")
+   ((string= pkg-manager "yarn") "yarn")
+   (t "npx"))) ; デフォルト
 
-;;;###autoload
-(defun my-mocha-watch-current-buffer ()
-  "Watch mocha for current file."
-  (interactive)
-  (setenv "NODE_ENV" "test")
-  (my-projectile-run-async-shell-command-in-root
-   (concat "npx mocha -c -w --extension js,ts,jsx,tsx"
-           (when my-mocha-config-path
-             (concat " --config " my-mocha-config-path))
-           (concat " " (buffer-file-name)))
-   "*My Mocha Watch Command*"))
+(defun my-js-create-vitest-command (watch-flag env-options)
+  "Create a vitest command with appropriate package manager.
+WATCH-FLAG if non-nil adds --watch to the command.
+ENV-OPTIONS can be used to pass additional environment variables."
+  (let* ((pkg-manager (my-js-detect-package-manager))
+         (runner (my-js-get-package-runner pkg-manager))
+         (watch-option (if watch-flag " --watch " " "))
+         ;; pnpmの場合だけNODE_OPTIONSを設定
+         (node-options (if (string= pkg-manager "pnpm")
+                           "NODE_OPTIONS='--no-experimental-fetch' "
+                         ""))
+         (env-vars (if env-options (concat env-options " ") "")))
+    (concat env-vars node-options runner " vitest" watch-option (buffer-file-name))))
 
-;;;###autoload
-(defun my-mocha-copy-command-watch-current-buffer ()
-  "Watch mocha for current file for paste."
-  (interactive)
-  (let ((mocha-command
-         (concat "env NODE_PATH=test npx mocha -c -w --extension js,ts,jsx,tsx"
-                 (when my-mocha-config-path
-                   (concat " --config " my-mocha-config-path))
-                 (concat " " (buffer-file-name)))))
-    (kill-new (concat "cd " (projectile-project-root) "; " mocha-command "; "))
-    (message (concat "cd " (projectile-project-root) "; " mocha-command "; "))))
+(defun my-js-handle-vitest-command (watch-flag env-options action)
+  "Handle vitest command creation and specified ACTION.
+WATCH-FLAG determines if --watch should be added.
+ENV-OPTIONS specifies any environment variables.
+ACTION is a function that takes project-root and vitest-command as arguments."
+  (let* ((project-root (projectile-project-root))
+         (vitest-command (my-js-create-vitest-command watch-flag env-options)))
+    (funcall action project-root vitest-command)))
 
-;;;###autoload
-(defun my-mocha-exec-add-save-hook ()
-  "Add save hook exec mocha."
-  (interactive)
-  (add-hook 'before-save-hook 'my-mocha-exec-current-buffer))
-
-;;;###autoload
-(defun my-mocha-exec-remove-save-hook ()
-  "Remove save hook exec mocha."
-  (interactive)
-  (remove-hook 'before-save-hook 'my-mocha-exec-current-buffer))
-
-;;;###autoload
-(defun my-jest-copy-command-current-buffer ()
-  "Watch jest for current file for paste."
-  (interactive)
-  (let ((jest-command (concat "env DEBUG_PRINT_LIMIT=100000 npx jest --color " (buffer-file-name))))
-    (kill-new (concat "cd " (projectile-project-root) "; " jest-command ";"))
-    (message (concat "cd " (projectile-project-root) "; " jest-command ";"))))
-
-;;;###autoload
-(defun my-jest-copy-command-watch-current-buffer ()
-  "Watch jest for current file for paste."
-  (interactive)
-  (let ((jest-command (concat "npx jest --watch --color " (buffer-file-name))))
-    (kill-new (concat "cd " (projectile-project-root) "; " jest-command "; "))
-    (message (concat "cd " (projectile-project-root) "; " jest-command "; "))))
+(defun my-js-copy-command-to-clipboard (project-root command &optional trailing-space)
+  "Copy COMMAND prefixed with cd PROJECT-ROOT to clipboard.
+Add TRAILING-SPACE if specified."
+  (let ((full-command (concat "cd " project-root "; " command
+                              (if trailing-space " ; " ";"))))
+    (kill-new full-command)
+    (message full-command)))
 
 ;;;###autoload
 (defun my-vitest-copy-command-current-buffer ()
-  "Watch vitest for current file for paste."
+  "Run vitest for current file and copy command to clipboard."
   (interactive)
-  (let ((vitest-command (concat "env NODE_OPTIONS='--no-experimental-fetch' DEBUG_PRINT_LIMIT=100000 pnpm vitest " (buffer-file-name))))
-    (kill-new (concat "cd " (projectile-project-root) "; " vitest-command ";"))
-    (message (concat "cd " (projectile-project-root) "; " vitest-command ";"))))
+  (my-js-handle-vitest-command
+   nil "DEBUG_PRINT_LIMIT=100000"
+   (lambda (root cmd) (my-js-copy-command-to-clipboard root cmd))))
 
 ;;;###autoload
 (defun my-vitest-copy-command-watch-current-buffer ()
-  "Watch vitest for current file for paste."
+  "Watch vitest for current file and copy command to clipboard."
   (interactive)
-  (let ((vitest-command (concat "NODE_OPTIONS='--no-experimental-fetch' pnpm vitest --watch " (buffer-file-name))))
-    (kill-new (concat "cd " (projectile-project-root) "; " vitest-command "; "))
-    (message (concat "cd " (projectile-project-root) "; " vitest-command "; "))))
+  (my-js-handle-vitest-command
+   t nil
+   (lambda (root cmd) (my-js-copy-command-to-clipboard root cmd t))))
 
 ;;;###autoload
 (defun my-vitest-command-watch-tmux ()
-  "Watch vitest for other tmux."
+  "Watch vitest for current file in another tmux pane."
   (interactive)
-  (let ((vitest-command (concat "NODE_OPTIONS='--no-experimental-fetch' pnpm vitest --watch " (buffer-file-name))))
-    (my-open-alacritty-tmux-current-buffer)
-    (shell-command
-     (concat "tmux send-keys '" vitest-command "' Enter"))
-    (message (concat "cd " (projectile-project-root) "; " vitest-command "; "))))
+  (my-js-handle-vitest-command
+   t nil
+   (lambda (root cmd)
+     (my-open-alacritty-tmux-current-buffer)
+     (let ((full-command (concat "cd " root "; " cmd)))
+       (shell-command (concat "tmux send-keys '" full-command "' Enter"))
+       (message full-command)))))
 
 ;;;###autoload
 (defun my-tsc-error-find-file-buffer ()

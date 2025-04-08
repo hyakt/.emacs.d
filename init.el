@@ -476,7 +476,8 @@
 (use-package ediff
   :defer t
   :config
-  (setq ediff-split-window-function 'split-window-horizontally))
+  (setopt ediff-split-window-function 'split-window-horizontally)
+  (setopt ediff-window-setup-function #'ediff-setup-windows-plain))
 
 (use-package flymake
   :defer t
@@ -951,23 +952,26 @@
          (string-match-p "\\*aidermacs:" (buffer-name))))))
 
   ;; Display settings
-  (add-to-list 'display-buffer-alist
-               '("\\*aidermacs:"
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.6))))
+  ;; (add-to-list 'display-buffer-alist
+  ;;              '("\\*aidermacs:"
+  ;;                (display-buffer-reuse-window display-buffer-in-side-window)
+  ;;                (side . right)
+  ;;                (slot . 0)
+  ;;                (window-width . 0.5)
+  ;;                (reusable-frames . visible)))
+  )
 
 (use-package go-translate
   :defer t
   :ensure t
-  :bind ("C-c C-l" . gt-do-translate)
+  :bind ("C-c C-t" . gt-do-translate)
   :config
   (setq gt-langs '(en ja))
   (setq gt-default-translator
         (gt-translator
          :engines (list (gt-deepl-engine) (gt-google-engine) (gt-bing-engine))
          :render  (gt-posframe-pop-render
-                   :width 100  :frame-params (list :cursor 'box)))))
+                   :width 100  :frame-params (list :cursor 'box :timeout nil)))))
 
 (use-package google-this
   :bind ("C-c C-k" . google-this-noconfirm)
@@ -1035,7 +1039,7 @@
      (projectile-find-implementation-or-test
       (buffer-file-name)))))
 
-(use-package tab-bar-mode
+(use-package tab-bar
   :defer t
   :bind (("M-t" . tab-bar-new-tab-to)
          ("M-W" . tab-bar-close-tab)
@@ -1806,7 +1810,7 @@
   (add-to-list 'apheleia-formatters '(denofmt-sql . ("deno" "fmt" "-" "--ext" "sql" "--unstable-sql"))))
 
 ;;; ---------- major mode ----------
-(use-package emacs-lisp-mode
+(use-package elisp-mode
   :defer t
   :config
   (setq-default tab-width 2)
@@ -2075,6 +2079,7 @@
   :defer t)
 
 (use-package eglot-java
+  :ensure t
   :defer t
   :hook (java-ts-mode . eglot-java-mode))
 
@@ -2133,7 +2138,7 @@
     (cargo-process-build)
     (my-cargo-process-run-bin-current-buffer)))
 
-(use-package csharp-ts-mode
+(use-package csharp-mode
   :defer t
   :hook
   (csharp-ts-mode . eglot-ensure))
