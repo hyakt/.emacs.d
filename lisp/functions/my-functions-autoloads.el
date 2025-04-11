@@ -331,6 +331,10 @@ Open finder." t)
 Switch to other window or split window." t)
 (autoload 'my-other-window-or-split-and-kill-minibuffer "my-util" "\
 Switch to other window or split window and kill minibuffer." t)
+(autoload 'my-create-ics-file-from-text "my-util" "\
+テキストからICSファイルを作成し、デスクトップに保存します。
+
+(fn TEXT)" t)
 (register-definition-prefixes "my-util" '("char-unicode" "minibuffer-keyboard-quit" "my-" "open-today-org-file-format" "unicode-char" "url-"))
 
 

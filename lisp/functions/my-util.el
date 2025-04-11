@@ -289,6 +289,24 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (my-other-window-or-split))
     (my-other-window-or-split)))
 
+;;;###autoload
+(defun my-create-ics-file-from-text (text)
+  "テキストからICSファイルを作成し、デスクトップに保存します。"
+  (interactive "sICSテキストを入力してください（複数行は C-q C-j で改行）: ")
+  (let* ((desktop-dir (expand-file-name "~/Desktop/"))
+         (date-str (format-time-string "%Y%m%d-%H%M%S"))
+         (filename (concat desktop-dir "calendar-" date-str ".ics")))
+    ;; テキストからイベント名を抽出しようとする
+    (when (string-match "SUMMARY:\\(.*\\)" text)
+      (setq filename (concat desktop-dir
+                             (replace-regexp-in-string "[^a-zA-Z0-9_-]" "_"
+                                                       (match-string 1 text))
+                             "-" date-str ".ics")))
+    ;; ファイル保存
+    (with-temp-file filename
+      (insert text))
+    (message "ICSファイルを保存しました: %s" filename)))
+
 (provide 'my-util)
 
 ;;; my-util.el ends here

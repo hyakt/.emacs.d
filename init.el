@@ -961,6 +961,26 @@
   ;;                (reusable-frames . visible)))
   )
 
+(use-package comint
+  :defer t
+  :config
+  (setopt comint-process-echoes t)
+  (setopt comint-scroll-to-bottom-on-input t)
+  (setopt comint-scroll-to-bottom-on-output t)
+
+  (defun my-comint-jump-to-prompt-on-readonly ()
+    "comintバッファで読み取り専用部分にいるときに自動的にプロンプトにジャンプする"
+    (when (and (derived-mode-p 'comint-mode)
+               (get-text-property (point) 'read-only)
+               (not (member this-command '(keyboard-quit keyboard-escape-quit
+                                                         previous-line next-line beginning-of-buffer))))
+      (goto-char (process-mark (get-buffer-process (current-buffer))))
+      (setq this-command 'ignore)))
+
+  (add-hook 'comint-mode-hook
+            (lambda ()
+              (add-hook 'pre-command-hook 'my-comint-jump-to-prompt-on-readonly nil t))))
+
 (use-package go-translate
   :defer t
   :ensure t
