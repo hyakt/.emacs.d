@@ -1876,7 +1876,6 @@
   :hook ((vue-mode .
                    (lambda ()
                      (add-node-modules-path)
-                     (yas-minor-mode t)
                      (eglot-ensure)
                      (enable-flymake-eslint-without-eglot)))
          (astro-mode .
