@@ -836,7 +836,7 @@
   :after magit
   :hook ((git-commit-setup . copilot-chat-insert-commit-message)
          (copilot-chat-shell-mode . (lambda ()
-                                      (keymap-local-set "C-c C-l" #'gt-do-translate)
+                                      (keymap-local-set "C-c C-t" #'gt-do-translate)
                                       (keymap-local-set "C-d" #'copilot-chat-close)
                                       (setq copilot-chat-prompt (concat copilot-chat-prompt "\nYou should reply in Japanese."))
                                       (setq buffer-face-mode-face `(:background "#0f0f14"))
@@ -1867,7 +1867,7 @@
   :defer t
   :mode ("\\.p?html\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.njk" "\\.tt" "\\.vento" "\\.vto")
-  :bind (:map web-mode-map ("C-c C-l" . gt-do-translate) ("C-c C-a" . nil))
+  :bind (:map web-mode-map ("C-c C-t" . gt-do-translate) ("C-c C-a" . nil))
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
@@ -2214,7 +2214,7 @@
   :bind (:map org-mode-map
               ("C-," . nil)
               ("C-j" . nil)
-              ("C-c C-l" . nil)
+              ("C-c C-t" . nil)
               ("C-c C-k" . nil)
               ("C-c C-a" . nil)
               ("M-{" . nil)
@@ -2337,7 +2337,7 @@
        (set
         (make-local-variable 'whitespace-action)
         nil)))
-  :bind (:map markdown-mode-map (("C-c C-l" . nil)
+  :bind (:map markdown-mode-map (("C-c C-t" . nil)
                                  ("C-c C-a" . nil)))
   :mode
   ("\\.markdown\\'" . gfm-mode)
