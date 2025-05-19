@@ -54,3 +54,5 @@ undohist/
 url/
 var/
 .emacs.desktop*
+eglot-java-eclipse-jdt-cache/
+share/
