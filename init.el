@@ -838,7 +838,10 @@
          (copilot-chat-shell-mode . (lambda ()
                                       (keymap-local-set "C-c C-t" #'gt-do-translate)
                                       (keymap-local-set "C-d" #'copilot-chat-close)
-                                      (setq copilot-chat-prompt (concat copilot-chat-prompt "\nYou should reply in Japanese."))
+                                      (setq copilot-chat-prompt
+                                            (if (string-match-p "Conventional Commits" copilot-chat-prompt)
+                                                copilot-chat-prompt
+                                              (concat copilot-chat-prompt "\nYou should reply in Japanese.")))
                                       (setq buffer-face-mode-face `(:background "#0f0f14"))
                                       (buffer-face-mode 1))))
   :config
@@ -1465,6 +1468,7 @@
          (:map magit-status-mode-map
                ("q" . my-magit-quit-session))
          (:map git-commit-mode-map
+               ("C-c C-t" . nil)
                ("M-p" . my-consult-git-commit-messages)
                ("M-i" . my-consult-git-conventional-commit-prefix)))
   :config
