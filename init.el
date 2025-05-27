@@ -1027,7 +1027,9 @@
                ("C-o" . nil)
                ("M-2" . nil)
                ("C-d" . my-claude-code-close)
-               ("C-c C-j" . claude-code-toggle-read-only-mode))))
+               ("C-c C-j" . claude-code-toggle-read-only-mode)))
+  :config
+  (setq eat-enable-auto-line-mode t))
 
 (use-package comint
   :defer t
