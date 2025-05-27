@@ -236,6 +236,7 @@
 (face-remap-add-relative 'variable-pitch :background "#0d1117")
 
 (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
+(set-fontset-font t 'unicode (font-spec :family "Apple Color Emoji") nil 'append)
 
 (set-frame-parameter nil 'alpha '(98 . 98))
 (set-frame-parameter nil 'internal-border-width 4)
