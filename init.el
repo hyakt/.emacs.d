@@ -231,8 +231,10 @@
                     :family "Source Han Code JP"
                     :height 110)
 (set-face-attribute 'variable-pitch nil
-                    :family "Myrica M"
-                    :height 120)
+                    :family "Menlo"
+                    :height 110)
+(face-remap-add-relative 'variable-pitch :background "#0d1117")
+
 (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
 
 (set-frame-parameter nil 'alpha '(98 . 98))
@@ -355,7 +357,7 @@
                              '("*Messages*" "*Compile-Log*" "*Help*" "*scratch*" "*init log*")))
              do (kill-buffer buf)))
 
-  (keymap-global-set "C-h" #'delete-backward-char)
+  (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
   (keymap-global-set "C-m" #'newline-and-indent)
   (keymap-global-set "C-0" #'delete-frame)
   (keymap-global-set "C-g" #'my-keyboard-quit)
@@ -955,14 +957,74 @@
          (string-match-p "\\*aidermacs:" (buffer-name))))))
 
   ;; Display settings
-  ;; (add-to-list 'display-buffer-alist
-  ;;              '("\\*aidermacs:"
-  ;;                (display-buffer-reuse-window display-buffer-in-side-window)
-  ;;                (side . right)
-  ;;                (slot . 0)
-  ;;                (window-width . 0.5)
-  ;;                (reusable-frames . visible)))
-  )
+  (add-to-list 'display-buffer-alist
+               '("\\*aidermacs:"
+                 (display-buffer-reuse-window display-buffer-in-side-window)
+                 (side . right)
+                 (window-width . 0.33)
+                 (reusable-frames . visible))))
+
+(use-package claude-code
+  :defer t
+  :vc (:fetcher github :repo stevemolitor/claude-code.el)
+  :bind (("M-C-2" . claude-code-transient)
+         ("M-2" . my-claude-code-toggle))
+  :hook ((claude-code-start . sm-setup-claude-faces))
+  :init
+  (defun sm-setup-claude-faces ()
+    "Set up buffer face for claude-code."
+    (variable-pitch-mode 1)
+    (face-remap-add-relative 'variable-pitch :background "#0b0e11"))
+  :config
+  (claude-code-mode)
+
+  (defun my-claude-code-toggle ()
+    "Toggle claude-code buffer visibility."
+    (interactive)
+    (if-let ((win (my-claude-code-get-window)))
+        (my-claude-code-hide)
+      (claude-code)
+      (when-let ((win (my-claude-code-get-window)))
+        (select-window win))))
+
+  (defun my-claude-code-hide ()
+    "Hide claude-code buffer."
+    (interactive)
+    (when-let ((win (my-claude-code-get-window)))
+      (delete-window win)))
+
+  (defun my-claude-code-close ()
+    "Close claude-code buffer completely."
+    (interactive)
+    (let ((buffer (get-buffer "*claude*")))
+      (when buffer
+        (with-current-buffer buffer
+          (let ((kill-buffer-query-functions nil))
+            (kill-buffer buffer))
+          (when (window-deletable-p (selected-window))
+            (delete-window (selected-window)))))))
+
+  (defun my-claude-code-get-window ()
+    "Get claude-code window if visible."
+    (get-window-with-predicate
+     (lambda (window)
+       (with-current-buffer (window-buffer window)
+         (string-match-p "\\*claude" (buffer-name))))))
+
+  (add-to-list 'display-buffer-alist
+               '("^\\*claude\\*"
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (window-width . 0.33))))
+
+(use-package eat
+  :ensure t
+  :defer t
+  :bind (:map eat-semi-char-mode-map
+              ("C-o" . nil)
+              ("M-2" . nil)
+              ("C-d" . my-claude-code-close)
+              ("M-c" . claude-code-transient-menu)))
 
 (use-package comint
   :defer t
@@ -1409,11 +1471,6 @@
   :ensure t
   :hook (eshell-mode . eshell-syntax-highlighting-mode))
 
-(use-package eat
-  :ensure t
-  :defer t
-  :hook (eshell-mode . eat-eshell-mode))
-
 (use-package fish-completion
   :defer t
   :ensure t
@@ -1429,8 +1486,8 @@
   (mistty-fringe-face ((t (:foreground "#bbc2e0"))))
   :hook
   (mistty-mode . (lambda ()
-                   (setq-local buffer-face-mode-face `(:background "#0b0e11"))
-                   (buffer-face-mode 1)))
+                   (variable-pitch-mode 1)
+                   (face-remap-add-relative 'variable-pitch :background "#0b0e11")))
   :config
   (defun mistty-toggle()
     "Mistty toggle."
