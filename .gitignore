@@ -3,6 +3,7 @@
 .backup/
 .cache/
 .cask/
+.claude/
 .edbi-ds-history
 .framesize
 .local/
@@ -56,3 +57,4 @@ var/
 .emacs.desktop*
 eglot-java-eclipse-jdt-cache/
 share/
+

@@ -890,9 +890,10 @@
 
   (add-to-list 'display-buffer-alist
                '("\\*Copilot Chat"
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.6))))
+                 (display-buffer-reuse-window display-buffer-in-side-window)
+                 (side . right)
+                 (window-width . 0.33)
+                 (reusable-frames . visible))))
 
 (use-package aidermacs
   :ensure t
@@ -978,6 +979,7 @@
     (face-remap-add-relative 'variable-pitch :background "#0b0e11"))
   :config
   (claude-code-mode)
+  (setq claude-code-read-only-mode-cursor-type '(box nil nil))
 
   (defun my-claude-code-toggle ()
     "Toggle claude-code buffer visibility."
@@ -1021,11 +1023,11 @@
 (use-package eat
   :ensure t
   :defer t
-  :bind (:map eat-semi-char-mode-map
-              ("C-o" . nil)
-              ("M-2" . nil)
-              ("C-d" . my-claude-code-close)
-              ("M-c" . claude-code-transient-menu)))
+  :bind ((:map eat-semi-char-mode-map
+               ("C-o" . nil)
+               ("M-2" . nil)
+               ("C-d" . my-claude-code-close)
+               ("C-c C-j" . claude-code-toggle-read-only-mode))))
 
 (use-package comint
   :defer t
