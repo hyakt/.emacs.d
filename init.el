@@ -414,7 +414,7 @@
   :bind
   (:map puni-mode-map
         (("M-d" . nil)
-         ("C-h" . puni-force-delete)
+         ("<DEL>" . puni-force-delete)
          ("C-k" . kill-line)
          ("C-M-k" . puni-kill-line)))
   :hook ((prog-mode . puni-mode)
@@ -898,8 +898,8 @@
 (use-package aidermacs
   :ensure t
   :defer t
-  :bind (("M-C-1" . aidermacs-transient-menu)
-         ("M-1" . my-aidermacs-toggle)
+  :bind (("M-C-2" . aidermacs-transient-menu)
+         ("M-2" . my-aidermacs-toggle)
          :map aidermacs-comint-mode-map
          ("C-d" . my-aidermacs-close)
          ("M-a" . aidermacs-transient-menu))
@@ -969,8 +969,8 @@
 (use-package claude-code
   :defer t
   :vc (:fetcher github :repo stevemolitor/claude-code.el)
-  :bind (("M-C-2" . claude-code-transient)
-         ("M-2" . my-claude-code-toggle))
+  :bind (("M-C-1" . claude-code-transient)
+         ("M-1" . my-claude-code-toggle))
   :hook ((claude-code-start . sm-setup-claude-faces))
   :init
   (defun sm-setup-claude-faces ()
@@ -1025,7 +1025,7 @@
   :defer t
   :bind ((:map eat-semi-char-mode-map
                ("C-o" . nil)
-               ("M-2" . nil)
+               ("M-1" . nil)
                ("C-d" . my-claude-code-close)
                ("C-c C-j" . claude-code-toggle-read-only-mode)))
   :config
@@ -1327,7 +1327,6 @@
   :config
   (setq xref-show-xrefs-function 'consult-xref)
   (setq xref-show-definitions-function 'consult-xref)
-  (setq consult-ripgrep-command "rg --null --line-buffered --color=ansi --max-columns=1000 --no-heading --line-number --ignore-case -e ARG OPTS")
 
   ;; https://github.com/minad/consult/issues/837#issuecomment-1703762384
   (consult-customize
