@@ -815,6 +815,25 @@
   :defer t
   :ensure t)
 
+;; ウィンドウ幅に応じて動的に幅を決定する関数
+(defun my-adaptive-window-width ()
+  "Return appropriate window width based on frame width."
+  (let ((frame-width (frame-width)))
+    (cond
+     ((> frame-width 300) 0.3)   ; 広い画面では30%
+     ((> frame-width 200) 0.4)   ; 中程度では40% (現在の設定)
+     (t 0.5))))                  ; 狭い画面では50%
+
+;; 動的幅計算付きサイドウィンドウ表示関数
+(defun my-display-buffer-in-side-window-adaptive (buffer alist)
+  "Display BUFFER in side window with adaptive width."
+  (let* ((side (cdr (assq 'side alist)))
+         (slot (cdr (assq 'slot alist)))
+         (window-width (my-adaptive-window-width))
+         (new-alist (cons `(window-width . ,window-width)
+                          (assq-delete-all 'window-width alist))))
+    (display-buffer-in-side-window buffer new-alist)))
+
 (use-package copilot
   :ensure t
   :hook ((prog-mode
@@ -892,9 +911,8 @@
 
   (add-to-list 'display-buffer-alist
                '("\\*Copilot Chat"
-                 (display-buffer-reuse-window display-buffer-in-side-window)
+                 (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
                  (side . right)
-                 (window-width . 0.4)
                  (reusable-frames . visible))))
 
 (use-package aidermacs
@@ -965,9 +983,8 @@
   ;; Display settings
   (add-to-list 'display-buffer-alist
                '("\\*aidermacs:"
-                 (display-buffer-reuse-window display-buffer-in-side-window)
+                 (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
                  (side . right)
-                 (window-width . 0.4)
                  (reusable-frames . visible))))
 
 (use-package claude-code
@@ -1022,9 +1039,8 @@
 
   (add-to-list 'display-buffer-alist
                '("^\\*claude\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (window-width . 0.4))))
+                 (my-display-buffer-in-side-window-adaptive)
+                 (side . right))))
 
 (use-package eat
   :ensure t
