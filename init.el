@@ -846,6 +846,8 @@
                                                 copilot-chat-prompt
                                               (concat copilot-chat-prompt "\nYou should reply in Japanese.")))
                                       (setq buffer-face-mode-face `(:background "#0f0f14"))
+                                      (setq-local left-margin-width 2)
+                                      (setq-local right-margin-width 2)
                                       (buffer-face-mode 1))))
   :config
   (setq shell-maker-prompt-before-killing-buffer nil)
@@ -892,7 +894,7 @@
                '("\\*Copilot Chat"
                  (display-buffer-reuse-window display-buffer-in-side-window)
                  (side . right)
-                 (window-width . 0.33)
+                 (window-width . 0.4)
                  (reusable-frames . visible))))
 
 (use-package aidermacs
@@ -909,6 +911,8 @@
   (defun my-aidermacs-setup-buffer-face ()
     "Set up buffer face for aidermacs."
     (setq-local buffer-face-mode-face `(:background "#0b0e11"))
+    (setq-local left-margin-width 2)
+    (setq-local right-margin-width 2)
     (buffer-face-mode 1))
   :config
   ;; 設定値は ~/aider.conf.yml で設定するので、defcutomの値は設定しない
@@ -963,7 +967,7 @@
                '("\\*aidermacs:"
                  (display-buffer-reuse-window display-buffer-in-side-window)
                  (side . right)
-                 (window-width . 0.33)
+                 (window-width . 0.4)
                  (reusable-frames . visible))))
 
 (use-package claude-code
@@ -976,7 +980,9 @@
   (defun sm-setup-claude-faces ()
     "Set up buffer face for claude-code."
     (variable-pitch-mode 1)
-    (face-remap-add-relative 'variable-pitch :background "#0b0e11"))
+    (face-remap-add-relative 'variable-pitch :background "#0b0e11")
+    (setq-local left-margin-width 2)
+    (setq-local right-margin-width 2))
   :config
   (claude-code-mode)
   (setq claude-code-read-only-mode-cursor-type '(box nil nil))
@@ -1018,7 +1024,7 @@
                '("^\\*claude\\*"
                  (display-buffer-in-side-window)
                  (side . right)
-                 (window-width . 0.33))))
+                 (window-width . 0.4))))
 
 (use-package eat
   :ensure t
