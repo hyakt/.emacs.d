@@ -1334,6 +1334,38 @@
   :bind (;; C-x bindings (ctl-x-map)
          ("C-x C-b" . consult-buffer)
          ("C-x f" . consult-fd)
+         ;; consult-ripgrepの検索構文メモ
+         ;;
+         ;; 1. 基本的な使い方:
+         ;;    - 「pattern -- options」形式で検索オプションを指定できる
+         ;;    - パターンとオプションは「--」で区切る
+         ;;
+         ;; 2. コンテキスト行表示:
+         ;;    - 「検索語 -- -C3」     前後3行表示
+         ;;    - 「検索語 -- -B2 -A4」 前2行・後4行表示
+         ;;
+         ;; 3. 複数キーワード検索:
+         ;;    - 「word1 word2」      word1とword2の両方を含む（順不同）
+         ;;    - 「"exact phrase"」   完全一致フレーズを検索
+         ;;
+         ;; 4. 正規表現:
+         ;;    - 「pattern.*another」  patternの後にanotherがある行
+         ;;    - 「\bword\b」          単語境界のwordを検索
+         ;;
+         ;; 5. 特定ファイル検索:
+         ;;    - 「pattern -- -g "*.js"」   JavaScriptファイルのみ検索
+         ;;    - 「pattern -- -g "!*.min.*"」最小化ファイルを除外
+         ;;
+         ;; 6. 固定文字列検索（正規表現でなく）:
+         ;;    - 「検索語 -- -F」      正規表現記号をただの文字として扱う
+         ;;
+         ;; 7. 大文字小文字:
+         ;;    - 「検索語 -- -s」      大文字小文字を区別する
+         ;;    - 「検索語 -- -i」      大文字小文字を無視する
+         ;;
+         ;; 8. その他便利なオプション:
+         ;;    - 「検索語 -- -l」      一致したファイル名のみ表示
+         ;;    - 「検索語 -- --hidden」隠しファイルも検索
          ("C-x e" . consult-ripgrep)
          ("C-x C-r" . consult-recent-file)
          ;; Other custom bindings
@@ -1349,6 +1381,7 @@
   :config
   (setq xref-show-xrefs-function 'consult-xref)
   (setq xref-show-definitions-function 'consult-xref)
+  (setq consult-ripgrep-args)
 
   ;; https://github.com/minad/consult/issues/837#issuecomment-1703762384
   (consult-customize
