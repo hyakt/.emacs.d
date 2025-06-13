@@ -1355,6 +1355,8 @@
          ;; 5. 特定ファイル検索:
          ;;    - 「pattern -- -g "*.js"」   JavaScriptファイルのみ検索
          ;;    - 「pattern -- -g "!*.min.*"」最小化ファイルを除外
+         ;;    - 「pattern -- -g "!*.test.*"」テストファイルを除外
+         ;;    - 「pattern -- -g "*.js" -g "!*.test.*"」JSファイルからテストを除外
          ;;
          ;; 6. 固定文字列検索（正規表現でなく）:
          ;;    - 「検索語 -- -F」      正規表現記号をただの文字として扱う
@@ -1381,7 +1383,6 @@
   :config
   (setq xref-show-xrefs-function 'consult-xref)
   (setq xref-show-definitions-function 'consult-xref)
-  (setq consult-ripgrep-args)
 
   ;; https://github.com/minad/consult/issues/837#issuecomment-1703762384
   (consult-customize
