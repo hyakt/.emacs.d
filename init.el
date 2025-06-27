@@ -853,26 +853,27 @@
 (use-package copilot-chat
   :ensure t
   :demand t
-  :pin stable
   :bind (("M-q" . copilot-chat-toggle))
   :after magit
+  :init
+  (setopt copilot-chat-frontend 'shell-maker)
   :hook ((git-commit-setup . copilot-chat-insert-commit-message)
-         (copilot-chat-shell-mode . (lambda ()
-                                      (keymap-local-set "C-c C-t" #'gt-do-translate)
-                                      (keymap-local-set "C-d" #'copilot-chat-close)
-                                      (setq copilot-chat-prompt
-                                            (if (string-match-p "Conventional Commits" copilot-chat-prompt)
-                                                copilot-chat-prompt
-                                              (concat copilot-chat-prompt "\nYou should reply in Japanese.")))
-                                      (setq buffer-face-mode-face `(:background "#0f0f14"))
-                                      (setq-local left-margin-width 2)
-                                      (setq-local right-margin-width 2)
-                                      (buffer-face-mode 1))))
+         (comint-mode . (lambda ()
+                          (let ((mode-name (symbol-name major-mode)))
+                            (when (and (string-match-p "copilot-chat" mode-name)
+                                       (string-match-p "shell-mode" mode-name))
+                              (progn
+                                (keymap-local-set "C-c C-t" #'gt-do-translate)
+                                (keymap-local-set "C-d" #'copilot-chat-close)
+                                (setq buffer-face-mode-face `(:background "#0f0f14"))
+                                (setq-local left-margin-width 2)
+                                (setq-local right-margin-width 2)
+                                (buffer-face-mode 1)
+                                ))))))
   :config
-  (setq shell-maker-prompt-before-killing-buffer nil)
-  (setq shell-maker-display-function #'display-buffer)
-  (setq copilot-chat-frontend 'shell-maker)
-  (setq copilot-chat-commit-prompt (concat "You must reply in English.\n\n" copilot-chat-commit-prompt))
+  (setopt shell-maker-prompt-before-killing-buffer nil)
+  (setopt shell-maker-display-function #'display-buffer)
+  (setopt copilot-chat-commit-prompt (concat "You must reply in English.\n\n" copilot-chat-commit-prompt))
 
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
@@ -908,6 +909,15 @@
           (copilot-chat-list-clear-buffers)
           (kill-buffer)
           (delete-window))))
+
+  (defun my-copilot-chat-use-current-directory (orig-fun &rest args)
+    "Advice to automatically use current directory instead of prompting."
+    (cl-letf (((symbol-function 'read-directory-name)
+               (lambda (prompt &optional default-dir &rest _)
+                 (or default-dir default-directory))))
+      (apply orig-fun args)))
+
+  (advice-add 'copilot-chat--create-instance :around #'my-copilot-chat-use-current-directory)
 
   (add-to-list 'display-buffer-alist
                '("\\*Copilot Chat"
