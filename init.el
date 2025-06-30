@@ -873,7 +873,6 @@
   :config
   (setopt shell-maker-prompt-before-killing-buffer nil)
   (setopt shell-maker-display-function #'display-buffer)
-  (setopt copilot-chat-commit-prompt (concat "You must reply in English.\n\n" copilot-chat-commit-prompt))
 
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
@@ -1861,7 +1860,6 @@
   (add-to-list 'treesit-auto-recipe-list typescript-treesit-auto-recipe)
 
   (setq treesit-auto-install t)
-  (delete 'yaml treesit-auto-langs)
   (global-treesit-auto-mode))
 
 (use-package treesit-fold
