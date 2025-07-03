@@ -1742,6 +1742,7 @@
   :config
   (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
+  ;; これで eglot-events-buffer に記録されるログがなくなる
   ;; https://github.com/joaotavora/eglot/issues/43#issuecomment-1132605973
   (setq eglot-events-buffer-size 0)
 
