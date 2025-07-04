@@ -1733,6 +1733,7 @@
 
 (use-package eglot
   :defer t
+  :ensure t
   :commands (eglot-ensure)
   :hook (eglot--managed-mode . (lambda ()
                                  (setq-local completion-at-point-functions
@@ -1740,11 +1741,11 @@
                                                     #'eglot-completion-at-point
                                                     #'tempel-expand)))))
   :config
-  (setq eglot-confirm-server-initiated-edits nil)
   (setq eglot-extend-to-xref t)
-  ;; これで eglot-events-buffer に記録されるログがなくなる
-  ;; https://github.com/joaotavora/eglot/issues/43#issuecomment-1132605973
-  (setq eglot-events-buffer-size 0)
+  ;; M-x eglot-events-buffer に記録されるログのサイズとフォーマット
+  (setq eglot-events-buffer-config (list :size 10000 :format 'full))
+  (setq eglot-autoreconnect nil)
+  (setq eglot-sync-connect 0)
 
   (defun advice-eglot--xref-make-match (old-fn name uri range)
     (cond
@@ -1785,6 +1786,34 @@
                                                      :diagnosticModel 1
                                                      :textDocumentSync 2))))
 
+  ;; TODO: @vue/language-server@3 以上の対応。下記はダメそうだった。
+  ;; (add-to-list 'eglot-server-programs
+  ;;              '(vue-mode . ("vue-language-server" "--stdio"
+  ;;                            :initializationOptions
+  ;;                            (
+  ;;                             :plugins
+  ;;                             [(
+  ;;                               :name "@vue/typescript-plugin"
+  ;;                               :location "@vue/typescript-plugin"
+  ;;                               :languages ["javascript" "typescript" "vue"])]
+  ;;                             :serverMode 0
+  ;;                             :diagnosticModel 1
+  ;;                             :textDocumentSync 2))))
+
+
+  ;; TODO: これは一応動いたが tailwind の補完のタイミングで lsp server が落ちる
+  ;; (add-to-list 'eglot-server-programs '(vue-mode . ("lspx"
+  ;;                                                   "--lsp" "tailwindcss-language-server --stdio"
+  ;;                                                   "--lsp" "vue-language-server --stdio"
+  ;;                                                   :initializationOptions
+  ;;                                                   (:typescript
+  ;;                                                    (:tsdk "node_modules/typescript/lib")
+  ;;                                                    :vue
+  ;;                                                    (:hybridMode :json-false)
+  ;;                                                    :serverMode 0
+  ;;                                                    :diagnosticModel 1
+  ;;                                                    :textDocumentSync 2))))
+
   ;; npm install -g vscode-langservers-extracted
   (add-to-list 'eglot-server-programs '((html-mode) . ("vscode-html-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
@@ -1802,13 +1831,13 @@
   :config
   (eglot-tempel-mode t))
 
-(use-package eglot-booster
-  :after eglot
-  :vc (:fetcher github :repo jdtsmith/eglot-booster)
-  :config
-  (eglot-booster-mode t)
-  ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
-  )
+;; (use-package eglot-booster
+;;   :after eglot
+;;   :vc (:fetcher github :repo jdtsmith/eglot-booster)
+;;   :config
+;;   (eglot-booster-mode t)
+;;   ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
+;;   )
 
 (use-package editorconfig
   :ensure t
@@ -1877,14 +1906,14 @@
   (defhydra smerge-hydra
     (:color pink :hint nil :post (smerge-auto-leave))
     "
-    ^Move^       ^Keep^               ^Diff^                 ^Other^
-    ^^-----------^^-------------------^^---------------------^^-------
-    _n_ext       _b_ase               _<_: upper/base        _C_ombine
-    _p_rev       _u_pper              _=_: upper/lower       _r_esolve
-    ^^           _l_ower              _>_: base/lower        _k_ill current
-    ^^           _a_ll                _R_efine
-    ^^           _RET_: current       _E_diff
-    "
+                                                      ^Move^       ^Keep^               ^Diff^                 ^Other^
+                                                      ^^-----------^^-------------------^^---------------------^^-------
+                                                      _n_ext       _b_ase               _<_: upper/base        _C_ombine
+                                                      _p_rev       _u_pper              _=_: upper/lower       _r_esolve
+                                                      ^^           _l_ower              _>_: base/lower        _k_ill current
+                                                      ^^           _a_ll                _R_efine
+                                                      ^^           _RET_: current       _E_diff
+                                                      "
     ("n" smerge-next)
     ("p" smerge-prev)
     ("b" smerge-keep-base)
