@@ -918,6 +918,23 @@
 
   (advice-add 'copilot-chat--create-instance :around #'my-copilot-chat-use-current-directory)
 
+  (defun my-copilot-chat--shell-name-advice (orig-fn instance)
+    "Advice to modify the :name field in `copilot-chat--shell`."
+    (let ((buf
+           (shell-maker-start
+            (make-shell-maker-config
+             :name "Copilot-Chat"
+             :execute-command
+             (lambda (command shell)
+               (copilot-chat--shell-cb instance command shell)))
+            t nil t
+            (copilot-chat--get-buffer-name (copilot-chat-directory instance)))))
+      (with-current-buffer buf
+        (setq-local default-directory (copilot-chat-directory instance)))
+      buf))
+
+  (advice-add 'copilot-chat--shell :around #'my-copilot-chat--shell-name-advice)
+
   (add-to-list 'display-buffer-alist
                '("\\*Copilot Chat"
                  (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
