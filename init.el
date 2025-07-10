@@ -535,6 +535,10 @@
     (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
     (ignore-errors (flymake-eslint-enable))))
 
+(use-package flycheck
+  :ensure t
+  :defer t)
+
 (use-package delsel
   :config
   (delete-selection-mode t))
@@ -1013,42 +1017,32 @@
                  (side . right)
                  (reusable-frames . visible))))
 
-(use-package claude-code
+(use-package claude-code-ide
   :defer t
-  :vc (:fetcher github :repo stevemolitor/claude-code.el)
-  :bind (("M-C-1" . claude-code-transient)
-         ("M-1" . my-claude-code-toggle))
-  :hook ((claude-code-start . sm-setup-claude-faces))
-  :init
-  (defun sm-setup-claude-faces ()
-    "Set up buffer face for claude-code."
-    (variable-pitch-mode 1)
-    (face-remap-add-relative 'variable-pitch :background "#0b0e11")
-    (setq-local left-margin-width 2)
-    (setq-local right-margin-width 2))
+  :vc (:fetcher github :repo manzaltu/claude-code-ide.el)
+  :bind ("M-1" . my-claude-code-ide-toggle)
   :config
-  (claude-code-mode)
-  (setq claude-code-read-only-mode-cursor-type '(box nil nil))
-
-  (defun my-claude-code-toggle ()
-    "Toggle claude-code buffer visibility."
+  (defun my-claude-code-ide-toggle ()
+    "Toggle claude-code-ide buffer visibility."
     (interactive)
-    (if-let ((win (my-claude-code-get-window)))
-        (my-claude-code-hide)
-      (claude-code)
-      (when-let ((win (my-claude-code-get-window)))
+    (if-let ((win (my-claude-code-ide-get-window)))
+        (my-claude-code-ide-hide)
+      (claude-code-ide)
+      (when-let ((win (my-claude-code-ide-get-window)))
         (select-window win))))
 
-  (defun my-claude-code-hide ()
-    "Hide claude-code buffer."
+  (defun my-claude-code-ide-hide ()
+    "Hide claude-code-ide buffer."
     (interactive)
-    (when-let ((win (my-claude-code-get-window)))
+    (when-let ((win (my-claude-code-ide-get-window)))
       (delete-window win)))
 
-  (defun my-claude-code-close ()
-    "Close claude-code buffer completely."
+  (defun my-claude-code-ide-close ()
+    "Close claude-code-ide buffer completely."
     (interactive)
-    (let ((buffer (get-buffer "*claude*")))
+    (let* ((working-dir (claude-code-ide--get-working-directory))
+           (buffer-name (claude-code-ide--get-buffer-name working-dir))
+           (buffer (get-buffer buffer-name)))
       (when buffer
         (with-current-buffer buffer
           (let ((kill-buffer-query-functions nil))
@@ -1056,28 +1050,12 @@
           (when (window-deletable-p (selected-window))
             (delete-window (selected-window)))))))
 
-  (defun my-claude-code-get-window ()
-    "Get claude-code window if visible."
+  (defun my-claude-code-ide-get-window ()
+    "Get claude-code-ide window if visible."
     (get-window-with-predicate
      (lambda (window)
        (with-current-buffer (window-buffer window)
-         (string-match-p "\\*claude" (buffer-name))))))
-
-  (add-to-list 'display-buffer-alist
-               '("^\\*claude\\*"
-                 (my-display-buffer-in-side-window-adaptive)
-                 (side . right))))
-
-(use-package eat
-  :ensure t
-  :defer t
-  :bind ((:map eat-semi-char-mode-map
-               ("C-o" . nil)
-               ("M-1" . nil)
-               ("C-d" . my-claude-code-close)
-               ("C-c C-j" . claude-code-toggle-read-only-mode)))
-  :config
-  (setq eat-enable-auto-line-mode t))
+         (string-prefix-p "\\*claude-code" (buffer-name)))))))
 
 (use-package comint
   :defer t
@@ -1598,6 +1576,49 @@
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
                  (window-height . 0.3))))
+
+(use-package vterm
+  :ensure t
+  :defer t
+  :bind
+  (:map vterm-mode-map
+        ("M-<up>" . nil)
+        ("M-<down>" . nil)
+        ("M-<left>" . nil)
+        ("M-<right>" . nil))
+  :hook
+  (vterm-mode
+   . (lambda ()
+       (setq-local buffer-face-mode-face `(:family "Menlo" :background "#0b0e11"))
+       (buffer-face-mode t)
+       (setq-local left-margin-width 2)
+       (setq-local right-margin-width 2)))
+  :init
+  (setq vterm-always-compile-module t)
+  ;; delete "C-h", add <f1> and <f2>
+  (setq vterm-keymap-exceptions
+        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s" "M-:" "C-o" "C-d" "M-1"))
+  :config
+  (setq vterm-shell "fish")
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-buffer-name-string "vterm: %s")
+
+  (defun old-version-of-vterm--get-color (index &rest args)
+    "This is the old version before it was broken by commit
+https://github.com/akermu/emacs-libvterm/commit/e96c53f5035c841b20937b65142498bd8e161a40.
+Re-introducing the old version fixes background for vterm buffers."
+    (cond
+     ((and (>= index 0) (< index 16))
+      (face-foreground
+       (elt vterm-color-palette index)
+       nil 'default))
+     ((= index -11)
+      (face-foreground 'vterm-color-underline nil 'default))
+     ((= index -12)
+      (face-background 'vterm-color-inverse-video nil 'default))
+     (t
+      nil)))
+  (advice-add 'vterm--get-color :override #'old-version-of-vterm--get-color))
 
 (use-package gh
   :ensure t
