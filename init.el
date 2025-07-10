@@ -1525,7 +1525,7 @@
   (setq vterm-always-compile-module t)
   ;; delete "C-h", add <f1> and <f2>
   (setq vterm-keymap-exceptions
-        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s" "M-:" "C-o" "C-d" "M-1"))
+        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s" "M-:" "C-o" "M-1"))
   :config
   (setq vterm-shell "fish")
   (setq vterm-max-scrollback 10000)
