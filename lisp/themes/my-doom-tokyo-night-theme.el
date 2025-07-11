@@ -14,7 +14,7 @@ determine the exact padding."
 
 ;;
 (def-doom-theme my-doom-tokyo-night
-  "An clean 80's synthwave / outrun theme inspired by VS Code tokyo-night."
+    "An clean 80's synthwave / outrun theme inspired by VS Code tokyo-night."
 
   ;; name        default   256  16
   ((bg         '("#1a1b26" nil  nil))
@@ -168,6 +168,9 @@ determine the exact padding."
 
    (goggles-removed :background (doom-darken red 0.4))
    (goggles-added :background (doom-darken green 0.4))
+
+   (ediff-fine-diff-A    :background (doom-darken violet 0.4) :weight 'bold)
+   (ediff-current-diff-A :background (doom-darken base0 0.25))
 
    ;; tab-bar-mode faces
    ((tab-line &override) :box '(:line-width (1 . 8) :color nil :style flat-button))
