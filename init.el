@@ -1301,7 +1301,7 @@
          ;;    - 「検索語 -- -l」      一致したファイル名のみ表示
          ;;    - 「検索語 -- --hidden」隠しファイルも検索
          ("C-x e" . consult-ripgrep)
-         ("C-x C-r" . consult-recent-file)
+         ("C-x C-r" . my-tab-bar-filtered-consult-recent-file)
          ;; Other custom bindings
          ("M-y" . consult-yank-pop)
          ;; M-g bindings (goto-map)
@@ -1330,8 +1330,50 @@
    consult-recent-file
    consult--source-buffer
    consult-ls-git
+   my-tab-bar-filtered-consult-recent-file
    :preview-key
-   '("C-." :debounce 0.5 any)))
+   '("C-." :debounce 0.5 any))
+
+  (defun my-tab-bar-filtered-consult-recent-file ()
+    "Show recentf files filtered by current tab-bar tab name if it matches a directory."
+    (interactive)
+    (let* ((tab-name (alist-get 'name (tab-bar--current-tab)))
+           (filtered-files nil)
+           (recentf-list-copy (bound-and-true-p recentf-list)))
+
+      ;; Directory direct match
+      (when (and tab-name (file-directory-p tab-name))
+        (setq filtered-files
+              (seq-filter (lambda (file) (string-prefix-p tab-name file))
+                          recentf-list-copy)))
+
+      ;; Project match (if tab name matches a project name or directory)
+      (when (and (not filtered-files) tab-name)
+        (when-let ((proj-dir (locate-dominating-file default-directory ".git")))
+          (let ((proj-name (file-name-nondirectory (directory-file-name proj-dir))))
+            (when (string= tab-name proj-name)
+              (setq filtered-files
+                    (seq-filter (lambda (file) (string-prefix-p proj-dir file))
+                                recentf-list-copy))))))
+
+      ;; Use original list if no filter applied
+      (unless filtered-files
+        (setq filtered-files recentf-list-copy))
+
+      ;; Find the file using consult--read like consult-recent-file does
+      (find-file
+       (consult--read
+        (mapcar #'consult--fast-abbreviate-file-name filtered-files)
+        :prompt (if (or (and tab-name (file-directory-p tab-name))
+                        (when-let ((proj-dir (locate-dominating-file default-directory ".git")))
+                          (string= tab-name (file-name-nondirectory (directory-file-name proj-dir)))))
+                    (format "Find recent file in %s: " tab-name)
+                  "Find recent file: ")
+        :sort nil
+        :require-match t
+        :category 'file
+        :state (consult--file-preview)
+        :history 'file-name-history)))))
 
 (use-package consult-ghq
   :ensure t
@@ -1533,8 +1575,8 @@
 
   (defun old-version-of-vterm--get-color (index &rest args)
     "This is the old version before it was broken by commit
-https://github.com/akermu/emacs-libvterm/commit/e96c53f5035c841b20937b65142498bd8e161a40.
-Re-introducing the old version fixes background for vterm buffers."
+    https://github.com/akermu/emacs-libvterm/commit/e96c53f5035c841b20937b65142498bd8e161a40.
+    Re-introducing the old version fixes background for vterm buffers."
     (cond
      ((and (>= index 0) (< index 16))
       (face-foreground
@@ -1872,14 +1914,14 @@ Re-introducing the old version fixes background for vterm buffers."
   (defhydra smerge-hydra
     (:color pink :hint nil :post (smerge-auto-leave))
     "
-                                                      ^Move^       ^Keep^               ^Diff^                 ^Other^
-                                                      ^^-----------^^-------------------^^---------------------^^-------
-                                                      _n_ext       _b_ase               _<_: upper/base        _C_ombine
-                                                      _p_rev       _u_pper              _=_: upper/lower       _r_esolve
-                                                      ^^           _l_ower              _>_: base/lower        _k_ill current
-                                                      ^^           _a_ll                _R_efine
-                                                      ^^           _RET_: current       _E_diff
-                                                      "
+    ^Move^       ^Keep^               ^Diff^                 ^Other^
+    ^^-----------^^-------------------^^---------------------^^-------
+    _n_ext       _b_ase               _<_: upper/base        _C_ombine
+    _p_rev       _u_pper              _=_: upper/lower       _r_esolve
+    ^^           _l_ower              _>_: base/lower        _k_ill current
+    ^^           _a_ll                _R_efine
+    ^^           _RET_: current       _E_diff
+    "
     ("n" smerge-next)
     ("p" smerge-prev)
     ("b" smerge-keep-base)
