@@ -231,7 +231,7 @@
                     :family "Source Han Code JP"
                     :height 110)
 (set-face-attribute 'variable-pitch nil
-                    :family "Menlo"
+                    :family "JuliaMono"
                     :height 110)
 (face-remap-add-relative 'variable-pitch :background "#0d1117")
 
@@ -1517,7 +1517,7 @@
   :hook
   (vterm-mode
    . (lambda ()
-       (setq-local buffer-face-mode-face `(:family "Menlo" :background "#0b0e11"))
+       (setq-local buffer-face-mode-face `(:family "JuliaMono" :background "#0b0e11"))
        (buffer-face-mode t)
        (setq-local left-margin-width 2)
        (setq-local right-margin-width 2)))
@@ -1525,7 +1525,7 @@
   (setq vterm-always-compile-module t)
   ;; delete "C-h", add <f1> and <f2>
   (setq vterm-keymap-exceptions
-        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s" "M-:" "C-o" "M-1"))
+        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "C-t" "M-t" "M-s" "M-:" "C-o" "M-1" "M-{" "M-}"))
   :config
   (setq vterm-shell "fish")
   (setq vterm-max-scrollback 10000)
