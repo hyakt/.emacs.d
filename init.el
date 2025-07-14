@@ -80,7 +80,8 @@
   (package-refresh-contents)
   ;; TODO: Remove when https://github.com/slotThe/vc-use-package#installation
   (unless (package-installed-p 'vc-use-package)
-    (package-vc-install "https://github.com/slotThe/vc-use-package")))
+    (package-vc-install "https://github.com/slotThe/vc-use-package"))
+  (require 'vc-use-package))
 
 ;; 読み込まないと init.elc の場合にエラーになる
 (require 'bind-key)
@@ -1853,13 +1854,13 @@
   :config
   (eglot-tempel-mode t))
 
-;; (use-package eglot-booster
-;;   :after eglot
-;;   :vc (:fetcher github :repo jdtsmith/eglot-booster)
-;;   :config
-;;   (eglot-booster-mode t)
-;;   ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
-;;   )
+(use-package eglot-booster
+  :after eglot
+  :vc (:fetcher github :repo jdtsmith/eglot-booster)
+  :config
+  (eglot-booster-mode t)
+  ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
+  )
 
 (use-package editorconfig
   :ensure t
