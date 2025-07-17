@@ -952,39 +952,19 @@
   :bind ("M-1" . my-claude-code-ide-toggle)
   :config
   (defun my-claude-code-ide-toggle ()
-    "Toggle claude-code-ide buffer visibility."
+    "Toggle claude-code-ide buffer visibility.
+     If region is active, call claude-code-ide-insert-at-mentioned and switch to the buffer.
+     If buffer already exists, just switch to it."
     (interactive)
-    (if-let ((win (my-claude-code-ide-get-window)))
-        (my-claude-code-ide-hide)
-      (claude-code-ide)
-      (when-let ((win (my-claude-code-ide-get-window)))
-        (select-window win))))
-
-  (defun my-claude-code-ide-hide ()
-    "Hide claude-code-ide buffer."
-    (interactive)
-    (when-let ((win (my-claude-code-ide-get-window)))
-      (delete-window win)))
-
-  (defun my-claude-code-ide-close ()
-    "Close claude-code-ide buffer completely."
-    (interactive)
-    (let* ((working-dir (claude-code-ide--get-working-directory))
-           (buffer-name (claude-code-ide--get-buffer-name working-dir))
-           (buffer (get-buffer buffer-name)))
-      (when buffer
-        (with-current-buffer buffer
-          (let ((kill-buffer-query-functions nil))
-            (kill-buffer buffer))
-          (when (window-deletable-p (selected-window))
-            (delete-window (selected-window)))))))
-
-  (defun my-claude-code-ide-get-window ()
-    "Get claude-code-ide window if visible."
-    (get-window-with-predicate
-     (lambda (window)
-       (with-current-buffer (window-buffer window)
-         (string-prefix-p "\\*claude-code" (buffer-name)))))))
+    (if-let ((working-dir (claude-code-ide--get-working-directory))
+             (buffer-name (claude-code-ide--get-buffer-name))
+             (existing-buffer (get-buffer buffer-name))
+             (win (get-buffer-window existing-buffer)))
+        (if (use-region-p)
+            (progn (claude-code-ide-insert-at-mentioned)
+                   (select-window win))
+          (select-window win))
+      (claude-code-ide))))
 
 (use-package comint
   :defer t
