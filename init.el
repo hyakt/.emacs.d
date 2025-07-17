@@ -1316,54 +1316,26 @@
    '("C-." :debounce 0.5 any))
 
   (defun my-tab-bar-filtered-consult-recent-file ()
-    "Show recentf files filtered by current tab-bar tab name if it matches a directory."
+    "Show recentf files filtered by current tab-bar tab name."
     (interactive)
-    (let* ((tab-name (alist-get 'name (tab-bar--current-tab)))
-           (filtered-files nil)
+    (let* ((current-tab (tab-bar--current-tab))
+           (tab-name (alist-get 'name current-tab))
+           (explicit-name (alist-get 'explicit-name current-tab))
            (recentf-list-copy (bound-and-true-p recentf-list))
-           (tab-dir nil)
-           (matched-project nil))
-
-      ;; First check if tab-name is a directory
-      (when (and tab-name (file-directory-p tab-name))
-        (setq tab-dir tab-name))
-
-      ;; If not a directory, check if it matches a project in recentf
-      (unless tab-dir
-        (when tab-name
-          ;; Try to find a project directory in recentf that matches tab name
-          (cl-loop for proj in (project-known-project-roots)
-                   for proj-name = (file-name-nondirectory (directory-file-name proj))
-                   when (string= tab-name proj-name)
-                   do (setq matched-project proj)
-                   and return nil)))
-
-      ;; Filter files based on the determined directory
-      (cond
-       (tab-dir
-        ;; Tab name is a directory path
-        (setq filtered-files
-              (seq-filter (lambda (file) (string-prefix-p tab-dir file))
-                          recentf-list-copy)))
-
-       (matched-project
-        ;; Tab name matches a project name
-        (setq filtered-files
-              (seq-filter (lambda (file) (string-prefix-p matched-project file))
-                          recentf-list-copy)))
-
-       (t
-        ;; No matches, use all files
-        (setq filtered-files recentf-list-copy)))
+           (filtered-files
+            (if (and tab-name explicit-name)
+                (seq-filter (lambda (file)
+                              (string-match-p (regexp-quote tab-name) file))
+                            recentf-list-copy)
+              recentf-list-copy)))
 
       ;; Find file using consult--read
       (find-file
        (consult--read
         (mapcar #'consult--fast-abbreviate-file-name filtered-files)
-        :prompt (cond
-                 (tab-dir (format "Find recent file in %s: " tab-name))
-                 (matched-project (format "Find recent file in project %s: " tab-name))
-                 (t "Find recent file: "))
+        :prompt (if (and tab-name explicit-name)
+                    (format "Find recent file (filtered by '%s'): " tab-name)
+                  "Find recent file: ")
         :sort nil
         :require-match t
         :category 'file
