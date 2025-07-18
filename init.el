@@ -953,18 +953,28 @@
   :config
   (defun my-claude-code-ide-toggle ()
     "Toggle claude-code-ide buffer visibility.
+     If current buffer is claude-code-ide, hide it.
      If region is active, call claude-code-ide-insert-at-mentioned and switch to the buffer.
      If buffer already exists, just switch to it."
     (interactive)
     (if-let ((working-dir (claude-code-ide--get-working-directory))
              (buffer-name (claude-code-ide--get-buffer-name))
-             (existing-buffer (get-buffer buffer-name))
-             (win (get-buffer-window existing-buffer)))
-        (if (use-region-p)
-            (progn (claude-code-ide-insert-at-mentioned)
-                   (select-window win))
-          (select-window win))
-      (claude-code-ide))))
+             (existing-buffer (get-buffer buffer-name)))
+        (if (eq (current-buffer) existing-buffer)
+            (my-claude-code-ide-hide)
+          (if-let ((win (get-buffer-window existing-buffer)))
+              (if (use-region-p)
+                  (progn (claude-code-ide-insert-at-mentioned)
+                         (select-window win))
+                (select-window win))
+            (claude-code-ide)))
+      (claude-code-ide)))
+
+  (defun my-claude-code-ide-hide ()
+    "Hide claude-code-ide buffer."
+    (interactive)
+    (if (window-deletable-p)
+        (delete-window))))
 
 (use-package comint
   :defer t
