@@ -536,10 +536,6 @@
     (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
     (ignore-errors (flymake-eslint-enable))))
 
-(use-package flycheck
-  :ensure t
-  :defer t)
-
 (use-package delsel
   :config
   (delete-selection-mode t))
@@ -951,6 +947,9 @@
   :vc (:fetcher github :repo manzaltu/claude-code-ide.el)
   :bind ("M-1" . my-claude-code-ide-toggle)
   :config
+  (setq claude-code-ide-terminal-backend 'vterm)
+  (setq claude-code-ide-diagnostics-backend 'flymake)
+
   (defun my-claude-code-ide-toggle ()
     "Toggle claude-code-ide buffer visibility.
      If current buffer is claude-code-ide, hide it.
