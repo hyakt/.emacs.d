@@ -480,7 +480,7 @@
 (use-package ediff
   :defer t
   :config
-  (setopt ediff-split-window-function 'split-window-horizontally)
+  (setopt ediff-split-window-function #'split-window-vertically)
   (setopt ediff-window-setup-function #'ediff-setup-windows-plain))
 
 (use-package flymake
@@ -2240,10 +2240,9 @@
   :ensure t
   :defer t)
 
-(use-package eglot-java
+(use-package groovy-mode
   :ensure t
-  :defer t
-  :hook (java-ts-mode . eglot-java-mode))
+  :defer t)
 
 (use-package scala-mode
   :ensure t
