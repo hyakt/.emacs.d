@@ -170,7 +170,7 @@ determine the exact padding."
    (goggles-added :background (doom-darken green 0.4))
 
    (ediff-fine-diff-A    :background (doom-darken violet 0.4) :weight 'bold)
-   (ediff-current-diff-A :background (doom-darken base0 0.25))
+   (ediff-current-diff-A :background (doom-darken cyan 0.25))
 
    ;; tab-bar-mode faces
    ((tab-line &override) :box '(:line-width (1 . 8) :color nil :style flat-button))

@@ -480,8 +480,21 @@
 (use-package ediff
   :defer t
   :config
-  (setopt ediff-split-window-function #'split-window-vertically)
-  (setopt ediff-window-setup-function #'ediff-setup-windows-plain))
+  (setopt ediff-diff-program "diff")
+  (setopt ediff-diff-options "-w")
+  (setopt ediff-split-window-function #'split-window-horizontally)
+  (setopt ediff-window-setup-function #'ediff-setup-windows-plain)
+
+  (defvar my-ediff-last-windows nil)
+
+  (defun my-store-pre-ediff-winconfig ()
+    (setq my-ediff-last-windows (current-window-configuration)))
+
+  (defun my-restore-pre-ediff-winconfig ()
+    (set-window-configuration my-ediff-last-windows))
+
+  (add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
+  (add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig))
 
 (use-package flymake
   :defer t
