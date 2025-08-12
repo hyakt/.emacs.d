@@ -487,12 +487,17 @@
 
   (defvar my-ediff-last-windows nil)
 
+  (defun my-ediff-select-input-source ()
+    "Switch to ASCII input source when ediff starts."
+    (mac-auto-ascii-select-input-source))
+
   (defun my-store-pre-ediff-winconfig ()
     (setq my-ediff-last-windows (current-window-configuration)))
 
   (defun my-restore-pre-ediff-winconfig ()
     (set-window-configuration my-ediff-last-windows))
 
+  (add-hook 'ediff-startup-hook #'my-ediff-select-input-source)
   (add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
   (add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig))
 
