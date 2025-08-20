@@ -1745,7 +1745,7 @@
   :config
   (setq eglot-extend-to-xref t)
   ;; M-x eglot-events-buffer に記録されるログのサイズとフォーマット
-  (setq eglot-events-buffer-config (list :size 10000 :format 'full))
+  (setq eglot-events-buffer-config (list :size 20000 :format 'full))
   (setq eglot-autoreconnect nil)
   (setq eglot-sync-connect 0)
 
@@ -2147,7 +2147,22 @@
 
 (use-package yaml-ts-mode
   :defer t
-  :mode ("\\.ya?ml\\'"))
+  :mode ("\\.ya?ml\\'")
+  :hook (yaml-ts-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+               '(yaml-ts-mode . ("yaml-language-server" "--stdio"
+                                 :initializationOptions
+                                 (:yaml
+                                  (:format
+                                   (:enable t)
+                                   :validate t
+                                   :hover t
+                                   :completion t
+                                   :schemaStore
+                                   (:enable t)
+                                   )
+                                  )))))
 
 (use-package jq-mode
   :ensure t
