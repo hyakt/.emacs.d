@@ -1565,7 +1565,6 @@
   :config
   (setq vterm-shell "fish")
   (setq vterm-max-scrollback 10000)
-  (setq vterm-buffer-name-string "vterm: %s")
 
   (defun old-version-of-vterm--get-color (index &rest args)
     "This is the old version before it was broken by commit
