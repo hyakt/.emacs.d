@@ -2183,10 +2183,6 @@
   :ensure t
   :defer t)
 
-(use-package eslintd-fix
-  :ensure t
-  :defer t)
-
 (use-package ruby-mode
   :ensure t
   :defer t
