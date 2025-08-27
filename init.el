@@ -1653,6 +1653,13 @@
                  (reusable-frames . visible)
                  (window-height . 0.6)))
 
+  (defun my-magit-git-push-advice (&rest _args)
+    "Run `magit-process` after `magit-git-push`."
+    (magit-process-buffer))
+
+  ;; Add the advice to `magit-git-push`
+  (advice-add 'magit-git-push :after #'my-magit-git-push-advice)
+
   (pretty-hydra-define
     git
     (:title (with-faicon "nf-fa-git" "Git commands" 1 -0.05) :quit-key "q")
