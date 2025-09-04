@@ -131,43 +131,108 @@ Add TRAILING-SPACE if specified."
        (message full-command)))))
 
 ;;;###autoload
-(defun my-tsc-error-find-file-buffer ()
-  "Show tsc error on buffer."
-  (interactive)
-  (my-projectile-run-async-shell-command-in-root
-   "npx tsc --noEmit --pretty false | sed -E \"s/^ +.*//g\" | sed -E \"s/\\([0-9]+,[0-9]+\\):.*//g\" | sort | uniq | sed -E \"s/(.*)/\\(find-file-other-window \\\"\\1\\\"\\)/g\""
-   "*My TSC Errors*"))
+(defun my-tsc-error-find-file-buffer (&optional tsc-command)
+  "Show tsc error on buffer.
+Optional argument TSC-COMMAND is the TypeScript check command to use.
+If not provided, it will detect and use the appropriate command based on the project."
+  (interactive
+   (list (let* ((pkg-manager (my-js-detect-package-manager))
+                (runner (my-js-get-package-runner pkg-manager))
+                (default-command (concat runner " tsc --noEmit"))
+                (project-root (projectile-project-root))
+                (tsconfig (and project-root
+                               (file-exists-p (concat project-root "tsconfig.json"))))
+                (has-type-check (and project-root
+                                     (with-temp-buffer
+                                       (insert-file-contents (concat project-root "package.json"))
+                                       (goto-char (point-min))
+                                       (when (re-search-forward "\"type-check\"\\s-*:" nil t)
+                                         t))))
+                (suggested-command (cond
+                                    (has-type-check (concat runner " type-check"))
+                                    (tsconfig default-command)
+                                    (t default-command))))
+           (read-string "TypeScript check command: " suggested-command nil default-command))))
+  (let ((command (or tsc-command
+                     (let ((pkg-manager (my-js-detect-package-manager)))
+                       (concat (my-js-get-package-runner pkg-manager) " tsc --noEmit")))))
+    (my-projectile-run-async-shell-command-in-root
+     (concat command " --pretty false | "
+             ;; 重要なエラー情報を抽出（簡略化したアプローチ）
+             "grep -E '^[^[:space:]].*\\([0-9]+,[0-9]+\\):' | "
+             "grep -v 'node_modules' | "
+             "sed -E 's/^([^(]+)\\(([0-9]+,[0-9]+)\\): (.*)/\\1 - \\3/' | "
+             "sort | uniq | "
+             ;; 実際に存在するファイルのみをフィルタリング（awkを使用）
+             "awk 'BEGIN { "
+             "RED=\"\\033[1;31m\"; " ; 赤色（エラー用）
+             "RESET=\"\\033[0m\"; " ; リセット
+             "} "
+             "{ split($0, parts, \" - \"); file=parts[1]; msg=substr($0, length(file) + 4); "
+             "cmd=\"test -f \\\"\" file \"\\\" && echo 1 || echo 0\"; cmd | getline exists; close(cmd); "
+             "if (exists==\"1\") print \"\\n\" RED \"[ERROR]\" RESET \" \" msg \"\\n    => (find-file-other-window \\\"\" file \"\\\")\" }' ")
+     "*My TSC Errors*")))
 
 ;;;###autoload
-(defun my-eslint-error-find-file-buffer ()
-  "Show eslint error on buffer."
-  (interactive)
-  (my-projectile-run-async-shell-command-in-root
-   "npx eslint --quiet --format compact . | sed -E 's/^([\\/\\._a-zA-Z0-9]+):.*\\((.*)\\)$/[\\2] (find-file-other-buffer \"\\1\")/g'"
-   "*My Eslint Errors*"))
+(defun my-eslint-error-find-file-buffer (&optional eslint-command)
+  "Show sorted eslint warning on buffer.
+Optional argument ESLINT-COMMAND is the eslint command to use.
+If not provided, it will detect and use the appropriate command based on the project."
+  (interactive
+   (list (let* ((pkg-manager (my-js-detect-package-manager))
+                (runner (my-js-get-package-runner pkg-manager))
+                (default-command (concat runner " eslint")))
+           (read-string "ESLint command: " default-command nil default-command))))
+  (let ((command (or eslint-command
+                     (let ((pkg-manager (my-js-detect-package-manager)))
+                       (concat (my-js-get-package-runner pkg-manager) " eslint")))))
+    (my-projectile-run-async-shell-command-in-root
+     (concat command " --format json . | "
+             "jq '.[] | select(.messages | length > 0) | .filePath + \" (\" + (.messages[0].ruleId // \"error\") + \") \" + .messages[0].message' | "
+             "grep -v \"node_modules\" | "
+             "sort | "
+             "sed -E 's/(.*) \\((.*)\\) (.*)/\\n\\1\\n[\\2] \\3\\n(find-file-other-buffer \"\\1\")/g' | "
+             "awk 'BEGIN { "
+             "YELLOW=\"\\033[1;33m\"; " ; 黄色（警告用）
+             "RESET=\"\\033[0m\"; " ; リセット
+             "} "
+             "{ if ($0 ~ /^\\[/) { "
+             "  gsub(/^\\[(.*?)\\]/, YELLOW \"&\" RESET); "
+             "} "
+             "print $0 }"
+             "'")
+     "*My Eslint Warnings*")))
 
 ;;;###autoload
-(defun my-eslint-warning-sorted-by-error-find-file-buffer ()
-  "Show sorted eslint warning on buffer."
-  (interactive)
-  (my-projectile-run-async-shell-command-in-root
-   "npx eslint --format compact . | sort -k 2 -t \"(\" | sed -E 's/^([\\/\\._a-zA-Z0-9]+):.*\\((.*)\\)$/[\\2] (find-file-other-buffer \"\\1\")/g'"
-   "*My Eslint Errors*"))
-
-;;;###autoload
-(defun my-eslint-spefic-error-find-file-buffer (error-name)
-  "Show eslint ERROR-NAME error on buffer."
-  (interactive "sError name: ")
-  (my-projectile-run-async-shell-command-in-root
-   (concat
-    "echo Error: "
-    error-name
-    ";echo -----------------------------------------\n\n;"
-    "npx eslint --format json . | jq '.[] | {filePath: .filePath, ruleId: .messages[].ruleId}' | jq -s '.[] | select (.ruleId ==\""
-    error-name
-    "\")' | grep filePath | sed -E 's/ +\"filePath\": \"(.*)\".*/\\(find-file-other-window \\\"\\1\\\"\\)/g' | uniq"
-    )
-   "*My Eslint Specific Errors*"))
+(defun my-eslint-spefic-error-find-file-buffer (error-name &optional eslint-command)
+  "Show eslint ERROR-NAME error on buffer.
+Optional argument ESLINT-COMMAND is the eslint command to use."
+  (interactive
+   (list
+    (read-string "Error name: ")
+    (let* ((pkg-manager (my-js-detect-package-manager))
+           (runner (my-js-get-package-runner pkg-manager))
+           (default-command (concat runner " eslint")))
+      (read-string "ESLint command: " default-command nil default-command))))
+  (let ((command (or eslint-command
+                     (let ((pkg-manager (my-js-detect-package-manager)))
+                       (concat (my-js-get-package-runner pkg-manager) " eslint")))))
+    (my-projectile-run-async-shell-command-in-root
+     (concat
+      "RED=\"\\033[1;31m\"; " ; 赤色（エラー用）
+      "RESET=\"\\033[0m\"; " ; リセット
+      "echo \"Rule: ${RED}" error-name "${RESET}\"; "
+      "echo \"-----------------------------------------\"; "
+      "echo; "
+      command " --format json . | "
+      "jq '.[] | select(.messages | map(select(.ruleId == \"" error-name "\")) | length > 0) | "
+      "\".filePath + \\\" (line: \\\" + (.messages[0].line | tostring) + \\\")\\\"\"' | "
+      "grep -v \"node_modules\" | "
+      "xargs -I{} bash -c 'eval \"echo ${BLUE}$1${RESET}\"' -- {} | "
+      "sed -E 's/(.*)/\\1\\n(find-file-other-window \"\\1\")/g' | "
+      "xargs -I{} bash -c 'if [[ \"{}\" == \"(find-file\"* ]]; then eval \"echo ${YELLOW}{}${RESET}\"; else echo \"{}\"; fi' | "
+      "sort | uniq")
+     "*My Eslint Specific Errors*")))
 
 ;;;###autoload
 (defun my-eslint-fix-file ()
