@@ -240,15 +240,22 @@ Watch vitest for current file and copy command to clipboard." t)
 (autoload 'my-vitest-command-watch-tmux "my-js" "\
 Watch vitest for current file in another tmux pane." t)
 (autoload 'my-tsc-error-find-file-buffer "my-js" "\
-Show tsc error on buffer." t)
+Show tsc error on buffer.
+Optional argument TSC-COMMAND is the TypeScript check command to use.
+If not provided, it will detect and use the appropriate command based on the project.
+
+(fn &optional TSC-COMMAND)" t)
 (autoload 'my-eslint-error-find-file-buffer "my-js" "\
-Show eslint error on buffer." t)
-(autoload 'my-eslint-warning-sorted-by-error-find-file-buffer "my-js" "\
-Show sorted eslint warning on buffer." t)
+Show sorted eslint warning on buffer.
+Optional argument ESLINT-COMMAND is the eslint command to use.
+If not provided, it will detect and use the appropriate command based on the project.
+
+(fn &optional ESLINT-COMMAND)" t)
 (autoload 'my-eslint-spefic-error-find-file-buffer "my-js" "\
 Show eslint ERROR-NAME error on buffer.
+Optional argument ESLINT-COMMAND is the eslint command to use.
 
-(fn ERROR-NAME)" t)
+(fn ERROR-NAME &optional ESLINT-COMMAND)" t)
 (autoload 'my-eslint-fix-file "my-js" "\
 Run eslint for current file." t)
 (register-definition-prefixes "my-js" '("my-"))

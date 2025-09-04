@@ -651,19 +651,21 @@
   :ensure t
   :defer t
   :bind
-  (("M-." . my-goto-address-or-smart-jump)
+  (("M-." . my-custom-smart-jump)
    ("M-," . smart-jump-back)
    ("M-'" . smart-jump-references))
   :config
-  (defun my-goto-address-or-smart-jump ()
+  (defun my-custom-smart-jump ()
     (interactive)
-    (let ((url (thing-at-point 'url)))
-      (if url
-          (browse-url url)
-        (smart-jump-go))))
+    (let
+        ((url (thing-at-point 'url))
+         (filename (thing-at-point 'existing-filename)))
+      (cond
+       (url (browse-url url))
+       (filename (ffap))
+       (t (smart-jump-go)))))
 
   (setq smart-jump-bind-keys nil)
-
   (smart-jump-setup-default-registers)
   (smart-jump-register :modes 'js-ts-mode
                        :jump-fn 'xref-find-definitions
@@ -690,7 +692,7 @@
   (setq jumplist-hook-commands
         '(avy-goto-char
           mouse-set-point
-          my-goto-address-or-smart-jump smart-jump-go smart-jump-ref
+          my-custom-smart-jump smart-jump-go smart-jump-ref
           xref-find-definitions xref-find-references
           dump-jump-go
           vr/query-replace
