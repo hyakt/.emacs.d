@@ -342,6 +342,15 @@ Switch to other window or split window and kill minibuffer." t)
 テキストからICSファイルを作成し、デスクトップに保存します。
 
 (fn TEXT)" t)
+(autoload 'my-show-unixtime-at-point-or-region "my-util" "\
+ポイントまたはリージョンのUNIXTIMEを日本語形式で表示する。" t)
+(autoload 'my-insert-unixtime "my-util" "\
+指定した時間または現在時刻をUNIXTIMEとして挿入する。
+TIME-STRが与えられた場合は、ISO8601形式の時間文字列をUNIXTIMEに変換する。
+例: 2020-01-15T16:12:21Z, 2023-12-25T10:30:00+09:00
+指定がない場合は現在時刻のUNIXTIMEを挿入する。
+
+(fn &optional TIME-STR)" t)
 (register-definition-prefixes "my-util" '("char-unicode" "minibuffer-keyboard-quit" "my-" "open-today-org-file-format" "unicode-char" "url-"))
 
 

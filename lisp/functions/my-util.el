@@ -307,6 +307,38 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (insert text))
     (message "ICSファイルを保存しました: %s" filename)))
 
+;;;###autoload
+(defun my-show-unixtime-at-point-or-region ()
+  "ポイントまたはリージョンのUNIXTIMEを日本語形式で表示する。"
+  (interactive)
+  (let* ((unixtime (if (region-active-p)
+                       (string-to-number (buffer-substring-no-properties
+                                          (region-beginning)
+                                          (region-end)))
+                     (string-to-number (thing-at-point 'word))))
+         (time-spec (seconds-to-time unixtime))
+         (format-string "%Y/%m/%d %H:%M:%S")
+         (system-time-locale "ja_JP.UTF-8"))
+    (message "%s => %s" unixtime (format-time-string format-string time-spec))))
+
+;;;###autoload
+(defun my-insert-unixtime (&optional time-str)
+  "指定した時間または現在時刻をUNIXTIMEとして挿入する。
+TIME-STRが与えられた場合は、ISO8601形式の時間文字列をUNIXTIMEに変換する。
+例: 2020-01-15T16:12:21Z, 2023-12-25T10:30:00+09:00
+指定がない場合は現在時刻のUNIXTIMEを挿入する。"
+  (interactive
+   (list
+    (read-string "Time (ISO8601 format, default: now): ")))
+  (let ((unixtime
+         (if (and time-str (not (string= time-str "")))
+             (condition-case nil
+                 (float-time (date-to-time time-str))
+               (error (float-time)))
+           (float-time))))
+    (insert (format "%.0f" unixtime))))
+
+
 (provide 'my-util)
 
 ;;; my-util.el ends here
