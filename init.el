@@ -547,9 +547,8 @@
   :ensure t
   :after flymake
   :init
-  (defun enable-flymake-eslint-without-eglot ()
-    (setq-local eglot-stay-out-of '(flymake))
-    (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
+  (defun enable-flymake-eslint-without-lsp ()
+    (setq-local lsp-diagnostics-provider :none)
     (ignore-errors (flymake-eslint-enable))))
 
 (use-package delsel
@@ -1824,113 +1823,33 @@ If not in a project, return a global default name."
   (setq git-link-open-in-browser t)
   (setq git-link-use-commit t))
 
-(use-package eglot
+(use-package lsp-mode
+  :ensure t
   :defer t
-  :ensure t
-  :commands (eglot-ensure)
-  :hook (eglot--managed-mode . (lambda ()
-                                 (setq-local completion-at-point-functions
-                                             (list (cape-capf-super
-                                                    #'eglot-completion-at-point
-                                                    #'tempel-expand)))))
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode-hook . (lambda ()
+                           (setq-local completion-at-point-functions
+                                       (list (cape-capf-super
+                                              #'lsp-completion-at-point
+                                              #'tempel-expand)))))
+  :init
+  (setq lsp-keymap-prefix "C-c i")
   :config
-  (setq eglot-extend-to-xref t)
-  ;; M-x eglot-events-buffer に記録されるログのサイズとフォーマット
-  (setq eglot-events-buffer-config (list :size 20000 :format 'full))
-  (setq eglot-autoreconnect nil)
-  (setq eglot-sync-connect 0)
-
-  (defun advice-eglot--xref-make-match (old-fn name uri range)
-    (cond
-     ((string-prefix-p "deno:/" uri)
-      (let ((contents (jsonrpc-request (eglot--current-server-or-lose)
-                                       :deno/virtualTextDocument
-                                       (list :textDocument (list :uri uri))))
-            (filepath (concat (temporary-file-directory)
-                              (replace-regexp-in-string "^deno:/\\(.*\\)$" "\\1" (url-unhex-string uri)))))
-        (unless (file-exists-p filepath)
-          (make-empty-file filepath 't)
-          (write-region contents nil filepath nil 'silent nil nil))
-        (apply old-fn (list name filepath range))))
-     (t
-      (apply old-fn (list name uri range)))))
-
-  (advice-add 'eglot--xref-make-match :around #'advice-eglot--xref-make-match)
-
-  ;; https://github.com/joaotavora/eglot/discussions/999
-  (defun es-server-program (_)
-    "Decide which server to use for ECMA Script based on project characteristics."
-    (cond ((my-deno-project-p) '("deno" "lsp" :initializationOptions (:enable t :lint t :unstable t)))
-          ((my-node-project-p) '("typescript-language-server" "--stdio"))
-          (t                nil)))
-
-  (add-to-list 'eglot-server-programs '(((js-ts-mode :language-id "javascript")
-                                         (typescript-ts-mode :language-id "typescript")
-                                         (tsx-ts-mode :language-id "typescriptreact")) . es-server-program))
-
-  ;; npm i -g @vue/language-server
-  (add-to-list 'eglot-server-programs '(vue-mode . ("vue-language-server" "--stdio"
-                                                    :initializationOptions
-                                                    (:typescript
-                                                     (:tsdk "node_modules/typescript/lib")
-                                                     :vue
-                                                     (:hybridMode :json-false)
-                                                     :serverMode 0
-                                                     :diagnosticModel 1
-                                                     :textDocumentSync 2))))
-
-  ;; TODO: @vue/language-server@3 以上の対応。下記はダメそうだった。
-  ;; (add-to-list 'eglot-server-programs
-  ;;              '(vue-mode . ("vue-language-server" "--stdio"
-  ;;                            :initializationOptions
-  ;;                            (
-  ;;                             :plugins
-  ;;                             [(
-  ;;                               :name "@vue/typescript-plugin"
-  ;;                               :location "@vue/typescript-plugin"
-  ;;                               :languages ["javascript" "typescript" "vue"])]
-  ;;                             :serverMode 0
-  ;;                             :diagnosticModel 1
-  ;;                             :textDocumentSync 2))))
-
-
-  ;; TODO: これは一応動いたが tailwind の補完のタイミングで lsp server が落ちる
-  ;; (add-to-list 'eglot-server-programs '(vue-mode . ("lspx"
-  ;;                                                   "--lsp" "tailwindcss-language-server --stdio"
-  ;;                                                   "--lsp" "vue-language-server --stdio"
-  ;;                                                   :initializationOptions
-  ;;                                                   (:typescript
-  ;;                                                    (:tsdk "node_modules/typescript/lib")
-  ;;                                                    :vue
-  ;;                                                    (:hybridMode :json-false)
-  ;;                                                    :serverMode 0
-  ;;                                                    :diagnosticModel 1
-  ;;                                                    :textDocumentSync 2))))
-
-  ;; npm install -g vscode-langservers-extracted
-  (add-to-list 'eglot-server-programs '((html-mode) . ("vscode-html-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs '((css-mode scss-mode) . ("vscode-css-language-server" "--stdio")))
-
-  ;; npm i -g @astrojs/language-server
-  (add-to-list 'eglot-server-programs
-               '(astro-mode . ("astro-ls" "--stdio"
-                               :initializationOptions
-                               (:typescript (:tsdk "./node_modules/typescript/lib")))))
-  )
-
-(use-package eglot-tempel
-  :ensure t
-  :after (eglot tempel)
-  :config
-  (eglot-tempel-mode t))
-
-(use-package eglot-booster
-  :after eglot
-  :vc (:fetcher github :repo jdtsmith/eglot-booster)
-  :config
-  (eglot-booster-mode t)
-  ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
-  )
+  (setq lsp-completion-provider :none)
+  (setq lsp-log-io nil) ; nil
+  (setq lsp-enable-indentation nil)
+  (setq lsp-headerline-breadcrumb-enable nil) ; nil
+  (setq lsp-modeline-code-actions-enable nil) ; nil
+  (setq lsp-modeline-diagnostics-enable t) ; nil
+  (setq lsp-lens-enable t) ; nil
+  (setq lsp-signature-auto-activate t) ; nil
+  (setq lsp-signature-render-documentation t) ; nil
+  (setq lsp-eldoc-enable-hover t)
+  (setq lsp-eldoc-render-all t)
+  (setq lsp-enable-file-watchers t) ; nil
+  (setq lsp-enable-folding nil) ; nil
+  (setq lsp-enable-symbol-highlighting t) ; nil
+  (setq lsp-enable-text-document-color t)) ; nil
 
 (use-package editorconfig
   :ensure t
@@ -2128,12 +2047,12 @@ If not in a project, return a global default name."
   :hook ((vue-mode .
                    (lambda ()
                      (add-node-modules-path)
-                     (eglot-ensure)
-                     (enable-flymake-eslint-without-eglot)))
+                     (lsp-deferred)
+                     (enable-flymake-eslint-without-lsp)))
          (astro-mode .
                      (lambda ()
                        (add-node-modules-path)
-                       (eglot-ensure))))
+                       (lsp-deferred))))
   :config
   (setq web-mode-engines-alist
         '(("django"    .  "\\.vento")
@@ -2188,7 +2107,7 @@ If not in a project, return a global default name."
 
 (use-package css-mode
   :defer t
-  :hook ((css-mode scss-mode) . eglot-ensure)
+  :hook ((css-mode scss-mode) . lsp-deferred)
   :config
   (setq css-indent-offset 2))
 
@@ -2205,9 +2124,9 @@ If not in a project, return a global default name."
   :mode ("\\.[mc]?js$" . js-ts-mode)
   :hook
   ((js-ts-mode . (lambda ()
-                   (eglot-ensure)
+                   (lsp-deferred)
                    (when (my-node-project-p)
-                     (enable-flymake-eslint-without-eglot)))))
+                     (enable-flymake-eslint-without-lsp)))))
   :config
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
@@ -2218,9 +2137,9 @@ If not in a project, return a global default name."
          ("\\.tsx$" . tsx-ts-mode))
   :hook
   (typescript-ts-base-mode . (lambda ()
-                               (eglot-ensure)
+                               (lsp-deferred)
                                (when (my-node-project-p)
-                                 (enable-flymake-eslint-without-eglot))))
+                                 (enable-flymake-eslint-without-lsp))))
   :config
   (major-mode-hydra-define typescript-ts-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
@@ -2239,21 +2158,7 @@ If not in a project, return a global default name."
 (use-package yaml-ts-mode
   :defer t
   :mode ("\\.ya?ml\\'")
-  :hook (yaml-ts-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs
-               '(yaml-ts-mode . ("yaml-language-server" "--stdio"
-                                 :initializationOptions
-                                 (:yaml
-                                  (:format
-                                   (:enable t)
-                                   :validate t
-                                   :hover t
-                                   :completion t
-                                   :schemaStore
-                                   (:enable t)
-                                   )
-                                  )))))
+  :hook (yaml-ts-mode . lsp-deferred))
 
 (use-package jq-mode
   :ensure t
@@ -2282,7 +2187,7 @@ If not in a project, return a global default name."
   :defer t
   :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
   :hook
-  (ruby-mode . eglot-ensure)
+  (ruby-mode . lsp-deferred)
   (ruby-mode . inf-ruby-minor-mode)
   (ruby-mode . inf-ruby-switch-setup)
   :interpreter ("pry")
@@ -2346,7 +2251,7 @@ If not in a project, return a global default name."
 (use-package go-mode
   :ensure t
   :defer t
-  :hook (go-mode . eglot-ensure))
+  :hook (go-mode . lsp-deferred))
 
 (use-package elixir-mode
   :ensure t
@@ -2372,7 +2277,7 @@ If not in a project, return a global default name."
 (use-package rust-mode
   :ensure t
   :defer t
-  :hook (rust-mode . eglot-ensure)
+  :hook (rust-mode . lsp-deferred)
   :config
   (setq rust-format-on-save t)
 
@@ -2422,7 +2327,7 @@ If not in a project, return a global default name."
 (use-package csharp-mode
   :defer t
   :hook
-  (csharp-ts-mode . eglot-ensure))
+  (csharp-ts-mode . lsp-deferred))
 
 (use-package sql
   :defer t
