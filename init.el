@@ -648,13 +648,16 @@
   :config
   (defun my-custom-smart-jump ()
     (interactive)
-    (let
-        ((url (thing-at-point 'url))
-         (filename (thing-at-point 'existing-filename)))
-      (cond
-       (url (browse-url url))
-       (filename (ffap))
-       (t (smart-jump-go)))))
+    (cond
+     ((thing-at-point 'url)
+      (browse-url (thing-at-point 'url)))
+     ((thing-at-point 'existing-filename)
+      (ffap))
+     (t
+      ;; smart-jump 起点として認識させる
+      (let ((this-command 'smart-jump-go)
+            (real-this-command 'smart-jump-go))
+        (call-interactively #'smart-jump-go)))))
 
   (setq smart-jump-bind-keys nil)
   (smart-jump-setup-default-registers)
