@@ -543,14 +543,6 @@
   (setq flymake-diagnostic-at-point-display-diagnostic-function
         #'flymake-diagnostic-at-point-display-posframe))
 
-(use-package flymake-eslint
-  :ensure t
-  :after flymake
-  :init
-  (defun enable-flymake-eslint-without-lsp ()
-    (setq-local lsp-diagnostics-provider :none)
-    (ignore-errors (flymake-eslint-enable))))
-
 (use-package delsel
   :config
   (delete-selection-mode t))
@@ -1827,29 +1819,66 @@ If not in a project, return a global default name."
   :ensure t
   :defer t
   :commands (lsp lsp-deferred)
-  :hook (lsp-mode-hook . (lambda ()
-                           (setq-local completion-at-point-functions
-                                       (list (cape-capf-super
-                                              #'lsp-completion-at-point
-                                              #'tempel-expand)))))
+  :hook (lsp-completion-mode . (lambda ()
+                                 (setq-local completion-at-point-functions
+                                             (list (cape-capf-super
+                                                    #'lsp-completion-at-point
+                                                    #'tempel-expand)))))
   :init
   (setq lsp-keymap-prefix "C-c i")
   :config
   (setq lsp-completion-provider :none)
-  (setq lsp-log-io nil) ; nil
+  (setq lsp-log-io nil)
   (setq lsp-enable-indentation nil)
-  (setq lsp-headerline-breadcrumb-enable nil) ; nil
-  (setq lsp-modeline-code-actions-enable nil) ; nil
-  (setq lsp-modeline-diagnostics-enable t) ; nil
-  (setq lsp-lens-enable t) ; nil
-  (setq lsp-signature-auto-activate t) ; nil
-  (setq lsp-signature-render-documentation t) ; nil
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-modeline-code-actions-enable t)
+  (setq lsp-modeline-diagnostics-enable nil)
+  (setq lsp-lens-enable t)
+  (setq lsp-signature-auto-activate t)
+  (setq lsp-signature-render-documentation t)
   (setq lsp-eldoc-enable-hover t)
   (setq lsp-eldoc-render-all t)
-  (setq lsp-enable-file-watchers t) ; nil
-  (setq lsp-enable-folding nil) ; nil
-  (setq lsp-enable-symbol-highlighting t) ; nil
-  (setq lsp-enable-text-document-color t)) ; nil
+  (setq lsp-enable-file-watchers t)
+  (setq lsp-enable-folding nil)
+  (setq lsp-enable-symbol-highlighting t)
+  (setq lsp-enable-text-document-color t)
+  (setq lsp-enable-snippet nil)
+
+  (setq lsp-clients-typescript-prefer-use-project-ts-server t)
+
+  ;; todo: Delete emacs version 30 uppper
+  ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+    "Try to parse bytecode instead of json."
+    (or
+     (when (equal (following-char) ?#)
+       (let ((bytecode (read (current-buffer))))
+         (when (byte-code-function-p bytecode)
+           (funcall bytecode))))
+     (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+                         (fboundp 'json-parse-buffer))
+                  'json-parse-buffer
+                'json-read)
+              :around
+              #'lsp-booster--advice-json-parse)
+
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               lsp-use-plists
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
+          (progn
+            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+              (setcar orig-result command-from-exec-path))
+            (message "Using emacs-lsp-booster for %s!" orig-result)
+            (cons "emacs-lsp-booster" orig-result))
+        orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+  )
 
 (use-package editorconfig
   :ensure t
