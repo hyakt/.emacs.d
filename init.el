@@ -1877,8 +1877,13 @@ If not in a project, return a global default name."
             (message "Using emacs-lsp-booster for %s!" orig-result)
             (cons "emacs-lsp-booster" orig-result))
         orig-result)))
-  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-  )
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
+
+(use-package lsp-tailwindcss
+  :ensure t
+  :after lsp-mode
+  :init
+  (setq lsp-tailwindcss-add-on-mode t))
 
 (use-package editorconfig
   :ensure t
@@ -2076,8 +2081,7 @@ If not in a project, return a global default name."
   :hook ((vue-mode .
                    (lambda ()
                      (add-node-modules-path)
-                     (lsp-deferred)
-                     (enable-flymake-eslint-without-lsp)))
+                     (lsp-deferred)))
          (astro-mode .
                      (lambda ()
                        (add-node-modules-path)
@@ -2152,10 +2156,7 @@ If not in a project, return a global default name."
   :defer t
   :mode ("\\.[mc]?js$" . js-ts-mode)
   :hook
-  ((js-ts-mode . (lambda ()
-                   (lsp-deferred)
-                   (when (my-node-project-p)
-                     (enable-flymake-eslint-without-lsp)))))
+  (js-ts-mode . lsp-deferred)
   :config
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
@@ -2165,10 +2166,7 @@ If not in a project, return a global default name."
   :mode (("\\.m?ts$" . typescript-ts-mode)
          ("\\.tsx$" . tsx-ts-mode))
   :hook
-  (typescript-ts-base-mode . (lambda ()
-                               (lsp-deferred)
-                               (when (my-node-project-p)
-                                 (enable-flymake-eslint-without-lsp))))
+  (typescript-ts-base-mode . lsp-deferred)
   :config
   (major-mode-hydra-define typescript-ts-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
