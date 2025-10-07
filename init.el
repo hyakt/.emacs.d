@@ -957,7 +957,7 @@
 (use-package claude-code-ide
   :defer t
   :vc (:fetcher github :repo manzaltu/claude-code-ide.el)
-  :bind ("M-1" . my-claude-code-ide-toggle)
+  :bind ("M-1" . claude-code-ide-toggle)
   :config
   (setq claude-code-ide-terminal-backend 'vterm)
   (setq claude-code-ide-diagnostics-backend 'flymake)
@@ -971,32 +971,7 @@
       ;; Also ensure cursor is visible in non-selected windows when in copy mode
       (setq-local cursor-in-non-selected-windows 'box)))
 
-  (add-hook 'vterm-copy-mode-hook #'my-claude-code-ide-fix-cursor)
-
-  (defun my-claude-code-ide-toggle ()
-    "Toggle claude-code-ide buffer visibility.
-     If current buffer is claude-code-ide, hide it.
-     If region is active, call claude-code-ide-insert-at-mentioned and switch to the buffer.
-     If buffer already exists, just switch to it."
-    (interactive)
-    (if-let ((working-dir (claude-code-ide--get-working-directory))
-             (buffer-name (claude-code-ide--get-buffer-name))
-             (existing-buffer (get-buffer buffer-name)))
-        (if (eq (current-buffer) existing-buffer)
-            (my-claude-code-ide-hide)
-          (if-let ((win (get-buffer-window existing-buffer)))
-              (if (use-region-p)
-                  (progn (claude-code-ide-insert-at-mentioned)
-                         (select-window win))
-                (select-window win))
-            (claude-code-ide)))
-      (claude-code-ide)))
-
-  (defun my-claude-code-ide-hide ()
-    "Hide claude-code-ide buffer."
-    (interactive)
-    (if (window-deletable-p)
-        (delete-window))))
+  (add-hook 'vterm-copy-mode-hook #'my-claude-code-ide-fix-cursor))
 
 (use-package codex
   :bind ("M-2" . my-codex-buffer-toggle)
