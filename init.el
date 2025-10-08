@@ -957,10 +957,24 @@
 (use-package claude-code-ide
   :defer t
   :vc (:fetcher github :repo manzaltu/claude-code-ide.el)
-  :bind ("M-1" . claude-code-ide-toggle)
+  :bind ("M-1" . my-claude-code-ide-toggle)
   :config
   (setq claude-code-ide-terminal-backend 'vterm)
   (setq claude-code-ide-diagnostics-backend 'flymake)
+
+  (defun my-claude-code-ide-toggle ()
+    "Toggle visibility of Claude Code window for the current project."
+    (interactive)
+    (let* ((working-dir (claude-code-ide--get-working-directory))
+           (buffer-name (claude-code-ide--get-buffer-name))
+           (buffer (get-buffer buffer-name)))
+      (if buffer
+          (if (use-region-p)
+              (progn (claude-code-ide-insert-at-mentioned)
+                     (select-window (get-buffer-window buffer)))
+            (claude-code-ide--toggle-existing-window buffer working-dir))
+        (claude-code-ide))))
+
   ;; Fix cursor display in copy mode
   (defun my-claude-code-ide-fix-cursor ()
     "Fix cursor display for copy mode in claude-code-ide vterm buffers."
