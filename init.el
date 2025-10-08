@@ -973,79 +973,14 @@
 
   (add-hook 'vterm-copy-mode-hook #'my-claude-code-ide-fix-cursor))
 
-(use-package codex
-  :bind ("M-2" . my-codex-buffer-toggle)
-  :demand nil
-  :no-require t
-  :config
-  (defun my-codex--get-buffer-name ()
-    "Return the project-specific buffer name for Codex.
-If not in a project, return a global default name."
-    (if-let ((project (project-current)))
-        (format "*codex-ide: %s*" (project-name project))
-      "*codex-ide*"))
-
-  (defun my-codex-region-selection-info ()
-    "Return a plist with information about the current region selection."
-    (when (use-region-p)
-      (let* ((abs-path (or (buffer-file-name) ""))
-             ;; compute project-relative path if in a project
-             (file-path (if-let* ((proj (project-current))
-                                  (root (project-root proj))
-                                  (rel (file-relative-name abs-path root)))
-                            rel
-                          abs-path))
-             (start-line (1- (line-number-at-pos (region-beginning))))
-             (end-line   (1- (line-number-at-pos (region-end)))))
-        ;; format as "@path:start-end"
-        (concat file-path "#L" (number-to-string start-line)
-                "-" (number-to-string end-line)))))
-
-  (defun my-codex-buffer-toggle ()
-    (interactive)
-    (let* ((buffer-name (my-codex--get-buffer-name))
-           (existing-buffer (get-buffer buffer-name)))
-      (if existing-buffer
-          ;; If the buffer exists
-          (if (eq (current-buffer) existing-buffer)
-              ;; If the current buffer is the Codex buffer, hide it
-              (my-codex-buffer-hide)
-            ;; Otherwise, switch to the existing buffer
-            (if-let ((win (get-buffer-window existing-buffer)))
-                (let ((region-info (my-codex-region-selection-info)))
-                  (select-window win)
-                  (vterm-send-string region-info))
-              (pop-to-buffer existing-buffer)))
-        ;; If the buffer does not exist, create it
-        (my-codex-buffer-create buffer-name))))
-
-  (defun my-codex-buffer-create (buffer-name)
-    "Create a new Codex IDE buffer with BUFFER-NAME and start the Codex CLI."
-    (require 'vterm nil 'noerror)
-    (let ((original-vterm-shell vterm-shell)) ;; 元の値を保存
-      (setq vterm-shell "codex") ;; 一時的に変更
-      (unwind-protect
-          (let ((buffer (vterm buffer-name))) ;; バッファを作成
-            ;; Ensure the buffer was created successfully
-            (unless buffer
-              (error "Failed to create vterm buffer. Please ensure vterm is properly installed and compiled"))
-            ;; Switch to the buffer and move focus to it
-            (pop-to-buffer buffer))
-        ;; 処理が終わったら元に戻す
-        (setq vterm-shell original-vterm-shell))))
-
-  (defun my-codex-buffer-hide ()
-    "Hide the Codex IDE buffer for the current project."
-    (interactive)
-    (if (window-deletable-p)
-        (delete-window)))
-
-  ;; Add this to display the codex buffer in a side window
-  (add-to-list 'display-buffer-alist
-               '("^\\*codex-ide"
-                 (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
-                 (side . right)
-                 (reusable-frames . visible))))
+(use-package codex-cli
+  :ensure t
+  :bind ("M-2" . codex-cli-toggle)
+  :init
+  (setq codex-cli-executable "codex"
+        codex-cli-terminal-backend 'vterm
+        codex-cli-side 'right
+        codex-cli-width 90))
 
 (use-package comint
   :defer t
