@@ -1751,8 +1751,28 @@
                                              (list (cape-capf-super
                                                     #'lsp-completion-at-point
                                                     #'tempel-expand)))))
+  :bind ("C-c l" . lsp-code-actions-hydra/body)
   :init
-  (setq lsp-keymap-prefix "C-c i")
+  (defhydra lsp-code-actions-hydra (:color blue :hint nil)
+    "
+ ^Code Actions^        ^Refactoring^         ^Formatting^         ^Other^
+ ^^-----------------   ^^------------------  ^^-----------------  ^^--------
+ _a_: Execute action   _r_: Rename           _f_: Format buffer    _h_: Help
+ _i_: Implementation   _o_: Organize imports _e_: Format eslint
+"
+    ;; コードアクション
+    ("a" lsp-execute-code-action)
+    ("i" lsp-find-implementation)
+    ;; リファクタリング
+    ("r" lsp-rename)
+    ("o" lsp-organize-imports)
+    ;; フォーマット
+    ("f" lsp-format-buffer)
+    ("e" lsp-eslint-fix-all)
+    ;; その他
+    ("h" lsp-describe-thing-at-point)
+    ;; 終了
+    ("q" nil :color blue))
   :config
   (setq lsp-completion-provider :none)
   (setq lsp-log-io nil)
@@ -1765,7 +1785,8 @@
   (setq lsp-signature-render-documentation t)
   (setq lsp-eldoc-enable-hover t)
   (setq lsp-eldoc-render-all t)
-  (setq lsp-enable-file-watchers t)
+  (setq lsp-enable-file-watchers nil)
+  (setq lsp-keep-workspace-alive t)
   (setq lsp-enable-folding nil)
   (setq lsp-enable-symbol-highlighting t)
   (setq lsp-enable-text-document-color t)
@@ -1804,7 +1825,9 @@
             (message "Using emacs-lsp-booster for %s!" orig-result)
             (cons "emacs-lsp-booster" orig-result))
         orig-result)))
-  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
+  (advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht))))))
 
 (use-package lsp-tailwindcss
   :ensure t
