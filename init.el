@@ -1775,6 +1775,7 @@
     ("q" nil :color blue))
   :config
   (setq lsp-completion-provider :none)
+  (setq lsp-diagnostics-provider :flymake)
   (setq lsp-log-io nil)
   (setq lsp-enable-indentation nil)
   (setq lsp-headerline-breadcrumb-enable nil)
