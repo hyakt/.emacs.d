@@ -866,6 +866,7 @@
 (use-package copilot-chat
   :ensure t
   :demand t
+  :pin stable
   :bind (("M-q" . copilot-chat-toggle))
   :after magit
   :init
@@ -886,6 +887,7 @@
   :config
   (setopt shell-maker-prompt-before-killing-buffer nil)
   (setopt shell-maker-display-function #'display-buffer)
+  (setopt copilot-chat-default-model "claude-sonnet-4.5")
 
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
