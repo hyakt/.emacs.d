@@ -991,12 +991,33 @@
 
 (use-package codex-cli
   :ensure t
-  :bind ("M-2" . codex-cli-toggle)
+  :bind ("M-2" . my-codex-cli-toggle)
   :init
   (setq codex-cli-executable "codex"
         codex-cli-terminal-backend 'vterm
         codex-cli-side 'right
-        codex-cli-width 90))
+        codex-cli-width 90)
+  :config
+  (defun my-codex-cli-toggle ()
+    "Toggle Codex CLI window for the current project.
+If a region is active, send it to a chosen session and focus its window."
+    (interactive)
+    (if (use-region-p)
+        (let* ((buffers (codex-cli--project-session-buffers))
+               (buffer (cond
+                        ((null buffers) nil)
+                        ((= (length buffers) 1) (car buffers))
+                        (t (codex-cli--choose-project-session-buffer
+                            "Send region to: ")))))
+          (unless buffer
+            (when (y-or-n-p "No session in this project. Start a new one? ")
+              (codex-cli-start)
+              (setq buffer (car (codex-cli--project-session-buffers)))))
+          (when buffer
+            (codex-cli-send-region (codex-cli--session-name-for-buffer buffer))
+            (when-let ((window (get-buffer-window buffer)))
+              (select-window window))))
+      (codex-cli-toggle))))
 
 (use-package comint
   :defer t
