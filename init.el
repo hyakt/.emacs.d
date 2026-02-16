@@ -114,6 +114,7 @@
 (setq completion-ignore-case t)                                    ;; file 名の補完で大文字小文字を区別しない
 (setq auto-save-default nil)                                       ;; オートセーブのファイルを作らない
 (setq create-lockfiles nil)                                        ;; ロックファイル(.#filename)のファイルを作らない
+(setq confirm-kill-processes nil)                                  ;; 終了時のプロセス確認を出さない
 (setq message-log-max 10000)                                       ;; ログの記録行数を増やす
 (setq vc-follow-symlinks t)                                        ;; symlink は必ず追いかける
 (setq enable-local-variables :all)                                 ;; local variable は全て使用する
@@ -887,7 +888,7 @@
   :config
   (setopt shell-maker-prompt-before-killing-buffer nil)
   (setopt shell-maker-display-function #'display-buffer)
-  (setopt copilot-chat-default-model "claude-sonnet-4.5")
+  (setopt copilot-chat-default-model "gpt-5.2-codex")
 
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
@@ -1003,21 +1004,18 @@
 If a region is active, send it to a chosen session and focus its window."
     (interactive)
     (if (use-region-p)
-        (let* ((buffers (codex-cli--project-session-buffers))
-               (buffer (cond
-                        ((null buffers) nil)
-                        ((= (length buffers) 1) (car buffers))
-                        (t (codex-cli--choose-project-session-buffer
-                            "Send region to: ")))))
-          (unless buffer
-            (when (y-or-n-p "No session in this project. Start a new one? ")
-              (codex-cli-start)
-              (setq buffer (car (codex-cli--project-session-buffers)))))
-          (when buffer
-            (codex-cli-send-region (codex-cli--session-name-for-buffer buffer))
-            (when-let ((window (get-buffer-window buffer)))
-              (select-window window))))
-      (codex-cli-toggle))))
+        (codex-cli-send-region)
+      (codex-cli-toggle)))
+
+  (defun my-codex-cli--no-prompt (orig-fn &rest args)
+    (let ((orig (symbol-function 'y-or-n-p)))
+      (unwind-protect
+          (progn
+            (fset 'y-or-n-p (lambda (&rest _) t))
+            (apply orig-fn args))
+        (fset 'y-or-n-p orig))))
+
+  (advice-add 'codex-cli-toggle :around #'my-codex-cli--no-prompt))
 
 (use-package comint
   :defer t
