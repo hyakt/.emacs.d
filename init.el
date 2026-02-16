@@ -992,7 +992,21 @@
 
 (use-package codex-cli
   :ensure t
-  :bind ("M-2" . my-codex-cli-toggle)
+  :preface
+  (define-minor-mode my-codex-cli-keys-mode
+    "Minor mode for Codex CLI buffers."
+    :init-value nil
+    :lighter " CodexKeys"
+    :keymap (let ((map (make-sparse-keymap)))
+              (define-key map (kbd "C-d") #'codex-cli-stop)
+              map))
+  (defun my-codex-cli-keys--maybe-enable ()
+    "Enable `my-codex-cli-keys-mode' in Codex CLI buffers."
+    (when (string-prefix-p "*codex-cli:" (buffer-name))
+      (my-codex-cli-keys-mode 1)))
+  :bind (("M-2" . my-codex-cli-toggle)
+         :map my-codex-cli-keys-mode-map
+         ("C-d" . codex-cli-stop))
   :init
   (setq codex-cli-executable "codex"
         codex-cli-terminal-backend 'vterm
@@ -1015,6 +1029,7 @@ If a region is active, send it to a chosen session and focus its window."
             (apply orig-fn args))
         (fset 'y-or-n-p orig))))
 
+  (add-hook 'vterm-mode-hook #'my-codex-cli-keys--maybe-enable)
   (advice-add 'codex-cli-toggle :around #'my-codex-cli--no-prompt))
 
 (use-package comint
