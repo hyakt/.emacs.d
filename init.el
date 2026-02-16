@@ -888,7 +888,7 @@
   :config
   (setopt shell-maker-prompt-before-killing-buffer nil)
   (setopt shell-maker-display-function #'display-buffer)
-  (setopt copilot-chat-default-model "gpt-5.2-codex")
+  (setopt copilot-chat-default-model "gpt-5.1")
 
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
@@ -1594,8 +1594,8 @@ If a region is active, send it to a chosen session and focus its window."
    . (lambda ()
        (setq-local buffer-face-mode-face `(:family "JuliaMono" :background "#0b0e11"))
        (buffer-face-mode t)
-       (setq-local left-margin-width 2)
-       (setq-local right-margin-width 2)))
+       (setq-local left-margin-width 1)
+       (setq-local right-margin-width 1)))
   :init
   (setq vterm-always-compile-module t)
   ;; delete "C-h", add <f1> and <f2>
@@ -2484,14 +2484,6 @@ If a region is active, send it to a chosen session and focus its window."
   :config
   (setq org-modern-fold-stars
         '(("▶" . "▼") ("▷" . "▽") ("⏷" . "⏵") ("▹" . "▿") ("▸" . "▾"))))
-
-(use-package org-ai
-  :ensure t
-  :defer t
-  :hook
-  (org-mode . org-ai-mode)
-  :config
-  (setq org-ai-default-chat-model "gpt-3.5-turbo"))
 
 (use-package ob-restclient
   :ensure t
