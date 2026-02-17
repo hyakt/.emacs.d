@@ -86,6 +86,9 @@
 (setq user-full-name "Hayato Kajiyama")
 (setq user-mail-address "me@piginbeer.com")
 
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
+
 (setq native-comp-async-report-warnings-errors 'silent)
 (setq native-compile-prune-cache t)
 
@@ -911,10 +914,81 @@
                  (side . right)
                  (reusable-frames . visible))))
 
+(use-package opencode
+  :vc (:url "https://codeberg.org/sczi/opencode.el")
+  :bind ("M-1" . my-opencode-toggle)
+  :config
+  (setq opencode-api-log-max-lines 1000
+        opencode-event-log-max-lines 1000)
+  (setq opencode-auto-start-server t)
+
+  (defun my-opencode--major-mode-lang (mode)
+    "Return language name for MODE."
+    (replace-regexp-in-string "\\(?:-ts\\)?-mode$" "" (symbol-name mode)))
+
+  (defun my-opencode--session-buffer-p (buffer)
+    "Return non-nil if BUFFER is an OpenCode session buffer."
+    (and (buffer-live-p buffer)
+         (with-current-buffer buffer
+           (bound-and-true-p opencode-session-id))))
+
+  (defun my-opencode--most-recent-session-buffer ()
+    "Return the most recently used OpenCode session buffer."
+    (cl-loop for buffer in (buffer-list)
+             when (my-opencode--session-buffer-p buffer)
+             return buffer))
+
+  (defun my-opencode-add-current-buffer (buffer)
+    "Add BUFFER to the current OpenCode session context."
+    (let ((name (buffer-name buffer)))
+      (cl-letf (((symbol-function 'read-buffer)
+                 (lambda (&rest _) name)))
+        (opencode-add-buffer))))
+
+  (defun my-opencode--with-session (fn)
+    "Call FN with an OpenCode session buffer."
+    (if-let ((buffer (my-opencode--most-recent-session-buffer)))
+        (funcall fn buffer)
+      (call-interactively 'opencode-open-session)))
+
+  (defun my-opencode-toggle ()
+    "Toggle OpenCode session window.
+If a region is active, insert it as a fenced code block."
+    (interactive)
+    (if (string-prefix-p "*OpenCode" (buffer-name))
+        (my-opencode-hide)
+      (let* ((source-buffer (current-buffer))
+             (lang (my-opencode--major-mode-lang major-mode))
+             (region (if (use-region-p)
+                         (buffer-substring-no-properties
+                          (region-beginning) (region-end))
+                       "")))
+        (deactivate-mark)
+        (my-opencode--with-session
+         (lambda (session-buffer)
+           (pop-to-buffer session-buffer)
+           (with-current-buffer session-buffer
+             (when (not (string= region ""))
+               (my-opencode-add-current-buffer source-buffer)
+               (goto-char (point-max))
+               (insert "\n```" lang "\n" region "\n```"))))))))
+
+  (defun my-opencode-hide ()
+    "Hide current window."
+    (interactive)
+    (when (window-deletable-p)
+      (delete-window)))
+
+  (add-to-list 'display-buffer-alist
+               '("\\*OpenCode"
+                 (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
+                 (side . right)
+                 (reusable-frames . visible))))
+
 (use-package claude-code-ide
   :defer t
   :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
-  :bind ("M-1" . my-claude-code-ide-toggle)
+  :bind ("M-2" . my-claude-code-ide-toggle)
   :config
   (setq claude-code-ide-terminal-backend 'vterm)
   (setq claude-code-ide-diagnostics-backend 'flymake)
@@ -946,39 +1020,6 @@
 
 (use-package opencode
   :vc (:url "https://codeberg.org/sczi/opencode.el"))
-
-(use-package comint
-  :defer t
-  :hook
-  (comint-mode . (lambda ()
-                   (let ((mode-name (symbol-name major-mode)))
-                     (when (and (string-match-p "copilot-chat" mode-name)
-                                (string-match-p "shell-mode" mode-name))
-                       (progn
-                         (keymap-local-set "C-c C-t" #'gt-translate)
-                         (keymap-local-set "C-d" #'copilot-chat-close)
-                         (setq buffer-face-mode-face `(:background "#0f0f14"))
-                         (setq-local left-margin-width 1)
-                         (setq-local right-margin-width 1)
-                         (buffer-face-mode 1)
-                         )))))
-  :config
-  (setopt comint-process-echoes t)
-  (setopt comint-scroll-to-bottom-on-input t)
-  (setopt comint-scroll-to-bottom-on-output t)
-
-  (defun my-comint-jump-to-prompt-on-readonly ()
-    "comintバッファで読み取り専用部分にいるときに自動的にプロンプトにジャンプする"
-    (when (and (derived-mode-p 'comint-mode)
-               (get-text-property (point) 'read-only)
-               (not (member this-command '(keyboard-quit keyboard-escape-quit
-                                                         previous-line next-line beginning-of-buffer))))
-      (goto-char (process-mark (get-buffer-process (current-buffer))))
-      (setq this-command 'ignore)))
-
-  (add-hook 'comint-mode-hook
-            (lambda ()
-              (add-hook 'pre-command-hook 'my-comint-jump-to-prompt-on-readonly nil t))))
 
 (use-package gt
   :defer t
