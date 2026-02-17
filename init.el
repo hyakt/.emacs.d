@@ -949,7 +949,7 @@
     "Call FN with an OpenCode session buffer."
     (if-let ((buffer (my-opencode--most-recent-session-buffer)))
         (funcall fn buffer)
-      (call-interactively 'opencode-open-session)))
+      (call-interactively 'opencode)))
 
   (defun my-opencode-toggle ()
     "Toggle OpenCode session window.
@@ -1018,8 +1018,16 @@ If a region is active, insert it as a fenced code block."
 
   (add-hook 'vterm-copy-mode-hook #'my-claude-code-ide-fix-cursor))
 
-(use-package opencode
-  :vc (:url "https://codeberg.org/sczi/opencode.el"))
+(use-package comint
+  :defer t
+  :hook
+  (comint-mode . (lambda ()
+                   (progn
+                     (setq buffer-face-mode-face `(:background "#0f0f14"))
+                     (buffer-face-mode 1))))
+  :config
+  (setopt comint-scroll-to-bottom-on-input t)
+  (setopt comint-scroll-to-bottom-on-output t))
 
 (use-package gt
   :defer t
