@@ -93,6 +93,8 @@
 (setq native-comp-async-report-warnings-errors 'silent)
 (setq native-compile-prune-cache t)
 
+(setq mac-command-modifier 'meta)
+
 (setq make-backup-files t)                                         ;; Backup file を作る
 (setq backup-directory-alist '(("\\.*$" .  "~/.emacs.d/.backup"))) ;; バックアップ先
 (setq cursor-type 'box)
@@ -191,12 +193,6 @@
   :init
   (save-place-mode t))
 
-(use-package mac-win
-  :defer 1
-  :if (eq system-type 'darwin)
-  :config
-  (mac-auto-ascii-mode t))
-
 (use-package autorevert
   :defer 1
   :config
@@ -242,7 +238,6 @@
 
 (set-frame-parameter nil 'alpha '(98 . 98))
 (set-frame-parameter nil 'internal-border-width 4)
-(setq-default line-spacing 4)
 
 (defun my-special-mode-hook ()
   "Customize background color for special modes."
@@ -250,17 +245,16 @@
   (buffer-face-mode 1))
 
 (add-hook 'special-mode-hook 'my-special-mode-hook)
-
+(mac-get-current-input-source)
 (with-deferred-eval
   (when-macos
    (defun mac-selected-keyboard-input-source-change-hook-func ()
      ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
-     (set-cursor-color (if (or
-                            (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-input-source))
-                            (string-match "com.apple.inputmethod.Kotoeri.Japanese" (mac-input-source))
-                            (string-match "com.google.inputmethod.Japanese.Roman" (mac-input-source)))
+     (set-cursor-color (if (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-get-current-input-source))
                            "#FF5996" "#51AFEF")))
-   (add-hook 'mac-selected-keyboard-input-source-change-hook 'mac-selected-keyboard-input-source-change-hook-func))
+   (add-hook 'input-method-activate-hook 'mac-selected-keyboard-input-source-change-hook-func)
+   (add-hook 'input-method-deactivate-hook 'mac-selected-keyboard-input-source-change-hook-func)
+   (mac-input-method-mode 1))
 
   (global-font-lock-mode)
   (transient-mark-mode t)
@@ -867,24 +861,11 @@
 (use-package copilot-chat
   :ensure t
   :demand t
-  :pin stable
   :bind (("M-q" . copilot-chat-toggle))
   :after magit
   :init
-  (setopt copilot-chat-frontend 'shell-maker)
-  :hook ((git-commit-setup . copilot-chat-insert-commit-message)
-         (comint-mode . (lambda ()
-                          (let ((mode-name (symbol-name major-mode)))
-                            (when (and (string-match-p "copilot-chat" mode-name)
-                                       (string-match-p "shell-mode" mode-name))
-                              (progn
-                                (keymap-local-set "C-c C-t" #'gt-do-translate)
-                                (keymap-local-set "C-d" #'copilot-chat-close)
-                                (setq buffer-face-mode-face `(:background "#0f0f14"))
-                                (setq-local left-margin-width 1)
-                                (setq-local right-margin-width 1)
-                                (buffer-face-mode 1)
-                                ))))))
+  (setq copilot-chat-frontend 'shell-maker)
+  :hook ((git-commit-setup . copilot-chat-insert-commit-message))
   :config
   (setopt shell-maker-prompt-before-killing-buffer nil)
   (setopt shell-maker-display-function #'display-buffer)
@@ -933,23 +914,6 @@
       (apply orig-fun args)))
 
   (advice-add 'copilot-chat--create-instance :around #'my-copilot-chat-use-current-directory)
-
-  (defun my-copilot-chat--shell-name-advice (orig-fn instance)
-    "Advice to modify the :name field in `copilot-chat--shell`."
-    (let ((buf
-           (shell-maker-start
-            (make-shell-maker-config
-             :name "Copilot-Chat"
-             :execute-command
-             (lambda (command shell)
-               (copilot-chat--shell-cb instance command shell)))
-            t nil t
-            (copilot-chat--get-buffer-name (copilot-chat-directory instance)))))
-      (with-current-buffer buf
-        (setq-local default-directory (copilot-chat-directory instance)))
-      buf))
-
-  (advice-add 'copilot-chat--shell :around #'my-copilot-chat--shell-name-advice)
 
   (add-to-list 'display-buffer-alist
                '("\\*Copilot Chat"
@@ -1037,6 +1001,19 @@ If a region is active, send it to a chosen session and focus its window."
 
 (use-package comint
   :defer t
+  :hook
+  (comint-mode . (lambda ()
+                   (let ((mode-name (symbol-name major-mode)))
+                     (when (and (string-match-p "copilot-chat" mode-name)
+                                (string-match-p "shell-mode" mode-name))
+                       (progn
+                         (keymap-local-set "C-c C-t" #'gt-translate)
+                         (keymap-local-set "C-d" #'copilot-chat-close)
+                         (setq buffer-face-mode-face `(:background "#0f0f14"))
+                         (setq-local left-margin-width 1)
+                         (setq-local right-margin-width 1)
+                         (buffer-face-mode 1)
+                         )))))
   :config
   (setopt comint-process-echoes t)
   (setopt comint-scroll-to-bottom-on-input t)
@@ -1055,10 +1032,10 @@ If a region is active, send it to a chosen session and focus its window."
             (lambda ()
               (add-hook 'pre-command-hook 'my-comint-jump-to-prompt-on-readonly nil t))))
 
-(use-package go-translate
+(use-package gt
   :defer t
   :ensure t
-  :bind ("C-c C-t" . gt-do-translate)
+  :bind ("C-c C-t" . gt-translate)
   :config
   (setq gt-langs '(en ja))
   (setq gt-default-translator
@@ -1132,6 +1109,11 @@ If a region is active, send it to a chosen session and focus its window."
     (find-file-other-window
      (projectile-find-implementation-or-test
       (buffer-file-name)))))
+
+(use-package disproject
+  :ensure t
+  :defer t
+  :bind (("C-x C-p" . disproject-dispatch)))
 
 (use-package tab-bar
   :defer t
@@ -1378,7 +1360,6 @@ If a region is active, send it to a chosen session and focus its window."
    consult-ripgrep
    consult-git-grep
    consult-recent-file
-   consult--source-buffer
    consult-ls-git
    my-tab-bar-filtered-consult-recent-file
    :preview-key
@@ -1426,9 +1407,10 @@ If a region is active, send it to a chosen session and focus its window."
   :defer 1
   :bind (:map vertico-map
               ("C-l" . vertico-directory-up))
+  :init
+  (vertico-mode)
   :config
-  (setq vertico-count 30)
-  (vertico-mode t))
+  (setq vertico-count 30))
 
 (use-package orderless
   :ensure t
@@ -2062,7 +2044,7 @@ If a region is active, send it to a chosen session and focus its window."
   :defer t
   :mode ("\\.p?html\\'" "\\.tpl\\.php\\'" "\\.[gj]sp\\'" "\\.as[cp]x\\'"
          "\\.erb\\'" "\\.mustache\\'" "\\.djhtml\\'" "\\.njk" "\\.tt" "\\.vento" "\\.vto")
-  :bind (:map web-mode-map ("C-c C-t" . gt-do-translate) ("C-c C-a" . nil))
+  :bind (:map web-mode-map ("C-c C-t" . gt-translate) ("C-c C-a" . nil))
   :init
   (define-derived-mode vue-mode web-mode "vue")
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
