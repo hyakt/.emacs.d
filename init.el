@@ -77,11 +77,7 @@
           ("gnu" . "https://elpa.gnu.org/packages/")
           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
   (package-initialize)
-  (package-refresh-contents)
-  ;; TODO: Remove when https://github.com/slotThe/vc-use-package#installation
-  (unless (package-installed-p 'vc-use-package)
-    (package-vc-install "https://github.com/slotThe/vc-use-package"))
-  (require 'vc-use-package))
+  (package-refresh-contents))
 
 ;; 読み込まないと init.elc の場合にエラーになる
 (require 'bind-key)
@@ -570,7 +566,7 @@
   (setq-default goggles-pulse t))
 
 (use-package indent-bars
-  :vc (:fetcher github :repo jdtsmith/indent-bars)
+  :vc (:url "https://github.com/jdtsmith/indent-bars")
   :defer t
   :config
   (setq indent-bars-width-frac 0.2)
@@ -923,7 +919,7 @@
 
 (use-package claude-code-ide
   :defer t
-  :vc (:fetcher github :repo manzaltu/claude-code-ide.el)
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
   :bind ("M-1" . my-claude-code-ide-toggle)
   :config
   (setq claude-code-ide-terminal-backend 'vterm)
@@ -997,7 +993,7 @@ If a region is active, send it to a chosen session and focus its window."
   (advice-add 'codex-cli-toggle :around #'my-codex-cli--no-prompt))
 
 (use-package opencode
-  :vc (:fetcher codeberg :repo sczi/opencode.el))
+  :vc (:url "https://codeberg.org/sczi/opencode.el"))
 
 (use-package comint
   :defer t
@@ -1911,7 +1907,7 @@ If a region is active, send it to a chosen session and focus its window."
   (global-treesit-auto-mode))
 
 (use-package treesit-fold
-  :vc (:fetcher github :repo emacs-tree-sitter/treesit-fold)
+  :vc (:url "https://github.com/emacs-tree-sitter/treesit-fold")
   :hook (prog-mode . treesit-fold-mode)
   :bind (:map treesit-fold-mode-map
               ("C-<return>" . treesit-fold-toggle)
