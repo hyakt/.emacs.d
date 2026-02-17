@@ -979,6 +979,28 @@ If a region is active, insert it as a fenced code block."
     (when (window-deletable-p)
       (delete-window)))
 
+  (defun my-opencode--format-tool-call-with-apply-patch (orig-fun tool input)
+    "Format apply_patch tool call for display."
+    (if (string= tool "apply_patch")
+        (let-alist input
+          (let ((patch (or .patchText "")))
+            (if (string= patch "")
+                (funcall orig-fun tool input)
+              (concat "apply_patch:\n"
+                      (my-opencode--fontify-apply-patch patch)
+                      "\n"))))
+      (funcall orig-fun tool input)))
+
+  (defun my-opencode--fontify-apply-patch (patch)
+    "Return PATCH with diff-mode font-lock properties."
+    (with-temp-buffer
+      (insert patch)
+      (delay-mode-hooks (diff-mode))
+      (font-lock-ensure)
+      (buffer-string)))
+
+  (advice-add 'opencode--format-tool-call :around #'my-opencode--format-tool-call-with-apply-patch)
+
   (add-to-list 'display-buffer-alist
                '("\\*OpenCode"
                  (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
