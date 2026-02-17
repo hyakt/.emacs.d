@@ -854,7 +854,7 @@
 (use-package copilot-chat
   :ensure t
   :demand t
-  :bind (("M-q" . copilot-chat-toggle))
+  :bind* (("M-q" . copilot-chat-toggle))
   :after magit
   :init
   (setq copilot-chat-frontend 'shell-maker)
