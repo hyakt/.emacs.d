@@ -1,11 +1,18 @@
 TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+EMACS_MAC_PLUS_APP_PATH := $(shell brew --prefix emacs-plus)
 EMACS_MAC_PORT_APP_PATH := $(shell brew --prefix emacs-mac)
 
 .PHONY: init
-init: install-emacs link compile install-icons setup-git-hook
+init: install-emacs-plus link compile install-icons setup-git-hook
 
-.PHONY: install-emacs
-install-emacs:
+.PHONY: install-emacs-plus
+install-emacs-plus:
+	brew tap d12frosted/emacs-plus
+	brew install emacs-plus
+	ln -sfv $(EMACS_MAC_PLUS_APP_PATH)/Emacs.app /Applications
+
+.PHONY: install-emacs-mac
+install-emacs-mac:
 	brew tap railwaycat/emacsmacport
 	brew install emacs-mac --with-ctags --with-glib --with-mac-metal --with-native-comp --with-natural-title-bar --with-librsvg --with-starter --with-xwidgets
 	ln -sfv $(EMACS_MAC_PORT_APP_PATH)/Emacs.app /Applications
