@@ -881,8 +881,8 @@
                                 (keymap-local-set "C-c C-t" #'gt-do-translate)
                                 (keymap-local-set "C-d" #'copilot-chat-close)
                                 (setq buffer-face-mode-face `(:background "#0f0f14"))
-                                (setq-local left-margin-width 2)
-                                (setq-local right-margin-width 2)
+                                (setq-local left-margin-width 1)
+                                (setq-local right-margin-width 1)
                                 (buffer-face-mode 1)
                                 ))))))
   :config
@@ -1031,6 +1031,9 @@ If a region is active, send it to a chosen session and focus its window."
 
   (add-hook 'vterm-mode-hook #'my-codex-cli-keys--maybe-enable)
   (advice-add 'codex-cli-toggle :around #'my-codex-cli--no-prompt))
+
+(use-package opencode
+  :vc (:fetcher codeberg :repo sczi/opencode.el))
 
 (use-package comint
   :defer t
