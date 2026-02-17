@@ -146,7 +146,6 @@
 (setq require-final-newline t)
 (setq-default tab-width 2)                                         ;; タブの幅は半角スペース 2
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
-(setq-default shell-file-name "/opt/homebrew/bin/fish")
 
 (load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
 
@@ -478,17 +477,12 @@
 
   (defvar my-ediff-last-windows nil)
 
-  (defun my-ediff-select-input-source ()
-    "Switch to ASCII input source when ediff starts."
-    (mac-auto-ascii-select-input-source))
-
   (defun my-store-pre-ediff-winconfig ()
     (setq my-ediff-last-windows (current-window-configuration)))
 
   (defun my-restore-pre-ediff-winconfig ()
     (set-window-configuration my-ediff-last-windows))
 
-  (add-hook 'ediff-startup-hook #'my-ediff-select-input-source)
   (add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
   (add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig))
 
@@ -1543,8 +1537,7 @@ If a region is active, send it to a chosen session and focus its window."
     (if (string-prefix-p "*mistty" (buffer-name))
         (mistty-toggle-hide)
       (progn
-        (mistty)
-        (mac-auto-ascii-select-input-source))))
+        (mistty))))
 
   (defun mistty-toggle-hide ()
     "Hide buffer."
