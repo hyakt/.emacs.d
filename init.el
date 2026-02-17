@@ -932,11 +932,22 @@
          (with-current-buffer buffer
            (bound-and-true-p opencode-session-id))))
 
-  (defun my-opencode--most-recent-session-buffer ()
-    "Return the most recently used OpenCode session buffer."
-    (cl-loop for buffer in (buffer-list)
-             when (my-opencode--session-buffer-p buffer)
-             return buffer))
+  (defun my-opencode--project-root (&optional buffer)
+    "Return project root for BUFFER or nil."
+    (let ((default-directory (with-current-buffer (or buffer (current-buffer))
+                               default-directory)))
+      (when-let ((project (project-current nil default-directory)))
+        (expand-file-name (project-root project)))))
+
+  (defun my-opencode--most-recent-session-buffer (&optional source-buffer)
+    "Return the most recently used OpenCode session buffer.
+If SOURCE-BUFFER has a project, prefer a session in that project."
+    (let ((root (my-opencode--project-root source-buffer)))
+      (cl-loop for buffer in (buffer-list)
+               when (and (my-opencode--session-buffer-p buffer)
+                         (or (not root)
+                             (string= root (my-opencode--project-root buffer))))
+               return buffer)))
 
   (defun my-opencode-add-current-buffer (buffer)
     "Add BUFFER to the current OpenCode session context."
@@ -947,7 +958,7 @@
 
   (defun my-opencode--with-session (fn)
     "Call FN with an OpenCode session buffer."
-    (if-let ((buffer (my-opencode--most-recent-session-buffer)))
+    (if-let ((buffer (my-opencode--most-recent-session-buffer (current-buffer))))
         (funcall fn buffer)
       (call-interactively 'opencode)))
 
