@@ -1,7 +1,7 @@
 #+AUTHOR: Hayato Kajiyama
-#+EMAIL: hyakt0@gmail.com
 
 * .emacs.d
+
 ** Setup
    #+BEGIN_SRC sh
    mkdir -p ~/repos/github.com/hyakt
@@ -11,17 +11,6 @@
    #+END_SRC
 
 ** Requirements
-   - [[https://github.com/railwaycat/homebrew-emacsmacport][Emacs Mac Port]]
-   - [[https://github.com/railwaycat/homebrew-emacsmacport/wiki/Natural-Title-Bar][Natural Title bar]]
-   #+BEGIN_SRC sh
-   # Adopting mac dark mode
-   defaults write org.gnu.Emacs TransparentTitleBar DARK
-   # Set No Title Bar Icon
-   defaults write org.gnu.Emacs HideDocumentIcon YES
-   #+END_SRC
    - Source Hans Code JP (Font)
    - Myrica (Font)
    - [[https://github.com/domtronn/all-the-icons.el/tree/master/fonts][all-the-icons font]]
-   #+BEGIN_SRC emacs-lisp
-   M-x all-the-icons-install-fonts
-   #+END_SRC
