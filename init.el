@@ -1018,39 +1018,6 @@ If a region is active, insert it as a fenced code block."
                  (side . right)
                  (reusable-frames . visible))))
 
-(use-package claude-code-ide
-  :defer t
-  :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
-  :bind ("M-2" . my-claude-code-ide-toggle)
-  :config
-  (setq claude-code-ide-terminal-backend 'vterm)
-  (setq claude-code-ide-diagnostics-backend 'flymake)
-
-  (defun my-claude-code-ide-toggle ()
-    "Toggle visibility of Claude Code window for the current project."
-    (interactive)
-    (let* ((working-dir (claude-code-ide--get-working-directory))
-           (buffer-name (claude-code-ide--get-buffer-name))
-           (buffer (get-buffer buffer-name)))
-      (if buffer
-          (if (use-region-p)
-              (progn (claude-code-ide-insert-at-mentioned)
-                     (select-window (get-buffer-window buffer)))
-            (claude-code-ide--toggle-existing-window buffer working-dir))
-        (claude-code-ide))))
-
-  ;; Fix cursor display in copy mode
-  (defun my-claude-code-ide-fix-cursor ()
-    "Fix cursor display for copy mode in claude-code-ide vterm buffers."
-    (when (and (derived-mode-p 'vterm-mode)
-               (string-prefix-p "*claude-code[" (buffer-name)))
-      ;; Set cursor type for copy mode
-      (setq-local cursor-type 'box)
-      ;; Also ensure cursor is visible in non-selected windows when in copy mode
-      (setq-local cursor-in-non-selected-windows 'box)))
-
-  (add-hook 'vterm-copy-mode-hook #'my-claude-code-ide-fix-cursor))
-
 (use-package comint
   :defer t
   :hook
@@ -1591,48 +1558,6 @@ If a region is active, insert it as a fenced code block."
                  (display-buffer-reuse-window display-buffer-at-bottom)
                  (reusable-frames . visible)
                  (window-height . 0.3))))
-
-(use-package vterm
-  :ensure t
-  :defer t
-  :bind
-  (:map vterm-mode-map
-        ("M-<up>" . nil)
-        ("M-<down>" . nil)
-        ("M-<left>" . nil)
-        ("M-<right>" . nil))
-  :hook
-  (vterm-mode
-   . (lambda ()
-       (setq-local buffer-face-mode-face `(:family "JuliaMono" :background "#0b0e11"))
-       (buffer-face-mode t)
-       (setq-local left-margin-width 1)
-       (setq-local right-margin-width 1)))
-  :init
-  (setq vterm-always-compile-module t)
-  ;; delete "C-h", add <f1> and <f2>
-  (setq vterm-keymap-exceptions
-        '("C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y" "M-t" "M-s" "M-:" "C-o" "M-1" "M-2" "M-{" "M-}"))
-  :config
-  (setq vterm-shell "fish")
-  (setq vterm-max-scrollback 10000)
-
-  (defun old-version-of-vterm--get-color (index &rest args)
-    "This is the old version before it was broken by commit
-    https://github.com/akermu/emacs-libvterm/commit/e96c53f5035c841b20937b65142498bd8e161a40.
-    Re-introducing the old version fixes background for vterm buffers."
-    (cond
-     ((and (>= index 0) (< index 16))
-      (face-foreground
-       (elt vterm-color-palette index)
-       nil 'default))
-     ((= index -11)
-      (face-foreground 'vterm-color-underline nil 'default))
-     ((= index -12)
-      (face-background 'vterm-color-inverse-video nil 'default))
-     (t
-      nil)))
-  (advice-add 'vterm--get-color :override #'old-version-of-vterm--get-color))
 
 (use-package gh
   :ensure t
