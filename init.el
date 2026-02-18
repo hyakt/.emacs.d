@@ -235,7 +235,6 @@
 (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoji") nil 'append)
 
 (set-frame-parameter nil 'alpha '(98 . 98))
-(set-frame-parameter nil 'internal-border-width 4)
 
 (defun my-special-mode-hook ()
   "Customize background color for special modes."
@@ -555,12 +554,6 @@
   (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry)
   (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
   (pulsar-global-mode))
-
-(use-package goggles
-  :ensure t
-  :hook ((prog-mode text-mode) . goggles-mode)
-  :config
-  (setq-default goggles-pulse t))
 
 (use-package indent-bars
   :vc (:url "https://github.com/jdtsmith/indent-bars")
