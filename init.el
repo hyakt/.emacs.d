@@ -1380,7 +1380,6 @@ If a region is active, insert it as a fenced code block."
 
   ;; https://github.com/minad/consult/issues/837#issuecomment-1703762384
   (consult-customize
-   consult-find
    consult-fd
    :state (consult--file-preview))
 
@@ -1392,8 +1391,7 @@ If a region is active, insert it as a fenced code block."
    consult-recent-file
    consult-ls-git
    my-tab-bar-filtered-consult-recent-file
-   :preview-key
-   '("C-." :debounce 0.5 any))
+   :preview-key '(:debounce 1 any))
 
   (defun my-tab-bar-filtered-consult-recent-file ()
     "Show recentf files filtered by current tab-bar tab name."
@@ -1843,42 +1841,7 @@ If a region is active, insert it as a fenced code block."
   (setq lsp-enable-text-document-color t)
   (setq lsp-enable-snippet nil)
 
-  (setq lsp-clients-typescript-prefer-use-project-ts-server t)
-
-  ;; todo: Delete emacs version 30 uppper
-  ;; need download binary from  https://github.com/blahgeek/emacs-lsp-booster/releases
-  (defun lsp-booster--advice-json-parse (old-fn &rest args)
-    "Try to parse bytecode instead of json."
-    (or
-     (when (equal (following-char) ?#)
-       (let ((bytecode (read (current-buffer))))
-         (when (byte-code-function-p bytecode)
-           (funcall bytecode))))
-     (apply old-fn args)))
-  (advice-add (if (progn (require 'json)
-                         (fboundp 'json-parse-buffer))
-                  'json-parse-buffer
-                'json-read)
-              :around
-              #'lsp-booster--advice-json-parse)
-
-  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-    "Prepend emacs-lsp-booster command to lsp CMD."
-    (let ((orig-result (funcall old-fn cmd test?)))
-      (if (and (not test?)                             ;; for check lsp-server-present?
-               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-               lsp-use-plists
-               (not (functionp 'json-rpc-connection))  ;; native json-rpc
-               (executable-find "emacs-lsp-booster"))
-          (progn
-            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-              (setcar orig-result command-from-exec-path))
-            (message "Using emacs-lsp-booster for %s!" orig-result)
-            (cons "emacs-lsp-booster" orig-result))
-        orig-result)))
-  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-
-  (advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht))))))
+  (setq lsp-clients-typescript-prefer-use-project-ts-server t))
 
 (use-package lsp-tailwindcss
   :ensure t
