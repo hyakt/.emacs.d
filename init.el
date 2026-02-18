@@ -104,8 +104,10 @@
 (setq echo-keystrokes 0.1)                                         ;; キーストロークをエコーエリアに早く表示する
 (setq inhibit-startup-screen 1)                                    ;; スタートアップメッセージを非表示
 (setq line-spacing 0)                                              ;; 行間を無しに設定
-(setq scroll-conservatively 35)                                    ;; スクロールの設定
-(setq scroll-margin 0)                                             ;; スクロールの設定
+(setq scroll-conservatively 100)                                   ;; スクロールの設定
+(setq scroll-margin 0)
+(setq scroll-preserve-screen-position t)
+(setq fast-but-imprecise-scrolling t)
 (setq truncate-lines nil)                                          ;; 画面端まで来たら折り返す
 (setq truncate-partial-width-windows nil)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)     ;; 同じ名前のバッファを開いたときの設定
@@ -123,8 +125,6 @@
 (setq frame-resize-pixelwise t)
 (setq history-length 3000)
 (setq history-delete-duplicates t)
-(setq scroll-preserve-screen-position t)
-(setq scroll-conservatively 100)
 (setq custom-file "~/.emacs.d/custom.el")
 (setq initial-scratch-message "")                                  ;; scratch の初期メッセージ消去
 (setq initial-major-mode 'fundamental-mode)
@@ -140,7 +140,6 @@
 (setq bidi-inhibit-bpa t)
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
-(setq fast-but-imprecise-scrolling t)
 (setq ffap-machine-p-known 'reject)
 (setq idle-update-delay 1.0)
 (setq redisplay-skip-fontification-on-input t)
