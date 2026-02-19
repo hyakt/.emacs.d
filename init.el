@@ -1290,12 +1290,11 @@ If a region is active, insert it as a fenced code block."
          ;; consult-ripgrepの検索構文メモ
          ;;
          ;; 1. 基本的な使い方:
-         ;;    - 「pattern -- options」形式で検索オプションを指定できる
-         ;;    - パターンとオプションは「--」で区切る
+         ;;    - 「pattern options」形式で検索オプションを指定できる
          ;;
          ;; 2. コンテキスト行表示:
-         ;;    - 「検索語 -- -C3」     前後3行表示
-         ;;    - 「検索語 -- -B2 -A4」 前2行・後4行表示
+         ;;    - 「検索語 -C3」     前後3行表示
+         ;;    - 「検索語 -B2 -A4」 前2行・後4行表示
          ;;
          ;; 3. 複数キーワード検索:
          ;;    - 「word1 word2」      word1とword2の両方を含む（順不同）
@@ -1306,21 +1305,21 @@ If a region is active, insert it as a fenced code block."
          ;;    - 「\bword\b」          単語境界のwordを検索
          ;;
          ;; 5. 特定ファイル検索:
-         ;;    - 「pattern -- -g "*.js"」   JavaScriptファイルのみ検索
-         ;;    - 「pattern -- -g "!*.min.*"」最小化ファイルを除外
-         ;;    - 「pattern -- -g "!*.test.*"」テストファイルを除外
-         ;;    - 「pattern -- -g "*.js" -g "!*.test.*"」JSファイルからテストを除外
+         ;;    - 「pattern -g "*.js"」   JavaScriptファイルのみ検索
+         ;;    - 「pattern -g "!*.min.*"」最小化ファイルを除外
+         ;;    - 「pattern -g "!*.test.*"」テストファイルを除外
+         ;;    - 「pattern -g "*.js" -g "!*.test.*"」JSファイルからテストを除外
          ;;
          ;; 6. 固定文字列検索（正規表現でなく）:
-         ;;    - 「検索語 -- -F」      正規表現記号をただの文字として扱う
+         ;;    - 「検索語 -F」      正規表現記号をただの文字として扱う
          ;;
          ;; 7. 大文字小文字:
-         ;;    - 「検索語 -- -s」      大文字小文字を区別する
-         ;;    - 「検索語 -- -i」      大文字小文字を無視する
+         ;;    - 「検索語 -s」      大文字小文字を区別する
+         ;;    - 「検索語 -i」      大文字小文字を無視する
          ;;
          ;; 8. その他便利なオプション:
-         ;;    - 「検索語 -- -l」      一致したファイル名のみ表示
-         ;;    - 「検索語 -- --hidden」隠しファイルも検索
+         ;;    - 「検索語 -l」      一致したファイル名のみ表示
+         ;;    - 「検索語 --hidden」隠しファイルも検索
          ("C-x e" . consult-ripgrep)
          ("C-x C-r" . my-tab-bar-filtered-consult-recent-file)
          ;; Other custom bindings
