@@ -235,12 +235,12 @@
 
 (set-frame-parameter nil 'alpha '(98 . 98))
 
-(defun my-special-mode-hook ()
+(defun my-buffer-face-dark ()
   "Customize background color for special modes."
   (setq buffer-face-mode-face `(:background "#0f0f14"))
   (buffer-face-mode 1))
 
-(add-hook 'special-mode-hook 'my-special-mode-hook)
+(add-hook 'special-mode-hook 'my-buffer-face-dark)
 (mac-get-current-input-source)
 (with-deferred-eval
   (when-macos
@@ -1525,10 +1525,7 @@ If a region is active, insert it as a fenced code block."
          ("C-d" . mistty-toggle-hide))
   :custom-face
   (mistty-fringe-face ((t (:foreground "#bbc2e0"))))
-  :hook
-  (mistty-mode . (lambda ()
-                   (variable-pitch-mode 1)
-                   (face-remap-add-relative 'variable-pitch :background "#0b0e11")))
+  :hook (mistty-mode . my-buffer-face-dark)
   :config
   (defun mistty-toggle()
     "Mistty toggle."
