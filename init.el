@@ -854,6 +854,9 @@
   :config
   (setopt shell-maker-prompt-before-killing-buffer nil)
   (setopt shell-maker-display-function #'display-buffer)
+  (setopt copilot-chat-use-copilot-instruction-files nil)
+  (setopt copilot-chat-use-git-commit-instruction-files nil)
+  (setopt copilot-chat-list-show-relative-path nil)
   (setopt copilot-chat-default-model "gpt-5.1")
 
   (defun copilot-chat-toggle()
