@@ -487,6 +487,26 @@
   (add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
   (add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig))
 
+(use-package vdiff
+  :ensure t
+  :bind (:map vdiff-mode-map
+              ("M-a" . vdiff-hydra/body)
+              ("q" . vdiff-quit))
+  :custom-face
+  (vdiff-addition-face ((t (:background "#1f3a2f"))))
+  (vdiff-change-face ((t (:background "#3a2a1f"))))
+  (vdiff-subtraction-face ((t (:background "#3a1f2a"))))
+  :config
+  (setopt vdiff-subtraction-fill-char ?\s))
+
+(use-package vdiff-magit
+  :bind (:map magit-mode-map
+              ("e" . vdiff-magit-dwim)
+              ("E" . vdiff-magit))
+  :ensure t
+  :config
+  (setopt vdiff-magit-stage-is-2way t))
+
 (use-package flymake
   :defer t
   :hook (emacs-lisp-mode . flymake-mode)
