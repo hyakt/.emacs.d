@@ -857,7 +857,7 @@
   (setopt copilot-chat-use-copilot-instruction-files nil)
   (setopt copilot-chat-use-git-commit-instruction-files nil)
   (setopt copilot-chat-list-show-relative-path nil)
-  (setopt copilot-chat-default-model "gpt-5.1")
+  (setopt copilot-chat-default-model "gpt-4o")
 
   (defun copilot-chat-toggle()
     "Copilot chat toggle."
@@ -1189,7 +1189,8 @@ If a region is active, insert it as a fenced code block."
          ("M-<up>" . nil)
          ("M-<down>" . nil)
          ("M-<left>" . nil)
-         ("M-<right>" . nil))
+         ("M-<right>" . nil)
+         ("C-t" . nil))
   :config
   (setq dired-dwim-target t)
 
