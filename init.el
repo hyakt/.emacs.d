@@ -903,6 +903,13 @@
 
   (advice-add 'copilot-chat--create-instance :around #'my-copilot-chat-use-current-directory)
 
+  ;; always create new instace even if there is an existing one
+  (advice-add
+   'copilot-chat--ask-for-instance
+   :override
+   (lambda ()
+     (copilot-chat--create-instance)))
+
   (add-to-list 'display-buffer-alist
                '("\\*Copilot Chat"
                  (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
@@ -977,7 +984,7 @@ If a region is active, insert it as a fenced code block."
              (when (not (string= region ""))
                (my-opencode-add-current-buffer source-buffer)
                (goto-char (point-max))
-               (insert "\n```" lang "\n" region "\n```"))))))))
+               (insert "\n```" lang "\n" region "\n```\n"))))))))
 
   (defun my-opencode-hide ()
     "Hide current window."
