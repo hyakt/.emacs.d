@@ -1038,7 +1038,37 @@ If a region is active, insert it as a fenced code block."
                '("\\*OpenCode"
                  (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
                  (side . right)
-                 (reusable-frames . visible))))
+                 (reusable-frames . visible)))
+
+  (major-mode-hydra-define opencode-session-mode
+    (:quit-key "q" :title (with-faicon "nf-fa-robot" "OpenCode" 1 -0.05))
+    ("Session"
+     (("o" opencode "open list" :exit t)
+      ("c" opencode-abort-session "abort")
+      ("x" opencode-kill-session "kill")
+      ("r" opencode-rename-session "rename")
+      ("n" opencode-new-session "new"))
+     "Navigate"
+     (("l" opencode-select-session "select")
+      ("p" opencode-open-parent "parent")
+      ("C" opencode-select-child-session "child")
+      ("F" opencode-fork-session "fork"))
+     "Context"
+     (("f" opencode-add-file "add file")
+      ("b" opencode-add-buffer "add buffer")
+      ("y" opencode-yank-code-block "yank block")
+      ("R" opencode-revert-message "revert message"))
+     "Share"
+     (("s" opencode-share-session "share")
+      ("u" opencode-unshare-session "unshare")
+      ("U" opencode-unshare-all-sessions "unshare all"))
+     "Model"
+     (("m" opencode-select-model "model")
+      ("v" opencode-select-variant "variant")
+      ("M" opencode-toggle-mcp "toggle mcp")
+      ("TAB" opencode-cycle-session-agent "cycle agent"))
+     "Other"
+     (("/" opencode-insert-slash-command "slash command")))))
 
 (use-package comint
   :defer t
@@ -1090,7 +1120,16 @@ If a region is active, insert it as a fenced code block."
           :background-color "#0f0f14"
           :foreground-color "white"
           :lines-truncate t
-          :poshandler posframe-poshandler-window-center)))
+          :poshandler posframe-poshandler-window-center))
+
+  (defun my-hydra--deactivate-ime (&rest _args)
+    "Deactivate IME before showing a hydra."
+    (when (and (fboundp 'mac-ime-deactivate)
+               current-input-method)
+      (mac-ime-deactivate)))
+
+  (when (fboundp 'hydra-default-pre)
+    (advice-add 'hydra-default-pre :before #'my-hydra--deactivate-ime)))
 
 (use-package major-mode-hydra
   :ensure t
@@ -1720,8 +1759,7 @@ If a region is active, insert it as a fenced code block."
          (prog-mode . diff-hl-show-hunk-mouse-mode)
          (magit-pre-refresh . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh)
-         (dired-mode . diff-hl-dired-mode))
-  )
+         (dired-mode . diff-hl-dired-mode)))
 
 (use-package git-timemachine
   :ensure t
