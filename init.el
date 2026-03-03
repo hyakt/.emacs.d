@@ -1721,14 +1721,6 @@ If a region is active, insert it as a fenced code block."
                                      upstream))
           (user-error "Push to upstream aborted by user")))))
 
-  (defun auto-display-magit-process-buffer (&rest args)
-    "Automatically display the process buffer when it is updated."
-    (let ((magit-display-buffer-noselect t))
-      (magit-process-buffer)))
-
-  (advice-add 'magit-process-insert-section :before
-              #'auto-display-magit-process-buffer)
-
   (pretty-hydra-define
     git
     (:title (with-faicon "nf-fa-git" "Git commands" 1 -0.05) :quit-key "q")
