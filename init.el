@@ -1012,6 +1012,22 @@ If a region is active, insert it as a fenced code block."
     (when (window-deletable-p)
       (delete-window)))
 
+  (defun my-opencode--toast-via-terminal-notifier (orig-fun properties)
+    "Use terminal-notifier for OpenCode toast on macOS."
+    (let-alist properties
+      (if (and (eq system-type 'darwin)
+               (executable-find "terminal-notifier"))
+          (let* ((bundle-id "org.gnu.Emacs")
+                 (args (list "-title" (or .title "")
+                             "-message" (or .message "")
+                             "-group" "opencode-toast"
+                             "-activate" bundle-id
+                             "-sound" "glass")))
+            (when (member .variant '("error" "warning"))
+              (setq args (append args (list "-sound" "default"))))
+            (apply #'call-process "terminal-notifier" nil 0 nil args))
+        (funcall orig-fun properties))))
+
   (defun my-opencode--format-tool-call-with-apply-patch (orig-fun tool input)
     "Format apply_patch tool call for display."
     (if (string= tool "apply_patch")
@@ -1032,6 +1048,7 @@ If a region is active, insert it as a fenced code block."
       (font-lock-ensure)
       (buffer-string)))
 
+  (advice-add 'opencode--toast-show :around #'my-opencode--toast-via-terminal-notifier)
   (advice-add 'opencode--format-tool-call :around #'my-opencode--format-tool-call-with-apply-patch)
 
   (add-to-list 'display-buffer-alist
