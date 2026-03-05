@@ -1048,8 +1048,20 @@ If a region is active, insert it as a fenced code block."
       (font-lock-ensure)
       (buffer-string)))
 
+  (defun my-opencode--collect-all-models-with-id (orig-fun &rest args)
+    "Include model ID in model display names."
+    (mapcar
+     (lambda (entry)
+       (pcase-let ((`(,display ,meta ,provider-name) entry))
+         (let ((model-id (alist-get 'modelID meta)))
+           (if model-id
+               (list (format "%s (%s/%s)" display (alist-get 'providerID meta) model-id) meta provider-name)
+             entry))))
+     (apply orig-fun args)))
+
   (advice-add 'opencode--toast-show :around #'my-opencode--toast-via-terminal-notifier)
   (advice-add 'opencode--format-tool-call :around #'my-opencode--format-tool-call-with-apply-patch)
+  (advice-add 'opencode--collect-all-models :around #'my-opencode--collect-all-models-with-id)
 
   (add-to-list 'display-buffer-alist
                '("\\*OpenCode"
@@ -1747,10 +1759,11 @@ If a region is active, insert it as a fenced code block."
      (("w" my-git-wip "wip" :exit t)
       ("u" my-git-unwip "unwip" :exit t)))))
 
-(use-package magit-delta
-  :ensure t
-  :defer t
-  :hook (magit-mode . magit-delta-mode))
+;; 調子悪いので一旦外す
+;; (use-package magit-delta
+;;   :ensure t
+;;   :defer t
+;;   :hook (magit-mode . magit-delta-mode))
 
 (use-package transient-posframe
   :ensure t
