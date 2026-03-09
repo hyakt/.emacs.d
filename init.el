@@ -944,10 +944,6 @@
         opencode-event-log-max-lines 1000)
   (setq opencode-auto-start-server t)
 
-  (defun my-opencode--major-mode-lang (mode)
-    "Return language name for MODE."
-    (replace-regexp-in-string "\\(?:-ts\\)?-mode$" "" (symbol-name mode)))
-
   (defun my-opencode--session-buffer-p (buffer)
     "Return non-nil if BUFFER is an OpenCode session buffer."
     (and (buffer-live-p buffer)
@@ -960,6 +956,19 @@
                                default-directory)))
       (when-let ((project (project-current nil default-directory)))
         (expand-file-name (project-root project)))))
+
+  (defun my-opencode--format-region-location (buffer start end)
+    "Return BUFFER region location string from START to END."
+    (with-current-buffer buffer
+      (let* ((start-line (line-number-at-pos start))
+             (start-col (save-excursion
+                          (goto-char start)
+                          (1+ (current-column))))
+             (end-line (line-number-at-pos end))
+             (end-col (save-excursion
+                        (goto-char end)
+                        (1+ (current-column)))))
+        (format "%d:%d-%d:%d" start-line start-col end-line end-col))))
 
   (defun my-opencode--most-recent-session-buffer (&optional source-buffer)
     "Return the most recently used OpenCode session buffer.
@@ -986,25 +995,23 @@ If SOURCE-BUFFER has a project, prefer a session in that project."
 
   (defun my-opencode-toggle ()
     "Toggle OpenCode session window.
-If a region is active, insert it as a fenced code block."
+If a region is active, insert its location as line:column."
     (interactive)
     (if (string-prefix-p "*OpenCode" (buffer-name))
         (my-opencode-hide)
       (let* ((source-buffer (current-buffer))
-             (lang (my-opencode--major-mode-lang major-mode))
-             (region (if (use-region-p)
-                         (buffer-substring-no-properties
-                          (region-beginning) (region-end))
-                       "")))
+             (region-location (when (use-region-p)
+                                (my-opencode--format-region-location
+                                 source-buffer (region-beginning) (region-end)))))
         (deactivate-mark)
         (my-opencode--with-session
          (lambda (session-buffer)
            (pop-to-buffer session-buffer)
            (with-current-buffer session-buffer
-             (when (not (string= region ""))
+             (when region-location
                (my-opencode-add-current-buffer source-buffer)
                (goto-char (point-max))
-               (insert "\n```" lang "\n" region "\n```\n"))))))))
+               (insert " " region-location "\n"))))))))
 
   (defun my-opencode-hide ()
     "Hide current window."
@@ -1823,11 +1830,11 @@ If a region is active, insert it as a fenced code block."
   :init
   (defhydra lsp-code-actions-hydra (:color blue :hint nil)
     "
- ^Code Actions^        ^Refactoring^         ^Formatting^         ^Other^
- ^^-----------------   ^^------------------  ^^-----------------  ^^--------
- _a_: Execute action   _r_: Rename           _f_: Format buffer    _h_: Help
- _i_: Implementation   _o_: Organize imports _e_: Format eslint
-"
+    ^Code Actions^        ^Refactoring^         ^Formatting^         ^Other^
+    ^^-----------------   ^^------------------  ^^-----------------  ^^--------
+    _a_: Execute action   _r_: Rename           _f_: Format buffer    _h_: Help
+    _i_: Implementation   _o_: Organize imports _e_: Format eslint
+    "
     ;; コードアクション
     ("a" lsp-execute-code-action)
     ("i" lsp-find-implementation)
