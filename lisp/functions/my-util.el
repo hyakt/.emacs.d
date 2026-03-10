@@ -338,6 +338,34 @@ TIME-STRが与えられた場合は、ISO8601形式の時間文字列をUNIXTIME
            (float-time))))
     (insert (format "%.0f" unixtime))))
 
+;;;###autoload
+(defun my/clear-side-window-lock ()
+  "side window 起因で split できない状態を解除する。"
+  (interactive)
+  (let* ((wins (window-list nil 'no-minibuf))
+         (side-wins (seq-filter (lambda (w) (window-parameter w 'window-side)) wins))
+         (main-win (or (seq-find (lambda (w) (not (window-parameter w 'window-side))) wins)
+                       (selected-window)))
+         (n 0))
+    ;; side window が選択されている場合は通常ウィンドウへ退避
+    (when (and (window-live-p main-win)
+               (window-parameter (selected-window) 'window-side))
+      (select-window main-win))
+
+    ;; side window を閉じる/通常化する
+    (dolist (w side-wins)
+      (when (window-live-p w)
+        (cl-incf n)
+        (set-window-dedicated-p w nil)
+        (set-window-parameter w 'window-side nil)
+        (set-window-parameter w 'window-slot nil)
+        (set-window-parameter w 'no-other-window nil)
+        (ignore-errors (quit-restore-window w 'kill))
+        (when (window-live-p w)
+          (ignore-errors (delete-window w)))))
+
+    (balance-windows)
+    (message "side window lock を解除: %d 個処理" n)))
 
 (provide 'my-util)
 
