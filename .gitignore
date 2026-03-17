@@ -57,4 +57,4 @@ var/
 .emacs.desktop*
 eglot-java-eclipse-jdt-cache/
 share/
-
+elgrep-data.el*

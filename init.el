@@ -365,7 +365,6 @@
   (keymap-global-set "M-<right>" #'windmove-right)
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
-  (keymap-global-set "C-`" #'open-today-org-file)
   (keymap-global-set "C-\\" #'scratch-buffer)
   (keymap-global-set "C-o" #'my-other-window-or-split-and-kill-minibuffer)
   (keymap-global-unset "C-z")
@@ -2028,20 +2027,22 @@ If a region is active, insert its location as line:column."
 (use-package obsidian
   :ensure t
   :defer t
-  :bind (:map obsidian-mode-map
-              ;; Create note
-              ("C-c C-n" . obsidian-capture)
-              ;; If you prefer you can use `obsidian-insert-wikilink'
-              ("C-c C-l" . obsidian-insert-link)
-              ;; Open file pointed to by link at point
-              ("C-c C-o" . obsidian-follow-link-at-point)
-              ;; Open a different note from vault
-              ("C-c C-p" . obsidian-jump)
-              ;; Follow a backlink for the current file
-              ("C-c C-b" . obsidian-backlink-jump))
+  :bind
+  (("C-`" . obsidian-daily-note)
+   :map obsidian-mode-map
+   ;; Create note
+   ("C-c C-n" . obsidian-capture)
+   ;; If you prefer you can use `obsidian-insert-wikilink'
+   ("C-c C-l" . obsidian-insert-link)
+   ;; Open file pointed to by link at point
+   ("C-c C-o" . obsidian-follow-link-at-point)
+   ;; Open a different note from vault
+   ("C-c C-p" . obsidian-jump)
+   ;; Follow a backlink for the current file
+   ("C-c C-b" . obsidian-backlink-jump))
   :config
   (setopt obsidian-directory "~/repos/github.com/hyakt/obsidian")
-  (setopt obsidian-templates-directory "daily")
+  (setopt obsidian-daily-notes-directory "daily")
   (setopt markdown-enable-wiki-links t))
 
 ;;; ---------- major mode ----------
