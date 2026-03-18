@@ -939,7 +939,8 @@
 
 (use-package opencode
   :vc (:url "https://codeberg.org/sczi/opencode.el")
-  :bind ("M-1" . my-opencode-toggle)
+  :bind (("M-1" . my-opencode-toggle-with-location)
+         ("M-2" . my-opencode-toggle-with-code-block))
   :config
   (setq opencode-api-log-max-lines 1000
         opencode-event-log-max-lines 1000)
@@ -994,25 +995,54 @@ If SOURCE-BUFFER has a project, prefer a session in that project."
         (funcall fn buffer)
       (call-interactively 'opencode)))
 
-  (defun my-opencode-toggle ()
-    "Toggle OpenCode session window.
-If a region is active, insert its location as line:column."
-    (interactive)
+  (defun my-opencode--toggle-session-with-inserter (inserter)
+    "Toggle OpenCode session window and call INSERTER in the session buffer.
+INSERTER receives the source buffer as its only argument."
     (if (string-prefix-p "*OpenCode" (buffer-name))
         (my-opencode-hide)
-      (let* ((source-buffer (current-buffer))
-             (region-location (when (use-region-p)
-                                (my-opencode--format-region-location
-                                 source-buffer (region-beginning) (region-end)))))
-        (deactivate-mark)
+      (let ((source-buffer (current-buffer)))
         (my-opencode--with-session
          (lambda (session-buffer)
            (pop-to-buffer session-buffer)
            (with-current-buffer session-buffer
-             (when region-location
-               (my-opencode-add-current-buffer source-buffer)
-               (goto-char (point-max))
-               (insert " " region-location "\n"))))))))
+             (funcall inserter source-buffer))))
+        (deactivate-mark))))
+
+  (defun my-opencode-toggle-with-location ()
+    "Toggle OpenCode session window.
+If a region is active, insert its location as line:column."
+    (interactive)
+    (my-opencode--toggle-session-with-inserter
+     (lambda (source-buffer)
+       (when-let ((region-location
+                   (with-current-buffer source-buffer
+                     (when (use-region-p)
+                       (my-opencode--format-region-location
+                        source-buffer (region-beginning) (region-end))))))
+         (my-opencode-add-current-buffer source-buffer)
+         (goto-char (point-max))
+         (insert " " region-location "\n")))))
+
+  (defun my-opencode--major-mode-lang (mode)
+    "Return language name for MODE."
+    (replace-regexp-in-string "\\(?:-ts\\)?-mode$" "" (symbol-name mode)))
+
+  (defun my-opencode-toggle-with-code-block ()
+    "Toggle OpenCode session window.
+If a region is active, insert it as a fenced code block."
+    (interactive)
+    (my-opencode--toggle-session-with-inserter
+     (lambda (source-buffer)
+       (pcase-let ((`(,lang ,region)
+                    (with-current-buffer source-buffer
+                      (list (my-opencode--major-mode-lang major-mode)
+                            (when (use-region-p)
+                              (buffer-substring-no-properties
+                               (region-beginning) (region-end)))))))
+         (when region
+           (my-opencode-add-current-buffer source-buffer)
+           (goto-char (point-max))
+           (insert "\n```" lang "\n" region "\n```\n"))))))
 
   (defun my-opencode-hide ()
     "Hide current window."
