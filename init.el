@@ -735,7 +735,9 @@
   :defer t
   :bind
   ("C->" . mc/mark-next-like-this)
-  ("C-<" . mc/mark-previous-like-this))
+  ("C-<" . mc/mark-previous-like-this)
+  :config
+  (setopt mc/always-run-for-all t))
 
 (use-package expreg
   :ensure t
