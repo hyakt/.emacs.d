@@ -939,132 +939,44 @@
 
 (use-package opencode
   :vc (:url "https://codeberg.org/sczi/opencode.el")
-  :bind (("M-1" . my-opencode-toggle-with-location)
-         ("M-2" . my-opencode-toggle-with-code-block))
+  :bind ("M-1" . my-opencode-toggle)
   :config
   (setq opencode-api-log-max-lines 1000
         opencode-event-log-max-lines 1000)
   (setq opencode-auto-start-server t)
 
-  (defun my-opencode--session-buffer-p (buffer)
-    "Return non-nil if BUFFER is an OpenCode session buffer."
-    (and (buffer-live-p buffer)
-         (with-current-buffer buffer
-           (bound-and-true-p opencode-session-id))))
+  (defun my-opencode--last-session-buffer ()
+    "Return the last selected OpenCode session buffer or nil."
+    (when (and (boundp 'opencode-last-session-buffer)
+               (buffer-live-p opencode-last-session-buffer))
+      opencode-last-session-buffer))
 
-  (defun my-opencode--project-root (&optional buffer)
-    "Return project root for BUFFER or nil."
-    (let ((default-directory (with-current-buffer (or buffer (current-buffer))
-                               default-directory)))
-      (when-let ((project (project-current nil default-directory)))
-        (expand-file-name (project-root project)))))
-
-  (defun my-opencode--format-region-location (buffer start end)
-    "Return BUFFER region location string from START to END."
-    (with-current-buffer buffer
-      (let* ((start-line (line-number-at-pos start))
-             (start-col (save-excursion
-                          (goto-char start)
-                          (1+ (current-column))))
-             (end-line (line-number-at-pos end))
-             (end-col (save-excursion
-                        (goto-char end)
-                        (1+ (current-column)))))
-        (format "%d:%d-%d:%d" start-line start-col end-line end-col))))
-
-  (defun my-opencode--most-recent-session-buffer (&optional source-buffer)
-    "Return the most recently used OpenCode session buffer.
-If SOURCE-BUFFER has a project, prefer a session in that project."
-    (let ((root (my-opencode--project-root source-buffer)))
-      (cl-loop for buffer in (buffer-list)
-               when (and (my-opencode--session-buffer-p buffer)
-                         (or (not root)
-                             (string= root (my-opencode--project-root buffer))))
-               return buffer)))
-
-  (defun my-opencode-add-current-buffer (buffer)
-    "Add BUFFER to the current OpenCode session context."
-    (let ((name (buffer-name buffer)))
-      (cl-letf (((symbol-function 'read-buffer)
-                 (lambda (&rest _) name)))
-        (opencode-add-buffer))))
-
-  (defun my-opencode--with-session (fn)
-    "Call FN with an OpenCode session buffer."
-    (if-let ((buffer (my-opencode--most-recent-session-buffer (current-buffer))))
-        (funcall fn buffer)
-      (call-interactively 'opencode)))
-
-  (defun my-opencode--toggle-session-with-inserter (inserter)
-    "Toggle OpenCode session window and call INSERTER in the session buffer.
-INSERTER receives the source buffer as its only argument."
+  (defun my-opencode-toggle ()
+    "Toggle OpenCode session window.
+If a region is active, add current buffer and region to context."
+    (interactive)
     (if (string-prefix-p "*OpenCode" (buffer-name))
         (my-opencode-hide)
-      (let ((source-buffer (current-buffer)))
-        (my-opencode--with-session
-         (lambda (session-buffer)
-           (pop-to-buffer session-buffer)
-           (with-current-buffer session-buffer
-             (funcall inserter source-buffer))))
-        (deactivate-mark))))
-
-  (defun my-opencode-toggle-with-location ()
-    "Toggle OpenCode session window.
-If a region is active, insert its location as line:column."
-    (interactive)
-    (my-opencode--toggle-session-with-inserter
-     (lambda (source-buffer)
-       (when-let ((region-location
-                   (with-current-buffer source-buffer
-                     (when (use-region-p)
-                       (my-opencode--format-region-location
-                        source-buffer (region-beginning) (region-end))))))
-         (my-opencode-add-current-buffer source-buffer)
-         (goto-char (point-max))
-         (insert " " region-location "\n")))))
-
-  (defun my-opencode--major-mode-lang (mode)
-    "Return language name for MODE."
-    (replace-regexp-in-string "\\(?:-ts\\)?-mode$" "" (symbol-name mode)))
-
-  (defun my-opencode-toggle-with-code-block ()
-    "Toggle OpenCode session window.
-If a region is active, insert it as a fenced code block."
-    (interactive)
-    (my-opencode--toggle-session-with-inserter
-     (lambda (source-buffer)
-       (pcase-let ((`(,lang ,region)
-                    (with-current-buffer source-buffer
-                      (list (my-opencode--major-mode-lang major-mode)
-                            (when (use-region-p)
-                              (buffer-substring-no-properties
-                               (region-beginning) (region-end)))))))
-         (when region
-           (my-opencode-add-current-buffer source-buffer)
-           (goto-char (point-max))
-           (insert "\n```" lang "\n" region "\n```\n"))))))
+      (if-let ((session-buffer (my-opencode--last-session-buffer)))
+          (progn
+            (when (use-region-p)
+              (opencode-add-buffer-dwim)
+              (with-current-buffer session-buffer
+                (goto-char (point-max))
+                (insert "\n"))
+              (opencode-add-region)
+              (with-current-buffer session-buffer
+                (goto-char (point-max))
+                (insert "\n"))
+              (deactivate-mark))
+            (pop-to-buffer session-buffer))
+        (call-interactively 'opencode))))
 
   (defun my-opencode-hide ()
     "Hide current window."
     (interactive)
     (when (window-deletable-p)
       (delete-window)))
-
-  (defun my-opencode--toast-via-terminal-notifier (orig-fun properties)
-    "Use terminal-notifier for OpenCode toast on macOS."
-    (let-alist properties
-      (if (and (eq system-type 'darwin)
-               (executable-find "terminal-notifier"))
-          (let* ((bundle-id "org.gnu.Emacs")
-                 (args (list "-title" (or .title "")
-                             "-message" (or .message "")
-                             "-group" "opencode-toast"
-                             "-activate" bundle-id
-                             "-sound" "glass")))
-            (when (member .variant '("error" "warning"))
-              (setq args (append args (list "-sound" "default"))))
-            (apply #'call-process "terminal-notifier" nil 0 nil args))
-        (funcall orig-fun properties))))
 
   (defun my-opencode--format-tool-call-with-apply-patch (orig-fun tool input)
     "Format apply_patch tool call for display."
@@ -1086,20 +998,7 @@ If a region is active, insert it as a fenced code block."
       (font-lock-ensure)
       (buffer-string)))
 
-  (defun my-opencode--collect-all-models-with-id (orig-fun &rest args)
-    "Include model ID in model display names."
-    (mapcar
-     (lambda (entry)
-       (pcase-let ((`(,display ,meta ,provider-name) entry))
-         (let ((model-id (alist-get 'modelID meta)))
-           (if model-id
-               (list (format "%s (%s/%s)" display (alist-get 'providerID meta) model-id) meta provider-name)
-             entry))))
-     (apply orig-fun args)))
-
-  (advice-add 'opencode--toast-show :around #'my-opencode--toast-via-terminal-notifier)
   (advice-add 'opencode--format-tool-call :around #'my-opencode--format-tool-call-with-apply-patch)
-  (advice-add 'opencode--collect-all-models :around #'my-opencode--collect-all-models-with-id)
 
   (add-to-list 'display-buffer-alist
                '("\\*OpenCode"
@@ -1121,8 +1020,8 @@ If a region is active, insert it as a fenced code block."
       ("C" opencode-select-child-session "child")
       ("F" opencode-fork-session "fork"))
      "Context"
-     (("f" opencode-add-file "add file")
-      ("b" opencode-add-buffer "add buffer")
+     (("f" opencode-add-file-dwim "add file")
+      ("b" opencode-add-buffer-dwim "add buffer")
       ("y" opencode-yank-code-block "yank block")
       ("R" opencode-revert-message "revert message"))
      "Share"
