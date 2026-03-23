@@ -7,7 +7,8 @@ init: install-emacs-plus link compile install-icons setup-git-hook
 
 .PHONY: install-emacs-plus
 install-emacs-plus:
-	brew install d12frosted/emacs-plus --with-xwidgets --with-imagemagick
+	brew tap d12frosted/emacs-plus
+	brew install emacs-plus
 	ln -sfv $(EMACS_MAC_PLUS_APP_PATH)/Emacs.app /Applications
 
 .PHONY: install-emacs-mac
