@@ -356,6 +356,14 @@ side window 起因で split できない状態を解除する。" t)
 (register-definition-prefixes "my-util" '("char-unicode" "minibuffer-keyboard-quit" "my-" "open-today-org-file-format" "unicode-char" "url-"))
 
 
+;;; Generated autoloads from my-copilot-chat-git.el
+
+(autoload 'my-copilot-chat-generate-commit-message "my-copilot-chat-git" "\
+Auto insert commit message from staged diff via Copilot Chat." t)
+(autoload 'my-copilot-chat--git-commit-setup "my-copilot-chat-git" "\
+Generate commit message shortly after commit buffer opens.")
+(register-definition-prefixes "my-copilot-chat-git" '("my-copilot-chat-"))
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t

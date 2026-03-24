@@ -1538,6 +1538,7 @@ If a region is active, add current buffer and region to context."
 (use-package magit
   :ensure t
   :defer 5
+  :hook (git-commit-setup . my-copilot-chat--git-commit-setup)
   :bind (("M-S" . git/body)
          ("M-s" . magit-status-toggle)
          (:map magit-status-mode-map
