@@ -9,7 +9,7 @@
 (defun my-generate-autoloads ()
   "Generates autoloads."
   (interactive)
-  (package-generate-autoloads "my-functions" "~/.emacs.d/lisp/functions"))
+  (package-generate-autoloads "my-packages" "~/.emacs.d/lisp/packages"))
 
 ;;;###autoload
 (defun my-set-alpha (alpha-num)

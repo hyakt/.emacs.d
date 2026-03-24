@@ -149,7 +149,7 @@
 (setq-default tab-width 2)                                         ;; タブの幅は半角スペース 2
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 
-(load (locate-user-emacs-file "./lisp/functions/my-functions-autoloads.el") nil t)
+(load (locate-user-emacs-file "./lisp/packages/my-packages-autoloads.el") nil t)
 
 (with-deferred-eval
   (if (file-exists-p (expand-file-name custom-file))
