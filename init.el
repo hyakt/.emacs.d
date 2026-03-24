@@ -359,14 +359,14 @@
   (keymap-global-set "C-x C-k" #'my-close-and-kill-this-pane)
   (keymap-global-set "C-x C-x" #'my-kill-other-buffers)
   (keymap-global-set "C-x i" #'my-buffer-indent)
-  (keymap-global-set "M-<up>" #'windmove-up)
-  (keymap-global-set "M-<down>" #'windmove-down)
-  (keymap-global-set "M-<left>" #'windmove-left)
-  (keymap-global-set "M-<right>" #'windmove-right)
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
   (keymap-global-set "C-\\" #'scratch-buffer)
-  (keymap-global-set "C-o" #'my-other-window-or-split-and-kill-minibuffer)
+  (bind-key* "C-o" #'my-other-window-or-split-and-kill-minibuffer)
+  (bind-key* "M-<up>" #'windmove-up)
+  (bind-key* "M-<down>" #'windmove-down)
+  (bind-key* "M-<left>" #'windmove-left)
+  (bind-key* "M-<right>" #'windmove-right)
   (keymap-global-unset "C-z")
   (global-unset-key [swipe-left])
   (global-unset-key [swipe-right]))
@@ -742,9 +742,9 @@
 (use-package expreg
   :ensure t
   :defer t
-  :bind
-  ("C-," . expreg-expand)
-  ("C-M-," . expreg-contract))
+  :bind*
+  (("C-," . expreg-expand)
+   ("C-M-," . expreg-contract)))
 
 (use-package undo-fu
   :ensure t
@@ -771,9 +771,6 @@
   (setq wgrep-enable-key "e")
   (setq wgrep-auto-save-buffer t)
   (setq wgrep-change-readonly-file t))
-
-(use-package grep
-  :bind (:map grep-mode-map ("C-o" . nil)))
 
 (use-package string-inflection
   :ensure t
@@ -849,7 +846,7 @@
   :vc (:url "https://codeberg.org/sczi/opencode.el"
             :branch "main"
             :rev :newest)
-  :bind ("M-q" . my-opencode-toggle)
+  :bind* (("M-q" . my-opencode-toggle))
   :config
   (setq opencode-api-log-max-lines 1000
         opencode-event-log-max-lines 1000)
@@ -996,7 +993,7 @@ If a region is active, add current buffer and region to context."
 (use-package gt
   :defer t
   :ensure t
-  :bind ("C-c C-t" . gt-translate)
+  :bind* (("C-c C-t" . gt-translate))
   :config
   (setq gt-langs '(en ja))
   (setq gt-default-translator
@@ -1006,7 +1003,7 @@ If a region is active, add current buffer and region to context."
                    :width 100  :frame-params (list :cursor 'box :timeout nil)))))
 
 (use-package google-this
-  :bind ("C-c C-k" . google-this-noconfirm)
+  :bind* (("C-c C-k" . google-this-noconfirm))
   :ensure t
   :defer t)
 
@@ -1087,10 +1084,10 @@ If a region is active, add current buffer and region to context."
 
 (use-package tab-bar
   :defer t
-  :bind (("M-t" . tab-bar-new-tab-to)
-         ("M-W" . tab-bar-close-tab)
-         ("M-}" . tab-bar-switch-to-next-tab)
-         ("M-{" . tab-bar-switch-to-prev-tab))
+  :bind* (("M-t" . tab-bar-new-tab-to)
+          ("M-W" . tab-bar-close-tab)
+          ("M-}" . tab-bar-switch-to-next-tab)
+          ("M-{" . tab-bar-switch-to-prev-tab))
   :hook (tab-bar-mode . (lambda ()
                           (setq tab-bar-close-button-show nil)
                           (setq tab-bar-show t)
@@ -1154,14 +1151,7 @@ If a region is active, add current buffer and region to context."
   :bind (("C-x C-d" . my-dired-this-buffer)
          :map dired-mode-map
          ("e" . wdired-change-to-wdired-mode)
-         ("C-o" . nil)
-         ("M-s" . nil)
-         ("c" . my-dired-do-copy-with-filename)
-         ("M-<up>" . nil)
-         ("M-<down>" . nil)
-         ("M-<left>" . nil)
-         ("M-<right>" . nil)
-         ("C-t" . nil))
+         ("c" . my-dired-do-copy-with-filename))
   :config
   (setq dired-dwim-target t)
   (setq dired-deletion-confirmer #'y-or-n-p)
@@ -1501,9 +1491,9 @@ If a region is active, add current buffer and region to context."
 (use-package mistty
   :ensure t
   :defer t
-  :bind (("C-t" . mistty-toggle)
-         :map mistty-prompt-map
-         ("C-d" . mistty-toggle-hide))
+  :bind* (("C-t" . mistty-toggle))
+  :bind (:map mistty-prompt-map
+              ("C-d" . mistty-toggle-hide))
   :custom-face
   (mistty-fringe-face ((t (:foreground "#bbc2e0"))))
   :hook (mistty-mode . my-buffer-face-dark)
@@ -1540,13 +1530,12 @@ If a region is active, add current buffer and region to context."
   :defer 5
   :hook (git-commit-setup . my-copilot-chat--git-commit-setup)
   :bind (("M-S" . git/body)
-         ("M-s" . magit-status-toggle)
          (:map magit-status-mode-map
                ("q" . my-magit-quit-session))
          (:map git-commit-mode-map
-               ("C-c C-t" . nil)
                ("M-p" . my-consult-git-commit-messages)
                ("M-i" . my-consult-git-conventional-commit-prefix)))
+  :bind* (("M-s" . magit-status-toggle))
   :config
   (setq magit-save-repository-buffers 'dontask)
   (setq magit-diff-highlight-indentation nil)
@@ -2297,13 +2286,7 @@ If a region is active, add current buffer and region to context."
   :pin gnu
   :defer t
   :bind (:map org-mode-map
-              ("C-," . nil)
-              ("C-j" . nil)
-              ("C-c C-t" . nil)
-              ("C-c C-k" . nil)
-              ("C-c C-a" . nil)
-              ("M-{" . nil)
-              ("M-}" . nil))
+              ("C-c C-a" . nil))
   :hook (org-mode . (lambda ()
                       (require 'ob-js)
                       (require 'ob-async)
@@ -2414,8 +2397,7 @@ If a region is active, add current buffer and region to context."
        (set
         (make-local-variable 'whitespace-action)
         nil)))
-  :bind (:map markdown-mode-map (("C-c C-t" . nil)
-                                 ("C-c C-a" . nil)))
+  :bind (:map markdown-mode-map ("C-c C-a" . nil))
   :mode
   ("\\.markdown\\'" . gfm-mode)
   ("\\.md\\'" . gfm-mode)
