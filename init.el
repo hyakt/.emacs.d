@@ -945,11 +945,28 @@
         opencode-event-log-max-lines 1000)
   (setq opencode-auto-start-server t)
 
+  (defun my-opencode--project-root (&optional buffer)
+    "Return project root for BUFFER or nil."
+    (with-current-buffer (or buffer (current-buffer))
+      (when-let ((project (project-current nil default-directory)))
+        (expand-file-name (project-root project)))))
+
   (defun my-opencode--last-session-buffer ()
-    "Return the last selected OpenCode session buffer or nil."
-    (when (and (boundp 'opencode-last-session-buffer)
-               (buffer-live-p opencode-last-session-buffer))
-      opencode-last-session-buffer))
+    "Return same-project OpenCode session buffer if available."
+    (let* ((root (my-opencode--project-root))
+           (same-project
+            (and root
+                 (cl-find-if
+                  (lambda (buffer)
+                    (and (buffer-live-p buffer)
+                         (with-current-buffer buffer
+                           (and (bound-and-true-p opencode-session-id)
+                                (string= root (my-opencode--project-root buffer))))))
+                  (buffer-list)))))
+      (or same-project
+          (and (boundp 'opencode-last-session-buffer)
+               (buffer-live-p opencode-last-session-buffer)
+               opencode-last-session-buffer))))
 
   (defun my-opencode-toggle ()
     "Toggle OpenCode session window.
@@ -1218,6 +1235,8 @@ If a region is active, add current buffer and region to context."
          ("C-t" . nil))
   :config
   (setq dired-dwim-target t)
+  (setq dired-deletion-confirmer #'y-or-n-p)
+  (setq dired-recursive-deletes 'always)
 
   (defun my-dired-this-buffer ()
     "Open dired in this buffer."
