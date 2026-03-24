@@ -21,7 +21,7 @@
    "Do not include anything for a second line.\n"
    "Do not use markdown code fences.\n"
    "Use imperative mood and explain intent, not only file changes.\n"
-   "Keep the line within 80 characters.")
+   "Keep the line within 72 characters.")
   "Prompt prefix used to generate commit messages from staged diff."
   :type 'string
   :group 'copilot)
@@ -129,11 +129,11 @@ Lines starting with `#' are preserved."
                          (funcall on-error "copilot-chat timed out"))
                        (when (and started (not copilot-chat--streaming-p))
                          (cancel-timer timer)
-                        (let* ((raw (buffer-substring-no-properties marker (point-max)))
-                               (msg (my-copilot-chat--cleanup-commit-message raw)))
-                          (if (or (string-empty-p msg)
-                                  (string-prefix-p "[Error:" msg))
-                              (funcall on-error (if (string-empty-p msg)
+                         (let* ((raw (buffer-substring-no-properties marker (point-max)))
+                                (msg (my-copilot-chat--cleanup-commit-message raw)))
+                           (if (or (string-empty-p msg)
+                                   (string-prefix-p "[Error:" msg))
+                               (funcall on-error (if (string-empty-p msg)
                                                      "copilot-chat returned empty response"
                                                    msg))
                              (funcall on-success msg))))))))))
@@ -160,10 +160,14 @@ Lines starting with `#' are preserved."
         (message "No staged changes. Stage files before generating message."))
        (t
         (setq-local my-copilot-chat--commit-generation-running t)
-        (let ((status-message "Generating commit message with Copilot Chat..."))
-          (my-copilot-chat--replace-commit-message status-message))
-        (my-copilot-chat--request-commit-message
-         diff
+         (let ((status-message "Generating commit message with Copilot Chat..."))
+           (my-copilot-chat--replace-commit-message status-message)
+           (save-excursion
+             (goto-char (point-min))
+             (end-of-line)
+             (insert "\n")))
+         (my-copilot-chat--request-commit-message
+          diff
          (lambda (message)
            (when (buffer-live-p commit-buf)
              (with-current-buffer commit-buf
