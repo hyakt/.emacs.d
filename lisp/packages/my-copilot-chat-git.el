@@ -69,7 +69,9 @@ Lines starting with `#' are preserved."
     (save-excursion
       (delete-region (point-min) end)
       (goto-char (point-min))
-      (insert (string-trim message) "\n\n"))))
+      (let ((text (string-trim message)))
+        (unless (string-empty-p text)
+          (insert text "\n\n"))))))
 
 (defun my-copilot-chat--cleanup-commit-message (text)
   "Normalize Copilot commit TEXT for insertion."
@@ -155,19 +157,20 @@ Lines starting with `#' are preserved."
         (message "No staged changes. Stage files before generating message."))
        (t
         (setq-local my-copilot-chat--commit-generation-running t)
-        (message "Generating commit message with Copilot Chat...")
+        (let ((status-message "Generating commit message with Copilot Chat..."))
+          (my-copilot-chat--replace-commit-message status-message))
         (my-copilot-chat--request-commit-message
          diff
          (lambda (message)
            (when (buffer-live-p commit-buf)
              (with-current-buffer commit-buf
                (setq-local my-copilot-chat--commit-generation-running nil)
-               (my-copilot-chat--replace-commit-message message)
-               (message "Inserted commit message from Copilot Chat."))))
+               (my-copilot-chat--replace-commit-message message))))
          (lambda (err)
            (when (buffer-live-p commit-buf)
              (with-current-buffer commit-buf
                (setq-local my-copilot-chat--commit-generation-running nil)
+               (my-copilot-chat--replace-commit-message "")
                (message "Copilot Chat commit message skipped: %s" err)))))))))))
 
 ;;;###autoload
