@@ -849,7 +849,7 @@
   :vc (:url "https://codeberg.org/sczi/opencode.el"
             :branch "main"
             :rev :newest)
-  :bind ("M-1" . my-opencode-toggle)
+  :bind ("M-q" . my-opencode-toggle)
   :config
   (setq opencode-api-log-max-lines 1000
         opencode-event-log-max-lines 1000)
