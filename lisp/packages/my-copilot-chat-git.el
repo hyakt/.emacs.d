@@ -76,6 +76,43 @@
            (string-match-p "COMMIT_EDITMSG\\'"
                            (file-name-nondirectory buffer-file-name)))))
 
+(defun my-copilot-chat--commit-buffer-has-message-p ()
+  "Return non-nil if commit buffer already has a non-comment line."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((bound
+           (save-excursion
+             (if (re-search-forward "^# -+ >8 -+$" nil t)
+                 (line-beginning-position)
+               (point-max)))))
+      (catch 'found
+        (while (< (point) bound)
+          (let ((line
+                 (buffer-substring-no-properties
+                  (line-beginning-position)
+                  (line-end-position))))
+            (unless (or (string-empty-p (string-trim line))
+                        (string-prefix-p "#" (string-trim-left line)))
+              (throw 'found t)))
+          (forward-line 1))
+        nil))))
+
+(defun my-copilot-chat--merge-commit-p (git-root)
+  "Return non-nil when merge commit is in progress at GIT-ROOT."
+  (my-copilot-chat--git-path-exists-p git-root "MERGE_HEAD"))
+
+(defun my-copilot-chat--git-path-exists-p (git-root git-path)
+  "Return non-nil if GIT-PATH exists in repository at GIT-ROOT."
+  (with-temp-buffer
+    (let ((default-directory git-root))
+      (and (zerop (process-file "git" nil (current-buffer) nil
+                                "rev-parse" "--git-path" git-path))
+           (let ((resolved-path
+                  (string-trim (buffer-string))))
+             (file-exists-p (if (file-name-absolute-p resolved-path)
+                                resolved-path
+                              (expand-file-name resolved-path git-root))))))))
+
 (defun my-copilot-chat--replace-commit-message (message)
   "Replace current commit message area with MESSAGE.
 Lines starting with `#' are preserved."
@@ -173,6 +210,10 @@ Lines starting with `#' are preserved."
       (cond
        ((not git-root)
         (message "Not inside a git repository."))
+       ((my-copilot-chat--merge-commit-p git-root)
+        (message "Skipping Copilot generation for merge commits."))
+       ((my-copilot-chat--commit-buffer-has-message-p)
+        (message "Skipping Copilot generation for amend commits."))
        ((not diff)
         (message "No staged changes. Stage files before generating message."))
        (t
