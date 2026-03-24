@@ -74,7 +74,7 @@ Lines starting with `#' are preserved."
       (goto-char (point-min))
       (let ((text (string-trim message)))
         (unless (string-empty-p text)
-          (insert text "\n"))))))
+          (insert text "\n\n"))))))
 
 (defun my-copilot-chat--cleanup-commit-message (text)
   "Normalize Copilot commit TEXT for insertion."
@@ -160,14 +160,10 @@ Lines starting with `#' are preserved."
         (message "No staged changes. Stage files before generating message."))
        (t
         (setq-local my-copilot-chat--commit-generation-running t)
-         (let ((status-message "Generating commit message with Copilot Chat..."))
-           (my-copilot-chat--replace-commit-message status-message)
-           (save-excursion
-             (goto-char (point-min))
-             (end-of-line)
-             (insert "\n")))
-         (my-copilot-chat--request-commit-message
-          diff
+        (let ((status-message "Generating commit message with Copilot Chat..."))
+          (my-copilot-chat--replace-commit-message status-message))
+        (my-copilot-chat--request-commit-message
+         diff
          (lambda (message)
            (when (buffer-live-p commit-buf)
              (with-current-buffer commit-buf
