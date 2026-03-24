@@ -1164,7 +1164,7 @@ If a region is active, add current buffer and region to context."
          ("M-{" . tab-bar-switch-to-prev-tab))
   :hook (tab-bar-mode . (lambda ()
                           (setq tab-bar-close-button-show nil)
-                          (setq tab-bar-show 1)
+                          (setq tab-bar-show t)
                           (setq tab-bar-separator "")
                           (setq tab-bar-new-tab-to 'rightmost)))
   :config
