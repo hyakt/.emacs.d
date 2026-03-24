@@ -15,10 +15,13 @@
 (defcustom my-copilot-chat-commit-system-prompt
   (concat
    "You are an expert at writing concise, useful git commit messages.\n"
-   "Output only the final commit message text.\n"
+   "Output exactly one line.\n"
+   "Use Conventional Commits format: type(scope): subject or type: subject.\n"
+   "Do not output body/footer.\n"
+   "Do not include anything for a second line.\n"
    "Do not use markdown code fences.\n"
    "Use imperative mood and explain intent, not only file changes.\n"
-   "Keep the subject line within 72 characters.")
+   "Keep the line within 80 characters.")
   "Prompt prefix used to generate commit messages from staged diff."
   :type 'string
   :group 'copilot)
@@ -71,7 +74,7 @@ Lines starting with `#' are preserved."
       (goto-char (point-min))
       (let ((text (string-trim message)))
         (unless (string-empty-p text)
-          (insert text "\n\n"))))))
+          (insert text "\n"))))))
 
 (defun my-copilot-chat--cleanup-commit-message (text)
   "Normalize Copilot commit TEXT for insertion."
@@ -126,11 +129,11 @@ Lines starting with `#' are preserved."
                          (funcall on-error "copilot-chat timed out"))
                        (when (and started (not copilot-chat--streaming-p))
                          (cancel-timer timer)
-                         (let* ((raw (buffer-substring-no-properties marker (point-max)))
-                                (msg (my-copilot-chat--cleanup-commit-message raw)))
-                           (if (or (string-empty-p msg)
-                                   (string-prefix-p "[Error:" msg))
-                               (funcall on-error (if (string-empty-p msg)
+                        (let* ((raw (buffer-substring-no-properties marker (point-max)))
+                               (msg (my-copilot-chat--cleanup-commit-message raw)))
+                          (if (or (string-empty-p msg)
+                                  (string-prefix-p "[Error:" msg))
+                              (funcall on-error (if (string-empty-p msg)
                                                      "copilot-chat returned empty response"
                                                    msg))
                              (funcall on-success msg))))))))))
