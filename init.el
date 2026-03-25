@@ -870,10 +870,7 @@
                            (and (bound-and-true-p opencode-session-id)
                                 (string= root (my-opencode--project-root buffer))))))
                   (buffer-list)))))
-      (or same-project
-          (and (boundp 'opencode-last-session-buffer)
-               (buffer-live-p opencode-last-session-buffer)
-               opencode-last-session-buffer))))
+      same-project))
 
   (defun my-opencode-toggle ()
     "Toggle OpenCode session window.
@@ -1002,11 +999,6 @@ If a region is active, add current buffer and region to context."
          :render  (gt-posframe-pop-render
                    :width 100  :frame-params (list :cursor 'box :timeout nil)))))
 
-(use-package google-this
-  :bind* (("C-c C-k" . google-this-noconfirm))
-  :ensure t
-  :defer t)
-
 (use-package vlf
   :ensure t
   :defer t)
@@ -1104,6 +1096,7 @@ If a region is active, add current buffer and region to context."
         (concat "\\("
                 "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
                 "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.gz\\|\\.bbdb"
+                "\\|^magit: .*\\|^\\*Old buffer.*"
                 "\\)$"))
   (setq desktop-restore-eager 5)
   (add-to-list 'desktop-modes-not-to-save 'dired-mode)
@@ -1111,6 +1104,11 @@ If a region is active, add current buffer and region to context."
   (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
   (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
   (add-to-list 'desktop-modes-not-to-save 'special-mode)
+  (add-to-list 'desktop-modes-not-to-save 'magit-status-mode)
+  (add-to-list 'desktop-modes-not-to-save 'magit-log-mode)
+  (add-to-list 'desktop-modes-not-to-save 'magit-process-mode)
+  (add-to-list 'desktop-modes-not-to-save 'magit-revision-mode)
+  (add-to-list 'desktop-modes-not-to-save 'magit-diff-mode)
   (desktop-save-mode t))
 
 (use-package eldoc

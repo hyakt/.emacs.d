@@ -179,6 +179,7 @@ TIME-STRが与えられた場合は、ISO8601形式の時間文字列をUNIXTIME
 (autoload 'my/clear-side-window-lock "my-util" "\
 side window 起因で split できない状態を解除する。" t)
 (register-definition-prefixes "my-util" '("char-unicode" "minibuffer-keyboard-quit" "my-" "open-today-org-file-format" "unicode-char" "url-"))
+
 
 ;;; End of scraped data
 
