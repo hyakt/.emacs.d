@@ -852,6 +852,29 @@
         opencode-event-log-max-lines 1000)
   (setq opencode-auto-start-server t)
 
+  (defun my-opencode-toast-show-terminal-notifier (properties)
+    "Show OpenCode toast using terminal-notifier on macOS."
+    (let-alist properties
+      (when (and (eq system-type 'darwin)
+                 (executable-find "terminal-notifier"))
+        (let ((title (concat (pcase .variant
+                               ("error" "❌")
+                               ("warning" "⚠️")
+                               ((or "info" "success") "ℹ️")
+                               (_ "ℹ️"))
+                             " "
+                             (or .title "OpenCode"))))
+          (start-process "opencode-notification" nil "terminal-notifier"
+                         "-title" title
+                         "-message" (or .message "")
+                         "-group" "opencode-toast"
+                         "-activate" "org.gnu.Emacs"
+                         "-sound" (pcase .variant
+                                    ((or "error" "warning") "Basso")
+                                    (_ "Ping")))))))
+
+  (setopt opencode-toast-function #'my-opencode-toast-show-terminal-notifier)
+
   (defun my-opencode--project-root (&optional buffer)
     "Return project root for BUFFER or nil."
     (with-current-buffer (or buffer (current-buffer))
