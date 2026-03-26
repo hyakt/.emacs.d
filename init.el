@@ -2418,7 +2418,7 @@ If a region is active, add current buffer and region to context."
        (set
         (make-local-variable 'whitespace-action)
         nil)))
-  :bind (:map markdown-mode-map ("C-c C-a" . nil))
+  :bind (:map markdown-mode-map ("<backtab>" . markdown-promote-list-item))
   :mode
   ("\\.markdown\\'" . gfm-mode)
   ("\\.md\\'" . gfm-mode)
