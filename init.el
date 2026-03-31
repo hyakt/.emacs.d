@@ -847,6 +847,8 @@
             :branch "main"
             :rev :newest)
   :bind* (("M-q" . my-opencode-toggle))
+  :bind (:map opencode-session-mode-map
+              ("C-M-y" . my-opencode-add-clipboard-screenshot))
   :config
   (setq opencode-api-log-max-lines 1000
         opencode-event-log-max-lines 1000)
@@ -941,6 +943,29 @@ If a region is active, add current buffer and region to context."
       (delay-mode-hooks (diff-mode))
       (font-lock-ensure)
       (buffer-string)))
+
+  (defun my-opencode-add-clipboard-screenshot ()
+    "Save clipboard image to project and attach it in OpenCode session."
+    (interactive)
+    (unless (derived-mode-p 'opencode-session-mode)
+      (user-error "Current buffer is not an OpenCode session"))
+    (unless (executable-find "pngpaste")
+      (user-error "pngpaste command not found. Install it with: brew install pngpaste"))
+    (unless (fboundp 'opencode-add-file)
+      (user-error "opencode-add-file is not available"))
+    (let* ((tmp-dir (expand-file-name ".opencode-tmp/" default-directory))
+           (image-path (progn
+                         (make-directory tmp-dir t)
+                         (make-temp-file (expand-file-name "opencode-clipboard-" tmp-dir)
+                                         nil
+                                         ".png"))))
+      (if (zerop (call-process "pngpaste" nil nil nil image-path))
+          (progn
+            (opencode-add-file image-path)
+            (message "Attached screenshot: %s" (file-relative-name image-path default-directory)))
+        (when (file-exists-p image-path)
+          (delete-file image-path))
+        (user-error "Clipboard does not contain an image"))))
 
   (advice-add 'opencode--format-tool-call :around #'my-opencode--format-tool-call-with-apply-patch)
 
