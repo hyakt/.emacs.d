@@ -1139,14 +1139,15 @@ If a region is active, add current buffer and region to context."
 (use-package desktop
   :config
   (setq desktop-load-locked-desktop t)
-  (setq desktop-save 'if-exists)
+  (setq desktop-save t)
   (setq desktop-buffers-not-to-save
         (concat "\\("
                 "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
                 "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.gz\\|\\.bbdb"
-                "\\|^magit: .*\\|^\\*Old buffer.*"
+                "\\|^magit: .*\\|\\*Old buffer.*"
                 "\\)$"))
   (setq desktop-restore-eager 10)
+
   (add-to-list 'desktop-modes-not-to-save 'dired-mode)
   (add-to-list 'desktop-modes-not-to-save 'Info-mode)
   (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
