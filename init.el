@@ -906,16 +906,19 @@ If a region is active, add current buffer and region to context."
       (if-let ((session-buffer (my-opencode--last-session-buffer)))
           (progn
             (when (use-region-p)
-              (opencode-add-buffer-dwim)
-              (with-current-buffer session-buffer
-                (goto-char (point-max))
-                (insert "\n"))
-              (opencode-add-region)
-              (with-current-buffer session-buffer
-                (goto-char (point-max))
-                (insert "\n"))
+              (dolist (fn '(opencode-add-buffer-dwim opencode-add-region))
+                (with-current-buffer session-buffer
+                  (goto-char (point-max)))
+                (funcall fn)
+                (with-current-buffer session-buffer
+                  (goto-char (point-max))
+                  (insert "\n")))
               (deactivate-mark))
-            (pop-to-buffer session-buffer))
+            (pop-to-buffer session-buffer)
+            (with-current-buffer session-buffer
+              (goto-char (point-max))
+              (when-let ((window (get-buffer-window session-buffer t)))
+                (set-window-point window (point)))))
         (call-interactively 'opencode))))
 
   (defun my-opencode-hide ()
