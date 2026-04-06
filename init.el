@@ -270,8 +270,8 @@
   "Customize background color for special modes."
   (setq buffer-face-mode-face `(:background "#0f0f14"))
   (buffer-face-mode 1))
-
 (add-hook 'special-mode-hook 'my-buffer-face-dark)
+
 (when (fboundp 'mac-get-current-input-source)
   (mac-get-current-input-source))
 (with-deferred-eval
