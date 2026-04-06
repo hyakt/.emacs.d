@@ -132,6 +132,12 @@ BEG and END (region to sort).
 Reopen current buffer-file with sudo using tramp." t)
 (autoload 'my-copy-buffer-name-clipboard "my-util" "\
 Copy buffer name to clipbord." t)
+(autoload 'my-copy-file-path-with-location "my-util" "\
+Copy current file path with point/region location to clipboard.
+
+When region is active, copy start and end as
+`/path/to/file:LINE:COLUMN-ENDLINE:ENDCOLUMN'.
+Otherwise copy point as `/path/to/file:LINE:COLUMN'." t)
 (autoload 'my-move-or-rename-this-file "my-util" "\
 Move or Rename current buffer file to NEWFILE.
 

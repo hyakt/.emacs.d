@@ -168,6 +168,35 @@ BEG and END (region to sort)."
   (kill-new buffer-file-name))
 
 ;;;###autoload
+(defun my-copy-file-path-with-location ()
+  "Copy current file path with point/region location to clipboard.
+
+When region is active, copy start and end as
+`/path/to/file:LINE:COLUMN-ENDLINE:ENDCOLUMN'.
+Otherwise copy point as `/path/to/file:LINE:COLUMN'."
+  (interactive)
+  (unless buffer-file-name
+    (user-error "Current buffer is not visiting a file"))
+  (let* ((region-p (region-active-p))
+         (beg (if region-p (region-beginning) (point)))
+         (end (if region-p (region-end) (point)))
+         (beg-line (line-number-at-pos beg))
+         (beg-col (save-excursion
+                    (goto-char beg)
+                    (1+ (current-column))))
+         (copied
+          (if region-p
+              (let ((end-line (line-number-at-pos end))
+                    (end-col (save-excursion
+                               (goto-char end)
+                               (1+ (current-column)))))
+                (format "%s:%d:%d-%d:%d"
+                        buffer-file-name beg-line beg-col end-line end-col))
+            (format "%s:%d:%d" buffer-file-name beg-line beg-col))))
+    (kill-new copied)
+    (message "Copied: %s" copied)))
+
+;;;###autoload
 (defun my-move-or-rename-this-file (newfile)
   "Move or Rename current buffer file to NEWFILE."
   (interactive "Fnewfile name: ")
