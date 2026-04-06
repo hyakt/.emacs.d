@@ -59,7 +59,11 @@
                        (cancel-timer my-delayed-configuration-timer)))))))
 
 ;; shrink title bar
-(add-hook 'after-init-hook (lambda () (tool-bar-mode 1) (tool-bar-mode 0)))
+(add-hook 'after-init-hook
+          (lambda ()
+            (when (fboundp 'tool-bar-mode)
+              (tool-bar-mode 1)
+              (tool-bar-mode 0))))
 
 (defmacro with-deferred-eval (&rest body)
   (declare (indent 0))
@@ -222,18 +226,21 @@
   (gcmh-mode t))
 
 ;;; ---------- appearance ----------
-(set-face-attribute 'default nil
-                    :family "Source Han Code JP"
-                    :height 110)
-(set-face-attribute 'variable-pitch nil
-                    :family "JuliaMono"
-                    :height 110)
+(when (display-graphic-p)
+  (set-face-attribute 'default nil
+                      :family "Source Han Code JP"
+                      :height 110)
+  (set-face-attribute 'variable-pitch nil
+                      :family "JuliaMono"
+                      :height 110))
 (face-remap-add-relative 'variable-pitch :background "#0d1117")
 
-(set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
-(set-fontset-font t 'unicode (font-spec :family "Apple Color Emoji") nil 'append)
+(when (display-graphic-p)
+  (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Source Han Code JP"))
+  (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoji") nil 'append))
 
-(set-frame-parameter nil 'alpha '(98 . 98))
+(when (display-graphic-p)
+  (set-frame-parameter nil 'alpha '(98 . 98)))
 
 (defun my-buffer-face-dark ()
   "Customize background color for special modes."
@@ -241,23 +248,27 @@
   (buffer-face-mode 1))
 
 (add-hook 'special-mode-hook 'my-buffer-face-dark)
-(mac-get-current-input-source)
+(when (fboundp 'mac-get-current-input-source)
+  (mac-get-current-input-source))
 (with-deferred-eval
-  (when-macos
-   (defun mac-selected-keyboard-input-source-change-hook-func ()
-     ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
-     (set-cursor-color (if (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-get-current-input-source))
-                           "#FF5996" "#51AFEF")))
-   (add-hook 'input-method-activate-hook 'mac-selected-keyboard-input-source-change-hook-func)
-   (add-hook 'input-method-deactivate-hook 'mac-selected-keyboard-input-source-change-hook-func)
-   (mac-input-method-mode 1))
+  (when (and (eq system-type 'darwin)
+             (fboundp 'mac-get-current-input-source)
+             (fboundp 'mac-input-method-mode))
+    (defun mac-selected-keyboard-input-source-change-hook-func ()
+      ;; 入力モードが英語の時はカーソルの色を青に、日本語の時は青にする
+      (set-cursor-color (if (string-match "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" (mac-get-current-input-source))
+                            "#FF5996" "#51AFEF")))
+    (add-hook 'input-method-activate-hook 'mac-selected-keyboard-input-source-change-hook-func)
+    (add-hook 'input-method-deactivate-hook 'mac-selected-keyboard-input-source-change-hook-func)
+    (mac-input-method-mode 1))
 
   (global-font-lock-mode)
   (transient-mark-mode t)
   (line-number-mode t)
   (column-number-mode t)
   (show-paren-mode t)
-  (set-scroll-bar-mode nil))
+  (when (fboundp 'set-scroll-bar-mode)
+    (set-scroll-bar-mode nil)))
 
 (use-package whitespace
   :defer t
@@ -547,7 +558,9 @@
         (posframe-hide flymake-posframe-buffer)
         (other-frame 0))))
   (setq flymake-diagnostic-at-point-display-diagnostic-function
-        #'flymake-diagnostic-at-point-display-posframe))
+        (if (display-graphic-p)
+            #'flymake-diagnostic-at-point-display-posframe
+          #'flymake-diagnostic-at-point-display-minibuffer)))
 
 (use-package delsel
   :config
@@ -1065,7 +1078,7 @@ If a region is active, add current buffer and region to context."
   :ensure t
   :defer t
   :config
-  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-hint-display-type (if (display-graphic-p) 'posframe 'message))
   (setq hydra-posframe-show-params
         '(
           :internal-border-width 10
@@ -1127,6 +1140,7 @@ If a region is active, add current buffer and region to context."
   :bind (("C-x C-p" . disproject-dispatch)))
 
 (use-package tab-bar
+  :if (display-graphic-p)
   :defer t
   :bind* (("M-t" . tab-bar-new-tab-to)
           ("M-C-w" . tab-bar-close-tab)
@@ -1141,6 +1155,7 @@ If a region is active, add current buffer and region to context."
   (tab-bar-mode t))
 
 (use-package desktop
+  :if (display-graphic-p)
   :config
   (setq desktop-load-locked-desktop t)
   (setq desktop-save t)
@@ -1692,6 +1707,7 @@ If a region is active, add current buffer and region to context."
 ;;   :hook (magit-mode . magit-delta-mode))
 
 (use-package transient-posframe
+  :if (display-graphic-p)
   :ensure t
   :defer t
   :custom-face
