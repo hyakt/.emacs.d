@@ -93,6 +93,30 @@
 (setq shell-file-name "bash")
 (setq shell-command-switch "-ic")
 
+;; clipboard bridge for terminal Emacs on macOS
+(when (and (not (display-graphic-p))
+           (eq system-type 'darwin)
+           (executable-find "pbcopy")
+           (executable-find "pbpaste"))
+  (defun my--clipboard-copy-to-pbcopy (text &optional _push)
+    "Copy TEXT to macOS clipboard via pbcopy."
+    (when (stringp text)
+      (with-temp-buffer
+        (insert text)
+        (call-process-region (point-min) (point-max) "pbcopy" nil nil nil)))
+    text)
+
+  (defun my--clipboard-paste-from-pbpaste ()
+    "Paste text from macOS clipboard via pbpaste."
+    (with-temp-buffer
+      (call-process "pbpaste" nil t nil)
+      (let ((text (buffer-string)))
+        (unless (string= text "")
+          text))))
+
+  (setq interprogram-cut-function #'my--clipboard-copy-to-pbcopy)
+  (setq interprogram-paste-function #'my--clipboard-paste-from-pbpaste))
+
 (setq native-comp-async-report-warnings-errors 'silent)
 (setq native-compile-prune-cache t)
 
@@ -374,7 +398,7 @@
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
   (keymap-global-set "C-\\" #'scratch-buffer)
-  (bind-key* "C-o" #'my-other-window-or-split-and-kill-minibuffer)
+  (bind-key* "C-o" #'my-other-window-or-split-and-kill-minibuffer-gui-only)
   (bind-key* "M-<up>" #'windmove-up)
   (bind-key* "M-<down>" #'windmove-down)
   (bind-key* "M-<left>" #'windmove-left)
@@ -787,6 +811,7 @@
   (setq wgrep-change-readonly-file t))
 
 (use-package string-inflection
+  :if (display-graphic-p)
   :ensure t
   :defer t
   :bind ("M-[" . string-inflection-all-cycle))
@@ -1141,9 +1166,16 @@ If a region is active, add current buffer and region to context."
 
 (use-package tab-bar
   :if (display-graphic-p)
+  :preface
+  (defun my-copy-file-path-with-location-or-close-tab ()
+    "Copy file path with location when region is active, otherwise close tab."
+    (interactive)
+    (if (use-region-p)
+        (my-copy-file-path-with-location)
+      (tab-bar-close-tab)))
   :defer t
   :bind* (("M-t" . tab-bar-new-tab-to)
-          ("M-C-w" . tab-bar-close-tab)
+          ("M-C-w" . my-copy-file-path-with-location-or-close-tab)
           ("M-}" . tab-bar-switch-to-next-tab)
           ("M-{" . tab-bar-switch-to-prev-tab))
   :hook (tab-bar-mode . (lambda ()

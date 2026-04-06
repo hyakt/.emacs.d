@@ -192,7 +192,7 @@ Otherwise copy point as `/path/to/file:LINE:COLUMN'."
                     (1+ (current-column))))
          (copied
           (if region-p
-               (let ((end-line (line-number-at-pos end))
+              (let ((end-line (line-number-at-pos end))
                     (end-col (save-excursion
                                (goto-char end)
                                (1+ (current-column)))))
@@ -325,6 +325,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (my-other-window-or-split)))
 
 ;;;###autoload
+(defun my-other-window-or-split-and-kill-minibuffer-gui-only ()
+  "Run `my-other-window-or-split-and-kill-minibuffer' only on GUI frames."
+  (interactive)
+  (if (display-graphic-p)
+      (my-other-window-or-split-and-kill-minibuffer)
+    (user-error "C-o is disabled in terminal Emacs")))
+
+;;;###autoload
 (defun my-create-ics-file-from-text (text)
   "テキストからICSファイルを作成し、デスクトップに保存します。"
   (interactive "sICSテキストを入力してください（複数行は C-q C-j で改行）: ")
@@ -374,7 +382,7 @@ TIME-STRが与えられた場合は、ISO8601形式の時間文字列をUNIXTIME
     (insert (format "%.0f" unixtime))))
 
 ;;;###autoload
-(defun my/clear-side-window-lock ()
+(defun my-clear-side-window-lock ()
   "side window 起因で split できない状態を解除する。"
   (interactive)
   (let* ((wins (window-list nil 'no-minibuf))

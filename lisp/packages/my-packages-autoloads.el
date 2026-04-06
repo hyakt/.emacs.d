@@ -135,6 +135,7 @@ Copy buffer name to clipbord." t)
 (autoload 'my-copy-file-path-with-location "my-util" "\
 Copy current file path with point/region location to clipboard.
 
+When current file is in a project, copy path relative to project root.
 When region is active, copy start and end as
 `/path/to/file:LINE:COLUMN-ENDLINE:ENDCOLUMN'.
 Otherwise copy point as `/path/to/file:LINE:COLUMN'." t)
@@ -169,6 +170,8 @@ Open finder." t)
 Switch to other window or split window." t)
 (autoload 'my-other-window-or-split-and-kill-minibuffer "my-util" "\
 Switch to other window or split window and kill minibuffer." t)
+(autoload 'my-other-window-or-split-and-kill-minibuffer-gui-only "my-util" "\
+Run `my-other-window-or-split-and-kill-minibuffer' only on GUI frames." t)
 (autoload 'my-create-ics-file-from-text "my-util" "\
 テキストからICSファイルを作成し、デスクトップに保存します。
 
@@ -182,7 +185,7 @@ TIME-STRが与えられた場合は、ISO8601形式の時間文字列をUNIXTIME
 指定がない場合は現在時刻のUNIXTIMEを挿入する。
 
 (fn &optional TIME-STR)" t)
-(autoload 'my/clear-side-window-lock "my-util" "\
+(autoload 'my-clear-side-window-lock "my-util" "\
 side window 起因で split できない状態を解除する。" t)
 (register-definition-prefixes "my-util" '("char-unicode" "minibuffer-keyboard-quit" "my-" "open-today-org-file-format" "unicode-char" "url-"))
 
