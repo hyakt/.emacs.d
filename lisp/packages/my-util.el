@@ -4,6 +4,7 @@
 ;;; Code:
 (require 'package)
 (require 'org)
+(require 'project)
 
 ;;;###autoload
 (defun my-generate-autoloads ()
@@ -171,13 +172,18 @@ BEG and END (region to sort)."
 (defun my-copy-file-path-with-location ()
   "Copy current file path with point/region location to clipboard.
 
+When current file is in a project, copy path relative to project root.
 When region is active, copy start and end as
 `/path/to/file:LINE:COLUMN-ENDLINE:ENDCOLUMN'.
 Otherwise copy point as `/path/to/file:LINE:COLUMN'."
   (interactive)
   (unless buffer-file-name
     (user-error "Current buffer is not visiting a file"))
-  (let* ((region-p (region-active-p))
+  (let* ((project (project-current nil))
+         (file-path (if project
+                        (file-relative-name buffer-file-name (project-root project))
+                      buffer-file-name))
+         (region-p (region-active-p))
          (beg (if region-p (region-beginning) (point)))
          (end (if region-p (region-end) (point)))
          (beg-line (line-number-at-pos beg))
@@ -186,13 +192,13 @@ Otherwise copy point as `/path/to/file:LINE:COLUMN'."
                     (1+ (current-column))))
          (copied
           (if region-p
-              (let ((end-line (line-number-at-pos end))
+               (let ((end-line (line-number-at-pos end))
                     (end-col (save-excursion
                                (goto-char end)
                                (1+ (current-column)))))
                 (format "%s:%d:%d-%d:%d"
-                        buffer-file-name beg-line beg-col end-line end-col))
-            (format "%s:%d:%d" buffer-file-name beg-line beg-col))))
+                        file-path beg-line beg-col end-line end-col))
+            (format "%s:%d:%d" file-path beg-line beg-col))))
     (kill-new copied)
     (message "Copied: %s" copied)))
 
