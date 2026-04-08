@@ -882,12 +882,10 @@
   (setq copilot-max-char 100000))
 
 (use-package opencode
-  :vc (:url "https://codeberg.org/sczi/opencode.el"
+  :vc (:url "https://codeberg.org/hyakt/opencode.el"
             :branch "main"
             :rev :newest)
   :bind* (("M-q" . my-opencode-toggle))
-  :bind (:map opencode-session-mode-map
-              ("C-M-y" . my-opencode-add-clipboard-screenshot))
   :config
   (setq opencode-api-log-max-lines 1000
         opencode-event-log-max-lines 1000)
@@ -965,93 +963,6 @@ If a region is active, add current buffer and region to context."
     (interactive)
     (when (window-deletable-p)
       (delete-window)))
-
-  (defun my-opencode--format-tool-call-with-apply-patch (orig-fun tool input)
-    "Format apply_patch tool call for display."
-    (if (string= tool "apply_patch")
-        (let-alist input
-          (let ((patch (or .patchText "")))
-            (if (string= patch "")
-                (funcall orig-fun tool input)
-              (concat "apply_patch:\n"
-                      (my-opencode--fontify-apply-patch patch)
-                      "\n"))))
-      (funcall orig-fun tool input)))
-
-  (defun my-opencode--fontify-apply-patch (patch)
-    "Return PATCH with diff-mode font-lock properties."
-    (with-temp-buffer
-      (insert patch)
-      (delay-mode-hooks (diff-mode))
-      (font-lock-ensure)
-      (buffer-string)))
-
-  (defun my-opencode-add-clipboard-screenshot ()
-    "Save clipboard image to project and attach it in OpenCode session."
-    (interactive)
-    (unless (derived-mode-p 'opencode-session-mode)
-      (user-error "Current buffer is not an OpenCode session"))
-    (unless (executable-find "pngpaste")
-      (user-error "pngpaste command not found. Install it with: brew install pngpaste"))
-    (unless (fboundp 'opencode-add-file)
-      (user-error "opencode-add-file is not available"))
-    (let* ((tmp-dir (expand-file-name ".opencode-tmp/" default-directory))
-           (image-path (progn
-                         (make-directory tmp-dir t)
-                         (make-temp-file (expand-file-name "opencode-clipboard-" tmp-dir)
-                                         nil
-                                         ".png"))))
-      (if (zerop (call-process "pngpaste" nil nil nil image-path))
-          (progn
-            (opencode-add-file image-path)
-            (message "Attached screenshot: %s" (file-relative-name image-path default-directory)))
-        (when (file-exists-p image-path)
-          (delete-file image-path))
-        (user-error "Clipboard does not contain an image"))))
-
-  (advice-add 'opencode--format-tool-call :around #'my-opencode--format-tool-call-with-apply-patch)
-
-  (defun my-opencode--permission-to-string (value)
-    "Convert permission VALUE to string safely."
-    (cond
-     ((stringp value) value)
-     ((symbolp value) (symbol-name value))
-     (t (format "%s" value))))
-
-  (defun my-opencode--respond-permission-asked (permission-id session-id permission metadata)
-    "Respond to OpenCode permission.asked event.
-PERMISSION-ID and SESSION-ID identify the request.
-PERMISSION is the requested permission type.
-METADATA may include filepath and parentDir."
-    (let* ((permission-name (my-opencode--permission-to-string permission))
-           (filepath (alist-get 'filepath metadata))
-           (parent-dir (alist-get 'parentDir metadata))
-           (title (format "OpenCode Permission Request\n%s: %s"
-                          permission-name
-                          (or filepath parent-dir "")))
-           (response
-            (x-popup-dialog
-             t
-             `(,title
-               ("Accept" . "once")
-               ("Accept Always" . "always")
-               ("Deny" . "reject")))))
-      (opencode-api-respond-permission-request (session-id permission-id)
-          `((response . ,response))
-          _result
-        (unless _result
-          (user-error "Response to permission request failed")))))
-
-  (define-advice opencode--handle-message (:around (orig-fun event) permission-asked-compat)
-    "Handle permission.asked events for newer OpenCode servers."
-    (let* ((data (json-read-from-string (plz-event-source-event-data event)))
-           (msg-type (intern (alist-get 'type data)))
-           (properties (alist-get 'properties data)))
-      (if (eq msg-type 'permission.asked)
-          (let-alist properties
-            (my-opencode--respond-permission-asked
-             .id .sessionID .permission .metadata))
-        (funcall orig-fun event))))
 
   ;; ウィンドウ幅に応じて動的に幅を決定する関数
   (defun my-adaptive-window-width ()
@@ -1208,16 +1119,8 @@ METADATA may include filepath and parentDir."
 
 (use-package tab-bar
   :if (display-graphic-p)
-  :preface
-  (defun my-copy-file-path-with-location-or-close-tab ()
-    "Copy file path with location when region is active, otherwise close tab."
-    (interactive)
-    (if (use-region-p)
-        (my-copy-file-path-with-location)
-      (tab-bar-close-tab)))
   :defer t
   :bind* (("M-t" . tab-bar-new-tab-to)
-          ("M-C-w" . my-copy-file-path-with-location-or-close-tab)
           ("M-}" . tab-bar-switch-to-next-tab)
           ("M-{" . tab-bar-switch-to-prev-tab))
   :hook (tab-bar-mode . (lambda ()
