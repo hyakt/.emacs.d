@@ -1011,6 +1011,48 @@ If a region is active, add current buffer and region to context."
 
   (advice-add 'opencode--format-tool-call :around #'my-opencode--format-tool-call-with-apply-patch)
 
+  (defun my-opencode--permission-to-string (value)
+    "Convert permission VALUE to string safely."
+    (cond
+     ((stringp value) value)
+     ((symbolp value) (symbol-name value))
+     (t (format "%s" value))))
+
+  (defun my-opencode--respond-permission-asked (permission-id session-id permission metadata)
+    "Respond to OpenCode permission.asked event.
+PERMISSION-ID and SESSION-ID identify the request.
+PERMISSION is the requested permission type.
+METADATA may include filepath and parentDir."
+    (let* ((permission-name (my-opencode--permission-to-string permission))
+           (filepath (alist-get 'filepath metadata))
+           (parent-dir (alist-get 'parentDir metadata))
+           (title (format "OpenCode Permission Request\n%s: %s"
+                          permission-name
+                          (or filepath parent-dir "")))
+           (response
+            (x-popup-dialog
+             t
+             `(,title
+               ("Accept" . "once")
+               ("Accept Always" . "always")
+               ("Deny" . "reject")))))
+      (opencode-api-respond-permission-request (session-id permission-id)
+          `((response . ,response))
+          _result
+        (unless _result
+          (user-error "Response to permission request failed")))))
+
+  (define-advice opencode--handle-message (:around (orig-fun event) permission-asked-compat)
+    "Handle permission.asked events for newer OpenCode servers."
+    (let* ((data (json-read-from-string (plz-event-source-event-data event)))
+           (msg-type (intern (alist-get 'type data)))
+           (properties (alist-get 'properties data)))
+      (if (eq msg-type 'permission.asked)
+          (let-alist properties
+            (my-opencode--respond-permission-asked
+             .id .sessionID .permission .metadata))
+        (funcall orig-fun event))))
+
   ;; ウィンドウ幅に応じて動的に幅を決定する関数
   (defun my-adaptive-window-width ()
     "Return appropriate window width based on frame width."
