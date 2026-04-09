@@ -1678,11 +1678,24 @@ If a region is active, add current buffer and region to context."
      (("w" my-git-wip "wip" :exit t)
       ("u" my-git-unwip "unwip" :exit t)))))
 
-;; 調子悪いので一旦外す
-;; (use-package magit-delta
-;;   :ensure t
-;;   :defer t
-;;   :hook (magit-mode . magit-delta-mode))
+;; delta による diff シンタックスハイライト
+;; less 691+ / Emacs daemon 環境で TERM 未設定時にエラーになる問題の workaround
+;; ref: ttps://github.com/dandavison/magit-delta/issues/35
+(use-package magit-delta
+  :ensure t
+  :defer t
+  :hook (magit-mode . magit-delta-mode)
+  :config
+  (defun my-magit-delta--fix-term-env (orig-fn &rest args)
+    "Ensure TERM is set and discard stderr when calling delta.
+Fixes issue with less 691+ where missing TERM causes
+'unknown': I need something more specific error in daemon mode."
+    (let ((process-environment (if (getenv "TERM")
+                                   process-environment
+                                 (cons "TERM=dumb" process-environment))))
+      (apply orig-fn args)))
+  (advice-add 'magit-delta-call-delta-and-convert-ansi-escape-sequences
+              :around #'my-magit-delta--fix-term-env))
 
 (use-package transient-posframe
   :if (display-graphic-p)
