@@ -984,8 +984,12 @@ If a region is active, add current buffer and region to context."
 
   (add-to-list 'display-buffer-alist
                '("\\*OpenCode"
-                 (display-buffer-reuse-window my-display-buffer-right-adaptive)
-                 (reusable-frames . visible)))
+                 (display-buffer-reuse-mode-window
+                  display-buffer-reuse-window
+                  my-display-buffer-right-adaptive)
+                 (reusable-frames . visible)
+                 (mode . (opencode-session-mode
+                          opencode-session-control-mode))))
 
   (major-mode-hydra-define opencode-session-mode
     (:quit-key "q" :title (with-faicon "nf-fa-robot" "OpenCode" 1 -0.05))
@@ -1706,7 +1710,7 @@ Fixes issue with less 691+ where missing TERM causes
   (setq transient-posframe-border-width 10
         transient-posframe-min-height nil
         transient-posframe-min-width 80
-        transient-posframe-poshandler nil
+        transient-posframe-poshandler #'posframe-poshandler-point-bottom-left-corner
         transient-posframe-parameters '((left-fringe . 8)
                                         (right-fringe . 8)
                                         (lines-truncate . t)))
