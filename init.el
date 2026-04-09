@@ -394,7 +394,7 @@
   (keymap-global-set "C-x C-k" #'my-close-and-kill-this-pane)
   (keymap-global-set "C-x C-x" #'my-kill-other-buffers)
   (keymap-global-set "C-x i" #'my-buffer-indent)
-  (keymap-global-set "M-W" #'my-copy-file-path-with-location)
+  (keymap-global-set "C-M-w" #'my-copy-file-path-with-location)
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
   (keymap-global-set "C-\\" #'scratch-buffer)
@@ -1121,7 +1121,7 @@ If a region is active, add current buffer and region to context."
   :if (display-graphic-p)
   :defer t
   :bind* (("M-t" . tab-bar-new-tab-to)
-          ("M-C-w" . tab-bar-close-tab)
+          ("M-W" . tab-bar-close-tab)
           ("M-}" . tab-bar-switch-to-next-tab)
           ("M-{" . tab-bar-switch-to-prev-tab))
   :hook (tab-bar-mode . (lambda ()
