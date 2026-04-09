@@ -1710,7 +1710,7 @@ Fixes issue with less 691+ where missing TERM causes
   (setq transient-posframe-border-width 10
         transient-posframe-min-height nil
         transient-posframe-min-width 80
-        transient-posframe-poshandler #'posframe-poshandler-point-bottom-left-corner
+        transient-posframe-poshandler #'posframe-poshandler-frame-center
         transient-posframe-parameters '((left-fringe . 8)
                                         (right-fringe . 8)
                                         (lines-truncate . t)))
@@ -1718,7 +1718,14 @@ Fixes issue with less 691+ where missing TERM causes
   (defun my-transient-posframe--hide ()
     "Hide transient posframe."
     (posframe-hide transient--buffer-name))
-  (advice-add #'transient-posframe--delete :override #'my-transient-posframe--hide))
+  (advice-add #'transient-posframe--delete :override #'my-transient-posframe--hide)
+
+  (defun my-transient--deactivate-ime (&rest _args)
+    "Deactivate IME before showing a transient."
+    (when (and (fboundp 'mac-ime-deactivate)
+               current-input-method)
+      (mac-ime-deactivate)))
+  (advice-add #'transient-posframe--show-buffer :before #'my-transient--deactivate-ime))
 
 (use-package diff-hl
   :ensure t
