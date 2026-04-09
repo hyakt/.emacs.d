@@ -973,20 +973,18 @@ If a region is active, add current buffer and region to context."
        ((> frame-width 200) 0.4)   ; 中程度では40% (現在の設定)
        (t 0.5))))                  ; 狭い画面では50%
 
-  ;; 動的幅計算付きサイドウィンドウ表示関数
-  (defun my-display-buffer-in-side-window-adaptive (buffer alist)
-    "Display BUFFER in side window with adaptive width."
-    (let* ((side (cdr (assq 'side alist)))
-           (slot (cdr (assq 'slot alist)))
-           (window-width (my-adaptive-window-width))
+  (defun my-display-buffer-right-adaptive (buffer alist)
+    "Display BUFFER on the right with adaptive width."
+    (let* ((window-width (my-adaptive-window-width))
            (new-alist (cons `(window-width . ,window-width)
                             (assq-delete-all 'window-width alist))))
-      (display-buffer-in-side-window buffer new-alist)))
+      (display-buffer-in-direction buffer
+                                   (append '((direction . right))
+                                           new-alist))))
 
   (add-to-list 'display-buffer-alist
                '("\\*OpenCode"
-                 (display-buffer-reuse-window my-display-buffer-in-side-window-adaptive)
-                 (side . right)
+                 (display-buffer-reuse-window my-display-buffer-right-adaptive)
                  (reusable-frames . visible)))
 
   (major-mode-hydra-define opencode-session-mode
@@ -1143,7 +1141,6 @@ If a region is active, add current buffer and region to context."
                 "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.gz\\|\\.bbdb"
                 "\\|^magit: .*\\|\\*Old buffer.*"
                 "\\)$"))
-  (setq desktop-restore-eager 10)
 
   (add-to-list 'desktop-modes-not-to-save 'dired-mode)
   (add-to-list 'desktop-modes-not-to-save 'Info-mode)
