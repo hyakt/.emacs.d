@@ -1121,6 +1121,7 @@ If a region is active, add current buffer and region to context."
   :if (display-graphic-p)
   :defer t
   :bind* (("M-t" . tab-bar-new-tab-to)
+          ("M-C-w" . tab-bar-close-tab)
           ("M-}" . tab-bar-switch-to-next-tab)
           ("M-{" . tab-bar-switch-to-prev-tab))
   :hook (tab-bar-mode . (lambda ()
