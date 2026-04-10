@@ -14,5 +14,12 @@
 
 (setq gc-cons-threshold most-positive-fixnum)
 
+;; Suppress file-name-handler-alist during startup for faster loading
+(defvar my--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq file-name-handler-alist my--file-name-handler-alist)))
+
 (provide 'early-init)
 ;;; early-init.el ends here

@@ -1096,6 +1096,7 @@ If a region is active, add current buffer and region to context."
   :bind ("C-x C-o" . swap-buffers))
 
 (use-package project
+  :defer t
   ;; :init
   ;; (setq project-vc-extra-root-markers '("package.json"))
   )
@@ -1139,6 +1140,8 @@ If a region is active, add current buffer and region to context."
   :config
   (setq desktop-load-locked-desktop t)
   (setq desktop-save t)
+  (setq desktop-restore-eager 0)
+  (setq desktop-lazy-idle-delay 1)
   (setq desktop-buffers-not-to-save
         (concat "\\("
                 "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
@@ -1476,6 +1479,7 @@ If a region is active, add current buffer and region to context."
 (use-package affe
   :ensure t
   :pin stable
+  :commands (affe-grep affe-find)
   :config
   (defun affe-orderless-regexp-compiler (input _type _ignorecase)
     (setq input (cdr (orderless-compile input)))
@@ -1520,8 +1524,7 @@ If a region is active, add current buffer and region to context."
 
 (use-package esh-help
   :ensure t
-  :config
-  (setup-esh-help-eldoc))
+  :hook (eshell-mode . setup-esh-help-eldoc))
 
 (use-package eshell-syntax-highlighting
   :defer t
