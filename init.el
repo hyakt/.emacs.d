@@ -235,6 +235,7 @@
     (server-start)))
 
 (use-package exec-path-from-shell
+  :if (display-graphic-p)
   :ensure t
   :defer 1
   :config
@@ -592,7 +593,7 @@
 
 (use-package pulsar
   :ensure t
-  :defer 1
+  :defer 5
   :config
   (setq pulsar-pulse-on-window-change t)
   (setq pulsar-face 'pulsar-cyan)
@@ -661,6 +662,7 @@
   :after corfu)
 
 (use-package kind-icon
+  :if (display-graphic-p)
   :ensure t
   :defer t
   :after corfu
@@ -714,7 +716,7 @@
                        :async t))
 
 (use-package jumplist
-  :defer 5
+  :defer t
   :ensure t
   :bind
   ("M-n" . jumplist-next)
@@ -825,7 +827,7 @@
 
 (use-package pangu-spacing
   :ensure t
-  :defer 5
+  :defer t
   :config
   (setq pangu-spacing-real-insert-separtor t)
   (setq pangu-spacing-include-regexp
@@ -862,6 +864,7 @@
   :defer t)
 
 (use-package posframe
+  :if (display-graphic-p)
   :defer t
   :ensure t)
 
@@ -1079,7 +1082,7 @@ If a region is active, add current buffer and region to context."
 
 (use-package which-key
   :ensure t
-  :defer 1
+  :defer 5
   :config
   (which-key-mode t))
 
@@ -1258,14 +1261,17 @@ If a region is active, add current buffer and region to context."
       ("g" revert-buffer)))))
 
 (use-package all-the-icons
+  :if (display-graphic-p)
   :ensure t
   :defer t)
 
 (use-package all-the-icons-dired
+  :if (display-graphic-p)
   :ensure t
   :defer t)
 
 (use-package nerd-icons
+  :if (display-graphic-p)
   :ensure t
   :defer t
   :config
@@ -1408,10 +1414,9 @@ If a region is active, add current buffer and region to context."
   :defer 1
   :bind (:map vertico-map
               ("C-l" . vertico-directory-up))
-  :init
-  (vertico-mode)
   :config
-  (setq vertico-count 30))
+  (setq vertico-count 30)
+  (vertico-mode))
 
 (use-package orderless
   :ensure t
@@ -1426,7 +1431,7 @@ If a region is active, add current buffer and region to context."
 (use-package embark
   :ensure t
   :after which-key
-  :defer 5
+  :defer t
   :bind
   ("M-e" . embark-act)
   :config
@@ -1568,7 +1573,7 @@ If a region is active, add current buffer and region to context."
 
 (use-package magit
   :ensure t
-  :defer 5
+  :defer t
   :hook (git-commit-setup . my-copilot-chat--git-commit-setup)
   :bind (("M-S" . git/body)
          (:map magit-status-mode-map
@@ -1811,23 +1816,13 @@ Fixes issue with less 691+ where missing TERM causes
   :defer t
   :hook (prog-mode . editorconfig-mode))
 
-(use-package imenu-list
-  :ensure t
-  :defer 5
-  :bind
-  ("M-i" . imenu-list-smart-toggle)
-  :custom-face
-  (imenu-list-entry-face-1 ((t (:foreground "white"))))
-  :config
-  (setopt imenu-list-focus-after-activation t)
-  (setopt imenu-list-auto-resize nil))
-
 (use-package treesit
   :config
   (setq treesit-font-lock-level 4))
 
 (use-package treesit-auto
   :ensure t
+  :defer 1
   :config
   ;; https://genehack.blog/2024/02/fixing-an-emacs-typescript-ts-mode-problem/
   (defvar tsx-treesit-auto-recipe
