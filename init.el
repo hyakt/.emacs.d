@@ -1575,13 +1575,13 @@ If a region is active, add current buffer and region to context."
   :ensure t
   :defer t
   :hook (git-commit-setup . my-copilot-chat--git-commit-setup)
-  :bind (("M-S" . git/body)
-         (:map magit-status-mode-map
+  :bind ((:map magit-status-mode-map
                ("q" . my-magit-quit-session))
          (:map git-commit-mode-map
                ("M-p" . my-consult-git-commit-messages)
                ("M-i" . my-consult-git-conventional-commit-prefix)))
-  :bind* (("M-s" . magit-status-toggle))
+  :bind* (("M-S" . git/body)
+          ("M-s" . magit-status-toggle))
   :config
   (setq magit-save-repository-buffers 'dontask)
   (setq magit-diff-highlight-indentation nil)
@@ -1711,7 +1711,7 @@ Fixes issue with less 691+ where missing TERM causes
   (setq transient-posframe-border-width 10
         transient-posframe-min-height nil
         transient-posframe-min-width 80
-        transient-posframe-poshandler #'posframe-poshandler-frame-center
+        transient-posframe-poshandler #'posframe-poshandler-point-bottom-left-corner
         transient-posframe-parameters '((left-fringe . 8)
                                         (right-fringe . 8)
                                         (lines-truncate . t)))
