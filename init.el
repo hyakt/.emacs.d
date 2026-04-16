@@ -918,7 +918,9 @@
     "Return project root for BUFFER or nil."
     (with-current-buffer (or buffer (current-buffer))
       (when-let ((project (project-current nil default-directory)))
-        (expand-file-name (project-root project)))))
+        (let ((root (expand-file-name (project-root project))))
+          (file-name-as-directory
+           (or (ignore-errors (file-truename root)) root))))))
 
   (defun my-opencode--last-session-buffer ()
     "Return same-project OpenCode session buffer if available."
@@ -930,7 +932,8 @@
                     (and (buffer-live-p buffer)
                          (with-current-buffer buffer
                            (and (bound-and-true-p opencode-session-id)
-                                (string= root (my-opencode--project-root buffer))))))
+                                (when-let ((buffer-root (my-opencode--project-root buffer)))
+                                  (file-equal-p root buffer-root))))))
                   (buffer-list)))))
       same-project))
 
