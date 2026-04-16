@@ -938,7 +938,7 @@
     "Toggle OpenCode session window.
 If a region is active, add current buffer and region to context."
     (interactive)
-    (if (string-prefix-p "*OpenCode" (buffer-name))
+    (if (string-prefix-p "*OC" (buffer-name))
         (my-opencode-hide)
       (if-let ((session-buffer (my-opencode--last-session-buffer)))
           (progn
@@ -964,26 +964,16 @@ If a region is active, add current buffer and region to context."
     (when (window-deletable-p)
       (delete-window)))
 
-  ;; ウィンドウ幅に応じて動的に幅を決定する関数
-  (defun my-adaptive-window-width ()
-    "Return appropriate window width based on frame width."
-    (let ((frame-width (frame-width)))
-      (cond
-       ((> frame-width 300) 0.3)   ; 広い画面では30%
-       ((> frame-width 200) 0.4)   ; 中程度では40% (現在の設定)
-       (t 0.5))))                  ; 狭い画面では50%
-
   (defun my-display-buffer-right-adaptive (buffer alist)
-    "Display BUFFER on the right with adaptive width."
-    (let* ((window-width (my-adaptive-window-width))
-           (new-alist (cons `(window-width . ,window-width)
-                            (assq-delete-all 'window-width alist))))
+    "Display BUFFER on the right with fixed width."
+    (let ((new-alist (cons '(window-width . 0.4)
+                           (assq-delete-all 'window-width alist))))
       (display-buffer-in-direction buffer
                                    (append '((direction . right))
                                            new-alist))))
 
   (add-to-list 'display-buffer-alist
-               '("\\*OpenCode"
+               '("\\*OC"
                  (display-buffer-reuse-mode-window
                   display-buffer-reuse-window
                   my-display-buffer-right-adaptive)
