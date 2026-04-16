@@ -1129,6 +1129,7 @@ If a region is active, add current buffer and region to context."
                           (setq tab-bar-separator "")
                           (setq tab-bar-new-tab-to 'rightmost)))
   :config
+  (setq tab-bar-select-restore-windows nil)
   (tab-bar-mode t))
 
 (use-package desktop
