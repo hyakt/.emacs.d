@@ -995,6 +995,7 @@ If a region is active, add current buffer and region to context."
       ("c" opencode-abort-session "abort")
       ("x" opencode-kill-session "kill")
       ("r" opencode-rename-session "rename")
+      ("e" opencode-reopen-session "reopen")
       ("n" opencode-new-session "new"))
      "Navigate"
      (("l" opencode-select-session "select")
