@@ -893,6 +893,7 @@
   (setq opencode-api-log-max-lines 1000
         opencode-event-log-max-lines 1000)
   (setq opencode-auto-start-server t)
+  (setq opencode-show-tool-output t)
 
   (defun my-opencode-toast-show-terminal-notifier (properties)
     "Show OpenCode toast using terminal-notifier on macOS."
