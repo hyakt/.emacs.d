@@ -1139,25 +1139,11 @@ If a region is active, add current buffer and region to context."
   :config
   (setq desktop-load-locked-desktop t)
   (setq desktop-save t)
+  (setq desktop-restore-frames t)
   (setq desktop-restore-eager 0)
   (setq desktop-lazy-idle-delay 1)
-  (setq desktop-buffers-not-to-save
-        (concat "\\("
-                "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-                "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.gz\\|\\.bbdb"
-                "\\|^magit: .*\\|\\*Old buffer.*"
-                "\\)$"))
-
-  (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-  (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-  (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-  (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
-  (add-to-list 'desktop-modes-not-to-save 'special-mode)
-  (add-to-list 'desktop-modes-not-to-save 'magit-status-mode)
-  (add-to-list 'desktop-modes-not-to-save 'magit-log-mode)
-  (add-to-list 'desktop-modes-not-to-save 'magit-process-mode)
-  (add-to-list 'desktop-modes-not-to-save 'magit-revision-mode)
-  (add-to-list 'desktop-modes-not-to-save 'magit-diff-mode)
+  (setq desktop-files-not-to-save ".*")
+  (setq desktop-buffers-not-to-save ".*")
   (desktop-save-mode t))
 
 (use-package eldoc
