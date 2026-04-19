@@ -340,7 +340,7 @@
   (setq doom-modeline-bar-width 3)
   (setq doom-modeline-enable-word-count 5)
   (setq doom-modeline-vcs-max-length 30)
-
+  (doom-modeline-remove-segment 'input-method 'all)
   (doom-modeline-mode t))
 
 ;;; ---------- edit ----------
