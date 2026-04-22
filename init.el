@@ -870,13 +870,6 @@
 
 (use-package copilot
   :ensure t
-  :hook ((prog-mode
-          . (lambda ()
-              (when (and buffer-file-name
-                         (file-readable-p buffer-file-name)
-                         (< (nth 7 (file-attributes buffer-file-name)) 100000))
-                (copilot-mode t))))
-         ((json-ts-mode yaml-ts-mode eshell-mode) . copilot-mode))
   :bind (("<tab>" . copilot-accept-completion)
          ("M-P" . copilot-next-completion)
          ("M-N" . copilot-previous-completion))
