@@ -1257,16 +1257,27 @@ If a region is active, add current buffer and region to context."
 (use-package nerd-icons
   :if (display-graphic-p)
   :ensure t
-  :defer t
-  :config
-  (defun with-faicon (icon str &optional height v-adjust)
-    (s-concat (nerd-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+  :defer t)
 
-  (defun with-sucicon (icon str &optional height v-adjust)
-    (s-concat (nerd-icons-sucicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+(defun with-faicon (icon str &optional height v-adjust)
+  (if (and (display-graphic-p) (require 'nerd-icons nil t))
+      (s-concat (nerd-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)
+    str))
 
-  (defun with-codicon (icon str &optional height v-adjust)
-    (s-concat (nerd-icons-codicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)))
+(defun with-sucicon (icon str &optional height v-adjust)
+  (if (and (display-graphic-p) (require 'nerd-icons nil t))
+      (s-concat (nerd-icons-sucicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)
+    str))
+
+(defun with-codicon (icon str &optional height v-adjust)
+  (if (and (display-graphic-p) (require 'nerd-icons nil t))
+      (s-concat (nerd-icons-codicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)
+    str))
+
+(defun with-devicon (icon str &optional height v-adjust)
+  (if (and (display-graphic-p) (require 'nerd-icons nil t))
+      (s-concat (nerd-icons-devicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)
+    str))
 
 (use-package dired-sidebar
   :ensure t
@@ -2230,7 +2241,7 @@ Fixes issue with less 691+ where missing TERM causes
   (setq rust-format-on-save t)
 
   (major-mode-hydra-define rust-mode
-    (:quit-key "q" :title (concat (nerd-icons-devicon "nf-dev-rust") " " "Rust"))
+    (:quit-key "q" :title (with-devicon "nf-dev-rust" "Rust"))
     ("Build/Run"
      (("b" cargo-process-build "build")
       ("l" cargo-process-clean "clean")
