@@ -399,7 +399,7 @@
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
   (keymap-global-set "C-\\" #'scratch-buffer)
-  (bind-key* "C-o" #'my-other-window-or-split-and-kill-minibuffer-gui-only)
+  (bind-key* "C-o" #'my-other-window-or-split-and-kill-minibuffer)
   (bind-key* "M-<up>" #'windmove-up)
   (bind-key* "M-<down>" #'windmove-down)
   (bind-key* "M-<left>" #'windmove-left)
