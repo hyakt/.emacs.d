@@ -1734,7 +1734,10 @@ Fixes issue with less 691+ where missing TERM causes
          (prog-mode . diff-hl-show-hunk-mouse-mode)
          (magit-pre-refresh . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh)
-         (dired-mode . diff-hl-dired-mode)))
+         (dired-mode . diff-hl-dired-mode))
+  :config
+  (unless (display-graphic-p)
+    (diff-hl-margin-mode 1)))
 
 (use-package git-timemachine
   :ensure t
