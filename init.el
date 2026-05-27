@@ -642,7 +642,7 @@
   :defer t
   :hook
   ((prog-mode . corfu-mode)
-   (prog-mode . corfu-popupinfo-mode)
+   (prog-mode . (lambda () (when (display-graphic-p) (corfu-popupinfo-mode))))
    (org-mode . corfu-mode)
    (eshell-mode . corfu-mode))
   :bind (("C-j" . completion-at-point)
@@ -660,6 +660,12 @@
   :ensure t
   :defer t
   :after corfu)
+
+(use-package corfu-terminal
+  :unless (display-graphic-p)
+  :ensure t
+  :defer t
+  :hook (corfu-mode . corfu-terminal-mode))
 
 (use-package kind-icon
   :if (display-graphic-p)
