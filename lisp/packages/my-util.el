@@ -172,17 +172,14 @@ BEG and END (region to sort)."
 (defun my-copy-file-path-with-location ()
   "Copy current file path with point/region location to clipboard.
 
-When current file is in a project, copy path relative to project root.
+Always copy the absolute file path.
 When region is active, copy start and end as
 `/path/to/file:LINE:COLUMN-ENDLINE:ENDCOLUMN'.
-Otherwise copy point as `/path/to/file:LINE:COLUMN'."
+rwise copy point as `/path/to/file:LINE:COLUMN'."
   (interactive)
   (unless buffer-file-name
     (user-error "Current buffer is not visiting a file"))
-  (let* ((project (project-current nil))
-         (file-path (if project
-                        (file-relative-name buffer-file-name (project-root project))
-                      buffer-file-name))
+  (let* ((file-path (expand-file-name buffer-file-name))
          (region-p (region-active-p))
          (beg (if region-p (region-beginning) (point)))
          (end (if region-p (region-end) (point)))

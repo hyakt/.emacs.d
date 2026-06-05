@@ -395,7 +395,7 @@
   (keymap-global-set "C-x C-k" #'my-close-and-kill-this-pane)
   (keymap-global-set "C-x C-x" #'my-kill-other-buffers)
   (keymap-global-set "C-x i" #'my-buffer-indent)
-  (keymap-global-set "C-M-w" #'my-copy-file-path-with-location)
+  (keymap-global-set "C-x C-w" #'my-copy-file-path-with-location)
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
   (keymap-global-set "C-\\" #'scratch-buffer)
