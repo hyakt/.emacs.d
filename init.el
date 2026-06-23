@@ -250,6 +250,11 @@
   :config
   (gcmh-mode t))
 
+(use-package kkp
+  :ensure t
+  :unless (display-graphic-p)
+  :hook (tty-setup . global-kkp-mode))
+
 ;;; ---------- appearance ----------
 (when (display-graphic-p)
   (set-face-attribute 'default nil
