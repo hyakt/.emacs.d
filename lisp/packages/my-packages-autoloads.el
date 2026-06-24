@@ -189,6 +189,29 @@ TIME-STRが与えられた場合は、ISO8601形式の時間文字列をUNIXTIME
 side window 起因で split できない状態を解除する。" t)
 (register-definition-prefixes "my-util" '("char-unicode" "minibuffer-keyboard-quit" "my-" "open-today-org-file-format" "unicode-char" "url-"))
 
+
+
+;;; Generated autoloads from my-herdr-review.el
+
+(autoload 'my-herdr-review-mode "my-herdr-review" "\
+差分にコメントを付けて herdr エージェントへ送るモーダルな minor-mode。
+
+This is a minor mode.  If called interactively, toggle the
+`My-Herdr-Review mode' mode.  If the prefix argument is positive, enable
+the mode, and if it is zero or negative, disable the mode.
+
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable the
+mode if ARG is nil, omitted, or is a positive number.  Disable the mode
+if ARG is a negative number.
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate the variable `my-herdr-review-mode'.
+
+The mode's hook is called both when the mode is enabled and when it is
+disabled.
+
+(fn &optional ARG)" t)
+(register-definition-prefixes "my-herdr-review" '("my-herdr-review-"))
 
 ;;; End of scraped data
 

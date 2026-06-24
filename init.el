@@ -396,6 +396,7 @@
   (keymap-global-set "C-0" #'delete-frame)
   (keymap-global-set "C-g" #'my-keyboard-quit)
   (keymap-global-set "M-r" #'my-revert-buffer-no-confirm)
+  (keymap-global-set "C-M-r" #'my-herdr-review-mode)
   (keymap-global-set "C-x k" #'kill-this-buffer)
   (keymap-global-set "C-x C-k" #'my-close-and-kill-this-pane)
   (keymap-global-set "C-x C-x" #'my-kill-other-buffers)
@@ -678,7 +679,7 @@
   :defer t
   :after corfu
   :config
-  (setq kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly)
+  (setq kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package dumb-jump
@@ -1072,14 +1073,30 @@ If a region is active, add current buffer and region to context."
           :lines-truncate t
           :poshandler posframe-poshandler-window-center))
 
+  (defvar my-hydra--ime-deactivated nil
+    "Non-nil after IME was deactivated for the current hydra session.")
+
   (defun my-hydra--deactivate-ime (&rest _args)
-    "Deactivate IME before showing a hydra."
-    (when (and (fboundp 'mac-ime-deactivate)
-               current-input-method)
-      (mac-ime-deactivate)))
+    "Deactivate IME once per hydra session so single-key heads work.
+`mac-ime-deactivate' is GUI-only (under -nw it spawns a GUI Emacs), so
+fall back to the `macism' CLI in a terminal frame.  A once-per-session
+flag (reset in `hydra-disable') avoids spawning a process on every head."
+    (unless my-hydra--ime-deactivated
+      (setq my-hydra--ime-deactivated t)
+      (cond
+       ((and (display-graphic-p) (fboundp 'mac-ime-deactivate))
+        (mac-ime-deactivate))
+       ((executable-find "macism")
+        (call-process "macism" nil 0 nil "com.apple.keylayout.ABC")))))
+
+  (defun my-hydra--reset-ime-flag (&rest _args)
+    "Reset the per-session IME flag when a hydra ends."
+    (setq my-hydra--ime-deactivated nil))
 
   (when (fboundp 'hydra-default-pre)
-    (advice-add 'hydra-default-pre :before #'my-hydra--deactivate-ime)))
+    (advice-add 'hydra-default-pre :before #'my-hydra--deactivate-ime))
+  (when (fboundp 'hydra-disable)
+    (advice-add 'hydra-disable :after #'my-hydra--reset-ime-flag)))
 
 (use-package major-mode-hydra
   :ensure t
@@ -1684,7 +1701,8 @@ If a region is active, add current buffer and region to context."
       ("o" my-git-open-pr-from-current-line "open pr from current line" :exit t))
      "Misc"
      (("w" my-git-wip "wip" :exit t)
-      ("u" my-git-unwip "unwip" :exit t)))))
+      ("u" my-git-unwip "unwip" :exit t)
+      ("R" my-herdr-review-mode "review mode" :exit t)))))
 
 ;; delta による diff シンタックスハイライト
 ;; less 691+ / Emacs daemon 環境で TERM 未設定時にエラーになる問題の workaround
