@@ -2042,14 +2042,8 @@ Fixes issue with less 691+ where missing TERM causes
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
   (define-derived-mode astro-mode web-mode "astro")
   (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-mode))
-  :hook ((vue-mode .
-                   (lambda ()
-                     (add-node-modules-path)
-                     (lsp-deferred)))
-         (astro-mode .
-                     (lambda ()
-                       (add-node-modules-path)
-                       (lsp-deferred))))
+  :hook ((vue-mode . add-node-modules-path)
+         (astro-mode . add-node-modules-path))
   :config
   (setq web-mode-engines-alist
         '(("django"    .  "\\.vento")
@@ -2104,7 +2098,6 @@ Fixes issue with less 691+ where missing TERM causes
 
 (use-package css-mode
   :defer t
-  :hook ((css-mode scss-mode) . lsp-deferred)
   :config
   (setq css-indent-offset 2))
 
@@ -2119,8 +2112,6 @@ Fixes issue with less 691+ where missing TERM causes
 (use-package js
   :defer t
   :mode ("\\.[mc]?js$" . js-ts-mode)
-  :hook
-  (js-ts-mode . lsp-deferred)
   :config
   (setq js-indent-level 2)
   (setq js-switch-indent-offset 2))
@@ -2129,8 +2120,6 @@ Fixes issue with less 691+ where missing TERM causes
   :defer t
   :mode (("\\.m?ts$" . typescript-ts-mode)
          ("\\.tsx$" . tsx-ts-mode))
-  :hook
-  (typescript-ts-base-mode . lsp-deferred)
   :config
   (major-mode-hydra-define typescript-ts-mode
     (:quit-key "q" :title (with-sucicon "nf-seti-typescript" "TypeScript"))
@@ -2148,8 +2137,7 @@ Fixes issue with less 691+ where missing TERM causes
 
 (use-package yaml-ts-mode
   :defer t
-  :mode ("\\.ya?ml\\'")
-  :hook (yaml-ts-mode . lsp-deferred))
+  :mode ("\\.ya?ml\\'"))
 
 (use-package jq-mode
   :ensure t
@@ -2178,7 +2166,6 @@ Fixes issue with less 691+ where missing TERM causes
   :defer t
   :mode ("\\.rb\\'" "Capfile$" "Gemfile$" "[Rr]akefile$")
   :hook
-  (ruby-mode . lsp-deferred)
   (ruby-mode . inf-ruby-minor-mode)
   (ruby-mode . inf-ruby-switch-setup)
   :interpreter ("pry")
@@ -2241,8 +2228,7 @@ Fixes issue with less 691+ where missing TERM causes
 
 (use-package go-mode
   :ensure t
-  :defer t
-  :hook (go-mode . lsp-deferred))
+  :defer t)
 
 (use-package elixir-mode
   :ensure t
@@ -2268,7 +2254,6 @@ Fixes issue with less 691+ where missing TERM causes
 (use-package rust-mode
   :ensure t
   :defer t
-  :hook (rust-mode . lsp-deferred)
   :config
   (setq rust-format-on-save t)
 
@@ -2316,9 +2301,7 @@ Fixes issue with less 691+ where missing TERM causes
     (my-cargo-process-run-bin-current-buffer)))
 
 (use-package csharp-mode
-  :defer t
-  :hook
-  (csharp-ts-mode . lsp-deferred))
+  :defer t)
 
 (use-package sql
   :defer t
