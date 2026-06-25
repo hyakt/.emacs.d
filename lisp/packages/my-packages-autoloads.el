@@ -194,7 +194,7 @@ side window 起因で split できない状態を解除する。" t)
 ;;; Generated autoloads from my-herdr-review.el
 
 (autoload 'my-herdr-review-mode "my-herdr-review" "\
-差分にコメントを付けて herdr エージェントへ送るモーダルな minor-mode。
+Modal minor mode to annotate a diff and send comments to a herdr agent.
 
 This is a minor mode.  If called interactively, toggle the
 `My-Herdr-Review mode' mode.  If the prefix argument is positive, enable
@@ -212,6 +212,7 @@ disabled.
 
 (fn &optional ARG)" t)
 (register-definition-prefixes "my-herdr-review" '("my-herdr-review-"))
+
 
 ;;; End of scraped data
 
