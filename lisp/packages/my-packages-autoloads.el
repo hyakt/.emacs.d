@@ -191,29 +191,6 @@ side window 起因で split できない状態を解除する。" t)
 
 
 
-;;; Generated autoloads from my-herdr-review.el
-
-(autoload 'my-herdr-review-mode "my-herdr-review" "\
-Modal minor mode to annotate a diff and send comments to a herdr agent.
-
-This is a minor mode.  If called interactively, toggle the
-`My-Herdr-Review mode' mode.  If the prefix argument is positive, enable
-the mode, and if it is zero or negative, disable the mode.
-
-If called from Lisp, toggle the mode if ARG is `toggle'.  Enable the
-mode if ARG is nil, omitted, or is a positive number.  Disable the mode
-if ARG is a negative number.
-
-To check whether the minor mode is enabled in the current buffer,
-evaluate the variable `my-herdr-review-mode'.
-
-The mode's hook is called both when the mode is enabled and when it is
-disabled.
-
-(fn &optional ARG)" t)
-(register-definition-prefixes "my-herdr-review" '("my-herdr-review-"))
-
-
 ;;; End of scraped data
 
 (provide 'my-packages-autoloads)

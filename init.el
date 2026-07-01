@@ -179,6 +179,12 @@
 
 (load (locate-user-emacs-file "./lisp/packages/my-packages-autoloads.el") nil t)
 
+(use-package ai-review-mode
+  :vc (:url "file:///Users/hayato/repos/github.com/hyakt/ai-review-mode"
+       :branch "main"
+       :rev :newest)
+  :commands ai-review-mode)
+
 (with-deferred-eval
   (if (file-exists-p (expand-file-name custom-file))
       (load-file (expand-file-name custom-file))))
@@ -396,7 +402,7 @@
   (keymap-global-set "C-0" #'delete-frame)
   (keymap-global-set "C-g" #'my-keyboard-quit)
   (keymap-global-set "M-r" #'my-revert-buffer-no-confirm)
-  (keymap-global-set "C-M-r" #'my-herdr-review-mode)
+  (keymap-global-set "C-M-r" #'ai-review-mode)
   (keymap-global-set "C-x k" #'kill-this-buffer)
   (keymap-global-set "C-x C-k" #'my-close-and-kill-this-pane)
   (keymap-global-set "C-x C-x" #'my-kill-other-buffers)
@@ -1702,7 +1708,7 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
      "Misc"
      (("w" my-git-wip "wip" :exit t)
       ("u" my-git-unwip "unwip" :exit t)
-      ("R" my-herdr-review-mode "review mode" :exit t)))))
+      ("R" ai-review-mode "review mode" :exit t)))))
 
 ;; delta による diff シンタックスハイライト
 ;; less 691+ / Emacs daemon 環境で TERM 未設定時にエラーになる問題の workaround
