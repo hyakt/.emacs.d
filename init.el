@@ -180,7 +180,7 @@
 (load (locate-user-emacs-file "./lisp/packages/my-packages-autoloads.el") nil t)
 
 (use-package ai-review-mode
-  :vc (:url "file:///Users/hayato/repos/github.com/hyakt/ai-review-mode"
+  :vc (:url "https://github.com/hyakt/ai-review-mode"
        :branch "main"
        :rev :newest)
   :commands ai-review-mode)
