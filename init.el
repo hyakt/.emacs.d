@@ -1884,6 +1884,15 @@ Fixes issue with less 691+ where missing TERM causes
     "Recipe for libtree-sitter-typescript.dylib")
   (add-to-list 'treesit-auto-recipe-list typescript-treesit-auto-recipe)
 
+  (defvar prisma-treesit-auto-recipe
+    (make-treesit-auto-recipe
+     :lang 'prisma
+     :ts-mode 'prisma-ts-mode
+     :url "https://github.com/victorhqc/tree-sitter-prisma"
+     :ext "\\.prisma\\'")
+    "Recipe for libtree-sitter-prisma.dylib")
+  (add-to-list 'treesit-auto-recipe-list prisma-treesit-auto-recipe)
+
   (setq treesit-auto-install t)
   (global-treesit-auto-mode))
 
@@ -2144,6 +2153,11 @@ Fixes issue with less 691+ where missing TERM causes
 (use-package yaml-ts-mode
   :defer t
   :mode ("\\.ya?ml\\'"))
+
+(use-package prisma-ts-mode
+  :ensure t
+  :defer t
+  :mode ("\\.prisma\\'"))
 
 (use-package jq-mode
   :ensure t
