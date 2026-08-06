@@ -1124,9 +1124,8 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
 
 (use-package project
   :defer t
-  ;; :init
-  ;; (setq project-vc-extra-root-markers '("package.json"))
-  )
+  :init
+  (setq project-vc-extra-root-markers '("package.json")))
 
 (use-package projectile
   :ensure t
