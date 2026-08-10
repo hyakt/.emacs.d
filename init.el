@@ -181,8 +181,8 @@
 
 (use-package ai-review-mode
   :vc (:url "https://github.com/hyakt/ai-review-mode"
-       :branch "main"
-       :rev :newest)
+            :branch "main"
+            :rev :newest)
   :commands ai-review-mode)
 
 (with-deferred-eval
@@ -1835,13 +1835,16 @@ Fixes issue with less 691+ where missing TERM causes
   (setq lsp-enable-text-document-color t)
   (setq lsp-enable-snippet nil)
 
-  (setq lsp-clients-typescript-prefer-use-project-ts-server t))
-
-(use-package lsp-tailwindcss
-  :ensure t
-  :after lsp-mode
-  :init
-  (setq lsp-tailwindcss-add-on-mode t))
+  (setq lsp-clients-typescript-prefer-use-project-ts-server t)
+  ;; TypeScript 7.x以降はpackage.jsonのbinからtsserverが削除されており、
+  ;; プロジェクト側のtsserverが解決できずnpmフォールバックに落ちた際に
+  ;; 最新版(7.x)が入ると "Unable to find tsserver" で失敗する。
+  ;; tsserverが存在する6系に固定してインストールさせる。
+  ;; emacs-lsp/lsp-mode/issues/5099
+  (with-eval-after-load 'lsp-javascript
+    (lsp-dependency 'typescript
+                    '(:system "tsserver")
+                    '(:npm :package "typescript" :path "tsserver" :version "6.0.3"))))
 
 (use-package editorconfig
   :ensure t
