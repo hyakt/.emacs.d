@@ -2135,6 +2135,7 @@ Fixes issue with less 691+ where missing TERM causes
 
 (use-package typescript-ts-mode
   :defer t
+  :hook (typescript-ts-base-mode . lsp-deferred)
   :mode (("\\.m?ts$" . typescript-ts-mode)
          ("\\.tsx$" . tsx-ts-mode))
   :config
