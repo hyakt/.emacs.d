@@ -46,6 +46,17 @@
 (defvar-local my-copilot-chat--commit-generation-running nil
   "Non-nil while Copilot Chat is generating commit message.")
 
+(defun my-copilot-chat--notify (title body)
+  "Notify TITLE/BODY via macOS `osascript', skipping the D-Bus attempt.
+`copilot-chat--notify-dbus' can't tell this Emacs lacks D-Bus support:
+`notifications-notify' swallows its own dbus-error internally and
+reports success, so the built-in cascade never falls through to
+`osascript'."
+  (or (copilot-chat--notify-osascript title body)
+      (progn (message "%s: %s" title body) t)))
+
+(setq copilot-chat-notify-function #'my-copilot-chat--notify)
+
 (defun my-copilot-chat--git-root (&optional start-dir)
   "Return git root from START-DIR or nil."
   (let ((default-directory (or start-dir default-directory)))
