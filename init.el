@@ -1051,7 +1051,7 @@ If a region is active, add current buffer and region to context."
   (setq gt-langs '(en ja))
   (setq gt-default-translator
         (gt-translator
-         :engines (list (gt-deepl-engine) (gt-google-engine) (gt-bing-engine))
+         :engines (list (gt-google-engine) (gt-bing-engine))
          :render  (gt-posframe-pop-render
                    :width 100  :frame-params (list :cursor 'box :timeout nil)))))
 
