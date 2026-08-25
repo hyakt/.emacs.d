@@ -1,4 +1,4 @@
-;;; doom-laserwave-theme.el --- inspired by VS Code radical
+;;; my-doom-dark-mode-theme.el --- inspired by VS Code Dark Mode -*- lexical-binding: t; no-byte-compile: t; -*-
 (require 'doom-themes)
 
 ;;
@@ -62,8 +62,8 @@ determine the exact padding."
    (variables      fg)
    (numbers        orange)
    (region         base2)
-   (error          "#F92672")
-   (warning        "#ffd000")
+   (error          '("#F92672" nil  nil ))
+   (warning        '("#ffd000" nil  nil ))
    (success        "#93E0E3")
    (vc-modified    "#ffb000")
    (vc-added       "#a3ff57")

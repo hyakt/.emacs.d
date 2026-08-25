@@ -1,78 +1,78 @@
-;;; doom-laserwave-theme.el --- inspired by VS Code radical
+;;; my-doom-laserwave-theme.el --- inspired by VS Code laserwave -*- lexical-binding: t; no-byte-compile: t; -*-
 (require 'doom-themes)
 
 ;;
-(defgroup my-doom-radical-theme nil
+(defgroup my-doom-laserwave-theme nil
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom my-doom-radical-padded-modeline doom-themes-padded-modeline
+(defcustom my-doom-laserwave-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
-  :group 'my-doom-radical-theme
+  :group 'my-doom-laserwave-theme
   :type '(choice integer boolean))
 
 ;;
-(def-doom-theme my-doom-radical
-  "A dark theme for radical hacking inspired by retro futuristic design."
+(def-doom-theme my-doom-laserwave
+  "An clean 80's synthwave / outrun theme inspired by VS Code laserwave."
 
-  ;; name        default   256  16
-  ((bg         '("#141322" nil  nil ))
-   (bg-alt     '("#1c1a30" nil  nil ))
-   (base0      '("#222745" nil  nil ))
-   (base1      '("#24262D" nil  nil ))
-   (base2      '("#262b4b" nil  nil ))
-   (base3      '("#3f405f" nil  nil ))
-   (base4      '("#415e6c" nil  nil ))
-   (base5      '("#48676A" nil  nil ))
-   (base6      '("#508695" nil  nil ))
-   (base7      '("#74A39D" nil  nil ))
-   (base8      '("#85a5a0" nil  nil ))
-   (fg-alt     '("#e4fdf7" nil  nil ))
-   (fg         '("#c7e3ee" nil  nil ))
+  ;; name        default   256       16
+  ((bg         '("#27212E" nil       nil            ))
+   (bg-alt     '("#1B1720" nil       nil            ))
+   (base0      '("#222228" "black"   "black"        ))
+   (base1      '("#24262D" "#222222" "brightblack"  ))
+   (base2      '("#282b33" "#222233" "brightblack"  ))
+   (base3      '("#3E3549" "#333344" "brightblack"  ))
+   (base4      '("#4E415C" "#444455" "brightblack"  ))
+   (base5      '("#544863" "#554466" "brightblack"  ))
+   (base6      '("#716385" "#776688" "brightblack"  ))
+   (base7      '("#91889B" "#998899" "brightblack"  ))
+   (base8      '("#ECEFF4" "#EEEEFF" "white"        ))
+   (fg-alt     '("#EEEEEE" "#EEEEEE" "brightwhite"  ))
+   (fg         '("#FFFFFF" "#FFFFFF" "white"        ))
 
    (grey       base4)
-   (red        '("#ff1767" nil  nil ))
-   (orange     '("#ffd000" nil  nil ))
-   (green      '("#d6fd6b" nil  nil ))
-   (teal       '("#78efc5" nil  nil ))
-   (yellow     '("#edf179" nil  nil ))
-   (blue       '("#008fe9" nil  nil ))
-   (dark-blue  '("#070a91" nil  nil ))
-   (magenta    '("#ff428e" nil  nil ))
-   (violet     '("#ff85a1" nil  nil ))
-   (cyan       '("#a9fef7" nil  nil ))
-   (dark-cyan  '("#c7e3ee" nil  nil ))
+   (red        '("#964C7B" "#964477" "red"          ))
+   (orange     '("#FFB85B" "#FFBB55" "brightred"    ))
+   (green      '("#74DFC4" "#77DDCC" "green"        ))
+   (teal       '("#4D8079" "#448877" "brightgreen"  ))
+   (yellow     '("#FFE261" "#FFEE66" "yellow"       ))
+   (blue       '("#40B4C4" "#44BBCC" "brightblue"   ))
+   (dark-blue  '("#336A79" "#336677" "blue"         ))
+   (magenta    '("#EB64B9" "#EE66BB" "brightmagenta"))
+   (violet     '("#B381C5" "#BB88CC" "magenta"      ))
+   (cyan       '("#B4DCE7" "#BBDDEE" "brightcyan"   ))
+   (dark-cyan  '("#6D7E8A" "#667788" "cyan"         ))
 
    ;; face categories -- required for all themes
    (highlight      blue)
-   (vertical-bar   magenta)
+   (vertical-bar   (doom-darken base1 0.2))
    (selection      dark-blue)
    (builtin        magenta)
-   (comments       "#508695")
-   (doc-comments   "#7cb3b6")
-   (constants      "#d5358f")
+   (comments       base7)
+   (doc-comments   (doom-lighten dark-cyan 0.25))
+   (constants      violet)
    (functions      magenta)
-   (keywords       "#fa61b8")
-   (methods        dark-cyan)
-   (operators      cyan)
+   (keywords       blue)
+   (methods        cyan)
+   (operators      blue)
    (type           yellow)
    (strings        cyan)
-   (variables      dark-cyan)
+   (variables      fg)
    (numbers        orange)
-   (region         base2)
-   (error          "#ff1767")
-   (warning        "#ffd000")
-   (success        "#93E0E3")
-   (vc-modified    "#ffb000")
-   (vc-added       "#a3ff57")
-   (vc-deleted     "#ff427b")
+   (region         `(,(doom-blend (car bg) (car magenta) 0.8) ,@(doom-lighten (cdr base1) 0.35)))
+   (error          red)
+   (warning        yellow)
+   (success        green)
+   (vc-modified    orange)
+   (vc-added       green)
+   (vc-deleted     red)
 
    ;; custom categories
    (hidden     `(,(car bg) "black" "black"))
    (-modeline-pad
-    (when my-doom-radical-padded-modeline
-      (if (integerp my-doom-radical-padded-modeline) my-doom-radical-padded-modeline 4)))
+    (when my-doom-laserwave-padded-modeline
+      (if (integerp my-doom-laserwave-padded-modeline) my-doom-laserwave-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
@@ -85,7 +85,9 @@ determine the exact padding."
    (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1))))
 
   ;; --- extra faces ------------------------
-  (((line-number &override) :foreground base4)
+  ((elscreen-tab-other-screen-face :background "#353a42" :foreground "#1e2022")
+
+   ((line-number &override) :foreground base4)
    ((line-number-current-line &override) :foreground fg)
 
    (font-lock-comment-face
@@ -144,19 +146,12 @@ determine the exact padding."
    (solaire-org-hide-face :foreground hidden)
 
    ;; --- extra variables ---------------------
-   (paren-face-match  :foreground (doom-lighten yellow 0.5)  :background (doom-darken bg 0.2) :weight 'ultra-bold)
-   (ivy-current-match :background base3 :distant-foreground nil)
+   (paren-face-match  :foreground yellow   :background (doom-darken bg 0.2) :weight 'ultra-bold)
+   (ivy-current-match :background base7 :distant-foreground nil)
    (tooltip           :background bg-alt :foreground fg)
    (company-box-background :foreground fg :background bg-alt)
    (whitespace-indentation :foreground cyan  :underline t)
    (whitespace-trailing :background orange)
-   (indent-guide-face :foreground base3)
-   (rainbow-delimiters-depth-1-face :foreground "#eefc53")
-   (rainbow-delimiters-depth-2-face :foreground "#f0dd67")
-   (rainbow-delimiters-depth-3-face :foreground "#f3be7b")
-   (rainbow-delimiters-depth-4-face :foreground "#f59f90")
-   (rainbow-delimiters-depth-5-face :foreground "#f880a4")
-   (rainbow-delimiters-depth-6-face :foreground "#fa61b8")
-   (rainbow-delimiters-depth-7-face :foreground "#fd43cd")))
+   (indent-guide-face :foreground base3)))
 
-;;; my-doom-radical-theme.el ends here
+;;; my-doom-laserwave-theme.el ends here

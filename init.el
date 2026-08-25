@@ -337,7 +337,7 @@
   :ensure t
   :defer 1
   :config
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/themes")
+  (setq custom-theme-directory (locate-user-emacs-file "themes/"))
   (load-theme 'my-doom-tokyo-night t)
   (doom-themes-org-config))
 

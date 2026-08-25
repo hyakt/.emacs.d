@@ -1,78 +1,77 @@
-;;; doom-tokyo-night-theme.el --- inspired by VS Code tokyo-night
+;;; my-doom-monokai-navy-theme.el --- inspired by monokai and LY navy -*- lexical-binding: t; no-byte-compile: t; -*-
 (require 'doom-themes)
 
 ;;
-(defgroup my-doom-tokyo-night-theme nil
+(defgroup my-doom-monokai-navy-theme nil
   "Options for doom-themes"
   :group 'doom-themes)
 
-(defcustom my-doom-tokyo-night-padded-modeline doom-themes-padded-modeline
+(defcustom my-doom-monokai-navy-padded-modeline doom-themes-padded-modeline
   "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
 determine the exact padding."
-  :group 'my-doom-tokyo-night-theme
+  :group 'my-doom-monokai-navy-theme
   :type '(choice integer boolean))
 
 ;;
-(def-doom-theme my-doom-tokyo-night
-    "An clean 80's synthwave / outrun theme inspired by VS Code tokyo-night."
+(def-doom-theme my-doom-monokai-navy
+  "Monokai and LY navy."
 
-  ;; name        default   256  16
-  ((bg         '("#1a1b26" nil  nil))
-   (bg-alt     '("#0f0f14" nil  nil))
-   (base0      '("#1f202e" nil  nil))
-   (base1      '("#20222c" nil  nil))
-   (base2      '("#222333" nil  nil))
-   (base3      '("#2b2b3b" nil  nil))
-   (base4      '("#3b3e52" nil  nil))
-   (base5      '("#42465d" nil  nil))
-   (base6      '("#515c7e" nil  nil))
-   (base7      '("#737aa2" nil  nil))
-   (base8      '("#bbc2e0" nil  nil))
-   (fg-alt     '("#787c99" nil  nil))
-   (fg         '("#c7ceed" nil  nil))
+  ((bg         '("#04041f" nil       nil          ))
+   (bg-alt     '("#041136" nil       nil          ))
+   (base0      '("#191835" "black"   "black"      ))
+   (base1      '("#1B1B36" "#1B1B1B"              ))
+   (base2      '("#21213E" "#212122"              ))
+   (base3      '("#2B2B4C" "#2B2B2B" "brightblack"))
+   (base4      '("#383550" "#3F4040" "brightblack"))
+   (base5      '("#4C4A5F" "#5C5E5E" "brightblack"))
+   (base6      '("#727090" "#757878" "brightblack"))
+   (base7      '("#c1c0D0" "#969896" "brightblack"))
+   (base8      '("#FCFCFF" "#FCFCFA" "white"      ))
+   (fg         '("#FCFCFA" "#939293" "white"))
+   (fg-alt     '("#939293" "#A3A2A3" "white"))
 
-   (grey       base4)
-   (red        '("#db4b4b" nil  "red"          ))
-   (orange     '("#e0af68" nil  "brightred"    ))
-   (green      '("#1abc9c" nil  "green"        ))
-   (teal       '("#9ece6a" nil  "brightgreen"  ))
-   (yellow     '("#ffdb69" nil  "yellow"       ))
-   (blue       '("#0db9d7" nil  "brightblue"   ))
-   (dark-blue  '("#6183bb" nil  "blue"         ))
-   (magenta    '("#f7768e" nil  "brightmagenta"))
-   (violet     '("#bb9af7" nil  "magenta"      ))
-   (cyan       '("#89ddff" nil  "brightcyan"   ))
-   (dark-cyan  '("#444b6a" nil  "cyan"         ))
+   (grey       '("#727072" "#727072" "brightblack"))
+   (red        '("#CC6666" "#CC6666" "red"))
+   (orange     '("#FC9867" "#FC9867" "orange"))
+   (green      '("#A9DC76" "#A9DC76" "green"))
+   (teal       green)
+   (yellow     '("#FFD866" "#FFD866" "yellow"))
+   (blue       '("#78DCE8" "#78DCE8" "blue"))
+   (dark-blue  '("#81A2BE" "#81A2BE" "blue"))
+   (magenta    '("#FF6188" "#FF6188" "violet"))
+   (violet     '("#AB9DF2" "#AB9DF2" "violet"))
+   (cyan       blue)
+   (dark-cyan  dark-blue)
 
-   ;; face categories -- required for all themes
-   (highlight      blue)
-   (vertical-bar   base3)
-   (selection      dark-blue)
-   (builtin        violet)
-   (comments       base6)
-   (doc-comments   (doom-lighten dark-cyan 0.25))
-   (constants      magenta)
-   (functions      orange)
-   (keywords       dark-blue)
-   (methods        cyan)
-   (operators      blue)
-   (type           yellow)
-   (strings        teal)
-   (variables      "#e2e3e9")
-   (numbers        orange)
-   (region         base2)
+   ;; face categories
+   (highlight      base8)
+   (vertical-bar   (doom-lighten bg 0.1))
+   (selection      base5)
+   (builtin        blue)
+   (comments       grey)
+   (doc-comments   yellow)
+   (constants      violet)
+   (functions      green)
+   (keywords       magenta)
+   (methods        green)
+   (operators      magenta)
+   (type           blue)
+   (strings        yellow)
+   (variables      base8)
+   (numbers        violet)
+   (region         selection)
    (error          red)
    (warning        yellow)
    (success        green)
-   (vc-modified    orange)
+   (vc-modified    fg-alt)
    (vc-added       green)
    (vc-deleted     red)
 
    ;; custom categories
    (hidden     `(,(car bg) "black" "black"))
    (-modeline-pad
-    (when my-doom-tokyo-night-padded-modeline
-      (if (integerp my-doom-tokyo-night-padded-modeline) my-doom-tokyo-night-padded-modeline 4)))
+    (when my-doom-monokai-navy-padded-modeline
+      (if (integerp my-doom-monokai-navy-padded-modeline) my-doom-monokai-navy-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
@@ -82,7 +81,12 @@ determine the exact padding."
    (modeline-bg-l
     `(,(doom-darken (car bg) 0.1) ,@(cdr base0)))
    (modeline-bg-inactive   (doom-darken bg 0.1))
-   (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1))))
+   (modeline-bg-inactive-l `(,(car bg) ,@(cdr base1)))
+   (-modeline-pad
+    (when my-doom-monokai-navy-padded-modeline
+      (if (integerp my-doom-monokai-navy-padded-modeline)
+          my-doom-monokai-navy-padded-modeline
+        4))))
 
   ;; --- extra faces ------------------------
   (((line-number &override) :foreground base4)
@@ -116,7 +120,7 @@ determine the exact padding."
    (css-property             :foreground green)
    (css-selector             :foreground blue)
    (web-mode-interpolate-color1-face :foreground orange)
-   (web-mode-interpolate-color2-face :forground green)
+   (web-mode-interpolate-color2-face :foreground green)
    (web-mode-interpolate-color3-face :foreground blue)
 
    ;; markdown-mode
@@ -151,7 +155,6 @@ determine the exact padding."
    (tooltip           :background bg-alt :foreground fg)
    (whitespace-indentation :foreground cyan  :underline t)
    (whitespace-trailing :background orange)
-   (whitespace-tab :foreground base2 :background bg)
    (rainbow-delimiters-depth-1-face :foreground "#3d59a1")
    (rainbow-delimiters-depth-2-face :foreground "#6183bb")
    (rainbow-delimiters-depth-3-face :foreground "#6d91de")
@@ -165,16 +168,7 @@ determine the exact padding."
 
    (corfu-default :background bg-alt :foreground fg)
    (corfu-current :background dark-cyan :foreground fg)
-
-   (goggles-removed :background (doom-darken red 0.4))
-   (goggles-added :background (doom-darken green 0.4))
-
-   (ediff-fine-diff-A    :background (doom-darken violet 0.4) :weight 'bold)
-   (ediff-current-diff-A :background (doom-darken cyan 0.25))
-
-   ;; tab-bar-mode faces
-   ((tab-line &override) :box '(:line-width (1 . 8) :color nil :style flat-button))
    )
   )
 
-;;; my-doom-tokyo-night-theme.el ends here
+;;; my-doom-monokai-navy-theme.el ends here
