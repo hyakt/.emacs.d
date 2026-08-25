@@ -635,8 +635,6 @@
   :ensure t
   :defer t
   :config
-  (setq tempel-path (expand-file-name "lisp/templates" user-emacs-directory))
-
   (define-key tempel-map [remap my-tempel-maybe-expand] #'tempel-next)
   (define-key tempel-map "\C-g" #'tempel-done)
   (defun my-tempel-maybe-expand ()
