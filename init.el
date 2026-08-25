@@ -575,7 +575,7 @@
      flymake-posframe-buffer
      :string (propertize
               (concat flymake-diagnostic-at-point-error-prefix text)
-              'face (if-let ((type (get-char-property (point) 'flymake-diagnostic)))
+              'face (if-let* ((type (get-char-property (point) 'flymake-diagnostic)))
                         (pcase (flymake--diag-type type)
                           (:error 'error)
                           (:warning 'warning)
@@ -933,7 +933,7 @@
   (defun my-opencode--project-root (&optional buffer)
     "Return project root for BUFFER or nil."
     (with-current-buffer (or buffer (current-buffer))
-      (when-let ((project (project-current nil default-directory)))
+      (when-let* ((project (project-current nil default-directory)))
         (let ((root (expand-file-name (project-root project))))
           (file-name-as-directory
            (or (ignore-errors (file-truename root)) root))))))
@@ -948,7 +948,7 @@
                     (and (buffer-live-p buffer)
                          (with-current-buffer buffer
                            (and (bound-and-true-p opencode-session-id)
-                                (when-let ((buffer-root (my-opencode--project-root buffer)))
+                                (when-let* ((buffer-root (my-opencode--project-root buffer)))
                                   (file-equal-p root buffer-root))))))
                   (buffer-list)))))
       same-project))
@@ -959,7 +959,7 @@ If a region is active, add current buffer and region to context."
     (interactive)
     (if (string-prefix-p "*OC" (buffer-name))
         (my-opencode-hide)
-      (if-let ((session-buffer (my-opencode--last-session-buffer)))
+      (if-let* ((session-buffer (my-opencode--last-session-buffer)))
           (progn
             (when (use-region-p)
               (dolist (fn '(opencode-add-buffer-dwim opencode-add-region))
@@ -973,7 +973,7 @@ If a region is active, add current buffer and region to context."
             (pop-to-buffer session-buffer)
             (with-current-buffer session-buffer
               (goto-char (point-max))
-              (when-let ((window (get-buffer-window session-buffer t)))
+              (when-let* ((window (get-buffer-window session-buffer t)))
                 (set-window-point window (point)))))
         (call-interactively 'opencode))))
 
@@ -1670,7 +1670,7 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
   ;; Protect against accidental pushes to upstream
   (define-advice magit-push-current-to-upstream (:before (args) query-yes-or-no)
     "Prompt for confirmation before permitting a push to upstream."
-    (when-let ((branch (magit-get-current-branch)))
+    (when-let* ((branch (magit-get-current-branch)))
       (let* ((upstream (or (magit-get-upstream-branch branch)
                            (magit-get "branch" branch "remote")))
              (protected-branch-regexp
