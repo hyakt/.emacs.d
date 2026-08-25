@@ -1143,13 +1143,13 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
           ("M-W" . tab-bar-close-tab)
           ("M-}" . tab-bar-switch-to-next-tab)
           ("M-{" . tab-bar-switch-to-prev-tab))
-  :hook (tab-bar-mode . (lambda ()
-                          (setq tab-bar-close-button-show nil)
-                          (setq tab-bar-show t)
-                          (setq tab-bar-separator "")
-                          (setq tab-bar-new-tab-to 'rightmost)))
   :config
+  (setq tab-bar-close-button-show nil)
+  (setq tab-bar-show t)
+  (setq tab-bar-separator "")
+  (setq tab-bar-new-tab-to 'rightmost)
   (setq tab-bar-select-restore-windows nil)
+  (setq tab-bar-truncate t)
   (tab-bar-mode t))
 
 (use-package desktop
