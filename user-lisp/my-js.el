@@ -1,4 +1,4 @@
-;;; my-js.el --- javascript用のユーティリティ
+;;; my-js.el --- javascript用のユーティリティ -*- lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:

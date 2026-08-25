@@ -58,3 +58,4 @@ var/
 eglot-java-eclipse-jdt-cache/
 share/
 elgrep-data.el*
+user-lisp/.user-lisp-autoloads.el

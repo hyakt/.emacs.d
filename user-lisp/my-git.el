@@ -1,4 +1,4 @@
-;;; my-git.el --- git用のユーティリティ
+;;; my-git.el --- git用のユーティリティ -*- lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:

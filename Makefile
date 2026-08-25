@@ -1,8 +1,6 @@
 TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 EMACS_MAC_PLUS_APP_PATH = $(shell brew --prefix emacs-plus 2>/dev/null)
 EMACS_MAC_PORT_APP_PATH = $(shell brew --prefix emacs-mac 2>/dev/null)
-PACKAGES_DIR = ~/.emacs.d/lisp/packages
-PACKAGES_NAME = my-packages
 
 .PHONY: init
 init: install-emacs-plus link compile install-icons setup-git-hook
@@ -10,7 +8,7 @@ init: install-emacs-plus link compile install-icons setup-git-hook
 .PHONY: install-emacs-plus
 install-emacs-plus:
 	brew tap d12frosted/emacs-plus
-	brew install emacs-plus --with-xwidgets --with-imagemagick
+	brew install emacs-plus --with-xwidgets
 	ln -sfv "$(EMACS_MAC_PLUS_APP_PATH)/Emacs.app" /Applications
 
 .PHONY: install-emacs-mac
@@ -28,20 +26,16 @@ link:
 	ln -nfs $(TOP_DIR) ~/
 
 .PHONY: compile
-compile: compile-init compile-packages generate-autoloads
+compile: compile-init prepare-user-lisp
 
 .PHONY: compile-init
 compile-init:
 	emacs -Q --batch -f batch-byte-compile early-init.el
 	emacs -Q --batch -f batch-byte-compile init.el
 
-.PHONY: compile-packages
-compile-packages:
-	emacs -Q --batch --eval "(progn (require 'package) (package-initialize))" -f batch-byte-compile lisp/packages/*.el
-
-.PHONY: generate-autoloads
-generate-autoloads:
-	emacs -Q --batch --eval "(progn (require 'package) (package-generate-autoloads \"$(PACKAGES_NAME)\" \"$(PACKAGES_DIR)\"))"
+.PHONY: prepare-user-lisp
+prepare-user-lisp:
+	emacs -Q --batch --eval "(progn (require 'package) (package-activate-all) (prepare-user-lisp nil nil t))"
 
 .PHONY: install-icons
 install-icons:

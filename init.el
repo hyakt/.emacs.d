@@ -177,8 +177,6 @@
 (setq-default tab-width 2)                                         ;; タブの幅は半角スペース 2
 (setq-default indent-tabs-mode nil)                                ;; タブの変わりに半角スペースを使う
 
-(load (locate-user-emacs-file "./lisp/packages/my-packages-autoloads.el") nil t)
-
 (use-package ai-review-mode
   :vc (:url "https://github.com/hyakt/ai-review-mode"
             :branch "main"
