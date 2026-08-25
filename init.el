@@ -1853,57 +1853,21 @@ Fixes issue with less 691+ where missing TERM causes
 
 (use-package treesit
   :config
-  (setq treesit-font-lock-level 4))
+  (setq treesit-font-lock-level 4)
+  (setq treesit-auto-install-grammar 'always)
+  (add-to-list 'treesit-language-source-alist
+               '(prisma "https://github.com/victorhqc/tree-sitter-prisma"))
+  (setopt treesit-enabled-modes t))
 
-(use-package treesit-auto
-  :ensure t
-  :defer 1
+(use-package hideshow
+  :hook ((prog-mode . hs-minor-mode)
+         (yaml-ts-mode . hs-minor-mode)
+         (yaml-ts-mode . hs-indentation-mode))
+  :bind (:map hs-minor-mode-map
+              ("C-<return>" . hs-cycle)
+              ("C-M-<return>" . hs-toggle-all))
   :config
-  ;; https://genehack.blog/2024/02/fixing-an-emacs-typescript-ts-mode-problem/
-  (defvar tsx-treesit-auto-recipe
-    (make-treesit-auto-recipe
-     :lang 'tsx
-     :ts-mode 'tsx-ts-mode
-     :remap '(typescript-tsx-mode)
-     :requires 'typescript
-     :url "https://github.com/tree-sitter/tree-sitter-typescript"
-     :revision "v0.20.3"
-     :source-dir "tsx/src"
-     :ext "\\.tsx\\'")
-    "Recipe for libtree-sitter-tsx.dylib")
-  (add-to-list 'treesit-auto-recipe-list tsx-treesit-auto-recipe)
-
-  (defvar typescript-treesit-auto-recipe
-    (make-treesit-auto-recipe
-     :lang 'typescript
-     :ts-mode 'typescript-ts-mode
-     :remap 'typescript-mode
-     :requires 'tsx
-     :url "https://github.com/tree-sitter/tree-sitter-typescript"
-     :revision "v0.20.3"
-     :source-dir "typescript/src"
-     :ext "\\.ts\\'")
-    "Recipe for libtree-sitter-typescript.dylib")
-  (add-to-list 'treesit-auto-recipe-list typescript-treesit-auto-recipe)
-
-  (defvar prisma-treesit-auto-recipe
-    (make-treesit-auto-recipe
-     :lang 'prisma
-     :ts-mode 'prisma-ts-mode
-     :url "https://github.com/victorhqc/tree-sitter-prisma"
-     :ext "\\.prisma\\'")
-    "Recipe for libtree-sitter-prisma.dylib")
-  (add-to-list 'treesit-auto-recipe-list prisma-treesit-auto-recipe)
-
-  (setq treesit-auto-install t)
-  (global-treesit-auto-mode))
-
-(use-package treesit-fold
-  :vc (:url "https://github.com/emacs-tree-sitter/treesit-fold")
-  :hook (prog-mode . treesit-fold-mode)
-  :bind (:map treesit-fold-mode-map
-              ("C-<return>" . treesit-fold-toggle)
-              ("C-M-<return>" . treesit-fold-close-all)))
+  (setq hs-display-lines-hidden t))
 
 (use-package smerge-mode
   :bind (:map smerge-mode-map
