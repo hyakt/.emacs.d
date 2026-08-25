@@ -850,13 +850,13 @@
   (setq pangu-spacing-real-insert-separtor t)
   (setq pangu-spacing-include-regexp
         (rx (or (and (or (group-n 3 (any "。，！？；：「」（）、"))
-                         (group-n 1 (or (category chinse-two-byte)
+                         (group-n 1 (or (category chinese-two-byte)
                                         (category japanese-hiragana-two-byte)
                                         (category japanese-katakana-two-byte))))
                      (group-n 2 (in "a-zA-Z")))
                 (and (group-n 1 (in "a-zA-Z"))
                      (or (group-n 3 (any "。，！？；：「」（）、"))
-                         (group-n 2 (or (category chinse-two-byte)
+                         (group-n 2 (or (category chinese-two-byte)
                                         (category japanese-hiragana-two-byte)
                                         (category japanese-katakana-two-byte))))))))
 
