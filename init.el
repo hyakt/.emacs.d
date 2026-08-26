@@ -943,7 +943,7 @@
     "Toggle OpenCode session window.
 If a region is active, add current buffer and region to context."
     (interactive)
-    (if (string-prefix-p "*OC" (buffer-name))
+    (if (string-prefix-p "*OpenCode" (buffer-name))
         (my-opencode-hide)
       (if-let* ((session-buffer (my-opencode--last-session-buffer)))
           (progn
@@ -978,7 +978,7 @@ If a region is active, add current buffer and region to context."
                                            new-alist))))
 
   (add-to-list 'display-buffer-alist
-               '("\\*OC"
+               '("\\*OpenCode"
                  (display-buffer-reuse-mode-window
                   display-buffer-reuse-window
                   my-display-buffer-right-adaptive)
