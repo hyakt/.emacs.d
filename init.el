@@ -1904,37 +1904,32 @@ Fixes issue with less 691+ where missing TERM causes
 (use-package apheleia
   :ensure t
   :defer t
+  :preface
+  (defun my-apheleia--locate-config (&rest names)
+    "NAMES のいずれかを含む最も近い上位ディレクトリを返す。"
+    (locate-dominating-file
+     default-directory
+     (lambda (dir)
+       (seq-some (lambda (n) (file-exists-p (expand-file-name n dir))) names))))
   :hook ((prog-mode text-mode) .
          (lambda ()
-           (when-let* ((p-root (car (last (project-current))))
-                       (file-name (buffer-file-name))
-                       (ext (file-name-extension file-name)))
-             (when
-                 (or
-                  (file-exists-p (concat p-root "deno.json"))
-                  (file-exists-p (concat p-root "deno.jsonc")))
-               (cond
-                ((member ext '("js" "jsx" "ts" "tsx"))
-                 (setq-local apheleia-mode-alist '((prog-mode . denofmt))))
-                ((member ext '("md" "mkd" "mkdn" "mdwn" "mdown" "markdown"))
-                 (setq-local apheleia-mode-alist '((text-mode . denofmt-md))))
-                ((member ext '("json" "jsonc"))
-                 (setq-local apheleia-mode-alist '((json-ts-mode . denofmt-json))))
-                ((member ext '("css" "scss" "sass" "less"))
-                 (setq-local apheleia-mode-alist '((prog-mode . denofmt-css))))
-                ((member ext '("html" "svelte" "vue" "astro" "vto" "njk"))
-                 (setq-local apheleia-mode-alist '((prog-mode . denofmt-html))))
-                ((member ext '("yml" "yaml"))
-                 (setq-local apheleia-mode-alist '((prog-mode . denofmt-yaml))))
-                ((string= ext "sql")
-                 (setq-local apheleia-mode-alist '((prog-mode . denofmt-sql)))
-                 )))
-             (when
-                 (or
-                  (file-exists-p (concat p-root "dprint.json"))
-                  (file-exists-p (concat p-root "dprint.jsonc")))
-               (setq-local apheleia-mode-alist '((prog-mode . dprint))))
-
+           (when-let* ((file-name (buffer-file-name))
+                       (ext (file-name-extension file-name))
+                       (_ (project-current)))
+             (when (my-apheleia--locate-config "deno.json" "deno.jsonc")
+               (when-let* ((fmt (cond
+                                 ((member ext '("js" "jsx" "ts" "tsx")) 'denofmt)
+                                 ((member ext '("md" "mkd" "mkdn" "mdwn" "mdown" "markdown")) 'denofmt-md)
+                                 ((member ext '("json" "jsonc")) 'denofmt-json)
+                                 ((member ext '("css" "scss" "sass" "less")) 'denofmt-css)
+                                 ((member ext '("html" "svelte" "vue" "astro" "vto" "njk")) 'denofmt-html)
+                                 ((member ext '("yml" "yaml")) 'denofmt-yaml)
+                                 ((string= ext "sql") 'denofmt-sql))))
+                 (setq-local apheleia-formatter fmt)))
+             (when (my-apheleia--locate-config "dprint.json" "dprint.jsonc")
+               (setq-local apheleia-formatter 'dprint))
+             (when (my-apheleia--locate-config ".oxfmtrc.json" ".oxfmtrc.jsonc")
+               (setq-local apheleia-formatter 'oxfmt))
              (apheleia-mode))))
   :config
   (add-to-list 'apheleia-formatters '(denofmt-html . ("deno" "fmt" "-" "--ext" "html" "--unstable-component")))
