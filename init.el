@@ -883,7 +883,7 @@
   (setq copilot-max-char 100000))
 
 (use-package opencode
-  :vc (:url "https://codeberg.org/hyakt/opencode.el"
+  :vc (:url "https://codeberg.org/sczi/opencode.el"
             :branch "main"
             :rev :newest)
   :bind* (("M-q" . my-opencode-toggle))
@@ -892,7 +892,6 @@
         opencode-event-log-max-lines 1000)
   (setq opencode-auto-start-server t)
   (setq opencode-show-tool-output nil)
-  (setq opencode-session-title-max-width 30)
 
   (defun my-opencode-toast-show-terminal-notifier (properties)
     "Show OpenCode toast using terminal-notifier on macOS."
@@ -994,9 +993,7 @@ If a region is active, add current buffer and region to context."
       ("c" opencode-abort-session "abort")
       ("x" opencode-kill-session "kill")
       ("r" opencode-rename-session "rename")
-      ("e" opencode-reopen-session "reopen")
-      ("n" opencode-new-session "new")
-      ("t" opencode-show-session-todos "show todos"))
+      ("n" opencode-new-session "new"))
      "Navigate"
      (("l" opencode-select-session "select")
       ("p" opencode-open-parent "parent")
