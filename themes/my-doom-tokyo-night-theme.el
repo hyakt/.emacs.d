@@ -174,6 +174,7 @@ determine the exact padding."
 
    ;; tab-bar-mode faces
    ((tab-line &override) :box '(:line-width (1 . 8) :color nil :style flat-button))
+   (tab-bar-tab-highlight :background base3 :foreground fg :box nil)
    )
   )
 
