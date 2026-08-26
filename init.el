@@ -503,12 +503,12 @@
   (add-hook 'web-mode-hook #'web-add-electric-pairs)
   (add-hook 'typescript-ts-base-mode-hook #'web-add-electric-pairs)
 
-  (defvar markdown-electric-pairs '((?` . ?`)) "Electric pairs for markdown-mode.")
+  (defvar markdown-electric-pairs '((?` . ?`)) "Electric pairs for markdown-ts-mode.")
   (defun markdown-add-electric-pairs ()
     (setq-local electric-pair-pairs (append electric-pair-pairs markdown-electric-pairs))
     (setq-local electric-pair-text-pairs electric-pair-pairs))
 
-  (add-hook 'markdown-mode-hook #'markdown-add-electric-pairs)
+  (add-hook 'markdown-ts-mode-hook #'markdown-add-electric-pairs)
 
   (defun my-inhibit-electric-pair-mode (char)
     (minibufferp))
@@ -2432,63 +2432,23 @@ Fixes issue with less 691+ where missing TERM causes
   :ensure t
   :defer t)
 
-(use-package markdown-mode
-  :ensure t
+(use-package markdown-ts-mode
   :defer t
   :hook
-  (markdown-mode
+  (markdown-ts-mode
    . (lambda nil
        (set
         (make-local-variable 'whitespace-action)
         nil)))
-  :bind (:map markdown-mode-map ("<backtab>" . markdown-promote-list-item))
+  :bind (:map markdown-ts-mode-map ("<backtab>" . markdown-ts-promote))
   :mode
-  ("\\.markdown\\'" . gfm-mode)
-  ("\\.md\\'" . gfm-mode)
-  ("\\.mdown\\'" . gfm-mode)
+  ("\\.markdown\\'" . markdown-ts-mode)
+  ("\\.md\\'" . markdown-ts-mode)
+  ("\\.mdown\\'" . markdown-ts-mode)
   :config
-  (setq markdown-enable-wiki-links t
-        markdown-italic-underscore t
-        markdown-asymmetric-header t
-        markdown-make-gfm-checkboxes-buttons t
-        markdown-gfm-uppercase-checkbox t
-        markdown-fontify-code-blocks-natively t
-        markdown-content-type "application/xhtml+xml")
-  (setq markdown-command "multimarkdown")
-  (setq markdown-gfm-additional-languages '("Mermaid"))
-  (setq markdown-css-paths
-        '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css"
-          "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"))
-  (setq markdown-live-preview-window-function 'markdown-live-preview-window-xwidget)
-  (setq markdown-xhtml-body-preamble "<article class='markdown-body'>")
-  (setq markdown-xhtml-body-epilogue "</article>")
-  (setq markdown-xhtml-header-content "
-<meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
-<style>
-body { max-width: 740px; padding: 1em 2em; }
-.markdown-body { margin: 0 auto; }
-</style>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js'></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.add('markdown-body');
-  document.querySelectorAll('pre code').forEach((code) => {
-    if (code.className != 'mermaid') {
-      hljs.highlightBlock(code);
-    }
-  });
-});
-</script>
-<script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
-<script>mermaid.initialize({ startOnLoad: true });</script>")
-
-  (defun markdown-live-preview-window-xwidget (file)
-    "Preview file with xwidget browser"
-    (xwidget-webkit-browse-url (concat "file://" file))
-    (let ((buf (xwidget-buffer (xwidget-webkit-current-session))))
-      (when (buffer-live-p buf)
-        (and (eq buf (current-buffer)) (quit-window))
-        (pop-to-buffer buf)))))
+  (setq markdown-ts-fontify-code-blocks-natively t)
+  (setq markdown-ts-enable-table-mode t)
+  (setq markdown-ts-enable-code-block-context-mode t))
 
 (use-package plantuml-mode
   :ensure t
