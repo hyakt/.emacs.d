@@ -593,9 +593,7 @@
         (posframe-hide flymake-posframe-buffer)
         (other-frame 0))))
   (setq flymake-diagnostic-at-point-display-diagnostic-function
-        (if (display-graphic-p)
-            #'flymake-diagnostic-at-point-display-posframe
-          #'flymake-diagnostic-at-point-display-minibuffer)))
+        #'flymake-diagnostic-at-point-display-posframe))
 
 (use-package delsel
   :config
@@ -872,7 +870,6 @@
   :defer t)
 
 (use-package posframe
-  :if (display-graphic-p)
   :defer t
   :ensure t)
 
@@ -1059,7 +1056,7 @@ If a region is active, add current buffer and region to context."
   :ensure t
   :defer t
   :config
-  (setq hydra-hint-display-type (if (display-graphic-p) 'posframe 'message))
+  (setq hydra-hint-display-type 'posframe)
   (setq hydra-posframe-show-params
         '(
           :internal-border-width 10
@@ -1719,7 +1716,6 @@ Fixes issue with less 691+ where missing TERM causes
               :around #'my-magit-delta--fix-term-env))
 
 (use-package transient-posframe
-  :if (display-graphic-p)
   :ensure t
   :defer t
   :custom-face
