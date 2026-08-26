@@ -708,16 +708,16 @@
 
   (setq smart-jump-bind-keys nil)
   (smart-jump-setup-default-registers)
-  (smart-jump-register :modes 'js-ts-mode
+  (smart-jump-register :modes 'prog-mode
                        :jump-fn 'xref-find-definitions
-                       :pop-fn 'xref-pop-marker-stack
+                       :pop-fn 'xref-go-back
                        :refs-fn 'xref-find-references
                        :should-jump t
                        :heuristic 'point
                        :async t)
   (smart-jump-register :modes 'robe-mode
                        :jump-fn 'robe-jump
-                       :pop-fn 'xref-pop-marker-stack
+                       :pop-fn 'xref-go-back
                        :refs-fn 'xref-find-references
                        :should-jump t
                        :heuristic 'point
