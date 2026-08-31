@@ -1412,10 +1412,45 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
   :ensure t
   :hook (eshell-mode . fish-completion-mode))
 
+(use-package ghostel
+  :ensure t
+  :defer t
+  :commands (ghostel ghostel-project ghostel-project-list-buffers)
+  :bind* (("C-t" . ghostel-toggle))
+  :bind (:map ghostel-semi-char-mode-map
+              ("C-d" . ghostel-toggle-hide))
+  :hook (ghostel-mode . my-buffer-face-dark)
+  :config
+  (let ((brew-bash "/opt/homebrew/bin/bash"))
+    (when (file-executable-p brew-bash)
+      (setq ghostel-shell brew-bash)))
+
+  (defun ghostel-toggle ()
+    "Ghostel toggle."
+    (interactive)
+    (if (string-prefix-p "*ghostel" (buffer-name))
+        (ghostel-toggle-hide)
+      (ghostel)))
+
+  (defun ghostel-toggle-hide ()
+    "Hide window, keeping the session alive."
+    (interactive)
+    (when (window-deletable-p)
+      (delete-window)))
+
+  (add-to-list 'display-buffer-alist
+               '("\\*ghostel"
+                 (display-buffer-reuse-window display-buffer-in-direction)
+                 (direction . right)
+                 (window-width . 0.4)
+                 (reusable-frames . visible)))
+
+  (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t))
+
 (use-package mistty
   :ensure t
   :defer t
-  :bind* (("C-t" . mistty-toggle))
+  :bind* (("C-x m" . mistty-toggle))
   :bind (:map mistty-prompt-map
               ("C-d" . mistty-toggle-hide))
   :custom-face
