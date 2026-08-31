@@ -1440,12 +1440,31 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
 
   (add-to-list 'display-buffer-alist
                '("\\*ghostel"
-                 (display-buffer-reuse-window display-buffer-in-direction)
-                 (direction . right)
-                 (window-width . 0.4)
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (window-width . 0.3)
                  (reusable-frames . visible)))
 
   (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t))
+
+(use-package claude-code-ide
+  :defer t
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
+  :bind* ("M-q" . my-claude-code-ide-toggle)
+  :config
+  (setq claude-code-ide-terminal-backend 'ghostel)
+  (setq claude-code-ide-diagnostics-backend 'flymake)
+
+  (defun my-claude-code-ide-toggle ()
+    "Toggle visibility of Claude Code window for the current project."
+    (interactive)
+    (if-let* ((buffer (get-buffer (claude-code-ide--get-buffer-name))))
+        (if (use-region-p)
+            (progn
+              (claude-code-ide-insert-at-mentioned)
+              (when-let* ((window (get-buffer-window buffer)))
+                (select-window window)))
+          (claude-code-ide-toggle))
+      (claude-code-ide))))
 
 (use-package gh
   :ensure t
