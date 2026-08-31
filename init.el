@@ -1447,39 +1447,6 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
 
   (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t))
 
-(use-package mistty
-  :ensure t
-  :defer t
-  :bind* (("C-x m" . mistty-toggle))
-  :bind (:map mistty-prompt-map
-              ("C-d" . mistty-toggle-hide))
-  :custom-face
-  (mistty-fringe-face ((t (:foreground "#bbc2e0"))))
-  :hook (mistty-mode . my-buffer-face-dark)
-  :config
-  (defun mistty-toggle()
-    "Mistty toggle."
-    (interactive)
-    (if (string-prefix-p "*mistty" (buffer-name))
-        (mistty-toggle-hide)
-      (progn
-        (mistty))))
-
-  (defun mistty-toggle-hide ()
-    "Hide buffer."
-    (interactive)
-    (if (window-deletable-p)
-        (progn
-          (mistty-send-string "exit\n")
-          (kill-buffer)
-          (delete-window))))
-
-  (add-to-list 'display-buffer-alist
-               '("\\*mistty"
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.3))))
-
 (use-package gh
   :ensure t
   :defer t)
