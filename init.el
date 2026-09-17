@@ -1705,16 +1705,19 @@ Fixes issue with less 691+ where missing TERM causes
   (setq lsp-enable-text-document-color t)
   (setq lsp-enable-snippet nil)
 
-  (setq lsp-clients-typescript-prefer-use-project-ts-server t)
-  ;; TypeScript 7.x以降はpackage.jsonのbinからtsserverが削除されており、
-  ;; プロジェクト側のtsserverが解決できずnpmフォールバックに落ちた際に
-  ;; 最新版(7.x)が入ると "Unable to find tsserver" で失敗する。
-  ;; tsserverが存在する6系に固定してインストールさせる。
-  ;; emacs-lsp/lsp-mode/issues/5099
-  (with-eval-after-load 'lsp-javascript
-    (lsp-dependency 'typescript
-                    '(:system "tsserver")
-                    '(:npm :package "typescript" :path "tsserver" :version "6.0.3"))))
+  ;; tsserverの代わりにtsgoを利用する
+  (setq lsp-disabled-clients '(ts-ls))
+  ;; tsgoではinitializeに失敗するためクライアントの宣言から取り除く
+  ;; emacs-lsp/lsp-mode/issues/5081, emacs-lsp/lsp-mode/pull/5113
+  (defun my-lsp-remove-inline-completion-capability (capabilities)
+    (mapcar (lambda (it)
+              (if (eq (car it) 'textDocument)
+                  (cons (car it)
+                        (assq-delete-all 'inlineCompletion (copy-sequence (cdr it))))
+                it))
+            capabilities))
+  (advice-add 'lsp--client-capabilities :filter-return
+              #'my-lsp-remove-inline-completion-capability))
 
 (use-package editorconfig
   :ensure t
