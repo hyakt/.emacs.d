@@ -1627,6 +1627,9 @@ Fixes issue with less 691+ where missing TERM causes
       (mac-ime-deactivate)))
   (advice-add #'transient-posframe--show-buffer :before #'my-transient--deactivate-ime))
 
+;; ":"始まりのファイル名でdiff-hlが効かなくなるのを防ぐ
+(setenv "GIT_LITERAL_PATHSPECS" "1")
+
 (use-package diff-hl
   :ensure t
   :defer t
