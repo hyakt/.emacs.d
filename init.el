@@ -914,7 +914,7 @@
 (use-package mise
   :ensure t
   :defer t
-  :hook (prog-mode-hook . mise-mode))
+  :hook (after-init . global-mise-mode))
 
 (use-package hydra
   :ensure t
