@@ -1365,49 +1365,6 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
   (setq affe-find-command "fd --color=never --full-path")
   (consult-customize affe-grep :preview-key "M-."))
 
-(use-package eshell
-  :defer t
-  :bind (:map eshell-mode-map
-              ("C-r" . consult-history)
-              ("C-l" . my-eshell/clear-scrollback)
-              ("C-d" . eshell-life-is-too-much))
-  :init
-  (defun my-eshell/clear-scrollback ()
-    (interactive)
-    (eshell/clear-scrollback)
-    (eshell-send-input))
-
-  (setq eshell-cmpl-ignore-case t)
-  (setq eshell-ask-to-save-history 'always)
-
-  (defun eshell/magit (&rest args)
-    "Magit for eshell."
-    (if (null args)
-        (magit-status)
-      (pcase (car args)
-        ("log" (magit-log))
-        ("diff" (magit-diff-dwim))
-        ("ci" (magit-commit))
-        ("commit" (magit-commit))
-        ("pull" (magit-pull))
-        ("push" (magit-push))
-        (_ (shell-command-to-string (concat "git " (eshell-flatten-and-stringify args)))))
-      )
-    )
-
-  (defalias 'g 'eshell/magit)
-  (defalias 'd (lambda () (dired ".")))
-  (defalias 'e 'find-file-other-window))
-
-(use-package esh-help
-  :ensure t
-  :hook (eshell-mode . setup-esh-help-eldoc))
-
-(use-package eshell-syntax-highlighting
-  :defer t
-  :ensure t
-  :hook (eshell-mode . eshell-syntax-highlighting-mode))
-
 (use-package fish-completion
   :defer t
   :ensure t
