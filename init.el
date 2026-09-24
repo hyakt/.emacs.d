@@ -722,7 +722,8 @@
                        :async t))
 
 (use-package jumplist
-  :defer t
+  ;; pre-command-hookへの登録がロード時に行われるため遅延させられない
+  :demand t
   :ensure t
   :bind
   ("M-n" . jumplist-next)
