@@ -1375,7 +1375,9 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
   :defer t
   :commands (ghostel ghostel-project ghostel-project-list-buffers)
   :bind* (("C-t" . ghostel-toggle))
-  :bind (:map ghostel-semi-char-mode-map
+  :bind (:map ghostel-mode-map
+              ("C-c C-p" . ghostel-copy-mode)
+              :map ghostel-semi-char-mode-map
               ("C-d" . ghostel-toggle-hide))
   :hook (ghostel-mode . my-buffer-face-dark)
   :config
