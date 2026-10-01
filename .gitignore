@@ -37,11 +37,13 @@ omnisharp-server/
 persist/
 persp-confs/
 places
+places.eld
 projectile-bookmarks.eld
 projectile.cache
 projects
 quelpa/
 recentf
+recentf.eld
 request/
 semanticdb/
 site-lisp/my-proxy.el
