@@ -128,7 +128,7 @@
 (setq cursor-type 'box)
 (setq completion-ignored-extensions '("~" ".o" ".elc" "./" "../" ".xlsx" ".docx" ".pptx" ".DS_Store"))
 (setq ring-bell-function 'ignore)
-(setq mouse-wheel-scroll-amount '(1 ((control). 5)))
+(setopt mouse-wheel-scroll-amount '(1 ((control). 5)))
 (setq text-quoting-style 'straight)
 (setq echo-keystrokes 0.1)                                         ;; キーストロークをエコーエリアに早く表示する
 (setq inhibit-startup-screen 1)                                    ;; スタートアップメッセージを非表示
@@ -409,6 +409,7 @@
   (keymap-global-set "C-x C-w" #'my-copy-file-path-with-location)
   (keymap-global-set "M-+" #'text-scale-increase)
   (keymap-global-set "M-_" #'text-scale-decrease)
+  (keymap-global-unset "<pinch>")
   (keymap-global-set "C-\\" #'scratch-buffer)
   (bind-key* "C-o" #'my-other-window-or-split-and-kill-minibuffer)
   (bind-key* "M-<up>" #'windmove-up)
