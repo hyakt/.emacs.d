@@ -119,6 +119,7 @@
 
 (setq native-comp-async-report-warnings-errors 'silent)
 (setq native-compile-prune-cache t)
+(setq package-native-compile t)
 
 (setq mac-command-modifier 'meta)
 
