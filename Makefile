@@ -26,16 +26,10 @@ link:
 	ln -nfs $(TOP_DIR) ~/
 
 .PHONY: compile
-compile: compile-init prepare-user-lisp
-
-.PHONY: compile-init
-compile-init:
+compile:
 	emacs -Q --batch -f batch-byte-compile early-init.el
 	emacs -Q --batch -f batch-byte-compile init.el
-
-.PHONY: prepare-user-lisp
-prepare-user-lisp:
-	emacs -Q --batch --eval "(progn (require 'package) (package-activate-all) (prepare-user-lisp nil nil t))"
+	emacs -Q --batch --eval "(progn (package-activate-all) (setq native-comp-async-report-warnings-errors 'silent) (native-compile-async (list lisp-directory package-user-dir) t) (while (or comp-files-queue (> (comp--async-runnings) 0)) (accept-process-output nil 1)))"
 
 .PHONY: install-icons
 install-icons:
