@@ -277,6 +277,17 @@
 (when (display-graphic-p)
   (set-frame-parameter nil 'alpha '(98 . 98)))
 
+(defun my-skip-vs16-composition-on-terminal (orig gstring direction)
+  "Call ORIG with GSTRING and DIRECTION unless GSTRING contains VS16.
+Terminals draw an emoji followed by VS16 two columns wide while Emacs
+counts one, so leave such sequences uncomposed on text terminals and
+let `glyphless-char-display-control' hide the selector."
+  (unless (seq-contains-p (lgstring-header gstring) #xFE0F)
+    (funcall orig gstring direction)))
+(advice-add 'compose-gstring-for-terminal :around #'my-skip-vs16-composition-on-terminal)
+(setopt glyphless-char-display-control
+        '((format-control . thin-space) (variation-selectors . zero-width) (no-font . hex-code)))
+
 (defun my-buffer-face-dark ()
   "Customize background color for special modes."
   (setq buffer-face-mode-face `(:background "#0f0f14"))
