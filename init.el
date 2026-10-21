@@ -1810,8 +1810,6 @@ Fixes issue with less 691+ where missing TERM causes
   (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
   (define-derived-mode astro-mode web-mode "astro")
   (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-mode))
-  :hook ((vue-mode . add-node-modules-path)
-         (astro-mode . add-node-modules-path))
   :config
   (setq web-mode-engines-alist
         '(("django"    .  "\\.vento")
@@ -1916,20 +1914,6 @@ Fixes issue with less 691+ where missing TERM causes
 (use-package jq-mode
   :ensure t
   :defer t)
-
-(use-package add-node-modules-path
-  :ensure t
-  :defer t
-  :hook
-  ((typescript-ts-base-mode
-    js-ts-mode
-    scss-mode
-    graphql-mode
-    ts-comint-mode
-    json-ts-mode) . #'add-node-modules-path)
-  :config
-  ;; https://github.com/codesuki/add-node-modules-path/issues/23#issuecomment-1312961383
-  (setq add-node-modules-path-command '("echo \"$(npm root)/.bin\"")))
 
 (use-package nodejs-repl
   :ensure t
