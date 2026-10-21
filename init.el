@@ -2004,7 +2004,9 @@ Fixes issue with less 691+ where missing TERM causes
 
 (use-package go-mode
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (setq magic-mode-alist (assq-delete-all 'go--is-go-asm magic-mode-alist)))
 
 (use-package elixir-mode
   :ensure t
