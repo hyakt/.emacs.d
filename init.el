@@ -1540,11 +1540,10 @@ Fixes issue with less 691+ where missing TERM causes
 
 (use-package transient-posframe
   :ensure t
-  :defer t
+  :after transient
   :custom-face
   (transient-posframe ((t (:inherit tooltip))))
   (transient-posframe-border ((t (:inherit posframe-border :background "#0f0f14"))))
-  :hook (after-init . transient-posframe-mode)
   :init
   (setq transient-posframe-border-width 10
         transient-posframe-min-height nil
@@ -1564,26 +1563,27 @@ Fixes issue with less 691+ where missing TERM causes
     (when (and (fboundp 'mac-ime-deactivate)
                current-input-method)
       (mac-ime-deactivate)))
-  (advice-add #'transient-posframe--show-buffer :before #'my-transient--deactivate-ime))
+  (advice-add #'transient-posframe--show-buffer :before #'my-transient--deactivate-ime)
+  (transient-posframe-mode))
 
 ;; ":"始まりのファイル名でdiff-hlが効かなくなるのを防ぐ
 (setenv "GIT_LITERAL_PATHSPECS" "1")
 
 (use-package diff-hl
   :ensure t
-  :defer t
+  :defer 1
   :custom-face
   (diff-hl-change ((t (:background "#B4DCE7" :foreground "#B4DCE7"))))
   (diff-hl-insert ((t (:background "#74DFC4" :foreground "#74DFC4"))))
   (diff-hl-change ((t (:background "#964C7B" :foreground "#964C7B"))))
-  :hook ((after-init . global-diff-hl-mode)
-         (after-init . global-diff-hl-show-hunk-mouse-mode)
-         (magit-pre-refresh . diff-hl-magit-pre-refresh)
+  :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh)
          (dired-mode . diff-hl-dired-mode))
   :config
   (unless (display-graphic-p)
-    (diff-hl-margin-mode 1)))
+    (diff-hl-margin-mode 1))
+  (global-diff-hl-mode)
+  (global-diff-hl-show-hunk-mouse-mode))
 
 (use-package git-timemachine
   :ensure t
