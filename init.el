@@ -345,7 +345,6 @@ let `glyphless-char-display-control' hide the selector."
 
 (use-package doom-themes
   :ensure t
-  :defer 1
   :config
   (setq custom-theme-directory (locate-user-emacs-file "themes/"))
   (load-theme 'my-doom-tokyo-night t)
@@ -353,7 +352,6 @@ let `glyphless-char-display-control' hide the selector."
 
 (use-package doom-modeline
   :ensure t
-  :defer 1
   :config
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-buffer-file-name-style 'auto)
