@@ -13,6 +13,7 @@
 (setq truncate-lines nil)
 
 (setq gc-cons-threshold most-positive-fixnum)
+(setq user-lisp-auto-scrape nil)
 
 ;; Suppress file-name-handler-alist during startup for faster loading
 (defvar my--file-name-handler-alist file-name-handler-alist)

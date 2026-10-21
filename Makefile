@@ -29,7 +29,7 @@ link:
 compile:
 	emacs -Q --batch -f batch-byte-compile early-init.el
 	emacs -Q --batch -f batch-byte-compile init.el
-	emacs -Q --batch --eval "(progn (package-activate-all) (setq native-comp-async-report-warnings-errors 'silent) (native-compile-async (list lisp-directory package-user-dir) t) (while (or comp-files-queue (> (comp--async-runnings) 0)) (accept-process-output nil 1)))"
+	emacs -Q --batch --eval "(progn (package-activate-all) (setq native-comp-async-report-warnings-errors 'silent) (prepare-user-lisp) (native-compile-async (list lisp-directory package-user-dir) t) (while (or comp-files-queue (> (comp--async-runnings) 0)) (accept-process-output nil 1)))"
 
 .PHONY: install-icons
 install-icons:
