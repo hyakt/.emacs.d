@@ -348,6 +348,8 @@ let `glyphless-char-display-control' hide the selector."
   :config
   (setq custom-theme-directory (locate-user-emacs-file "themes/"))
   (load-theme 'my-doom-tokyo-night t)
+  (unless (display-graphic-p)
+    (set-face-background 'default "unspecified-bg"))
   (doom-themes-org-config))
 
 (use-package doom-modeline
