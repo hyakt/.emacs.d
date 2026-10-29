@@ -1428,6 +1428,7 @@ flag (reset in `hydra-disable') avoids spawning a process on every head."
   (setq magit-diff-paint-whitespace nil)
   (setq magit-diff-highlight-hunk-body nil)
   (setq magit-diff-refine-hunk nil)
+  (set-face-background 'magit-diff-context 'unspecified)
   (setq magit-no-confirm
         '(discard stage-all-changes unstage-all-changes set-and-push))
   (setq git-commit-major-mode 'git-commit-elisp-text-mode)
