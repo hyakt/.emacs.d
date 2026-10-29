@@ -349,6 +349,7 @@ let `glyphless-char-display-control' hide the selector."
   (setq custom-theme-directory (locate-user-emacs-file "themes/"))
   (load-theme 'my-doom-tokyo-night t)
   (unless (display-graphic-p)
+    (setopt frame-background-mode 'dark)
     (set-face-background 'default "unspecified-bg"))
   (doom-themes-org-config))
 
