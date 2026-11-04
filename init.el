@@ -236,6 +236,8 @@
 (use-package server
   :defer 2
   :config
+  (when (display-graphic-p)
+    (setq server-name "gui"))
   (unless (server-running-p)
     (server-start)))
 
