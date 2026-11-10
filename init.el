@@ -263,6 +263,10 @@
   :custom (kkp-super-modifier 'meta)
   :hook (tty-setup . global-kkp-mode))
 
+;; Herdr.app 内では cmd-v が貼り付け (bracketed paste) として届くので、M-v と同じスクロールに読み替える。
+(when (getenv "HC_TERMINAL_ID")
+  (keymap-global-set "<xterm-paste>" #'scroll-down-command))
+
 ;;; ---------- appearance ----------
 (when (display-graphic-p)
   (set-face-attribute 'default nil
