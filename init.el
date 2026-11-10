@@ -305,6 +305,7 @@ let `glyphless-char-display-control' hide the selector."
   (mac-get-current-input-source))
 (with-deferred-eval
   (when (and (eq system-type 'darwin)
+             (display-graphic-p)
              (fboundp 'mac-get-current-input-source)
              (fboundp 'mac-input-method-mode))
     (defun mac-selected-keyboard-input-source-change-hook-func ()
@@ -1569,7 +1570,8 @@ Fixes issue with less 691+ where missing TERM causes
 
   (defun my-transient--deactivate-ime (&rest _args)
     "Deactivate IME before showing a transient."
-    (when (and (fboundp 'mac-ime-deactivate)
+    (when (and (display-graphic-p)
+               (fboundp 'mac-ime-deactivate)
                current-input-method)
       (mac-ime-deactivate)))
   (advice-add #'transient-posframe--show-buffer :before #'my-transient--deactivate-ime)
