@@ -260,6 +260,7 @@
 (use-package kkp
   :ensure t
   :unless (display-graphic-p)
+  :custom (kkp-super-modifier 'meta)
   :hook (tty-setup . global-kkp-mode))
 
 ;;; ---------- appearance ----------
