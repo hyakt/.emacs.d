@@ -265,7 +265,8 @@
 
 ;; Herdr.app 内では cmd-v が貼り付け (bracketed paste) として届くので、M-v と同じスクロールに読み替える。
 (when (getenv "HC_TERMINAL_ID")
-  (keymap-global-set "<xterm-paste>" #'scroll-down-command)
+  (with-eval-after-load 'term/xterm
+    (keymap-global-set "<xterm-paste>" #'scroll-down-command))
   (dolist (mod '("M-" "C-" "C-M-"))
     (seq-mapn (lambda (base shifted)
                 (keymap-set key-translation-map (format "%sS-%c" mod base) (format "%s%c" mod shifted)))
